@@ -8,15 +8,38 @@ from typing import Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel, Field
+from services.tts_service import get_signed_url
+import logging
+
 
 from core.database import get_db
+
 # from core.security import get_current_active_user
 # from models.user import User
 # from services.tts_service import TTSService
 # from schemas.common import SuccessResponse
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
+
+@router.get("/signed-url/{agent_id}")
+async def signed_url(agent_id: str):
+    try:
+        logger.info(f"Request received for signed URL, agent_id={agent_id}")
+
+        url = await get_signed_url(agent_id)
+
+        if not url:
+            logger.error(f"No signed URL returned for agent_id={agent_id}")
+            raise HTTPException(status_code=404, detail="Signed URL not found")
+
+        logger.info(f"Signed URL successfully generated for agent_id={agent_id}")
+        return {"signed_url": url}
+
+    except Exception as e:
+        logger.error(f"Error while generating signed URL for agent_id={agent_id}: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 # class TTSSessionRequest(BaseModel):
 #     """TTS session request schema."""
