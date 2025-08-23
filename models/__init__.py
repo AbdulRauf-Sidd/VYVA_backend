@@ -8,7 +8,7 @@ from .user import User
 from .profile import Profile
 from .health_care import HealthCare
 from .social import Social
-from .brain_coach import BrainCoach
+from .brain_coach import *
 from .medication import Medication
 from .fall_detection import FallDetection
 from .emergency import EmergencyContact
@@ -18,7 +18,8 @@ __all__ = [
     "Profile", 
     "HealthCare",
     "Social",
-    "BrainCoach",
+    "BrainCoachQuestions",
+    "BrainCoachResponses",
     "Medication",
     "FallDetection",
     "EmergencyContact",

@@ -5,16 +5,46 @@ BrainCoach model for brain training and cognitive exercises.
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Float, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-
 from core.database import Base
 
 
-class BrainCoach(Base):
-    """BrainCoach model for brain training and cognitive exercises."""
-    
-    __tablename__ = "brain_coach"
-    
+class BrainCoachQuestions(Base):
+    """Model for storing brain coach questions and their metadata."""
+
+    __tablename__ = "brain_coach_questions"
+
     id = Column(Integer, primary_key=True, index=True)
+    session = Column(Integer, nullable=False)  # Session number or identifier
+    tier = Column(Integer, nullable=False)  # Difficulty or complexity tier
+    question_type = Column(String(100), nullable=False)  # Type of question (e.g., "Memory", "Math", "Logic")
+    question = Column(Text, nullable=False)  # The question text
+    expected_answer = Column(Text, nullable=False)  # Expected answer or solution
+    scoring_logic = Column(Text, nullable=True)  # Logic or criteria for scoring
+    theme = Column(String(100), nullable=True)  # Theme or category of the question
+
+
+
+
+class BrainCoachResponses(Base):
+    """Model for storing user responses to brain coach questions."""
+
+    __tablename__ = "brain_coach_responses"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)  # Foreign key to User
+    question_id = Column(Integer, ForeignKey("brain_coach_questions.id"), nullable=False)  # Foreign key to BrainCoachQuestions
+    user_answer = Column(String, nullable=False)  # User's answer to the question
+    score = Column(Integer, nullable=False)  # Score achieved for the answer
+    created = Column(DateTime(timezone=True), server_default=func.now())  # Timestamp of the response
+
+
+
+# class BrainCoach(Base):
+#     """BrainCoach model for brain training and cognitive exercises."""
+    
+#     __tablename__ = "brain_coach"
+    
+#     id = Column(Integer, primary_key=True, index=True)
     # user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     
     # # Session Information

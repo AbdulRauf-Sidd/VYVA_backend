@@ -41,7 +41,7 @@ class LongTermCondition(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(SQLEnum(LongTermConditionEnum), unique=True, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    user = relationship("User", back_populates="long_term_conditions")
+    
 
 
 

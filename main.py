@@ -100,53 +100,53 @@ async def general_exception_handler(request: Request, exc: Exception):
     )
 
 
-# Health check endpoints
-@app.get("/health")
-async def health_check() -> Dict[str, Any]:
-    """Basic health check endpoint."""
-    return {
-        "status": "healthy",
-        "service": "vyva-backend",
-        "version": "1.0.0"
-    }
+# # Health check endpoints
+# @app.get("/health")
+# async def health_check() -> Dict[str, Any]:
+#     """Basic health check endpoint."""
+#     return {
+#         "status": "healthy",
+#         "service": "vyva-backend",
+#         "version": "1.0.0"
+#     }
 
 
-@app.get("/health/db")
-async def database_health_check() -> Dict[str, Any]:
-    """Database health check endpoint."""
-    try:
-        # Test database connection
-        async with engine.begin() as conn:
-            await conn.execute("SELECT 1")
-        return {
-            "status": "healthy",
-            "database": "connected"
-        }
-    except Exception as e:
-        logger.error(f"Database health check failed: {str(e)}")
-        return {
-            "status": "unhealthy",
-            "database": "disconnected",
-            "error": str(e)
-        }
+# @app.get("/health/db")
+# async def database_health_check() -> Dict[str, Any]:
+#     """Database health check endpoint."""
+#     try:
+#         # Test database connection
+#         async with engine.begin() as conn:
+#             await conn.execute("SELECT 1")
+#         return {
+#             "status": "healthy",
+#             "database": "connected"
+#         }
+#     except Exception as e:
+#         logger.error(f"Database health check failed: {str(e)}")
+#         return {
+#             "status": "unhealthy",
+#             "database": "disconnected",
+#             "error": str(e)
+#         }
 
 
-@app.get("/health/services")
-async def services_health_check() -> Dict[str, Any]:
-    """External services health check endpoint."""
-    services_status = {
-        "email_service": "unknown",
-        "sms_service": "unknown",
-        "tts_service": "unknown"
-    }
+# @app.get("/health/services")
+# async def services_health_check() -> Dict[str, Any]:
+#     """External services health check endpoint."""
+#     services_status = {
+#         "email_service": "unknown",
+#         "sms_service": "unknown",
+#         "tts_service": "unknown"
+#     }
     
-    # Add service health checks here
-    # This is a placeholder for actual service health checks
+#     # Add service health checks here
+#     # This is a placeholder for actual service health checks
     
-    return {
-        "status": "healthy",
-        "services": services_status
-    }
+#     return {
+#         "status": "healthy",
+#         "services": services_status
+#     }
 
 
 # Include API routers
