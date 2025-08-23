@@ -1,32 +1,103 @@
-"""
-Brain Coach API endpoints.
-
-Handles brain training and cognitive exercises.
-"""
-
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from typing import List
 from core.database import get_db
-from core.security import get_current_active_user
-from models.user import User
+from schemas.brain_coach import BrainCoachQuestionRead, BrainCoachQuestionCreate
+from repositories.brain_coach import BrainCoachQuestionRepository
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-
-@router.get("/sessions")
-async def get_brain_sessions(
-    current_user: User = Depends(get_current_active_user),
+@router.get("/get-questions", response_model=List[BrainCoachQuestionRead])
+async def get_questions_by_tier_and_session(
+    user_id: int,
+    tier: int,
+    limit: int = 7,
     db: AsyncSession = Depends(get_db)
 ):
-    """Get brain training sessions."""
-    return {"message": "Brain coach sessions endpoint - to be implemented"}
+    try:
+
+        #FUTURE UPDATE FOR DYNAMIC SESSION VALIDATION
 
 
-@router.post("/sessions")
-async def create_brain_session(
-    current_user: User = Depends(get_current_active_user),
+
+
+        repo = BrainCoachQuestionRepository(db)
+        questions = await repo.get_questions_by_tier_and_session(tier, 1, limit)
+
+        if not questions:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"No questions found for tier {tier} and session {session}"
+            )
+
+        return questions
+
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+
+    except Exception as e:
+        logger.exception(f"Unexpected error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
+
+@router.post("/create-question", response_model=BrainCoachQuestionRead, status_code=status.HTTP_201_CREATED)
+async def create_question(
+    question_data: BrainCoachQuestionCreate,
     db: AsyncSession = Depends(get_db)
 ):
-    """Create brain training session."""
-    return {"message": "Brain session creation - to be implemented"} 
+    try:
+        repo = BrainCoachQuestionRepository(db)
+        created_question = await repo.create_question(question_data)
+        return created_question
+
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+
+    except Exception as e:
+        logger.exception(f"Unexpected error creating question: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
+
+@router.get("/get-random-question", response_model=BrainCoachQuestionRead)
+async def get_random_question_by_tier_and_session(
+    tier: int,
+    session: int,
+    db: AsyncSession = Depends(get_db)
+):
+    try:
+        repo = BrainCoachQuestionRepository(db)
+        question = await repo.get_random_question_by_tier_and_session(tier, session)
+
+        if question is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"No question found for tier {tier} and session {session}"
+            )
+
+        return question
+
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+
+    except Exception as e:
+        logger.exception(f"Unexpected error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
