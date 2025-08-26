@@ -40,6 +40,8 @@ class LongTermCondition(Base):
     name = Column(SQLEnum(LongTermConditionEnum), unique=True, nullable=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
+    user = relationship("User", back_populates="long_term_conditions")
+
 
 # class HealthCare(Base):
 #     """HealthCare model for health and care records."""

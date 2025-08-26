@@ -31,9 +31,10 @@ class BrainCoachResponses(Base):
     __tablename__ = "brain_coach_responses"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)  # Foreign key to User
+    session_id = Column(String(20), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)  # Foreign key to User TODO make this false in production
     question_id = Column(Integer, ForeignKey("brain_coach_questions.id"), nullable=False)  # Foreign key to BrainCoachQuestions
-    user_answer = Column(String, nullable=False)  # User's answer to the question
+    user_answer = Column(String(100), nullable=False)  # User's answer to the question
     score = Column(Integer, nullable=False)  # Score achieved for the answer
     created = Column(DateTime(timezone=True), server_default=func.now())  # Timestamp of the response
 
