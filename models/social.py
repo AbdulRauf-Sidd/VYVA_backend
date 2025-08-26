@@ -53,6 +53,8 @@ class TopicOfInterest(Base):
     name = Column(SQLEnum(TopicEnum), nullable=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
+    user = relationship("User", back_populates="topics_of_interest")
+
 
 class Activity(Base):
     __tablename__ = "activities"
@@ -60,6 +62,8 @@ class Activity(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(SQLEnum(ActivityEnum), nullable=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    user = relationship("User", back_populates="preferred_activities")
 
 
 # class Social(Base):

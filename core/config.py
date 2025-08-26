@@ -74,6 +74,10 @@ class Settings(BaseSettings):
         default="https://api.elevenlabs.io",
         env="ELEVENLABS_BASE_URL"
     )
+    ELEVENLABS_HEADER_KEY: str = Field(
+        # default="https://api.elevenlabs.io",
+        env="ELEVENLABS_HEADER_KEY"
+    )
     
     # Sentry (Optional)
     SENTRY_DSN: Optional[str] = Field(default=None, env="SENTRY_DSN")

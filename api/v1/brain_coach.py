@@ -5,14 +5,15 @@ from core.database import get_db
 from schemas.brain_coach import BrainCoachQuestionRead, BrainCoachQuestionCreate
 from repositories.brain_coach import BrainCoachQuestionRepository
 import logging
+import uuid
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-@router.get("/get-questions", response_model=List[BrainCoachQuestionRead])
+@router.get("/get-questions", status_code=status.HTTP_200_OK)
 async def get_questions_by_tier_and_session(
-    user_id: int,
+    user_id: str,
     tier: int,
     limit: int = 7,
     db: AsyncSession = Depends(get_db)
@@ -21,19 +22,23 @@ async def get_questions_by_tier_and_session(
 
         #FUTURE UPDATE FOR DYNAMIC SESSION VALIDATION
 
-
+        print(type(tier))
 
 
         repo = BrainCoachQuestionRepository(db)
-        questions = await repo.get_questions_by_tier_and_session(tier, 1, limit)
+        questions = await repo.get_questions_by_tier_and_session(int(tier), 1, limit)
 
         if not questions:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"No questions found for tier {tier} and session {session}"
+                detail=f"No questions found for tier {tier}"
             )
 
-        return questions
+        random_string = str(uuid.uuid4()).replace("-", "")[:15]
+
+        
+
+        return {"session_id": random_string, "questions": questions}
 
     except ValueError as e:
         raise HTTPException(

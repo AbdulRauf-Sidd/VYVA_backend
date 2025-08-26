@@ -1,5 +1,6 @@
 # repositories/brain_coach_questions.py
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import select
 import logging
 from fastapi_cache.decorator import cache
 from core.database import get_db
@@ -13,7 +14,7 @@ class BrainCoachQuestionRepository:
         self.db_session = db_session
 
 
-    @cache(expire=300)
+    # @cache(expire=300)
     async def get_questions_by_tier_and_session(self, tier: int, session: int, limit: int = 7):
         print(0)
         try:
