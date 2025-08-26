@@ -5,22 +5,20 @@ Contains all database models organized by module.
 """
 
 from .user import User
-from .profile import Profile
-from .health_care import HealthCare
-from .social import Social
+# from .profile import Profile
+from .health_care import LongTermCondition
+from .social import Activity, TopicOfInterest
 from .brain_coach import *
 from .medication import Medication
-from .fall_detection import FallDetection
-from .emergency import EmergencyContact
+# from .fall_detection import FallDetection
+# from .emergency import EmergencyContact
 
 __all__ = [
     "User",
-    "Profile", 
-    "HealthCare",
-    "Social",
+    "Activity",
+    "TopicOfInterest",
     "BrainCoachQuestions",
     "BrainCoachResponses",
     "Medication",
-    "FallDetection",
-    "EmergencyContact",
+    "LongTermCondition",
 ] 

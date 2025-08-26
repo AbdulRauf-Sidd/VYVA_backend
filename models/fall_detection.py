@@ -9,12 +9,12 @@ from sqlalchemy.sql import func
 from core.database import Base
 
 
-class FallDetection(Base):
-    """FallDetection model for fall detection and safety monitoring."""
+# class FallDetection(Base):
+#     """FallDetection model for fall detection and safety monitoring."""
     
-    __tablename__ = "fall_detection"
+#     __tablename__ = "fall_detection"
     
-    id = Column(Integer, primary_key=True, index=True)
+#     id = Column(Integer, primary_key=True, index=True)
     # user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     
     # # Fall Event Details
