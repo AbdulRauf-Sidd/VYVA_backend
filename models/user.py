@@ -56,6 +56,35 @@ class RegularSafetyCheckInsEnum(str, PyEnum):
     TWICE_DAILY = "Twice Daily"
     # CUSTOM = "Custom" // Ask
 
+
+#Social & Companion
+
+class FaithTraditionEnum(str, PyEnum):
+    CHRISTIANITY = "Christianity"
+    ISLAM = "Islam"
+    JUDAISM = "Judaism"
+    HINDUISM = "Hinduism"
+    BUDDHISM = "Buddhism"
+    OTHER = "Other"
+    PREFER_NOT_TO_SAY = "Prefer not to say"
+
+class PreferredCheckInTimeEnum(str, PyEnum):
+    EARLY_MORNING = "Early Morning (6–9 AM)"
+    LATE_MORNING = "Late Morning"
+    EARLY_AFTERNOON = "Early Afternoon"
+    LATE_AFTERNOON = "Late Afternoon"
+    EVENING = "Evening"
+    NIGHT = "Night"
+
+class CheckInFrequencyEnum(str, PyEnum):
+    MULTIPLE_PER_DAY = "Multiple per day"
+    DAILY = "Daily"
+    SEVERAL_PER_WEEK = "Several per week"
+    WEEKLY = "Weekly"
+    EMERGENCIES_ONLY = "Emergencies only"
+    WEEKENDS_ONLY = "Weekends only"
+    HOLIDAYS = "Holidays/special occasions"
+
 #-------------------------------------------------------
 
 class User(Base):
@@ -72,6 +101,22 @@ class User(Base):
     age = Column(Integer, nullable=True)
     living_situation = Column(SQLEnum(LivingSituation), nullable=True)
     # date_of_birth = Column(DateTime, nullable=True)
+
+
+    #Health and Care
+    long_term_conditions = relationship("LongTermCondition", back_populates="user", cascade="all, delete-orphan")
+
+
+    #Social Companion
+    social_check_ins = Column(Boolean, nullable=True)
+    faith_tradition = Column(SQLEnum(FaithTraditionEnum), nullable=True)
+    local_event_recommendations = Column(Boolean, nullable=True)
+    preferred_check_in_time = Column(SQLEnum(PreferredCheckInTimeEnum), nullable=True)
+    check_in_frequency = Column(SQLEnum(CheckInFrequencyEnum), nullable=True)
+    topics_of_interest = relationship("TopicOfInterest", back_populates="user", cascade="all, delete-orphan")
+    preferred_activities = relationship("Activity", back_populates="user", cascade="all, delete-orphan")
+
+
 
     #Medications
     wants_caretaker_alerts = Column(Boolean, nullable=True)

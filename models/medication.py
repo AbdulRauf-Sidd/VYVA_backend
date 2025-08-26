@@ -11,39 +11,37 @@ from core.database import Base
 
 from enum import Enum
 
-class LongTermConditionEnum(str, Enum):
-    DIABETES = "Diabetes"
-    HEART_DISEASE = "Heart Disease"
-    HYPERTENSION = "Hypertension"
-    HIGH_CHOLESTEROL = "High Cholesterol"
-    STROKE = "Stroke"
-    ARTHRITIS = "Arthritis"
-    OSTEOPOROSIS = "Osteoporosis"
-    RESPIRATORY_DISEASE = "Respiratory Disease"
-    CANCER = "Cancer"
-    KIDNEY_DISEASE = "Kidney Disease"
-    LIVER_DISEASE = "Liver Disease"
-    ALZHEIMERS = "Alzheimer’s"
-    DEMENTIA = "Dementia"
-    PARKINSONS = "Parkinson’s"
-    ANXIETY = "Anxiety"
-    DEPRESSION = "Depression"
-    VISION_PROBLEMS = "Vision Problems"
-    HEARING_LOSS = "Hearing Loss"
-    CHRONIC_PAIN = "Chronic Pain"
-    MOBILITY_IMPAIRMENT = "Mobility Impairment"
-    OTHER = "Other"
+# class LongTermConditionEnum(str, Enum):
+#     DIABETES = "Diabetes"
+#     HEART_DISEASE = "Heart Disease"
+#     HYPERTENSION = "Hypertension"
+#     HIGH_CHOLESTEROL = "High Cholesterol"
+#     STROKE = "Stroke"
+#     ARTHRITIS = "Arthritis"
+#     OSTEOPOROSIS = "Osteoporosis"
+#     RESPIRATORY_DISEASE = "Respiratory Disease"
+#     CANCER = "Cancer"
+#     KIDNEY_DISEASE = "Kidney Disease"
+#     LIVER_DISEASE = "Liver Disease"
+#     ALZHEIMERS = "Alzheimer’s"
+#     DEMENTIA = "Dementia"
+#     PARKINSONS = "Parkinson’s"
+#     ANXIETY = "Anxiety"
+#     DEPRESSION = "Depression"
+#     VISION_PROBLEMS = "Vision Problems"
+#     HEARING_LOSS = "Hearing Loss"
+#     CHRONIC_PAIN = "Chronic Pain"
+#     MOBILITY_IMPAIRMENT = "Mobility Impairment"
+#     OTHER = "Other"
 
 
-class LongTermCondition(Base):
-    __tablename__ = "long_term_conditions"
+# class LongTermCondition(Base):
+#     __tablename__ = "long_term_conditions"
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(SQLEnum(LongTermConditionEnum), unique=True, nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+#     id = Column(Integer, primary_key=True, index=True)
+#     name = Column(SQLEnum(LongTermConditionEnum), unique=True, nullable=False)
+#     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     
-
-
 
 class Medication(Base):
     """Medication model for medication management."""

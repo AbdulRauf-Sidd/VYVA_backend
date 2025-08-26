@@ -9,12 +9,12 @@ from sqlalchemy.sql import func
 from core.database import Base
 
 
-class EmergencyContact(Base):
-    """EmergencyContact model for emergency contact management."""
+# class EmergencyContact(Base):
+#     """EmergencyContact model for emergency contact management."""
     
-    __tablename__ = "emergency_contacts"
+#     __tablename__ = "emergency_contacts"
     
-    id = Column(Integer, primary_key=True, index=True)
+#     id = Column(Integer, primary_key=True, index=True)
     # user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     
     # # Contact Information

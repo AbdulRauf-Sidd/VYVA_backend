@@ -2,19 +2,72 @@
 Social model for social features and connections.
 """
 
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from core.database import Base
 
 
-class Social(Base):
-    """Social model for social features and connections."""
-    
-    __tablename__ = "social"
-    
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
+
+
+from enum import Enum as PyEnum
+
+class TopicEnum(PyEnum):
+    NEWS = "News"
+    MUSIC = "Music"
+    COOKING = "Cooking"
+    SPORTS = "Sports"
+    GARDENING = "Gardening"
+    READING = "Reading"
+    HISTORY = "History"
+    TECH = "Tech"
+    TRAVEL = "Travel"
+    MOVIES = "Movies"
+    ARTS = "Arts"
+    PETS = "Pets"
+    FAMILY = "Family"
+    WELLNESS = "Wellness"
+    OTHER = "Other"
+
+
+class ActivityEnum(PyEnum):
+    MUSIC = "Music"
+    BRAIN_GAMES = "Brain Games"
+    STORYTELLING = "Storytelling"
+    RELAXATION = "Relaxation"
+    LEARNING = "Learning"
+    RECIPES = "Recipes"
+    EXERCISE = "Exercise"
+    NEUTRAL_INSPIRATION = "Neutral Inspiration"
+    FAITH_BASED_INSPIRATION = "Faith-based Inspiration"
+    OTHER = "Other"
+
+
+class TopicOfInterest(Base):
+    __tablename__ = "TopicOfInterest"
+
     id = Column(Integer, primary_key=True, index=True)
+    name = Column(SQLEnum(TopicEnum), nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+
+class Activity(Base):
+    __tablename__ = "activities"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(SQLEnum(ActivityEnum), nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+
+# class Social(Base):
+#     """Social model for social features and connections."""
+    
+#     __tablename__ = "social"
+    
+#     id = Column(Integer, primary_key=True, index=True)
     # user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     
     # # Social Connection
