@@ -106,4 +106,3 @@ cython_debug/
 nginx.conf
 gunicorn.conf.py
 
-alembic.ini

@@ -1,8 +1,8 @@
-"""added social scheme
+"""initial_migration
 
-Revision ID: bc7d67649d0a
+Revision ID: 460ff5ab1d43
 Revises: 
-Create Date: 2025-08-26 11:49:15.905274
+Create Date: 2025-08-28 08:07:28.602481+00:00
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'bc7d67649d0a'
+revision = '460ff5ab1d43'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -107,9 +107,10 @@ def upgrade() -> None:
     op.create_index(op.f('ix_activities_id'), 'activities', ['id'], unique=False)
     op.create_table('brain_coach_responses',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('session_id', sa.String(length=20), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('question_id', sa.Integer(), nullable=False),
-    sa.Column('user_answer', sa.String(), nullable=False),
+    sa.Column('user_answer', sa.String(length=100), nullable=False),
     sa.Column('score', sa.Integer(), nullable=False),
     sa.Column('created', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.ForeignKeyConstraint(['question_id'], ['brain_coach_questions.id'], ),
