@@ -3,6 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import select
 import logging
 from fastapi_cache.decorator import cache
+from typing import Optional
 from core.database import get_db
 from schemas.brain_coach import BrainCoachQuestionCreate, BrainCoachQuestionRead, BrainCoachResponseBase, BrainCoachResponseRead, BrainCoachResponseCreate
 from models.brain_coach import BrainCoachQuestions, BrainCoachResponses
@@ -89,8 +90,8 @@ class BrainCoachQuestionRepository:
 
 
 class BrainCoachResponseRepository:
-    def __init__(self, db: AsyncSession):
-        self.db = db
+    def __init__(self, db_session: get_db):
+        self.db_session = db_session
 
     async def create_response(
         self, response_data: BrainCoachResponseCreate
