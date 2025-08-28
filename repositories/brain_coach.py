@@ -4,8 +4,8 @@ from sqlalchemy import select
 import logging
 from fastapi_cache.decorator import cache
 from core.database import get_db
-from schemas.brain_coach import BrainCoachQuestionCreate, BrainCoachQuestionRead
-from models.brain_coach import BrainCoachQuestions
+from schemas.brain_coach import BrainCoachQuestionCreate, BrainCoachQuestionRead, BrainCoachResponseBase, BrainCoachResponseRead, BrainCoachResponseCreate
+from models.brain_coach import BrainCoachQuestions, BrainCoachResponses
 
 logger = logging.getLogger(__name__)
 
@@ -85,3 +85,31 @@ class BrainCoachQuestionRepository:
         except Exception as e:
             logger.exception(f"Unexpected repository error: {str(e)}")
             raise
+
+
+
+class BrainCoachResponseRepository:
+    def __init__(self, db: AsyncSession):
+        self.db = db
+
+    async def create_response(
+        self, response_data: BrainCoachResponseCreate
+    ) -> BrainCoachResponseRead:
+        """Create a new brain coach response"""
+        new_response = BrainCoachResponses(**response_data.model_dump())
+        self.db.add(new_response)
+        await self.db.commit()
+        await self.db.refresh(new_response)
+        return BrainCoachResponseRead.model_validate(new_response)
+
+    async def get_response_by_id(
+        self, response_id: int
+    ) -> Optional[BrainCoachResponseRead]:
+        """Get a response by its ID"""
+        query = select(BrainCoachResponses).where(BrainCoachResponses.id == response_id)
+        result = await self.db.execute(query)
+        response = result.scalar_one_or_none()
+
+        if response:
+            return BrainCoachResponseRead.model_validate(response)
+        return None

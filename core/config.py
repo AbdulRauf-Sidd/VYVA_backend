@@ -62,6 +62,14 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: Optional[str] = Field(default=None, env="SMTP_PASSWORD")
     SMTP_TLS: bool = Field(default=True, env="SMTP_TLS")
     SMTP_SSL: bool = Field(default=False, env="SMTP_SSL")
+
+    MAILGUN_API_URL: str = Field(
+        env="MAILGUN_API_URL"
+    )
+
+    MAILGUN_API_KEY: str = Field(
+        env="MAILGUN_API_KEY"
+    )
     
     # SMS Configuration (Twilio)
     TWILIO_ACCOUNT_SID: Optional[str] = Field(default=None, env="TWILIO_ACCOUNT_SID")

@@ -27,7 +27,8 @@ class BrainCoachQuestionRead(BaseModel):
 
 
 class BrainCoachResponseBase(BaseModel):
-    user_id: int
+    session_id: str
+    user_id: Optional[int] = None  # Optional in development
     question_id: int
     user_answer: str
     score: int
