@@ -31,12 +31,27 @@ class Settings(BaseSettings):
         default=["*"],
         env="ALLOWED_HOSTS"
     )
+
+    DATABASE_URL: Optional[str] = Field(default=None, env="DATABASE_URL")
+    PRODUCTION_DATABASE_URL: Optional[str] = Field(default=None, env="PRODUCTION_DATABASE_URL")
+
+
+    @property
+    def database_url(self) -> str:
+        if self.ENV == "development":
+            return self.DATABASE_URL or ""
+        return self.PRODUCTION_DATABASE_URL or ""    
     
-    # Database
-    DATABASE_URL: str = Field(
-        default="postgresql+asyncpg://user:password@localhost/vyva_db",
-        env="DATABASE_URL"
-    )
+    # # Database
+    # if ENV == 'development':
+    #     DATABASE_URL: str = Field(
+    #         env="DATABASE_URL"
+    #     )
+    # else:
+    #     DATABASE_URL: str = Field(
+    #         env="PRODUCTION_DATABASE_URL"
+    #     )
+        
     DATABASE_POOL_SIZE: int = Field(default=10, env="DATABASE_POOL_SIZE")
     DATABASE_MAX_OVERFLOW: int = Field(default=20, env="DATABASE_MAX_OVERFLOW")
     

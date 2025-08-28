@@ -1,6 +1,7 @@
 from datetime import datetime
 from pydantic import ConfigDict
 from pydantic import BaseModel
+from typing import Optional
 
 class BrainCoachQuestionBase(BaseModel):
     session: int
