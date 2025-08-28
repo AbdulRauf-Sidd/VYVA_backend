@@ -38,6 +38,7 @@ class Settings(BaseSettings):
 
     @property
     def database_url(self) -> str:
+        print('hi')
         if self.ENV == "development":
             return self.DATABASE_URL or ""
         return self.PRODUCTION_DATABASE_URL or ""    

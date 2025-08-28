@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the base URL
-URL="http://localhost:8000/api/v1/brain-coach/create-question"
+URL="https://https://vyva-backend.onrender.com/api/v1/brain-coach/create-question"
 
 # Define an array of JSON payloads for each row
 JSON_PAYLOADS=(
