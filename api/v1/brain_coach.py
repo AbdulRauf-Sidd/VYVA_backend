@@ -6,6 +6,8 @@ from schemas.brain_coach import BrainCoachQuestionRead, BrainCoachQuestionCreate
 from repositories.brain_coach import BrainCoachQuestionRepository
 import logging
 import uuid
+from repositories.user import UserRepository
+from schemas.user import UserCreate
 
 logger = logging.getLogger(__name__)
 
@@ -36,9 +38,18 @@ async def get_questions_by_tier_and_session(
 
         random_string = str(uuid.uuid4()).replace("-", "")[:15]
 
+        empty_user_data = UserCreate(
+            email=None,  # Email can be set later
+            first_name=None,
+            last_name=None,
+            # All other fields will use their default None values
+        )
         
+        repo = UserRepository(db)
+        user = await repo.create_user(empty_user_data)
 
-        return {"session_id": random_string, "questions": questions}
+        
+        return {"session_id": random_string, user_id: user, "questions": questions}
 
     except ValueError as e:
         raise HTTPException(

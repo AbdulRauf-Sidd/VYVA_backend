@@ -1,69 +1,327 @@
-"""
-Users API endpoints.
-
-Handles user management operations.
-"""
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from typing import List, Optional
 
 from core.database import get_db
-from core.security import get_current_active_user
-from models.user import User
-from repositories.user_repository import UserRepository
-# from schemas.user import UserResponse, UserUpdate
-# from schemas.common import PaginatedResponse, PaginationParams
+from schemas.user import UserCreate, UserRead, UserUpdate
+from repositories.user import UserRepository
 
 router = APIRouter()
 
-
-# @router.get("/me", response_model=UserResponse)
-# async def get_current_user(
-#     current_user: User = Depends(get_current_active_user)
-# ) -> UserResponse:
-#     """Get current user information."""
-#     return UserResponse.from_orm(current_user)
-
-
-# @router.put("/me", response_model=UserResponse)
-# async def update_current_user(
-#     user_update: UserUpdate,
-#     current_user: User = Depends(get_current_active_user),
-#     db: AsyncSession = Depends(get_db)
-# ) -> UserResponse:
-#     """Update current user information."""
-#     user_repo = UserRepository(db)
+@router.post(
+    "/users", 
+    response_model=UserRead, 
+    status_code=status.HTTP_201_CREATED,
+    summary="Create a new user",
+    description="Create a new user with the provided details"
+)
+async def create_user(
+    user: UserCreate, 
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Create a new user.
     
-#     # Update user fields
-#     for field, value in user_update.dict(exclude_unset=True).items():
-#         setattr(current_user, field, value)
-    
-#     updated_user = await user_repo.update_user(current_user)
-#     return UserResponse.from_orm(updated_user)
+    - **email**: User's email address (required, must be unique)
+    - **first_name**: User's first name (optional)
+    - **last_name**: User's last name (optional)
+    - **phone_number**: User's phone number (optional)
+    - **age**: User's age (optional)
+    - **living_situation**: User's living situation (optional)
+    """
+    repo = UserRepository(db)
+    try:
+        # Check if user already exists
+        existing_user = await repo.get_user_by_email(user.email)
+        if existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User with this email already exists"
+            )
+        
+        return await repo.create_user(user)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to create user: {str(e)}"
+        )
 
+@router.get(
+    "/{user_id}", 
+    response_model=UserRead,
+    summary="Get user by ID",
+    description="Retrieve a user by their unique ID"
+)
+async def get_user(
+    user_id: int, 
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Get a user by ID.
+    
+    - **user_id**: The unique identifier of the user
+    """
+    repo = UserRepository(db)
+    try:
+        user = await repo.get_user_by_id(user_id)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User with ID {user_id} not found"
+            )
+        return user
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve user: {str(e)}"
+        )
 
-# @router.get("/", response_model=PaginatedResponse)
-# async def get_users(
-#     pagination: PaginationParams = Depends(),
-#     current_user: User = Depends(get_current_active_user),
-#     db: AsyncSession = Depends(get_db)
-# ) -> PaginatedResponse:
-#     """Get paginated list of users (admin only)."""
-#     if not current_user.is_superuser:
-#         raise HTTPException(
-#             status_code=status.HTTP_403_FORBIDDEN,
-#             detail="Superuser privileges required"
-#         )
+@router.get(
+    "/email/{email}", 
+    response_model=UserRead,
+    summary="Get user by email",
+    description="Retrieve a user by their email address"
+)
+async def get_user_by_email(
+    email: str, 
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Get a user by email.
     
-#     user_repo = UserRepository(db)
-#     skip = (pagination.page - 1) * pagination.size
+    - **email**: The email address of the user
+    """
+    repo = UserRepository(db)
+    try:
+        user = await repo.get_user_by_email(email)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User with email {email} not found"
+            )
+        return user
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve user: {str(e)}"
+        )
+
+@router.get(
+    "/", 
+    response_model=List[UserRead],
+    summary="Get all users",
+    description="Retrieve a list of all users with pagination support"
+)
+async def get_all_users(
+    skip: int = 0, 
+    limit: int = 100, 
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Get all users with pagination.
     
-#     users = await user_repo.get_multi(skip=skip, limit=pagination.size)
-#     total = await user_repo.count()
+    - **skip**: Number of records to skip (for pagination)
+    - **limit**: Maximum number of records to return (max 100)
+    """
+    repo = UserRepository(db)
+    try:
+        if limit > 100:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Limit cannot exceed 100"
+            )
+        if skip < 0 or limit < 1:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Skip must be >= 0 and limit must be >= 1"
+            )
+        
+        return await repo.get_all_users(skip, limit)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve users: {str(e)}"
+        )
+
+@router.put(
+    "/{user_id}", 
+    response_model=UserRead,
+    summary="Update user",
+    description="Update an existing user's information"
+)
+async def update_user(
+    user_id: int, 
+    user_data: UserUpdate, 
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Update a user's information.
     
-#     return PaginatedResponse.create(
-#         items=[UserResponse.from_orm(user) for user in users],
-#         total=total,
-#         page=pagination.page,
-#         size=pagination.size
-#     ) 
+    - **user_id**: The unique identifier of the user to update
+    - **user_data**: The updated user data (only provided fields will be updated)
+    """
+    repo = UserRepository(db)
+    try:
+        # Check if user exists first
+        existing_user = await repo.get_user_by_id(user_id)
+        if not existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User with ID {user_id} not found"
+            )
+        
+        # Check if email is being updated and if it's already taken
+        if user_data.email:
+            user_with_email = await repo.get_user_by_email(user_data.email)
+            if user_with_email and user_with_email.id != user_id:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Email already in use by another user"
+                )
+        
+        updated_user = await repo.update_user(user_id, user_data)
+        if not updated_user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User with ID {user_id} not found after update"
+            )
+        
+        return updated_user
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to update user: {str(e)}"
+        )
+
+@router.delete(
+    "/{user_id}", 
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete user",
+    description="Permanently delete a user"
+)
+async def delete_user(
+    user_id: int, 
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Delete a user.
+    
+    - **user_id**: The unique identifier of the user to delete
+    """
+    repo = UserRepository(db)
+    try:
+        # Check if user exists first
+        existing_user = await repo.get_user_by_id(user_id)
+        if not existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User with ID {user_id} not found"
+            )
+        
+        success = await repo.delete_user(user_id)
+        if not success:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User with ID {user_id} not found for deletion"
+            )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to delete user: {str(e)}"
+        )
+
+@router.patch(
+    "/{user_id}/deactivate", 
+    response_model=UserRead,
+    summary="Deactivate user",
+    description="Deactivate a user (soft delete)"
+)
+async def deactivate_user(
+    user_id: int, 
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Deactivate a user (soft delete).
+    
+    - **user_id**: The unique identifier of the user to deactivate
+    """
+    repo = UserRepository(db)
+    try:
+        # Check if user exists first
+        existing_user = await repo.get_user_by_id(user_id)
+        if not existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User with ID {user_id} not found"
+            )
+        
+        # Update user to set is_active=False
+        updated_user = await repo.update_user(user_id, UserUpdate(is_active=False))
+        if not updated_user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User with ID {user_id} not found after deactivation"
+            )
+        
+        return updated_user
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to deactivate user: {str(e)}"
+        )
+
+@router.patch(
+    "/{user_id}/activate", 
+    response_model=UserRead,
+    summary="Activate user",
+    description="Activate a previously deactivated user"
+)
+async def activate_user(
+    user_id: int, 
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Activate a user.
+    
+    - **user_id**: The unique identifier of the user to activate
+    """
+    repo = UserRepository(db)
+    try:
+        # Check if user exists first
+        existing_user = await repo.get_user_by_id(user_id)
+        if not existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User with ID {user_id} not found"
+            )
+        
+        # Update user to set is_active=True
+        updated_user = await repo.update_user(user_id, UserUpdate(is_active=True))
+        if not updated_user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User with ID {user_id} not found after activation"
+            )
+        
+        return updated_user
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to activate user: {str(e)}"
+        )
