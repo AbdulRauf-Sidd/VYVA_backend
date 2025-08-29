@@ -96,7 +96,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     first_name = Column(String(100), nullable=True)
     last_name = Column(String(100), nullable=True)
-    email = Column(String(255), unique=True, index=True, nullable=False)
+    email = Column(String(255), index=True, nullable=True) #TODO make unique true
     phone_number = Column(String(20), nullable=True)
     age = Column(Integer, nullable=True)
     living_situation = Column(SQLEnum(LivingSituation), nullable=True)
