@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Optional, List
 import logging
-
+from sqlalchemy.orm import selectinload
 from models.user import User
 from schemas.user import UserCreate, UserUpdate, UserRead
 
@@ -18,8 +18,25 @@ class UserRepository:
             new_user = User(**user_data.model_dump())
             self.db_session.add(new_user)
             await self.db_session.commit()
+
+            # Refresh the user with eager loading of relationships
             await self.db_session.refresh(new_user)
-            return UserRead.model_validate(new_user)
+
+            # Now explicitly load the relationships to avoid greenlet error
+            query = (
+                select(User)
+                .where(User.id == new_user.id)
+                .options(
+                    selectinload(User.long_term_conditions),
+                    selectinload(User.topics_of_interest),
+                    selectinload(User.preferred_activities)
+                )
+            )
+            result = await self.db_session.execute(query)
+            user_with_relations = result.scalar_one()
+
+            return UserRead.model_validate(user_with_relations)
+
         except SQLAlchemyError as e:
             await self.db_session.rollback()
             logger.exception(f"Database error in create_user: {str(e)}")
@@ -31,10 +48,18 @@ class UserRepository:
 
     async def get_user_by_id(self, user_id: int) -> Optional[UserRead]:
         try:
-            query = select(User).where(User.id == user_id)
+            query = (
+                select(User)
+                .where(User.id == user_id)
+                .options(
+                    selectinload(User.long_term_conditions),
+                    selectinload(User.topics_of_interest),
+                    selectinload(User.preferred_activities)
+                )
+            )
             result = await self.db_session.execute(query)
             user = result.scalar_one_or_none()
-            
+
             if user:
                 return UserRead.model_validate(user)
             return None
@@ -47,10 +72,18 @@ class UserRepository:
 
     async def get_user_by_email(self, email: str) -> Optional[UserRead]:
         try:
-            query = select(User).where(User.email == email)
+            query = (
+                select(User)
+                .where(User.email == email)
+                .options(
+                    selectinload(User.long_term_conditions),
+                    selectinload(User.topics_of_interest),
+                    selectinload(User.preferred_activities)
+                )
+            )
             result = await self.db_session.execute(query)
             user = result.scalar_one_or_none()
-            
+
             if user:
                 return UserRead.model_validate(user)
             return None
@@ -63,10 +96,19 @@ class UserRepository:
 
     async def get_all_users(self, skip: int = 0, limit: int = 100) -> List[UserRead]:
         try:
-            query = select(User).offset(skip).limit(limit)
+            query = (
+                select(User)
+                .offset(skip)
+                .limit(limit)
+                .options(
+                    selectinload(User.long_term_conditions),
+                    selectinload(User.topics_of_interest),
+                    selectinload(User.preferred_activities)
+                )
+            )
             result = await self.db_session.execute(query)
             users = result.scalars().all()
-            
+
             return [UserRead.model_validate(user) for user in users]
         except SQLAlchemyError as e:
             logger.exception(f"Database error in get_all_users: {str(e)}")

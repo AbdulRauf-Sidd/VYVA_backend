@@ -49,7 +49,7 @@ async def get_questions_by_tier_and_session(
         user = await repo.create_user(empty_user_data)
 
         
-        return {"session_id": random_string, user_id: user, "questions": questions}
+        return {"session_id": random_string, "user_id": user.id, "questions": questions}
 
     except ValueError as e:
         raise HTTPException(
