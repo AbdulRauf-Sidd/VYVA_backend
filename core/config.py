@@ -18,6 +18,10 @@ class Settings(BaseSettings):
     DEBUG: bool = Field(default=True, env="DEBUG")
     LOG_LEVEL: str = Field(default="INFO", env="LOG_LEVEL")
     
+    # Logging Control
+    ENABLE_FILE_LOGGING: bool = Field(default=True, env="ENABLE_FILE_LOGGING")
+    ENABLE_REQUEST_LOGGING: bool = Field(default=True, env="ENABLE_REQUEST_LOGGING")
+    
     # Application
     APP_NAME: str = Field(default="Vyva Backend", env="APP_NAME")
     VERSION: str = Field(default="1.0.0", env="VERSION")
@@ -79,13 +83,9 @@ class Settings(BaseSettings):
     SMTP_TLS: bool = Field(default=True, env="SMTP_TLS")
     SMTP_SSL: bool = Field(default=False, env="SMTP_SSL")
 
-    MAILGUN_API_URL: str = Field(
-        env="MAILGUN_API_URL"
-    )
+    MAILGUN_API_URL: Optional[str] = Field(default=None, env="MAILGUN_API_URL")
 
-    MAILGUN_API_KEY: str = Field(
-        env="MAILGUN_API_KEY"
-    )
+    MAILGUN_API_KEY: Optional[str] = Field(default=None, env="MAILGUN_API_KEY")
     
     # SMS Configuration (Twilio)
     TWILIO_ACCOUNT_SID: Optional[str] = Field(default=None, env="TWILIO_ACCOUNT_SID")
@@ -98,8 +98,8 @@ class Settings(BaseSettings):
         default="https://api.elevenlabs.io",
         env="ELEVENLABS_BASE_URL"
     )
-    ELEVENLABS_HEADER_KEY: str = Field(
-        # default="https://api.elevenlabs.io",
+    ELEVENLABS_HEADER_KEY: Optional[str] = Field(
+        default="xi-api-key",
         env="ELEVENLABS_HEADER_KEY"
     )
     
