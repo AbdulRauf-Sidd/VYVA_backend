@@ -2,25 +2,34 @@
 BrainCoach model for brain training and cognitive exercises.
 """
 
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Float, Boolean
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Float, Boolean, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from core.database import Base
 
 
 class BrainCoachQuestions(Base):
-    """Model for storing brain coach questions and their metadata."""
-
     __tablename__ = "brain_coach_questions"
 
     id = Column(Integer, primary_key=True, index=True)
-    session = Column(Integer, nullable=False)  # Session number or identifier
-    tier = Column(Integer, nullable=False)  # Difficulty or complexity tier
-    question_type = Column(String(100), nullable=False)  # Type of question (e.g., "Memory", "Math", "Logic")
-    question = Column(Text, nullable=False)  # The question text
-    expected_answer = Column(Text, nullable=False)  # Expected answer or solution
-    scoring_logic = Column(Text, nullable=True)  # Logic or criteria for scoring
-    theme = Column(String(100), nullable=True)  # Theme or category of the question
+    session = Column(Integer, nullable=False)
+    tier = Column(Integer, nullable=False)
+    max_score = Column(Integer, nullable=True, default=1)
+
+class QuestionTranslations(Base):
+    __tablename__ = "question_translations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    question_id = Column(Integer, ForeignKey('brain_coach_questions.id'), nullable=False)
+    language = Column(String(20), nullable=False)  # 'en', 'es', 'fr', etc.
+    question_text = Column(Text, nullable=False)
+    expected_answer = Column(Text, nullable=False)
+    scoring_logic = Column(Text, nullable=True)
+    question_type = Column(String(100), nullable=False)
+    theme = Column(String(100), nullable=True)
+    
+    # Composite unique constraint
+    __table_args__ = (UniqueConstraint('question_id', 'language', name='uq_question_language'),)
 
 
 
