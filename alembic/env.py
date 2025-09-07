@@ -1,11 +1,15 @@
 """
 Alembic environment configuration.
 """
-
+import os;
+import sys;
+import asyncio
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
-from models import *
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+# Import all models to ensure they are registered with SQLAlchemy
+from models import Base
 from core.config import settings
 from core.database import Base
 
