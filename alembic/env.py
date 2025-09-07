@@ -1,7 +1,8 @@
 """
 Alembic environment configuration.
 """
-
+import os;
+import sys;
 import asyncio
 from logging.config import fileConfig
 from sqlalchemy import pool
@@ -9,9 +10,9 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
-
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 # Import all models to ensure they are registered with SQLAlchemy
-from models import *
+from models import Base
 from core.config import settings
 from core.database import Base
 
