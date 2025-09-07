@@ -10,6 +10,7 @@ from .health_care import LongTermCondition
 from .social import Activity, TopicOfInterest
 from .brain_coach import *
 from .medication import Medication
+from .symptom_checker import SymptomCheckerResponse
 # from .fall_detection import FallDetection
 # from .emergency import EmergencyContact
 
@@ -21,4 +22,5 @@ __all__ = [
     "BrainCoachResponses",
     "Medication",
     "LongTermCondition",
+    "SymptomCheckerResponse",
 ] 

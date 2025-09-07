@@ -5,10 +5,13 @@ A production-ready FastAPI backend for senior care applications.
 """
 
 import os
+import time
+import json
+import logging
 from contextlib import asynccontextmanager
 from typing import Dict, Any
 
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
@@ -18,7 +21,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from core.config import settings
 from core.logging import setup_logging
 from core.database import engine, Base
-from api.v1 import auth, users, profiles, health_care, social, brain_coach, medications, fall_detection, emergency, tts
+from api.v1 import auth, users, profiles, health_care, social, brain_coach, medications, fall_detection, emergency, tts, symptom_checker
 
 
 # Setup logging
@@ -57,7 +60,7 @@ app = FastAPI(
 # Add middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOWED_HOSTS,
+    allow_origins=["*"],  # Allow all origins for development
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -65,8 +68,10 @@ app.add_middleware(
 
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=settings.ALLOWED_HOSTS
+    allowed_hosts=["*"]  # Allow all hosts for development
 )
+
+# Request/response logging middleware removed to prevent body parsing issues
 
 
 # Exception handlers
@@ -160,6 +165,7 @@ app.include_router(medications.router, prefix="/api/v1/medications", tags=["Medi
 app.include_router(fall_detection.router, prefix="/api/v1/fall-detection", tags=["Fall Detection"])
 app.include_router(emergency.router, prefix="/api/v1/emergency", tags=["Emergency Contacts"])
 app.include_router(tts.router, prefix="/api/v1/tts", tags=["Text-to-Speech"])
+app.include_router(symptom_checker.router, prefix="/api/v1/symptoms", tags=["Symptoms Checker"])
 
 
 if __name__ == "__main__":
