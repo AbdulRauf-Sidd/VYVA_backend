@@ -119,6 +119,7 @@ class User(Base):
 
 
     #Medications
+    medications = relationship("Medication", back_populates="user", cascade="all, delete-orphan")
     wants_caretaker_alerts = Column(Boolean, nullable=True)
     wants_reminders = Column(Boolean, nullable=True)
     takes_medication = Column(Boolean, nullable=True)
