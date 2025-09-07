@@ -23,6 +23,12 @@ class SymptomCheckerResponse(Base):
     language = Column(String(10), nullable=True)
     model_type = Column(String(50), nullable=True)
     followup_count = Column(Integer, nullable=True)
+    # Enhanced symptom data
+    heart_rate = Column(String(20), nullable=True)
+    severity_scale = Column(String(20), nullable=True)
+    duration = Column(String(100), nullable=True)
+    respiratory_rate = Column(String(20), nullable=True)
+    additional_notes = Column(Text, nullable=True)
     
     # Response data
     email = Column(Text, nullable=True)  # Full response with HTML

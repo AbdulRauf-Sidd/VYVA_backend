@@ -25,6 +25,12 @@ class SymptomCheckRequest(BaseModel):
     language: Optional[str] = None
     model_type: Optional[str] = "pro"
     followup_count: Optional[int] = 2
+    # New optional fields for enhanced symptom analysis
+    heart_rate: Optional[str] = None
+    severity_scale: Optional[str] = None
+    duration: Optional[str] = None
+    respiratory_rate: Optional[str] = None
+    additional_notes: Optional[str] = None
     system_prompt: Optional[str] = (
         "Please provide all responses in simple, consumer-friendly language. Avoid medical jargon when possible, "
         "and when medical terms must be used, define them clearly. Keep answers concise, prioritize practical advice. "
@@ -43,6 +49,43 @@ class SendReportRequest(BaseModel):
 def _generate_id(length: int = 32) -> str:
     chars = string.ascii_letters + string.digits
     return "".join(random.choice(chars) for _ in range(length))
+
+
+def _formulate_symptom_query(payload: SymptomCheckRequest) -> str:
+    """
+    Formulate a comprehensive search query for MediSearch API using all available parameters.
+    """
+    query_parts = []
+    
+    # Start with main symptoms
+    query_parts.append(f"Symptoms: {payload.symptoms}")
+    
+    # Add severity scale if provided
+    if payload.severity_scale:
+        query_parts.append(f"with severity: {payload.severity_scale}")
+    
+    # Add duration if provided
+    if payload.duration:
+        query_parts.append(f"since: {payload.duration}")
+    
+    # Add vitals information if available
+    vitals_parts = []
+    if payload.heart_rate:
+        vitals_parts.append(f"heart rate: {payload.heart_rate} bpm")
+    if payload.respiratory_rate:
+        vitals_parts.append(f"respiratory rate: {payload.respiratory_rate} breaths/min")
+    
+    if vitals_parts:
+        query_parts.append(f"key current vitals information, {', '.join(vitals_parts)}")
+    
+    # Add additional notes if provided
+    if payload.additional_notes:
+        query_parts.append(f"Additional notes: {payload.additional_notes}")
+    
+    # Join all parts with periods and spaces
+    formulated_query = ". ".join(query_parts) + "."
+    
+    return formulated_query
 
 
 def _normalize_text(value: Optional[str]) -> str:
@@ -363,9 +406,13 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
     conversation_id = _generate_id()
     
     try:
-        # Call MediSearch API
+        # Formulate comprehensive search query
+        formulated_symptoms = _formulate_symptom_query(payload)
+        logger.info(f"Formulated query: {formulated_symptoms}")
+        
+        # Call MediSearch API with formulated query
         api_result = await _call_medisearch_api(
-            symptoms=payload.symptoms,
+            symptoms=formulated_symptoms,
             language=payload.language or "en",
             model_type=payload.model_type,
             system_prompt=payload.system_prompt,
@@ -382,6 +429,13 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
                 language=payload.language,
                 model_type=payload.model_type,
                 followup_count=payload.followup_count,
+                # Enhanced symptom data
+                heart_rate=payload.heart_rate,
+                severity_scale=payload.severity_scale,
+                duration=payload.duration,
+                respiratory_rate=payload.respiratory_rate,
+                additional_notes=payload.additional_notes,
+                # Response data
                 email="",
                 summary="",
                 breakdown={},
@@ -417,6 +471,13 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
             language=payload.language,
             model_type=payload.model_type,
             followup_count=payload.followup_count,
+            # Enhanced symptom data
+            heart_rate=payload.heart_rate,
+            severity_scale=payload.severity_scale,
+            duration=payload.duration,
+            respiratory_rate=payload.respiratory_rate,
+            additional_notes=payload.additional_notes,
+            # Response data
             email=email,
             summary=summary,
             breakdown=breakdown,
@@ -449,6 +510,13 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
                 language=payload.language,
                 model_type=payload.model_type,
                 followup_count=payload.followup_count,
+                # Enhanced symptom data
+                heart_rate=payload.heart_rate,
+                severity_scale=payload.severity_scale,
+                duration=payload.duration,
+                respiratory_rate=payload.respiratory_rate,
+                additional_notes=payload.additional_notes,
+                # Response data
                 email="",
                 summary="",
                 breakdown={},
@@ -565,9 +633,9 @@ def _prepare_report_content(response_record: SymptomCheckerResponse, payload: Se
         "user_id": response_record.full_name or "Unknown",  # Using full_name as user_id for now
         "custom_message": payload.custom_message,
         # Additional fields for email template
-        "duration": "Not specified",  # TODO: Add duration field to model if needed
-        "pain_level": "Not specified",  # TODO: Add pain_level field to model if needed
-        "additional_notes": "None"  # TODO: Add additional_notes field to model if needed
+        "duration": response_record.duration or "Not specified",
+        "pain_level": response_record.severity_scale or "Not specified",
+        "additional_notes": response_record.additional_notes or "None"
     }
     
     # Include breakdown if available
@@ -581,18 +649,17 @@ def _prepare_report_content(response_record: SymptomCheckerResponse, payload: Se
         if article_links:
             content["articles"] = [{"url": url, "reference": ref} for url, ref in article_links]
     
-    # Include vitals if available (placeholder for future implementation)
-    # TODO: Add vitals field to SymptomCheckerResponse model
+    # Include vitals if available
     content["vitals"] = {
         "heart_rate": {
-            "value": None,
+            "value": float(response_record.heart_rate) if response_record.heart_rate else None,
             "unit": "bpm",
-            "confidence": None
+            "confidence": None  # TODO: Add confidence field if needed
         },
         "respiratory_rate": {
-            "value": None,
+            "value": float(response_record.respiratory_rate) if response_record.respiratory_rate else None,
             "unit": "breaths/min",
-            "confidence": None
+            "confidence": None  # TODO: Add confidence field if needed
         }
     }
     
@@ -623,27 +690,19 @@ async def _send_email_report(recipient_email: str, report_content: Dict[str, Any
                 <div style="font-size: 12px; color: #d63384; margin: 5px 0;">
                     Value: {heart_rate_value} {heart_rate_unit}
                 </div>
-                <div style="font-size: 12px; color: #d63384;">
-                    Confidence: {heart_rate_confidence}%
-                </div>
             </div>
             <div class="symptom-item">
                 <div style="font-weight: bold; color: #2c5aa0;">🫁 Respiratory Rate</div>
                 <div style="font-size: 12px; color: #2c5aa0; margin: 5px 0;">
                     Value: {respiratory_rate_value} {respiratory_rate_unit}
                 </div>
-                <div style="font-size: 12px; color: #2c5aa0;">
-                    Confidence: {respiratory_rate_confidence}%
-                </div>
             </div>
         </div>
         """.format(
                 heart_rate_value=vitals.get('heart_rate', {}).get('value', '—'),
                 heart_rate_unit=vitals.get('heart_rate', {}).get('unit', 'bpm'),
-                heart_rate_confidence=f"{(vitals.get('heart_rate', {}).get('confidence', 0) * 100):.1f}" if vitals.get('heart_rate', {}).get('confidence') else "—",
                 respiratory_rate_value=vitals.get('respiratory_rate', {}).get('value', '—'),
-                respiratory_rate_unit=vitals.get('respiratory_rate', {}).get('unit', 'breaths/min'),
-                respiratory_rate_confidence=f"{(vitals.get('respiratory_rate', {}).get('confidence', 0) * 100):.1f}" if vitals.get('respiratory_rate', {}).get('confidence') else "—"
+                respiratory_rate_unit=vitals.get('respiratory_rate', {}).get('unit', 'breaths/min')
             )
         
         # Get additional symptom details if available
