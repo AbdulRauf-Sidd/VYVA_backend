@@ -1,44 +1,272 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from typing import List
 from core.database import get_db
-from schemas.brain_coach import BrainCoachQuestionRead, BrainCoachQuestionCreate
-from repositories.brain_coach import BrainCoachQuestionRepository
+from schemas.brain_coach import BrainCoachQuestionRead, BrainCoachQuestionCreate, BrainCoachResponseRead, BrainCoachResponseCreate, BrainCoachQuestionReadWithLanguage
+from repositories.brain_coach import BrainCoachQuestionRepository, BrainCoachResponseRepository
 import logging
 import uuid
+from repositories.user import UserRepository
+from schemas.user import UserCreate
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-@router.get("/get-questions", status_code=status.HTTP_200_OK)
-async def get_questions_by_tier_and_session(
-    user_id: str,
-    tier: int,
-    limit: int = 7,
+@router.post("/questions", response_model=BrainCoachQuestionRead, status_code=status.HTTP_201_CREATED)
+async def create_question_with_translations(
+    question_data: BrainCoachQuestionCreate,
     db: AsyncSession = Depends(get_db)
 ):
+    """Create a new question with translations"""
     try:
-
-        #FUTURE UPDATE FOR DYNAMIC SESSION VALIDATION
-
-        print(type(tier))
-
-
+        # Validate input data
+        if not question_data.translations:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="At least one translation is required"
+            )
+        
+        # Check for duplicate languages in the same request
+        languages = [t.language for t in question_data.translations]
+        if len(languages) != len(set(languages)):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Duplicate languages found in translations"
+            )
+        
+        # Validate language codes (basic validation)
+        valid_languages = {"en", "es", "fr", "de", "it", "pt", "ru", "zh", "ja", "ko"}
+        for translation in question_data.translations:
+            if translation.language not in valid_languages:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Invalid language code: {translation.language}. Valid codes are: {sorted(valid_languages)}"
+                )
+        
         repo = BrainCoachQuestionRepository(db)
-        questions = await repo.get_questions_by_tier_and_session(int(tier), 1, limit)
+        created_question = await repo.create_question_with_translations(question_data)
+        
+        if not created_question:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to create question"
+            )
+            
+        return created_question
+
+    except HTTPException:
+        # Re-raise HTTP exceptions so they propagate correctly
+        raise
+        
+    except ValueError as e:
+        # Handle validation errors from repository
+        logger.warning(f"Validation error creating question: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+        
+    except IntegrityError as e:
+        # Handle database integrity errors (duplicate keys, foreign key violations)
+        logger.error(f"Database integrity error creating question: {str(e)}")
+        await db.rollback()
+        
+        if "uq_question_language" in str(e).lower():
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="A translation for this language already exists for the question"
+            )
+        elif "foreign key" in str(e).lower():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid question reference"
+            )
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Database integrity error occurred"
+            )
+            
+    except SQLAlchemyError as e:
+        # Handle other SQLAlchemy errors
+        logger.error(f"Database error creating question: {str(e)}")
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Database error occurred while creating question"
+        )
+        
+    except Exception as e:
+        # Handle any other unexpected errors
+        logger.exception(f"Unexpected error creating question: {str(e)}")
+        await db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error occurred while creating question"
+        )
+
+@router.get("/questions/{question_id}", response_model=BrainCoachQuestionRead)
+async def get_question_by_id(
+    question_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    """Get a complete question with all translations by ID"""
+    try:
+        # Validate question_id parameter
+        if question_id <= 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Question ID must be a positive integer"
+            )
+        
+        repo = BrainCoachQuestionRepository(db)
+        question = await repo.get_question_by_id(question_id)
+        
+        if not question:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Question with ID {question_id} not found"
+            )
+            
+        return question
+
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
+        
+    except ValueError as e:
+        # Handle validation errors
+        logger.warning(f"Validation error retrieving question {question_id}: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+        
+    except SQLAlchemyError as e:
+        # Handle database errors
+        logger.error(f"Database error retrieving question {question_id}: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Database error occurred while retrieving question"
+        )
+        
+    except Exception as e:
+        # Handle any other unexpected errors
+        logger.exception(f"Unexpected error retrieving question {question_id}: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error occurred while retrieving question"
+        )
+
+@router.get("/questions")
+async def get_questions_by_filters(
+    user_id: str,
+    session: Optional[int] = None,
+    tier: Optional[int] = None,
+    question_type: Optional[str] = None,
+    language: str = "en",
+    db: AsyncSession = Depends(get_db)
+):
+    """Get questions with filters and specific language"""
+    try:
+        # Validate query parameters
+        if session is not None and session <= 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Session must be a positive integer if provided"
+            )
+        
+        if tier is not None and tier <= 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Tier must be a positive integer if provided"
+            )
+        
+        if question_type is not None and not question_type.strip():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Question type cannot be empty if provided"
+            )
+        
+        if not language.strip():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Language cannot be empty"
+            )
+        
+        repo = BrainCoachQuestionRepository(db)
+        questions = await repo.get_questions_by_filters(
+            session=session,
+            tier=tier,
+            question_type=question_type,
+            language=language
+        )
 
         if not questions:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"No questions found for tier {tier}"
+                detail="No questions found for the given criteria"
             )
 
         random_string = str(uuid.uuid4()).replace("-", "")[:15]
 
+        empty_user_data = UserCreate(
+            email=None,  # Email can be set later
+            first_name=None,
+            last_name=None,
+            # All other fields will use their default None values
+        )
         
+        repo = UserRepository(db)
+        user = await repo.create_user(empty_user_data)
 
-        return {"session_id": random_string, "questions": questions}
+        
+        return {"session_id": random_string, "user_id": user.id, "questions": questions}
+        
+        # return questions
+
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
+        
+    except ValueError as e:
+        # Handle validation errors
+        logger.warning(f"Validation error filtering questions: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+        
+    except SQLAlchemyError as e:
+        # Handle database errors
+        logger.error(f"Database error filtering questions: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Database error occurred while filtering questions"
+        )
+        
+    except Exception as e:
+        # Handle any other unexpected errors
+        logger.exception(f"Unexpected error filtering questions: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error occurred while filtering questions"
+        )
+
+
+@router.post("/user-responses", response_model=BrainCoachResponseRead, status_code=status.HTTP_201_CREATED)
+async def create_response(
+    response_data: BrainCoachResponseCreate,
+    db: AsyncSession = Depends(get_db)
+):
+    """Create a new brain coach response"""
+    try:
+        repo = BrainCoachResponseRepository(db)
+        created_response = await repo.create_response(response_data)
+        return created_response
 
     except ValueError as e:
         raise HTTPException(
@@ -47,61 +275,35 @@ async def get_questions_by_tier_and_session(
         )
 
     except Exception as e:
-        logger.exception(f"Unexpected error: {str(e)}")
+        logger.exception(f"Unexpected error creating response: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
         )
 
-@router.post("/create-question", response_model=BrainCoachQuestionRead, status_code=status.HTTP_201_CREATED)
-async def create_question(
-    question_data: BrainCoachQuestionCreate,
+@router.get("/user-responses/{user_id}", response_model=List[BrainCoachResponseRead])
+async def get_user_responses(
+    user_id: int,
+    session_id: Optional[str] = None,
     db: AsyncSession = Depends(get_db)
 ):
+    """Get all responses for a user, optionally filtered by session_id"""
     try:
-        repo = BrainCoachQuestionRepository(db)
-        created_question = await repo.create_question(question_data)
-        return created_question
-
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
-
-    except Exception as e:
-        logger.exception(f"Unexpected error creating question: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
-        )
-
-@router.get("/get-random-question", response_model=BrainCoachQuestionRead)
-async def get_random_question_by_tier_and_session(
-    tier: int,
-    session: int,
-    db: AsyncSession = Depends(get_db)
-):
-    try:
-        repo = BrainCoachQuestionRepository(db)
-        question = await repo.get_random_question_by_tier_and_session(tier, session)
-
-        if question is None:
+        repo = BrainCoachResponseRepository(db)
+        responses = await repo.get_responses_by_user_and_session(user_id, session_id)
+        
+        if not responses:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"No question found for tier {tier} and session {session}"
+                detail="No responses found for the given criteria"
             )
+            
+        return responses
 
-        return question
-
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
-
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.exception(f"Unexpected error: {str(e)}")
+        logger.exception(f"Unexpected error retrieving responses: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
