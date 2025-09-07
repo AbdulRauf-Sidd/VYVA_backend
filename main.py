@@ -18,7 +18,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from core.config import settings
 from core.logging import setup_logging
 from core.database import engine, Base
-from api.v1 import auth, users, profiles, health_care, social, brain_coach, medications, fall_detection, emergency, tts
+from api.v1 import auth, users, profiles, health_care, social, brain_coach, medications, fall_detection, emergency, tts, symptom_checker
 
 
 # Setup logging
@@ -160,7 +160,7 @@ app.include_router(medications.router, prefix="/api/v1/medications", tags=["Medi
 app.include_router(fall_detection.router, prefix="/api/v1/fall-detection", tags=["Fall Detection"])
 app.include_router(emergency.router, prefix="/api/v1/emergency", tags=["Emergency Contacts"])
 app.include_router(tts.router, prefix="/api/v1/tts", tags=["Text-to-Speech"])
-app.include_router(symptoms.router, prefix="/api/v1/symptoms", tags=["Symptoms Checker"])
+app.include_router(symptom_checker.router, prefix="/api/v1/symptoms", tags=["Symptoms Checker"])
 
 
 if __name__ == "__main__":
