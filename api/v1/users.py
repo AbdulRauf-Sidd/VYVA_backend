@@ -9,7 +9,7 @@ from repositories.user import UserRepository
 router = APIRouter()
 
 @router.post(
-    "/users", 
+    "/", 
     response_model=UserRead, 
     status_code=status.HTTP_201_CREATED,
     summary="Create a new user",
@@ -179,13 +179,13 @@ async def update_user(
             )
         
         # Check if email is being updated and if it's already taken
-        if user_data.email:
-            user_with_email = await repo.get_user_by_email(user_data.email)
-            if user_with_email and user_with_email.id != user_id:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Email already in use by another user"
-                )
+        # if user_data.email: TODO remove this after event
+        #     user_with_email = await repo.get_user_by_email(user_data.email)
+        #     if user_with_email and user_with_email.id != user_id:
+        #         raise HTTPException(
+        #             status_code=status.HTTP_400_BAD_REQUEST,
+        #             detail="Email already in use by another user"
+        #         )
         
         updated_user = await repo.update_user(user_id, user_data)
         if not updated_user:

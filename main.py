@@ -160,6 +160,7 @@ app.include_router(medications.router, prefix="/api/v1/medications", tags=["Medi
 app.include_router(fall_detection.router, prefix="/api/v1/fall-detection", tags=["Fall Detection"])
 app.include_router(emergency.router, prefix="/api/v1/emergency", tags=["Emergency Contacts"])
 app.include_router(tts.router, prefix="/api/v1/tts", tags=["Text-to-Speech"])
+app.include_router(symptoms.router, prefix="/api/v1/symptoms", tags=["Symptoms Checker"])
 
 
 if __name__ == "__main__":

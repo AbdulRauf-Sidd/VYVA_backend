@@ -1,29 +1,51 @@
+from pydantic import BaseModel, ConfigDict
+from typing import Optional, List
 from datetime import datetime
-from pydantic import ConfigDict
-from pydantic import BaseModel
-from typing import Optional
+
+# Base schemas
+class QuestionTranslationBase(BaseModel):
+    language: str
+    question_text: str
+    expected_answer: str
+    scoring_logic: Optional[str] = None
+    question_type: str
+    theme: Optional[str] = None
 
 class BrainCoachQuestionBase(BaseModel):
     session: int
     tier: int
-    question_type: str
-    question: str
-    expected_answer: str
-    scoring_logic: str
-    theme: str
+    max_score: Optional[int] = 1
+
+# Create schemas
+class QuestionTranslationCreate(QuestionTranslationBase):
+    question_id: int
 
 class BrainCoachQuestionCreate(BrainCoachQuestionBase):
-    pass
+    translations: List[QuestionTranslationBase]
 
-
-class BrainCoachQuestionRead(BaseModel):
+# Read schemas
+class QuestionTranslationRead(QuestionTranslationBase):
     id: int
-    question_type: str
-    question: str
-    expected_answer: str
-    scoring_logic: str
-    theme: str
+    question_id: int
+    
+    model_config = ConfigDict(from_attributes=True)
 
+class BrainCoachQuestionRead(BrainCoachQuestionBase):
+    id: int
+    translations: List[QuestionTranslationRead]
+    
+    model_config = ConfigDict(from_attributes=True)
+
+# For API responses with specific language
+class BrainCoachQuestionReadWithLanguage(BrainCoachQuestionBase):
+    id: int
+    question_text: str
+    expected_answer: str
+    scoring_logic: Optional[str] = None
+    question_type: str
+    theme: Optional[str] = None
+    language: str
+    
     model_config = ConfigDict(from_attributes=True)
 
 
