@@ -681,6 +681,8 @@ async def _send_email_report(recipient_email: str, report_content: Dict[str, Any
             report_content=report_content
         )
         
+        logger.info(f"Email service returned: {success} (type: {type(success)})")
+        
         if success:
             logger.info(f"Medical report sent successfully to {recipient_email}")
             return "email_sent"
