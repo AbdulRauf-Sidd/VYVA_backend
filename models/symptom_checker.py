@@ -25,8 +25,8 @@ class SymptomCheckerResponse(Base):
     followup_count = Column(Integer, nullable=True)
     # Enhanced symptom data
     heart_rate = Column(String(20), nullable=True)
-    severity_scale = Column(String(20), nullable=True)
-    duration = Column(String(100), nullable=True)
+    severity_scale = Column(String(500), nullable=True)  # Increased to handle complex severity descriptions
+    duration = Column(String(200), nullable=True)  # Increased to handle complex duration descriptions
     respiratory_rate = Column(String(20), nullable=True)
     additional_notes = Column(Text, nullable=True)
     
