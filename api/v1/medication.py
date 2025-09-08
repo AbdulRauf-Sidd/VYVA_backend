@@ -9,11 +9,13 @@ from schemas.medication import (
     MedicationCreate, 
     MedicationRead, 
     MedicationUpdate,
-    HTTPErrorResponse
+    # HTTPErrorResponse
 )
+
+
 from repositories.user import UserRepository
 
-# router = APIRouter(prefix="/users/{user_id}/medications", tags=["medications"])
+router = APIRouter()
 logger = logging.getLogger(__name__)
 
 # Common error responses
