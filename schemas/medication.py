@@ -35,20 +35,23 @@ class MedicationBase(BaseModel):
     side_effects: Optional[str] = None
     notes: Optional[str] = None
 
-    @validator('name', 'dosage', 'frequency')
-    def validate_required_fields(cls, v, field):
-        if not v or not v.strip():
-            raise ValueError(f"{field.name} cannot be empty")
-        return v.strip()
+    # @validator('name', 'dosage', 'frequency')
+    # def validate_required_fields(cls, v, field):
+    #     if not v or not v.strip():
+    #         raise ValueError(f"{field.name} cannot be empty")
+    #     return v.strip()
 
-    @validator('dosage')
-    def validate_dosage_format(cls, v):
-        if v and not any(char.isdigit() for char in v):
-            raise ValueError("Dosage should contain numeric values (e.g., '10mg', '1 tablet')")
-        return v
+    # @validator('dosage')
+    # def validate_dosage_format(cls, v):
+    #     if v and not any(char.isdigit() for char in v):
+    #         raise ValueError("Dosage should contain numeric values (e.g., '10mg', '1 tablet')")
+    #     return v
 
 class MedicationCreate(MedicationBase):
     times_of_day: Optional[List[MedicationTimeCreate]] = None
+
+class MedicationRead(MedicationBase):
+    pass
 
 class MedicationUpdate(BaseModel):
     name: Optional[str] = None
@@ -60,13 +63,13 @@ class MedicationUpdate(BaseModel):
     side_effects: Optional[str] = None
     notes: Optional[str] = None
 
-    @validator('name', 'dosage', 'frequency', pre=True, always=True)
-    def validate_optional_fields(cls, v, field):
-        if v is not None:
-            if not v or not v.strip():
-                raise ValueError(f"{field.name} cannot be empty if provided")
-            return v.strip()
-        return v
+    # @validator('name', 'dosage', 'frequency', pre=True, always=True)
+    # def validate_optional_fields(cls, v, field):
+    #     if v is not None:
+    #         if not v or not v.strip():
+    #             raise ValueError(f"{field.name} cannot be empty if provided")
+    #         return v.strip()
+    #     return v
 
 class MedicationInDB(MedicationBase):
     id: int
