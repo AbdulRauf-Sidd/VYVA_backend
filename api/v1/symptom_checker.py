@@ -13,6 +13,7 @@ import asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db
 from models.symptom_checker import SymptomCheckerResponse
+from services.email_service import EmailService
 
 logger = logging.getLogger(__name__)
 
@@ -668,131 +669,27 @@ def _prepare_report_content(response_record: SymptomCheckerResponse, payload: Se
 
 async def _send_email_report(recipient_email: str, report_content: Dict[str, Any], patient_name: str) -> str:
     """
-    Send medical report via email using HTML template.
+    Send medical report via email using Mailgun service.
     """
     try:
-        # TODO: Implement actual email sending logic
-        # This is a placeholder - you'll need to integrate with your email service
+        # Initialize email service
+        email_service = EmailService()
         
-        # Create email content using HTML template
-        emergency_text = "URGENT: " if report_content['is_emergency'] else ""
-        email_subject = f"{emergency_text}Your VYVA Health Symptom Assessment"
+        # Send the medical report
+        success = await email_service.send_medical_report(
+            recipient_email=recipient_email,
+            report_content=report_content
+        )
         
-        # Get vitals information if available
-        vitals_html = ""
-        if report_content.get('vitals'):
-            vitals = report_content['vitals']
-            vitals_html = """
-        <div class="section">
-            <div class="section-title">📊 Vital Signs</div>
-            <div class="symptom-item">
-                <div style="font-weight: bold; color: #d63384;">❤️ Heart Rate</div>
-                <div style="font-size: 12px; color: #d63384; margin: 5px 0;">
-                    Value: {heart_rate_value} {heart_rate_unit}
-                </div>
-            </div>
-            <div class="symptom-item">
-                <div style="font-weight: bold; color: #2c5aa0;">🫁 Respiratory Rate</div>
-                <div style="font-size: 12px; color: #2c5aa0; margin: 5px 0;">
-                    Value: {respiratory_rate_value} {respiratory_rate_unit}
-                </div>
-            </div>
-        </div>
-        """.format(
-                heart_rate_value=vitals.get('heart_rate', {}).get('value', '—'),
-                heart_rate_unit=vitals.get('heart_rate', {}).get('unit', 'bpm'),
-                respiratory_rate_value=vitals.get('respiratory_rate', {}).get('value', '—'),
-                respiratory_rate_unit=vitals.get('respiratory_rate', {}).get('unit', 'breaths/min')
-            )
-        
-        # Get additional symptom details if available
-        duration = report_content.get('duration', 'Not specified')
-        pain_level = report_content.get('pain_level', 'Not specified')
-        additional_notes = report_content.get('additional_notes', 'None')
-        
-        # Get user ID and record ID
-        user_id = report_content.get('user_id', 'Unknown')
-        record_id = report_content.get('conversation_id', 'Unknown')
-        
-        # Format the analysis content (remove HTML tags for email)
-        analysis_content = report_content.get('email', report_content.get('summary', ''))
-        
-        # Create HTML email body
-        email_body = f"""<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <style>
-        body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; }}
-        .header {{ background-color: #2c5aa0; color: white; padding: 20px; text-align: center; }}
-        .content {{ padding: 20px; }}
-        .section {{ margin-bottom: 25px; }}
-        .section-title {{ color: #2c5aa0; font-size: 18px; font-weight: bold; margin-bottom: 10px; border-bottom: 2px solid #2c5aa0; padding-bottom: 5px; }}
-        .symptom-item {{ background-color: #f8f9fa; padding: 10px; margin: 5px 0; border-left: 4px solid #2c5aa0; }}
-        .severity {{ padding: 15px; text-align: center; font-weight: bold; border-radius: 5px; }}
-        .severe {{ background-color: #ffe6e6; color: #d63384; border: 2px solid #d63384; }}
-        .mild {{ background-color: #e6ffe6; color: #198754; border: 2px solid #198754; }}
-        .analysis {{ background-color: #f8f9fa; padding: 15px; border-radius: 5px; }}
-        .disclaimer {{ background-color: #fff3cd; padding: 15px; border-radius: 5px; color: #856404; border: 1px solid #ffeaa7; }}
-        .footer {{ background-color: #f8f9fa; padding: 20px; text-align: center; color: #666; }}
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>🏥 VYVA Symptom Checker</h1>
-        <p>Symptom Assessment Report</p>
-    </div>
-    <div class="content">
-        <h2>Dear User,</h2>
-        <p>Thank you for using VYVA Symptom Checker. Here is your detailed symptom assessment:</p>
-        
-        <div class="section">
-            <div class="section-title">📋 Symptoms Reported</div>
-            <div class="symptom-item"><strong>Symptoms:</strong> {report_content['symptoms']}</div>
-            <div class="symptom-item"><strong>Duration:</strong> {duration}</div>
-            <div class="symptom-item"><strong>Pain Level:</strong> {pain_level}</div>
-            <div class="symptom-item"><strong>Additional Notes:</strong> {additional_notes}</div>
-        </div>
-        
-        {vitals_html}
-        
-        <div class="section">
-            <div class="section-title">🩺 Medical Analysis</div>
-            <div class="analysis">{analysis_content}</div>
-        </div>
-        <div class="section">
-            <div class="section-title">⚠️ Severity Assessment</div>
-            <div class="severity {'severe' if report_content['severity'] == 'severe' else 'mild'}">
-                <strong>Classification:</strong> <span style="text-transform: uppercase;">{report_content['severity']}</span>
-            </div>
-        </div>
-        <div class="disclaimer">
-            <strong>⚠️ Important Disclaimer:</strong><br>
-            This assessment is for informational purposes only. Please consult with a healthcare professional for proper medical advice.
-        </div>
-        
-        <div style="margin-top: 30px;">
-            <p><strong>User ID:</strong> {user_id}</p>
-            <p><strong>Record ID:</strong> {record_id}</p>
-            <p><strong>Assessment Date:</strong> {report_content.get('created_at', 'Unknown')}</p>
-        </div>
-    </div>
-    <div class="footer">
-        <p><strong>Best regards,<br>VYVA Symptom Checker Team</strong></p>
-        <p style="font-size: 12px; color: #999;">This email was generated automatically by VYVA Symptom Checker System</p>
-    </div>
-</body>
-</html>"""
-        
-        # TODO: Replace with actual email sending
-        logger.info(f"Email would be sent to {recipient_email}")
-        logger.info(f"Subject: {email_subject}")
-        logger.info(f"HTML Body length: {len(email_body)} characters")
-        
-        return "email_sent"
+        if success:
+            logger.info(f"Medical report sent successfully to {recipient_email}")
+            return "email_sent"
+        else:
+            logger.error(f"Failed to send medical report to {recipient_email}")
+            return "email_failed"
         
     except Exception as e:
-        logger.error(f"Failed to send email: {str(e)}")
+        logger.error(f"Failed to send email to {recipient_email}: {str(e)}")
         return "email_failed"
 
 
