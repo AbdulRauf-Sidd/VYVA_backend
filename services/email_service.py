@@ -111,10 +111,10 @@ class EmailService:
             duration = report_content.get('duration', 'N/A')
             pain_level = report_content.get('pain_level', 'N/A')
             additional_notes = report_content.get('additional_notes', 'N/A')
-            analysis_content = report_content.get('analysis_content', 'N/A')
+            analysis_content = report_content.get('email', 'N/A')  # Use 'email' field from database
             severity = report_content.get('severity', 'N/A')
             user_id = report_content.get('user_id', 'N/A')
-            record_id = report_content.get('record_id', 'N/A')
+            record_id = report_content.get('conversation_id', 'N/A')  # Use 'conversation_id' field
             created_at = report_content.get('created_at', 'N/A')
             
             # Get vitals information
@@ -212,7 +212,6 @@ class EmailService:
                     </div>
                     
                     <div style="margin-top: 30px;">
-                        <p><strong>User ID:</strong> {user_id}</p>
                         <p><strong>Record ID:</strong> {record_id}</p>
                         <p><strong>Assessment Date:</strong> {created_at}</p>
                     </div>
