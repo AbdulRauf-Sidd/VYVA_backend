@@ -16,8 +16,8 @@ class EmailService:
     
     def __init__(self):
         self.api_key = settings.MAILGUN_API_KEY
-        self.api_url = settings.MAILGUN_API_URL or "https://api.mailgun.net/v3/sandbox-123.mailgun.org"
-        self.from_email = "VYVA Health <noreply@vyva.health>"
+        self.api_url = settings.MAILGUN_API_URL or "https://api.eu.mailgun.net/v3/vyva.life/messages"
+        self.from_email = "VYVA Health <postmaster@vyva.life>"
     
     async def send_email_via_mailgun(
         self,
