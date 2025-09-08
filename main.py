@@ -21,7 +21,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from core.config import settings
 from core.logging import setup_logging
 from core.database import engine, Base
-from api.v1 import auth, users, profiles, health_care, social, brain_coach, medications, fall_detection, emergency, tts, symptom_checker
+from api.v1 import auth, users, profiles, health_care, social, brain_coach, medication, fall_detection, emergency, tts, symptom_checker
 
 
 # Setup logging
@@ -161,7 +161,7 @@ app.include_router(profiles.router, prefix="/api/v1/profiles", tags=["Profiles"]
 app.include_router(health_care.router, prefix="/api/v1/health-care", tags=["Health & Care"])
 app.include_router(social.router, prefix="/api/v1/social", tags=["Social"])
 app.include_router(brain_coach.router, prefix="/api/v1/brain-coach", tags=["Brain Coach"])
-app.include_router(medications.router, prefix="/api/v1/medications", tags=["Medications"])
+app.include_router(medication.router, prefix="/api/v1/medications", tags=["Medications"])
 app.include_router(fall_detection.router, prefix="/api/v1/fall-detection", tags=["Fall Detection"])
 app.include_router(emergency.router, prefix="/api/v1/emergency", tags=["Emergency Contacts"])
 app.include_router(tts.router, prefix="/api/v1/tts", tags=["Text-to-Speech"])
