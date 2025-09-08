@@ -212,7 +212,6 @@ class EmailService:
                     </div>
                     
                     <div style="margin-top: 30px;">
-                        <p><strong>User ID:</strong> {user_id}</p>
                         <p><strong>Record ID:</strong> {record_id}</p>
                         <p><strong>Assessment Date:</strong> {created_at}</p>
                     </div>
