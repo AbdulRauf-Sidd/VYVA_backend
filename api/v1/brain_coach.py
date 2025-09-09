@@ -367,6 +367,14 @@ async def send_report(
         if name.strip():
             if len(name.strip().split(" ")) > 1:
                 first_name, last_name = name.strip().split(" ", 1)
+            else:
+                first_name = name.strip()
+                last_name = ""
+        else:
+            first_name = "N/A"
+            last_name = "N/A"
+
+        logging.info(f"Parsed name: first_name='{first_name}', last_name='{last_name}'")
 
         user_data = UserUpdate(email=email, phone_number=phone_number, first_name=first_name, last_name=last_name)
         
