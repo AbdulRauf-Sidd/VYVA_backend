@@ -1,0 +1,5 @@
+[33mcf29da1[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevelop[m[33m)[m Remove hardcoded Twilio credentials from WhatsApp service - use environment variables only
+[33m54cfc7c[m adding whatsapp service
+[33m2e8fa3f[m[33m ([m[1;31morigin/develop[m[33m)[m finalizing symptom checker
+[33m4345858[m finalizing symptom checker
+[33m3d4ea4b[m finalizing email service
