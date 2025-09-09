@@ -3,13 +3,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from typing import List
 from core.database import get_db
-from schemas.brain_coach import BrainCoachQuestionRead, BrainCoachQuestionCreate, BrainCoachResponseRead, BrainCoachResponseCreate, BrainCoachQuestionReadWithLanguage
+from schemas.brain_coach import BrainCoachQuestionRead, BrainCoachQuestionCreate, BrainCoachResponseRead, BrainCoachResponseCreate, UserFeedback
 from repositories.brain_coach import BrainCoachQuestionRepository, BrainCoachResponseRepository
 import logging
 import uuid
 from repositories.user import UserRepository
 from schemas.user import UserCreate, UserUpdate
 from typing import Optional
+import random
+
 
 logger = logging.getLogger(__name__)
 
@@ -197,9 +199,12 @@ async def get_questions_by_filters(
                 detail="Language cannot be empty"
             )
         
+       
+        random_number = random.randint(1, 14)
+        
         repo = BrainCoachQuestionRepository(db)
         questions = await repo.get_questions_by_filters(
-            session=session,
+            session=random_number,
             tier=tier,
             question_type=question_type,
             language=language
@@ -313,6 +318,9 @@ async def get_user_responses(
             detail="Internal server error"
         )
     
+from services.email_service import EmailService
+
+email_service = EmailService()
 
 @router.put(
     "/report/{user_id}", 
@@ -321,9 +329,7 @@ async def get_user_responses(
 )
 async def send_report(
     user_id: Annotated[int, Path(..., description="The ID of the user")],
-    # email: str,
-    # phone_number: str,
-    user_data: UserUpdate,
+    user_data: UserFeedback,
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -342,6 +348,8 @@ async def send_report(
                 detail=f"User with ID {user_id} not found"
             )
         
+        
+        
         # Check if email is being updated and if it's already taken
         # if user_data.email: TODO remove this after event
         #     user_with_email = await repo.get_user_by_email(user_data.email)
@@ -350,8 +358,17 @@ async def send_report(
         #             status_code=status.HTTP_400_BAD_REQUEST,
         #             detail="Email already in use by another user"
         #         )
+        email = user_data.email
+        phone_number = user_data.phone_number
+        name = user_data.name if user_data.name else "N/A"
+        suggestions = user_data.suggestions if user_data.suggestions else "N/A"
+        performance_tier = user_data.performance_tier if user_data.performance_tier else "N/A"
 
-        # user_data = UserUpdate(email=email, phone_number=phone_number)
+        if name.strip():
+            if len(name.strip().split(" ")) > 1:
+                first_name, last_name = name.strip().split(" ", 1)
+
+        user_data = UserUpdate(email=email, phone_number=phone_number, first_name=first_name, last_name=last_name)
         
         updated_user = await repo.update_user(user_id, user_data)
         if not updated_user:
@@ -361,10 +378,28 @@ async def send_report(
             )
         else:
             logger.info(f"User {user_id} updated successfully with data: {user_data}")
-            brain_coach_repo = BrainCoachResponseRepository(db)
-            responses = await brain_coach_repo.get_responses_by_user_and_session(user_id)
+            brain_coach_response_repo = BrainCoachResponseRepository(db)
+            brain_coach_question_repo = BrainCoachQuestionRepository(db)
+            responses = await brain_coach_response_repo.get_responses_by_user_and_session(user_id)
             logger.info(f"User {user_id} has {len(responses)} brain coach responses")
             logger.info(f"User Responses: {responses}")
+
+            report_content = []
+            for response in responses:
+                question = await brain_coach_question_repo.get_question_translation(response.question_id, 'en')
+                if question:
+                    report_content.append({
+                        "question_type": question.question_type,
+                        "theme": question.theme,
+                        'score': response.score,
+                        "max_score": question.max_score,
+                        'tier': question.tier,
+                        'session': question.session,
+                    })
+                else:
+                    logger.warning(f"Question ID {response.question_id} not found for response ID {response.id}")
+
+            await email_service.send_brain_coach_report(email, report_content, name, suggestions, performance_tier)
 
 
         return updated_user
