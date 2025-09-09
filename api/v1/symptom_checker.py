@@ -358,6 +358,34 @@ def _replace_references_with_links(email: str, articles: List[Dict]) -> str:
     return re.sub(r'\[(\d+(?:,\s*\d+)*)\]', replace_match, email)
 
 
+def _clean_html_text(text: str) -> str:
+    """
+    Remove HTML anchor tags and links from text, including their inner text.
+    
+    Args:
+        text: Text that may contain HTML anchor tags and links
+        
+    Returns:
+        str: Clean text with HTML tags and their content completely removed
+    """
+    if not text:
+        return ""
+    
+    # Remove HTML anchor tags completely including their inner text
+    # Pattern matches <a href="...">text</a> and replaces with empty string
+    text = re.sub(r'<a[^>]*href="[^"]*"[^>]*>.*?</a>', '', text)
+    
+    # Remove any remaining HTML tags
+    text = re.sub(r'<[^>]+>', '', text)
+    
+    # Clean up extra whitespace and punctuation
+    text = re.sub(r'\s+', ' ', text).strip()
+    # Remove trailing punctuation that might be left after removing links
+    text = re.sub(r'[.,;:]\s*$', '', text)
+    
+    return text
+
+
 def _create_breakdown(email: str, full_name: str = None) -> Dict[str, str]:
     """
     Break down the medical response into structured format.
@@ -366,10 +394,10 @@ def _create_breakdown(email: str, full_name: str = None) -> Dict[str, str]:
 
     breakdown = {
         "1": full_name or "Patient",
-        "2": lines[0] if lines else "",
-        "3": lines[1].replace("1.", "").strip() if len(lines) > 1 else "",
-        "4": lines[2].replace("2.", "").strip() if len(lines) > 2 else "",
-        "5": lines[3].replace("3.", "").strip() if len(lines) > 3 else ""
+        "2": _clean_html_text(lines[0]) if lines else "",
+        "3": _clean_html_text(lines[1].replace("1.", "").strip()) if len(lines) > 1 else "",
+        "4": _clean_html_text(lines[2].replace("2.", "").strip()) if len(lines) > 2 else "",
+        "5": _clean_html_text(lines[3].replace("3.", "").strip()) if len(lines) > 3 else ""
     }
 
     return breakdown
@@ -718,9 +746,21 @@ async def _send_whatsapp_report(phone_number: str, report_content: Dict[str, Any
         # This is a placeholder - you'll need to integrate with your WhatsApp service
 
         whatsapp_service = WhatsAppService()
-        logger.info(f"ContentVariableData: {report_content.get('breakdown')}")
-        # report_content.get('breakdown')
-        success = await whatsapp_service.send_template_message(phone_number, report_content.get('breakdown'))
+        
+        # Get the breakdown data and ensure it's properly formatted
+        breakdown_data = report_content.get('breakdown', {})
+        logger.info(f"ContentVariableData: {breakdown_data}")
+        
+        # Convert breakdown dict to the format expected by WhatsApp template
+        # If breakdown is a dict with numbered keys, use it directly
+        # If it's a string or other format, convert it appropriately
+        if isinstance(breakdown_data, dict):
+            template_data = breakdown_data
+        else:
+            # If breakdown is not a dict, create a simple template data structure
+            template_data = {"breakdown": str(breakdown_data)}
+        
+        success = await whatsapp_service.send_medical_report(phone_number, template_data)
 
         logger.info(
             f"Whatsapp service returned: {success} (type: {type(success)})")

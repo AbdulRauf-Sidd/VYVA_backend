@@ -135,19 +135,16 @@ class WhatsAppService:
             # Extract breakdown from report content
             breakdown = report_content.get('breakdown', {})
 
-            # Convert breakdown to string format for template
+            # Use breakdown directly as template data if it's a dict
+            # This allows for multiple template variables like {{1}}, {{2}}, etc.
             if isinstance(breakdown, dict):
-                breakdown_text = "\n".join(
-                    [f"{key}: {value}" for key, value in breakdown.items()])
+                template_data = breakdown
             else:
+                # If breakdown is not a dict, convert to string and use as single variable
                 breakdown_text = str(breakdown)
-
-            # Prepare template data
-            # Twilio templates typically use numbered placeholders like {{1}}, {{2}}, etc.
-            # If your template uses {{breakdown}}, keep it as is, but if it uses {{1}}, change accordingly
-            template_data = {
-                "breakdown": breakdown_text
-            }
+                template_data = {
+                    "breakdown": breakdown_text
+                }
 
             # Send the template message
             success = await self.send_template_message(
