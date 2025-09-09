@@ -397,6 +397,7 @@ async def send_report(
                 question = await brain_coach_question_repo.get_question_translation(response.question_id, 'en')
                 if question:
                     report_content.append({
+                        "question_text": question.question_text,
                         "question_type": question.question_type,
                         "theme": question.theme,
                         'score': response.score,

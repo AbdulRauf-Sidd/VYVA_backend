@@ -260,7 +260,7 @@ class EmailService:
         user_score = 0
         total_max_score = 0
         for item in report_content:
-            table_rows += f"<tr><td>{item.get('question_type', '')}</td><td>{item.get('score', '')}</td><td>{item.get('max_score', '')}</td></tr>"
+            table_rows += f"<tr><td>{item.get('question_type', '')}</td><td>{item.get('question_text', '')}</td><td>{item.get('score', '')}</td></tr>"
             user_score += item.get('score', 0)
             total_max_score += item.get('max_score', 0)
 
@@ -366,23 +366,23 @@ class EmailService:
                <div class="second_div"> <h1 style="color:#FFF; font-size:18px; text-align:right;">VYVA Brain Coach – Daily Cognitive Session Report</h1></div>
                 </div>
             </div>
-                <div  style="margin-top:35px; "class="row"><div class="label">Name:</div><div class="value">{name}</div></div>
+                <div  style="margin-top:35px; "class="row"><div class="label">Name:</div><div class="value"> {name}</div></div>
                 <div class="row"><div class="label">Cognitive Tier:</div><div class="value">Tier {tier} – Moderate Impairment</div></div>
-                <div class="row"><div class="label">Date:</div><div class="value">{current_date}</div></div>
-                <div class="row"><div class="label">Session ID:</div><div class="value">#{session_id}</div></div>
+                <div class="row"><div class="label">Date:</div><div class="value"> {current_date}</div></div>
+                <div class="row"><div class="label">Session ID:</div><div class="value"># {session_id}</div></div>
 
 
             <div class="section-title">Activity Domain Scores</div>
                 <table>
                   <tr>
                     <th>Activity Domain</th>
+                    <th>Question</th>
                     <th>Score</th>
-                    <th>Max Score</th>
                   </tr>
                   {table_rows}
                 </table>
-                <div style="margin-top:55px;" class="row"><div class="label">Total Score:</div><div class="value">{user_score} / {total_max_score}</div></div>
-                <div class="row"><div class="label">Performance Tier:</div><div class="value">{performance_tier}</div></div>
+                <div style="margin-top:55px;" class="row"><div class="label">Total Score:</div><div class="value"> {user_score} / {total_max_score}</div></div>
+                <div class="row"><div class="label">Performance Tier:</div><div class="value"> {performance_tier}</div></div>
                 <div class="row"><div class="label">Session Completed:</div><div class="value">Yes</div></div>
                 <div class="section-title">Agent Notes & Suggestions</div>
                 <div class="notes">
