@@ -50,7 +50,7 @@ class BrainCoachQuestionReadWithLanguage(BrainCoachQuestionBase):
 
 
 class BrainCoachResponseBase(BaseModel):
-    session_id: str
+    session_id: Optional[str] = None  # Optional in development
     user_id: Optional[int] = None  # Optional in development
     question_id: int
     user_answer: str

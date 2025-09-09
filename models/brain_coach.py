@@ -40,7 +40,7 @@ class BrainCoachResponses(Base):
     __tablename__ = "brain_coach_responses"
 
     id = Column(Integer, primary_key=True, index=True)
-    session_id = Column(String(20), nullable=False)
+    session_id = Column(String(20), nullable=True) # TODO make this false in production
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)  # Foreign key to User TODO make this false in production
     question_id = Column(Integer, ForeignKey("brain_coach_questions.id"), nullable=False)  # Foreign key to BrainCoachQuestions
     user_answer = Column(String(100), nullable=False)  # User's answer to the question
