@@ -1,0 +1,2018 @@
+[
+  {
+    "id": 1,
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Please remember these words: [apple, dog, book]. I'll ask you about them later.",
+        "expected_answer": "\"The expected answer would be something like the user is expected to recall these words in any order\"",
+        "question_type": "Memory",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Por favor recuerda estas palabras: [manzana, perro, libro]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como que se espera que el usuario recuerde estas palabras en cualquier orden.",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Count down from 89 to 79.",
+        "expected_answer": "\"The User is expected to count down from 89 to 79 inlcusive\"",
+        "question_type": "Attention",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 89 hasta 79.",
+        "expected_answer": "Se espera que el usuario cuente regresivamente del 89 al 79 inclusive.",
+        "question_type": "Atencion",
+        "theme": "Secuencias",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What do “dog” and “cat” have in common?",
+        "expected_answer": "\"The user is expected to say something which is common to both animals. It could be something like the user recognizing they're both animals, or they both have 4 legs, etc\"",
+        "question_type": "Language",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común “perro” y “gato”?",
+        "expected_answer": "Se espera que el usuario diga algo común a ambos animales. Podría ser algo como que reconozca que ambos son animales, o que ambos tienen cuatro patas, etc.",
+        "question_type": "Idioma",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What day of the week was it two days ago?",
+        "expected_answer": "\"The user is expected to answer the day of the week it was 2 days ago. Use The current date to check the user's answer\"",
+        "question_type": "Orientation",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Qué día de la semana fue hace dos días?",
+        "expected_answer": "Se espera que el usuario responda el día de la semana de hace 2 días. Utilice la fecha actual para comprobar la respuesta del usuario.",
+        "question_type": "Orientacion",
+        "theme": "Lugar",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "If you have 15 euros and spend 7, how much do you have left?",
+        "expected_answer": "8",
+        "question_type": "Reasoning",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Si tienes 15 euros y gastas 7, ¿cuánto te queda?",
+        "expected_answer": "8",
+        "question_type": "Razonamiento",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Name three animals that live in cold climates.",
+        "expected_answer": "\"The user is expected to name three animals that live in cold climate, for example Bear, Penguin, Seals, Fox, Owl or similar\"",
+        "question_type": "Fluency",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Nombra tres animales que viven en climas fríos.",
+        "expected_answer": "Se espera que el usuario nombre tres animales que viven en climas fríos, por ejemplo, oso, pingüino, foca, zorro, búho o similar.",
+        "question_type": "Fluidez",
+        "theme": "pasatiempos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "session": 2,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Please remember these words: [car, fish, house]. I'll ask you about them later.",
+        "expected_answer": "The expected answer would be something like \"the user is expected to recall these words in any order\"",
+        "question_type": "Memory",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Por favor recuerda estas palabras: [coche, pez, casa]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde estas palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "session": 2,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Count backwards from 15 to 1.",
+        "expected_answer": "\"The User is expected to count down from 15 to 1 inlcusive\"",
+        "question_type": "Attention",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 15 hasta 1.",
+        "expected_answer": "Se espera que el usuario cuente regresivamente del 15 al 1 inclusive.",
+        "question_type": "Atencion",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "session": 2,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What do “rose” and “tulip” have in common?",
+        "expected_answer": "\"The user is expected to say something which is common to both words. It could be something like the user recognizing they're both flowers, or beautiful, etc\"",
+        "question_type": "Language",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común “rosa” y “tulipán”?",
+        "expected_answer": "Se espera que el usuario diga algo común a ambas palabras. Podría ser algo como que reconozca que ambas son flores, o hermoso, etc.",
+        "question_type": "Idioma",
+        "theme": "categorías",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "session": 2,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What day of the week is it today?",
+        "expected_answer": "\"The user is expected to answer the day of the week it is today. Use The current date to check the user's answer\"",
+        "question_type": "Orientation",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Qué día de la semana es hoy?",
+        "expected_answer": "Se espera que el usuario responda el día de la semana que es hoy. Utilice la fecha actual para comprobar la respuesta del usuario.",
+        "question_type": "Orientacion",
+        "theme": "Lugar",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "session": 2,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "You bought a book for 12 euros and paid with a 20 euro note. What change do you get?",
+        "expected_answer": "8",
+        "question_type": "Reasoning",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Compraste un libro por 12 euros y pagaste con un billete de 20. ¿Qué cambio recibes?",
+        "expected_answer": "8",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "session": 2,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Name three animals that live in warm climates.",
+        "expected_answer": "\"The user is expected to name three animals that live in cold climate, for example Camel, Elephants, Lions, reptiles,Snake or similar\"",
+        "question_type": "Fluency",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Nombra tres animales que viven en climas cálidos.",
+        "expected_answer": "Se espera que el usuario nombre tres animales que viven en climas fríos, por ejemplo, camellos, elefantes, leones, reptiles, serpientes o similares.",
+        "question_type": "Fluidez",
+        "theme": "pasatiempos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "session": 3,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Please remember these words: [sky, map, compass]. I'll ask you about them later.",
+        "expected_answer": "The expected answer would be something like \"the user is expected to recall these words in any order\"",
+        "question_type": "Memory",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Por favor recuerda estas palabras: [cielo, mapa, brújula]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde estas palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "bandera",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "session": 3,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Count backward from 12 to 2, skipping a number each time.",
+        "expected_answer": "\"The User is expected to count down from 12 to 2 inlcusive\"",
+        "question_type": "Attention",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 12 hasta 2, saltando cada vez un número.",
+        "expected_answer": "Se espera que el usuario cuente regresivamente desde 12 hasta 2 inclusive.",
+        "question_type": "Atencion",
+        "theme": "patronas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "session": 3,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What do “piano” and “guitar” have in common?",
+        "expected_answer": "\"The user is expected to say something which is common to both words. It could be something like the user recognizing they're both musical instruments, or make sound, etc\"",
+        "question_type": "Language",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común “piano” y “guitarra”?",
+        "expected_answer": "Se espera que el usuario diga algo común a ambas palabras. Podría ser algo como que reconozca que ambos son instrumentos musicales o que emitan un sonido, etc.",
+        "question_type": "Idioma",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "session": 3,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What day of the week will it be in two days?",
+        "expected_answer": "\"The user is expected to answer the day of the week it will be in 2 days. Use The current date to check the user's answer\"",
+        "question_type": "Orientation",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Qué día de la semana será dentro de dos días?",
+        "expected_answer": "Se espera que el usuario responda el día de la semana en que será dentro de 2 días. Utilice la fecha actual para comprobar la respuesta del usuario.",
+        "question_type": "Orientacion",
+        "theme": "Lugar",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "session": 3,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "You earned 30 euros and gave 10 to a friend. How much do you still have?",
+        "expected_answer": "20",
+        "question_type": "Reasoning",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Ganaste 30 euros y diste 10 a un amigo. ¿Cuánto guardas?",
+        "expected_answer": "20",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "session": 3,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Name three kitchen utensils.",
+        "expected_answer": "\"The user is expected to name three objects that are used in a kitchen like spoon, fork, knife, pan, oven, fridge or similar\"",
+        "question_type": "Fluency",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Nombra tres utensilios de cocina.",
+        "expected_answer": "Se espera que el usuario nombre tres objetos que se utilizan en una cocina, como cuchara, tenedor, cuchillo, sartén, horno, refrigerador o similar.",
+        "question_type": "Fluidez",
+        "theme": "animales",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "session": 4,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Please remember these words: [computer, mouse, screen]. I'll ask you about them later.",
+        "expected_answer": "The expected answer would be something like \"the user is expected to recall these words in any order\"",
+        "question_type": "Memory",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Por favor recuerda estas palabras: [ordenador, ratón, pantalla]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde estas palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "frutas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "session": 4,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Start at 30 and count backward by threes.",
+        "expected_answer": "\"The User is expected to count down by threes from 30 to 0 inlcusive\"",
+        "question_type": "Attention",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Empieza en 30 y cuenta hacia atrás de tres en tres.",
+        "expected_answer": "Se espera que el usuario haga una cuenta regresiva de tres en tres, desde 30.",
+        "question_type": "Atencion",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "session": 4,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What do “airplane” and “car” have in common?",
+        "expected_answer": "\"The user is expected to say something which is common to both words. It could be something like the user recognizing they're both transport means, or machines, etc\"",
+        "question_type": "Language",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común “avión” y “coche”?",
+        "expected_answer": "Se espera que el usuario diga algo común a ambas palabras. Podría ser algo como que reconozca que ambas son medios de transporte, máquinas, etc.",
+        "question_type": "Idioma",
+        "theme": "categorías",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "session": 4,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "How many days are there in a year?",
+        "expected_answer": "365",
+        "question_type": "Orientation",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Cuántos días hay en un año?",
+        "expected_answer": "365",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "session": 4,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "You saved 50 euros and spent 25 on groceries. What's left?",
+        "expected_answer": "25",
+        "question_type": "Reasoning",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Ahorraste 50 euros y gastaste 25 en comestibles. ¿Qué te queda?",
+        "expected_answer": "25",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "session": 4,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Name three objects you see in an airport",
+        "expected_answer": "\"The user is expected to name three things that are seen in an airport for example airplane, luggage, counters, hangars, staff, travellers, shops or similar\"",
+        "question_type": "Fluency",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Nombra tres objetos en un aeropuerto.",
+        "expected_answer": "Se espera que el usuario nombre tres cosas que se ven en un aeropuerto, por ejemplo, avión, equipaje, mostradores, hangares, personal, viajeros, tiendas o algo similar.",
+        "question_type": "Fluidez",
+        "theme": "profesiones",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "session": 5,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Please remember these words: [clock, moon, television]. I'll ask you about them later.",
+        "expected_answer": "The expected answer would be something like \"the user is expected to recall these words in any order\"",
+        "question_type": "Memory",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Por favor recuerda estas palabras: [reloj, luna, televisión]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde estas palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "session": 5,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Count backward from 20, saying only even numbers.",
+        "expected_answer": "\"The User is expected to count down from 20 saying only even numbers\"",
+        "question_type": "Attention",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 20, diciendo solo números pares.",
+        "expected_answer": "Se espera que el usuario cuente hacia atrás desde 20 diciendo solo números pares.",
+        "question_type": "Atencion",
+        "theme": "numbers",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "session": 5,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What do “hat” and “umbrella” have in common?",
+        "expected_answer": "\"The user is expected to say something which is common to both words. It could be something like the user recognizing they're both used to protect from rain, or sun, etc\"",
+        "question_type": "Language",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común “sombrero” y “paraguas”?",
+        "expected_answer": "Se espera que el usuario diga algo común a ambas palabras. Podría ser algo como que reconozca que ambas se usan para protegerse de la lluvia, el sol, etc.",
+        "question_type": "Idioma",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "session": 5,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "How many days are there in a week?",
+        "expected_answer": "7",
+        "question_type": "Orientation",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Cuántos días hay en una semana?",
+        "expected_answer": "7",
+        "question_type": "Orientacion",
+        "theme": "contexto",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "session": 5,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "You find 8 euros and spend 3 on coffee. How much do you have left?",
+        "expected_answer": "5",
+        "question_type": "Reasoning",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Encuentras 8 euros y gastas 3 en café. ¿Cuánto te queda todavía?",
+        "expected_answer": "5",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "session": 5,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Name three countries that have cold climates.",
+        "expected_answer": "\"The user is expected to name three countries that have a cold climate, for example Russia, Iceland, Norway, North pole, Canada, Sweden, Finland or similar\"",
+        "question_type": "Fluency",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Nombra tres países que tienen climas fríos.",
+        "expected_answer": "Se espera que el usuario nombre tres países con clima frío, por ejemplo, Rusia, Islandia, Noruega, Canadá, Suecia, Finlandia o similar.",
+        "question_type": "Fluidez",
+        "theme": "pasatiempos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "session": 6,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Please remember these words: [pen, pillow, bed]. I'll ask you about them later.",
+        "expected_answer": "The expected answer would be something like \"the user is expected to recall these words in any order\"",
+        "question_type": "Memory",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Por favor recuerda estas palabras: [bolígrafo, almohada, cama]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde estas palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "bandera",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "session": 6,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Count backward from 25 to 5, skipping every odd number.",
+        "expected_answer": "\"The User is expected to count down from 25 to 5 skipping evey odd number\"",
+        "question_type": "Attention",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 25 hasta 5, saltando cada dos números.",
+        "expected_answer": "Se espera que el usuario cuente regresivamente del 25 al 5, saltándose cada número impar.",
+        "question_type": "Atencion",
+        "theme": "patronas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "session": 6,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What do “ring” and “necklace” have in common?",
+        "expected_answer": "\"The user is expected to say something which is common to both words. It could be something like the user recognizing they're both jewelry, or decoration objects, etc\"",
+        "question_type": "Language",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común “anillo” y “collar”?",
+        "expected_answer": "Se espera que el usuario diga algo común a ambas palabras. Podría ser algo como que reconozca que ambas son joyas, objetos decorativos, etc.",
+        "question_type": "Idioma",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "session": 6,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "How many weeks are there in a year?",
+        "expected_answer": "52",
+        "question_type": "Orientation",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Cuántas semanas hay en un año?",
+        "expected_answer": "52",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "session": 6,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "You had 40 euros, you spent 12 on lunch and 5 on a gift. What's left?",
+        "expected_answer": "23",
+        "question_type": "Reasoning",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Tenías 40 euros, gastaste 12 en almuerzo y 5 en un regalo. ¿Qué queda?",
+        "expected_answer": "23",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "session": 6,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Name three things you can see on the beach.",
+        "expected_answer": "\"The user is expected to name three things that are seen on the beach, for example Parasol, sunbeds, balls, Surf boards, poeple, boats or similar\"",
+        "question_type": "Fluency",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Nombra tres cosas que puedes ver en la playa.",
+        "expected_answer": "Se espera que el usuario nombre tres cosas que se ven en la playa, por ejemplo, sombrillas, tumbonas, pelotas, tablas de surf, gente, barcos o algo similar.",
+        "question_type": "Fluidez",
+        "theme": "animales",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "session": 7,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Please remember these words: [sea, sail, moon]. I'll ask you about them later.",
+        "expected_answer": "The expected answer would be something like \"the user is expected to recall these words in any order\"",
+        "question_type": "Memory",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Por favor recuerda estas palabras: [mar, vela, luna]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde estas palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "bandera",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "session": 7,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Count backwards from 18, saying only odd numbers.",
+        "expected_answer": "\"The User is expected to count down from 18 to 0 saying only odd numbers\"",
+        "question_type": "Attention",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 18, diciendo solo números impares.",
+        "expected_answer": "Se espera que el usuario cuente regresivamente del 18 diciendo solo números impares.",
+        "question_type": "Atencion",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "session": 7,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What do “bed” and “pillow” have in common?",
+        "expected_answer": "\"The user is expected to say something which is common to both words. It could be something like the user recognizing they're both sleep items, or comfortable, etc\"",
+        "question_type": "Language",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común “cama” y “almohada”?",
+        "expected_answer": "Se espera que el usuario diga algo común a ambas palabras. Podría ser algo como que reconozca que ambas son artículos para dormir, o cómodos, etc.",
+        "question_type": "Idioma",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "session": 7,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "How many months are there in a year?",
+        "expected_answer": "there are 12 months",
+        "question_type": "Orientation",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Cuántos meses hay en un año?",
+        "expected_answer": "Hay 12 meses",
+        "question_type": "Orientacion",
+        "theme": "contexto",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "session": 7,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "You borrow 100 euros and pay back 13. How much do you still owe?",
+        "expected_answer": "87",
+        "question_type": "Reasoning",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Pides prestados 100 euros y devuelves 13. ¿Cuánto aún debes?",
+        "expected_answer": "87",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "session": 7,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Name three things you can see in a restaurant.",
+        "expected_answer": "\"The user is expected to name three things that can be see in a restaurant, for example Menu, Food, Chairs, Tables, Waiters, Forks, Knives, Plates or similar\"",
+        "question_type": "Fluency",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Nombra tres cosas que puedes ver en un restaurante.",
+        "expected_answer": "Se espera que el usuario nombre tres cosas que se pueden ver en un restaurante, por ejemplo: Menú, Comida, Sillas, Mesas, Camareros, Tenedores, Cuchillos, Platos o algo similar.",
+        "question_type": "Fluidez",
+        "theme": "pasatiempos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "session": 8,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Please remember these words: [book, glasses, bench]. I'll ask you about them later.",
+        "expected_answer": "The expected answer would be something like \"the user is expected to recall these words in any order\"",
+        "question_type": "Memory",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Por favor recuerda estas palabras: [libro, gafas, banco]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde estas palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "centrado",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "session": 8,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Start at 40 and count backward by fives.",
+        "expected_answer": "\"The User is expected to count down from 40 to 0 and count backwards by fives\"",
+        "question_type": "Attention",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Empieza en 40 y cuenta hacia atrás de cinco en cinco.",
+        "expected_answer": "Se espera que el usuario cuente hacia atrás de 40 a 0 y hacia atrás de 5 en 5.",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 45,
+    "session": 8,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What do “door” and “key” have in common?",
+        "expected_answer": "\"The user is expected to say something which is common to both words. It could be something like the user recognizing they're both security items, or house related, etc\"",
+        "question_type": "Language",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común “puerta” y “llave”?",
+        "expected_answer": "Se espera que el usuario diga algo común a ambas palabras. Podría ser algo como que reconozca que ambas son elementos de seguridad, o que están relacionadas con la casa, etc.",
+        "question_type": "Idioma",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "session": 8,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "How many seconds are there in an hour?",
+        "expected_answer": "3600",
+        "question_type": "Orientation",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Cuántos segundos hay en una hora?",
+        "expected_answer": "3600",
+        "question_type": "Orientacion",
+        "theme": "contexto",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "session": 8,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "If you have 150 euros and spend 17, how much do you have left?",
+        "expected_answer": "133",
+        "question_type": "Reasoning",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Si tienes 150 euros y gastas 17, ¿cuánto te queda?",
+        "expected_answer": "133",
+        "question_type": "Razonamiento",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 48,
+    "session": 8,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Name three objects you can find in an office.",
+        "expected_answer": "\"The user is expected to name three things that you can find in an office, for example Computers, Staff, Desks, Papers, Pens, Screens or similar\"",
+        "question_type": "Fluency",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Nombra tres objetos que puedes encontrar en una oficina.",
+        "expected_answer": "Se espera que el usuario nombre tres cosas que puede encontrar en una oficina, por ejemplo: computadoras, personal, escritorios, papeles, bolígrafos, pantallas o algo similar.",
+        "question_type": "Fluidez",
+        "theme": "profesiones",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 49,
+    "session": 9,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Please remember these words: [calendar, coffee, bread]. I'll ask you about them later.",
+        "expected_answer": "The expected answer would be something like \"the user is expected to recall these words in any order\"",
+        "question_type": "Memory",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Por favor recuerda estas palabras: [calendario, café, pan]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde estas palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "consciente",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 50,
+    "session": 9,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Count backward from 14, but only say the numbers that are divisible by 2.",
+        "expected_answer": "\"The User is expected to count down form 14 but only say numbers that are divisible by 2\"",
+        "question_type": "Attention",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 14, pero di solo los números que sean divisibles por 2.",
+        "expected_answer": "Se espera que el usuario cuente regresivamente desde 14, pero solo diga números que sean divisibles por 2.",
+        "question_type": "Atencion",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 51,
+    "session": 9,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What do “wheel” and “tire” have in common?",
+        "expected_answer": "\"The user is expected to say something which is common to both words. It could be something like the user recognizing they're both car related, or circular shaped, etc\"",
+        "question_type": "Language",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común “rueda” y “neumático”?",
+        "expected_answer": "Se espera que el usuario diga algo común a ambas palabras. Podría ser algo como que reconozca que ambas están relacionadas con coches, o que tienen forma circular, etc.",
+        "question_type": "Idioma",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 52,
+    "session": 9,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "How many hours are there in a day?",
+        "expected_answer": "24",
+        "question_type": "Orientation",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Cuántas horas hay en un día?",
+        "expected_answer": "24",
+        "question_type": "Orientacion",
+        "theme": "contexto",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 53,
+    "session": 9,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "You bought a book for 12 euros and paid with a 20-euro bill. What change do you get?",
+        "expected_answer": "8",
+        "question_type": "Reasoning",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Compraste un libro por 12 euros y pagaste con un billete de 20 euros. ¿Qué cambio recibes?",
+        "expected_answer": "8",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 54,
+    "session": 9,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Name three countries that are in Europe.",
+        "expected_answer": "\"The user is expected to name three countries that are in Europe, for example Spain, France, Italy, Sweden, Belgium or similar\"",
+        "question_type": "Fluency",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Nombra tres países que están en Europa.",
+        "expected_answer": "Se espera que el usuario nombre tres países que estén en Europa, por ejemplo, España, Francia, Italia, Suecia, Bélgica o similar.",
+        "question_type": "Fluidez",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 55,
+    "session": 10,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Please remember these words: [keyboard, shirt, ice cream]. I'll ask you about them later.",
+        "expected_answer": "The expected answer would be something like \"the user is expected to recall these words in any order\"",
+        "question_type": "Memory",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Por favor recuerda estas palabras: [teclado, camisa, helado]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde estas palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "frutas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 56,
+    "session": 10,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Count backwards from 20 by twos (20, 18, …).",
+        "expected_answer": "\"The User is expected to count down from 20 to 0 and count backwards by twos\"",
+        "question_type": "Attention",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 20, saltando cada tercer número.",
+        "expected_answer": "\"Se espera que el usuario cuente hacia atrás de 20 a 0 y hacia atrás de dos en dos\"",
+        "question_type": "Atencion",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 57,
+    "session": 10,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What do “dolphins” and “whales” have in common?",
+        "expected_answer": "\"The user is expected to say something which is common to both words. It could be something like the user recognizing they're both animals, or mammals, etc\"",
+        "question_type": "Language",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común “delfines” y “ballenas”?",
+        "expected_answer": "Se espera que el usuario diga algo común a ambas palabras. Podría ser algo como que reconozca que ambos son animales, mamíferos, etc.",
+        "question_type": "Idioma",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 58,
+    "session": 10,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What day is New Year's Eve?",
+        "expected_answer": "31st of December",
+        "question_type": "Orientation",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Qué día es Nochevieja?",
+        "expected_answer": "31 de diciembre",
+        "question_type": "Orientacion",
+        "theme": "contexto",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 59,
+    "session": 10,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "You earned 105 euros and gave 10 to a friend. How much do you have left?",
+        "expected_answer": "95",
+        "question_type": "Reasoning",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Ganaste 30 euros y diste 10 a un amigo. ¿Cuánto te queda?",
+        "expected_answer": "20",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 60,
+    "session": 10,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What three animals are known for being herbivores?",
+        "expected_answer": "\"The user is expected to name three animals that only eat plants, for example Elephant, horse, sheep, cow, rabbit or similar\"",
+        "question_type": "Fluency",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Cuáles tres animales son conocidos por ser herbívoros?",
+        "expected_answer": "Se espera que el usuario nombre tres animales que solo comen plantas, por ejemplo, elefante, caballo, oveja, vaca, conejo o similar.",
+        "question_type": "Fluidez",
+        "theme": "animales",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 61,
+    "session": 11,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Please remember these words: [money, bank, store]. I'll ask you about them later.",
+        "expected_answer": "The expected answer would be something like \"the user is expected to recall these words in any order\"",
+        "question_type": "Memory",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Por favor recuerda estas palabras: [dinero, banco, tienda]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde estas palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "categorías",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 62,
+    "session": 11,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Start at 35 and count backward by sevens.",
+        "expected_answer": "\"The User is expected to count down from 35 and count backwards by sevens\"",
+        "question_type": "Attention",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Empieza en 35 y cuenta hacia atrás de siete en siete.",
+        "expected_answer": "Se espera que el usuario cuente hacia atrás desde 35 y hacia atrás de siete en siete.",
+        "question_type": "Atencion",
+        "theme": "Lugar",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 63,
+    "session": 11,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What do a fork and a spoon have in common?",
+        "expected_answer": "\"The user is expected to say something which is common to both words. It could be something like the user recognizing they're both used to eat, or food related, etc\"",
+        "question_type": "Language",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común un tenedor y una cuchara?",
+        "expected_answer": "Se espera que el usuario diga algo común a ambas palabras. Podría ser algo como que reconozca que ambas se usan para comer, o que están relacionadas con la comida, etc.",
+        "question_type": "Idioma",
+        "theme": "Lugar",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 64,
+    "session": 11,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What day is Christmas Eve?",
+        "expected_answer": "24th of December",
+        "question_type": "Orientation",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Qué día es Nochebuena?",
+        "expected_answer": "24 de diciembre",
+        "question_type": "Orientacion",
+        "theme": "contexto",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 65,
+    "session": 11,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "You saved 50 euros and spent 25 on groceries. What's left?",
+        "expected_answer": "25",
+        "question_type": "Reasoning",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Ahorraste 50 euros y gastaste 25 en comestibles. ¿Qué queda?",
+        "expected_answer": "25",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 66,
+    "session": 11,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Name three animals that have wings.",
+        "expected_answer": "\"The user is expected to name three animals that have wings, for example birds, insects, bats, penguins or similar\"",
+        "question_type": "Fluency",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Nombra tres animales que tengan alas.",
+        "expected_answer": "Se espera que el usuario nombre tres animales que tengan alas, por ejemplo, pájaros, insectos, murciélagos, pingüinos o similares.",
+        "question_type": "Fluidez",
+        "theme": "animales",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 67,
+    "session": 12,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Please remember these words: [wallet, telescope, glasses]. I'll ask you about them later.",
+        "expected_answer": "The expected answer would be something like \"the user is expected to recall these words in any order\"",
+        "question_type": "Memory",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Por favor recuerda estas palabras: [cartera, telescopio, gafas]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde estas palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "categorías",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 68,
+    "session": 12,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Count backward from 60 by tens.",
+        "expected_answer": "\"The User is expected to count down from 60 to 0 and count backwards by tens\"",
+        "question_type": "Attention",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 60 de diez en diez.",
+        "expected_answer": "Se espera que el usuario cuente hacia atrás de 60 a 0 y hacia atrás de diez en diez.",
+        "question_type": "Atencion",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 69,
+    "session": 12,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What do a candle and a flashlight have in common?",
+        "expected_answer": "\"The user is expected to say something which is common to both words. It could be something like the user recognizing they're both used to generate light, or eleminate darkness, etc\"",
+        "question_type": "Language",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿En qué se parecen una vela y una linterna?",
+        "expected_answer": "Se espera que el usuario diga algo común a ambas palabras. Podría ser algo como que reconozca que ambas se usan para generar luz o eliminar la oscuridad, etc.",
+        "question_type": "Idioma",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 70,
+    "session": 12,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "How many years are there in a decade?",
+        "expected_answer": "10 years",
+        "question_type": "Orientation",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Cuántos años hay en una década?",
+        "expected_answer": "10 años",
+        "question_type": "Orientacion",
+        "theme": "contexto",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 71,
+    "session": 12,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "You found 8 euros and spent 3.5 on coffee. How much do you have left?",
+        "expected_answer": "4.5 euros is left",
+        "question_type": "Reasoning",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Encontraste 8 euros y gastaste 3.5 en café. ¿Cuánto te queda?",
+        "expected_answer": "Quedan 4,5 euros",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 72,
+    "session": 12,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Name three animals that can swim.",
+        "expected_answer": "\"The user is expected to name three animals that can swim, for example Fish, Turtle,dolphins, sharks, dogs, tigers, elephat or similar\"",
+        "question_type": "Fluency",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Nombra tres animales que puedan nadar.",
+        "expected_answer": "Se espera que el usuario nombre tres animales que puedan nadar, por ejemplo, peces, tortugas, delfines, tiburones, perros, tigres, elefantes o similares.",
+        "question_type": "Fluidez",
+        "theme": "animales",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 73,
+    "session": 13,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Please remember these words: [orange, tree, jungle]. I'll ask you about them later.",
+        "expected_answer": "The expected answer would be something like \"the user is expected to recall these words in any order\"",
+        "question_type": "Memory",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Por favor recuerda estas palabras: [naranja, árbol, jungla]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde estas palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "bandera",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 74,
+    "session": 13,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Start at 11 and count down by twos.",
+        "expected_answer": "\"The User is expected to count down from 11 to 0 and count backwards by twos\"",
+        "question_type": "Attention",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Empieza en 11 y cuenta hacia abajo de dos en dos.",
+        "expected_answer": "Se espera que el usuario cuente hacia atrás de 11 y hacia atrás de dos en dos.",
+        "question_type": "Atencion",
+        "theme": "patronas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 75,
+    "session": 13,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What do an apple and a banana have in common?",
+        "expected_answer": "\"The user is expected to say something which is common to both words. It could be something like the user recognizing they're both fruits, or food, etc\"",
+        "question_type": "Language",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿En qué se parecen una manzana y un plátano?",
+        "expected_answer": "Se espera que el usuario diga algo común a ambas palabras. Podría ser algo como que reconozca que ambas son frutas, comida, etc.",
+        "question_type": "Idioma",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 76,
+    "session": 13,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What season is it today — spring, summer, autumn or winter?",
+        "expected_answer": "the user is expected to name one season. USe the current date to check the user's answer",
+        "question_type": "Orientation",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿En qué estación estamos hoy — primavera, verano, otoño o invierno?",
+        "expected_answer": "Se espera que el usuario nombre una estación. Utilice la fecha actual para comprobar la respuesta del usuario.",
+        "question_type": "Orientacion",
+        "theme": "Lugar",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 77,
+    "session": 13,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "You had 50 euros, you spent 12 on lunch and 5 on a gift. What's left?",
+        "expected_answer": "33",
+        "question_type": "Reasoning",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Tenías 50 euros, gastaste 12 en el almuerzo y 5 en un regalo. ¿Qué queda?",
+        "expected_answer": "33",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 78,
+    "session": 13,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Name three objects you can find in a school.",
+        "expected_answer": "\"The user is expected to name three words that can be found in a school, for example Books, Teachers, Pens, Desks, students, boards or similar\"",
+        "question_type": "Fluency",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Nombra tres objetos que puedes encontrar en una colegio.",
+        "expected_answer": "Se espera que el usuario nombre tres palabras que se puedan encontrar en una escuela, por ejemplo, libros, profesores, bolígrafos, escritorios, estudiantes, pizarras o similares.",
+        "question_type": "Fluidez",
+        "theme": "pasatiempos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 79,
+    "session": 14,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Please remember these words: [pants, pig, roof]. I'll ask you about them later.",
+        "expected_answer": "The expected answer would be something like \"the user is expected to recall these words in any order\"",
+        "question_type": "Memory",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Por favor recuerda estas palabras: [pantalones, cerdo, techo]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde estas palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "frutas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 80,
+    "session": 14,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Start at 50 and count backward by sixes.",
+        "expected_answer": "\"The User is expected to count down from 50 count backwards by sixes\"",
+        "question_type": "Attention",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Empieza en 50 y cuenta hacia atrás de seis en seis.",
+        "expected_answer": "Se espera que el usuario cuente hacia atrás desde 50 y hacia atrás de seis en seis.",
+        "question_type": "Atencion",
+        "theme": "patronas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 81,
+    "session": 14,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What do a book and a newspaper have in common?",
+        "expected_answer": "\"The user is expected to say something which is common to both words. It could be something like the user recognizing they're both reading material, or printed, etc\"",
+        "question_type": "Language",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común un libro y un periódico?",
+        "expected_answer": "Se espera que el usuario diga algo común a ambas palabras. Podría ser algo como que reconozca que ambos están leyendo material, o impreso, etc.",
+        "question_type": "Idioma",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 82,
+    "session": 14,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "What is the sixth month of the year?",
+        "expected_answer": "June",
+        "question_type": "Orientation",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "¿Cuál es el sexto mes del año?",
+        "expected_answer": "Junio",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 83,
+    "session": 14,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "You lent 100 euros and repaid 0.50. How much do you still owe?",
+        "expected_answer": "99.5",
+        "question_type": "Reasoning",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Prestaste 100 euros y devolviste 0,5. ¿Cuánto aún debes?",
+        "expected_answer": "99.5",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  },
+  {
+    "id": 84,
+    "session": 14,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "en",
+        "question_text": "Name three animals that are carnivores",
+        "expected_answer": "\"The user is expected to name three animals that only eat meat, for example Lion, Tiger, crocodiles, sharks, eagles or similar\"",
+        "question_type": "Fluency",
+        "theme": "",
+        "scoring_logic": "\"only score for a correct answer. In integers\""
+      },
+      {
+        "language": "es",
+        "question_text": "Nombra tres animales que sean carnívoros.",
+        "expected_answer": "Se espera que el usuario nombre tres animales que solo comen carne, por ejemplo, león, tigre, cocodrilo, tiburón, águila o similar.",
+        "question_type": "Fluidez",
+        "theme": "animales",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ]
+  }
+]
