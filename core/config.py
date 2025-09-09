@@ -91,7 +91,8 @@ class Settings(BaseSettings):
     TWILIO_ACCOUNT_SID: Optional[str] = Field(default=None, env="TWILIO_ACCOUNT_SID")
     TWILIO_AUTH_TOKEN: Optional[str] = Field(default=None, env="TWILIO_AUTH_TOKEN")
     TWILIO_PHONE_NUMBER: Optional[str] = Field(default=None, env="TWILIO_PHONE_NUMBER")
-    
+    TWILIO_WHATSAPP_FROM_NUMBER: Optional[str] = Field(default=None, env="TWILIO_WHATSAPP_FROM_NUMBER")
+
     # ElevenLabs TTS
     ELEVENLABS_API_KEY: Optional[str] = Field(default=None, env="ELEVENLABS_API_KEY")
     ELEVENLABS_BASE_URL: str = Field(
