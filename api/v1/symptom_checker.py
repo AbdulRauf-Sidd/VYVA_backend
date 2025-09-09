@@ -718,7 +718,7 @@ async def _send_whatsapp_report(phone_number: str, report_content: Dict[str, Any
         # This is a placeholder - you'll need to integrate with your WhatsApp service
 
         whatsapp_service = WhatsAppService()
-
+        logger.info(f"ContentVariableData: {report_content.get('breakdown')}")
         # report_content.get('breakdown')
         success = await whatsapp_service.send_template_message(phone_number, report_content.get('breakdown'))
 
