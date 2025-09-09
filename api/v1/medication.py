@@ -38,6 +38,7 @@ logger = logging.getLogger(__name__)
 async def create_medications_bulk(
     medications_data: List[MedicationCreate],
     background_tasks: BackgroundTasks,
+    user_id: int,
     db: Session = Depends(get_db),
 ):
     """
@@ -112,6 +113,7 @@ async def get_user_medications(
 )
 async def get_medication(
     medication_id: int,
+    user_id: int,
     db: Session = Depends(get_db)
 ):
     """
@@ -200,6 +202,7 @@ async def update_medication(
 )
 async def delete_medication(
     medication_id: int,
+    user_id: int,
     db: Session = Depends(get_db),
 ):
     """
