@@ -7,6 +7,10 @@ import httpx
 from typing import List, Optional, Dict, Union
 from core.config import settings
 from core.logging import get_logger
+from services.helpers import generate_random_string
+from datetime import datetime
+
+
 
 logger = get_logger(__name__)
 
@@ -238,35 +242,160 @@ class EmailService:
         except Exception as e:
             logger.error(f"Failed to send medical report to {recipient_email}: {str(e)}")
             return False
-    
-    # async def send_welcome_email(self, to_email: str, user_name: str) -> bool:
-    #     """Send welcome email to new users."""
-    #     subject = "Welcome to Vyva!"
         
-    #     body = f"""
-    #     Hello {user_name},
-        
-    #     Welcome to Vyva! We're excited to have you on board.
-        
-    #     Your account has been successfully created and you can now access all our features.
-        
-    #     If you have any questions, please don't hesitate to contact our support team.
-        
-    #     Best regards,
-    #     Vyva Team
-    #     """
-        
-    #     html_body = f"""
-    #     <html>
-    #     <body>
-    #         <h2>Welcome to Vyva!</h2>
-    #         <p>Hello {user_name},</p>
-    #         <p>Welcome to Vyva! We're excited to have you on board.</p>
-    #         <p>Your account has been successfully created and you can now access all our features.</p>
-    #         <p>If you have any questions, please don't hesitate to contact our support team.</p>
-    #         <p>Best regards,<br>Vyva Team</p>
-    #     </body>
-    #     </html>
-    #     """
-        
-    #     return await self.send_email(to_email, subject, body, html_body) 
+
+    async def send_brain_coach_report(
+            self,
+            recipient_email: str,
+            report_content: List[Dict[str, any]],
+            name: Optional[str] = "N/A",
+            suggestions: Optional[str] = None,
+            performance_tier: Optional[str] = None
+        ):
+        tier = report_content[0].get('tier', 'N/A') if report_content else 'N/A'
+        session_id = generate_random_string(6)
+        current_date = datetime.now().strftime("%A, %B %d, %Y")
+
+        table_rows = ""
+        user_score = 0
+        total_max_score = 0
+        for item in report_content:
+            table_rows += f"<tr><td>{item.get('question_type', '')}</td><td>{item.get('score', '')}</td><td>{item.get('max_score', '')}</td></tr>"
+            user_score += item.get('score', 0)
+            total_max_score += item.get('max_score', 0)
+
+        html = f"""
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>VYVA Brain Coach – Daily Cognitive Session Report</title>
+              <style>
+                body {{
+                  font-family: Arial, sans-serif;
+                  margin: 20px;
+                  background: #fff;
+                  color: #000;
+                  line-height: 1.5;
+                }}
+                .report-container {{
+                  max-width: 800px;
+                  margin: auto;
+                  padding: 20px;
+                  border: 1px solid #ddd;
+                  border-radius: 8px;
+                  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+                }}
+                h1 {{
+                  text-align: center;
+                  font-size: 22px;
+                  margin-bottom: 20px;
+                }}
+                .row {{
+                  display: flex;
+                  flex-wrap: wrap;
+                  margin-bottom: 10px;
+                }}
+                .label {{
+                  flex: 1 0 200px;
+                  font-weight: bold;
+                }}
+                .value {{
+                  flex: 2 0 300px;
+                }}
+                .section-title {{
+                  font-size: 18px;
+                  margin-top: 20px;
+                  border-bottom: 1px solid #ccc;
+                  padding-bottom: 5px;
+                }}
+                .notes {{
+                  background: #f9f9f9;
+                  padding: 10px;
+                  border-radius: 6px;
+                  margin-top: 10px;
+                  font-style: italic;
+                }}
+                table {{
+                  width: 100%;
+                  border-collapse: collapse;
+                  margin-top: 15px;
+                }}
+                th, td {{
+                  border: 1px solid #ccc;
+                  padding: 8px;
+                  text-align: center;
+                }}
+                th {{
+                  background: #f0f0f0;
+                }}
+            	.header_bg {{
+            		background:#642997;
+            	}}
+                @media (max-width: 600px) {{
+                  .row {{
+                    flex-direction: column;
+                  }}
+                  .label, .value {{
+                    flex: 1 0 100%;
+                  }}
+                }}
+            	.logo img{{
+            		max-width:100%;
+            	}}
+            	.logo_div{{
+            		width:20%;
+            		padding:26px 0px 8px 19px;
+            	}}
+            	.main{{
+            		width:100%;
+            		display:flex;
+            	}}
+            	.second_div{{
+            		width:74%;
+            		margin:20px 0px 0px;
+            	}}
+              </style>
+            </head>
+            <body>
+              <div class="report-container">
+              <div class="header_bg">
+              <div class="main">
+              <div class="logo logo_div"><img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png" ></div>
+               <div class="second_div"> <h1 style="color:#FFF; font-size:18px; text-align:right;">VYVA Brain Coach – Daily Cognitive Session Report</h1></div>
+                </div>
+            </div>
+                <div  style="margin-top:35px; "class="row"><div class="label">Name:</div><div class="value">{name}</div></div>
+                <div class="row"><div class="label">Cognitive Tier:</div><div class="value">Tier {tier} – Moderate Impairment</div></div>
+                <div class="row"><div class="label">Date:</div><div class="value">{current_date}</div></div>
+                <div class="row"><div class="label">Session ID:</div><div class="value">#{session_id}</div></div>
+
+
+            <div class="section-title">Activity Domain Scores</div>
+                <table>
+                  <tr>
+                    <th>Activity Domain</th>
+                    <th>Score</th>
+                    <th>Max Score</th>
+                  </tr>
+                  {table_rows}
+                </table>
+                <div style="margin-top:55px;" class="row"><div class="label">Total Score:</div><div class="value">{user_score} / {total_max_score}</div></div>
+                <div class="row"><div class="label">Performance Tier:</div><div class="value">{performance_tier}</div></div>
+                <div class="row"><div class="label">Session Completed:</div><div class="value">Yes</div></div>
+                <div class="section-title">Agent Notes & Suggestions</div>
+                <div class="notes">
+                  {suggestions}<br><br>
+                </div>
+              </div>
+            </body>
+            </html>"""
+        result = await self.send_email_via_mailgun(
+                to=[recipient_email],
+                subject='VYVA Brain Coach – Daily Cognitive Session Report',
+                html=html
+            )
+            
+        logger.info(f"Medical report sent successfully to {recipient_email}")
+        return True
