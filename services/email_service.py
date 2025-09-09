@@ -152,6 +152,10 @@ class EmailService:
                     .footer {{ background-color: #f8f9fa; padding: 20px; text-align: center; color: #666; }}
                     .vitals {{ background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 10px 0; }}
                     .vital-item {{ margin: 10px 0; }}
+                    .logo img{{ max-width:100%; }}
+                    .logo_div{{ width:20%; padding:26px 0px 8px 19px; }}
+                    .main{{ width:100%; display:flex; }}
+                    .second_div{{ width:74%; margin:20px 0px 0px; }}
                 </style>
             </head>
             <body>
@@ -159,7 +163,7 @@ class EmailService:
                 <div class="main">
                     <div class="logo logo_div"><img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png"></div>
                     <div class="second_div">
-                    <h1 style="color:#FFF; font-size:18px; text-align:right;">VYVA Symptom Checker</h1>
+                    <h1 style="color:#FFF; font-size:20px; text-align:right;">VYVA Symptom Checker</h1>
                     </div>
                 </div>
                 </div>
