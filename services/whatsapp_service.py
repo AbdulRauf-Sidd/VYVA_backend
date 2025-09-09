@@ -1,4 +1,5 @@
 import httpx
+import json
 from typing import Dict, Any, Optional
 from core.config import settings
 from core.logging import get_logger
@@ -24,6 +25,28 @@ class WhatsAppService:
         # Template SID is optional - only required for template messages
 
         self.base_url = f"https://api.twilio.com/2010-04-01/Accounts/{self.account_sid}/Messages.json"
+
+    def _sanitize_template_variable(self, value: str) -> str:
+        """
+        Sanitize template variable values to avoid Twilio error 21656.
+        
+        Args:
+            value: The variable value to sanitize
+            
+        Returns:
+            str: Sanitized value
+        """
+        if not isinstance(value, str):
+            value = str(value)
+        
+        # Replace problematic characters that can cause error 21656
+        # Replace straight apostrophe with right single quotation mark
+        value = value.replace("'", "'")
+        
+        # Remove or replace other problematic characters if needed
+        # Add more replacements as needed based on your specific use case
+        
+        return value
 
     async def send_template_message(
         self,
@@ -54,13 +77,18 @@ class WhatsAppService:
                 from_number = f"whatsapp:{from_number}"
 
             # Prepare the message data for form URL encoding
-
-            # Template data is already a JSON object from the database
+            # ContentVariables must be a JSON string, not a list
+            content_variables_json = json.dumps(template_data)
+            
+            # Log the data being sent for debugging
+            logger.info(f"Sending template message with ContentSid: {self.template_sid}")
+            logger.info(f"ContentVariables: {content_variables_json}")
+            
             message_data = {
                 "From": from_number,
                 "To": to_phone,
                 "ContentSid": self.template_sid,
-                "ContentVariables": [template_data]
+                "ContentVariables": content_variables_json
             }
 
             # Send the message
@@ -115,6 +143,8 @@ class WhatsAppService:
                 breakdown_text = str(breakdown)
 
             # Prepare template data
+            # Twilio templates typically use numbered placeholders like {{1}}, {{2}}, etc.
+            # If your template uses {{breakdown}}, keep it as is, but if it uses {{1}}, change accordingly
             template_data = {
                 "breakdown": breakdown_text
             }
