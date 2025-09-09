@@ -13,7 +13,9 @@ import asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db
 from models.symptom_checker import SymptomCheckerResponse
+from services import whatsapp_service
 from services.email_service import EmailService
+from services.whatsapp_service import WhatsAppService
 
 logger = logging.getLogger(__name__)
 
@@ -57,35 +59,37 @@ def _formulate_symptom_query(payload: SymptomCheckRequest) -> str:
     Formulate a comprehensive search query for MediSearch API using all available parameters.
     """
     query_parts = []
-    
+
     # Start with main symptoms
     query_parts.append(f"Symptoms: {payload.symptoms}")
-    
+
     # Add severity scale if provided
     if payload.severity_scale:
         query_parts.append(f"with severity: {payload.severity_scale}")
-    
+
     # Add duration if provided
     if payload.duration:
         query_parts.append(f"since: {payload.duration}")
-    
+
     # Add vitals information if available
     vitals_parts = []
     if payload.heart_rate:
         vitals_parts.append(f"heart rate: {payload.heart_rate} bpm")
     if payload.respiratory_rate:
-        vitals_parts.append(f"respiratory rate: {payload.respiratory_rate} breaths/min")
-    
+        vitals_parts.append(
+            f"respiratory rate: {payload.respiratory_rate} breaths/min")
+
     if vitals_parts:
-        query_parts.append(f"key current vitals information, {', '.join(vitals_parts)}")
-    
+        query_parts.append(
+            f"key current vitals information, {', '.join(vitals_parts)}")
+
     # Add additional notes if provided
     if payload.additional_notes:
         query_parts.append(f"Additional notes: {payload.additional_notes}")
-    
+
     # Join all parts with periods and spaces
     formulated_query = ". ".join(query_parts) + "."
-    
+
     return formulated_query
 
 
@@ -231,15 +235,15 @@ def _is_emergency(text: str) -> bool:
     return False
 
 
-async def _call_medisearch_api(symptoms: str, language: str = "en", model_type: str = "pro", 
-                              system_prompt: str = None, followup_count: int = 2) -> Dict[str, Any]:
+async def _call_medisearch_api(symptoms: str, language: str = "en", model_type: str = "pro",
+                               system_prompt: str = None, followup_count: int = 2) -> Dict[str, Any]:
     """
     Call the MediSearch API and process the SSE response.
     Returns processed medical analysis with articles and emergency detection.
     """
     # Generate unique ID
     conversation_id = _generate_id()
-    
+
     # Prepare request payload
     request_payload = {
         "conversation": [symptoms],
@@ -256,7 +260,7 @@ async def _call_medisearch_api(symptoms: str, language: str = "en", model_type: 
             "followup_count": followup_count
         }
     }
-    
+
     # Make API call
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
@@ -270,17 +274,19 @@ async def _call_medisearch_api(symptoms: str, language: str = "en", model_type: 
                 json=request_payload
             )
             response.raise_for_status()
-            
+
             # Process SSE stream
             raw_sse = response.text
             return _process_sse_stream(raw_sse)
-            
+
     except httpx.TimeoutException:
         logger.error("MediSearch API timeout")
-        raise HTTPException(status_code=504, detail="Medical analysis service timeout")
+        raise HTTPException(
+            status_code=504, detail="Medical analysis service timeout")
     except httpx.HTTPStatusError as e:
         logger.error(f"MediSearch API error: {e.response.status_code}")
-        raise HTTPException(status_code=502, detail="Medical analysis service error")
+        raise HTTPException(
+            status_code=502, detail="Medical analysis service error")
     except Exception as e:
         logger.error(f"Unexpected error calling MediSearch API: {str(e)}")
         raise HTTPException(status_code=500, detail="Internal server error")
@@ -293,24 +299,24 @@ def _process_sse_stream(raw_sse: str) -> Dict[str, Any]:
     """
     # Split into SSE messages
     chunks = re.split(r'\r?\n\r?\n', raw_sse)
-    
+
     email = ""
     articles = []
-    
+
     # Process each chunk
     for chunk in chunks:
         if not chunk.startswith("data:"):
             continue
-            
+
         data_line = chunk.replace("data:", "").strip()
         if data_line == "[DONE]":
             break
-            
+
         try:
             obj = json.loads(data_line)
         except json.JSONDecodeError:
             continue
-            
+
         # Handle different event types
         if obj.get("event") == "articles" and isinstance(obj.get("data"), list):
             articles = obj["data"]
@@ -318,11 +324,11 @@ def _process_sse_stream(raw_sse: str) -> Dict[str, Any]:
             return {"error": obj.get("data", "Unknown error"), "email": "", "articles": []}
         elif obj.get("event") == "llm_response" and isinstance(obj.get("data"), str):
             email = obj["data"]
-    
+
     # Replace reference markers with HTML anchors
     if articles:
         email = _replace_references_with_links(email, articles)
-    
+
     return {
         "email": email,
         "articles": articles,
@@ -337,17 +343,18 @@ def _replace_references_with_links(email: str, articles: List[Dict]) -> str:
     def replace_match(match):
         nums_str = match.group(1)
         nums = [int(n.strip()) for n in nums_str.split(',')]
-        
+
         links = []
         for num in nums:
             idx = num - 1
             if 0 <= idx < len(articles) and articles[idx].get('url'):
-                links.append(f'<a href="{articles[idx]["url"]}" target="_blank">[{num}]</a>')
+                links.append(
+                    f'<a href="{articles[idx]["url"]}" target="_blank">[{num}]</a>')
             else:
                 links.append(f'[{num}]')
-        
+
         return ', '.join(links)
-    
+
     return re.sub(r'\[(\d+(?:,\s*\d+)*)\]', replace_match, email)
 
 
@@ -356,7 +363,7 @@ def _create_breakdown(email: str, full_name: str = None) -> Dict[str, str]:
     Break down the medical response into structured format.
     """
     lines = [line.strip() for line in email.split('\n') if line.strip()]
-    
+
     breakdown = {
         "1": full_name or "Patient",
         "2": lines[0] if lines else "",
@@ -364,7 +371,7 @@ def _create_breakdown(email: str, full_name: str = None) -> Dict[str, str]:
         "4": lines[2].replace("2.", "").strip() if len(lines) > 2 else "",
         "5": lines[3].replace("3.", "").strip() if len(lines) > 3 else ""
     }
-    
+
     return breakdown
 
 
@@ -374,24 +381,24 @@ def _create_clean_summary(email: str) -> str:
     """
     if not email:
         return ""
-    
+
     # Remove HTML anchor tags but keep the text
     clean_text = re.sub(r'<a[^>]*>\[(\d+)\]</a>', r'[\1]', email)
-    
+
     # Remove any remaining HTML tags
     clean_text = re.sub(r'<[^>]+>', '', clean_text)
-    
+
     # Remove reference markers like [1], [2, 3], etc.
     clean_text = re.sub(r'\[\d+(?:,\s*\d+)*\]', '', clean_text)
-    
+
     # Remove numbering patterns like "1.", "2.", "3."
     clean_text = re.sub(r'^\d+\.\s*', '', clean_text, flags=re.MULTILINE)
-    
+
     # Clean up extra whitespace and newlines
     clean_text = re.sub(r'\n\s*\n', '\n\n', clean_text)
     clean_text = re.sub(r'[ \t]+', ' ', clean_text)
     clean_text = clean_text.strip()
-    
+
     return clean_text
 
 
@@ -403,14 +410,14 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
     """
     logger.info("=== SYMPTOM CHECKER ENDPOINT CALLED ===")
     logger.info(f"Received payload: {payload.model_dump()}")
-    
+
     conversation_id = _generate_id()
-    
+
     try:
         # Formulate comprehensive search query
         formulated_symptoms = _formulate_symptom_query(payload)
         logger.info(f"Formulated query: {formulated_symptoms}")
-        
+
         # Call MediSearch API with formulated query
         api_result = await _call_medisearch_api(
             symptoms=formulated_symptoms,
@@ -419,7 +426,7 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
             system_prompt=payload.system_prompt,
             followup_count=payload.followup_count
         )
-        
+
         # Check for API errors
         if api_result.get("error"):
             # Save error response to database
@@ -446,24 +453,24 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
             )
             db.add(error_response)
             await db.commit()
-            
+
             return {
                 "error": api_result["error"],
                 "summary": "Error occurred during medical analysis. Please try again."
             }
-        
+
         email = api_result.get("email", "")
         articles = api_result.get("articles", [])
-        
+
         # Detect emergency situations
         is_emergency = _is_emergency(email)
-        
+
         # Create structured breakdown
         breakdown = _create_breakdown(email, payload.full_name)
-        
+
         # Create clean summary without HTML tags, references, or numbering
         summary = _create_clean_summary(email)
-        
+
         # Save complete response to database
         response_record = SymptomCheckerResponse(
             conversation_id=conversation_id,
@@ -486,22 +493,23 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
             is_emergency=is_emergency,
             status="success"
         )
-        
+
         db.add(response_record)
         await db.commit()
-        
-        logger.info(f"Saved symptom analysis to database with conversation_id: {conversation_id}")
-        
+
+        logger.info(
+            f"Saved symptom analysis to database with conversation_id: {conversation_id}")
+
         # Return only the summary as requested
         return {
             "summary": summary
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Unexpected error in analyze_symptoms: {str(e)}")
-        
+
         # Try to save error to database
         try:
             error_response = SymptomCheckerResponse(
@@ -529,7 +537,7 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
             await db.commit()
         except Exception as db_error:
             logger.error(f"Failed to save error to database: {str(db_error)}")
-        
+
         raise HTTPException(status_code=500, detail="Internal server error")
 
 
@@ -541,49 +549,49 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
     """
     logger.info("=== SEND REPORT ENDPOINT CALLED ===")
     logger.info(f"Received payload: {payload.model_dump()}")
-    
+
     try:
         # Get the latest analysis record from database (most recent one)
         from sqlalchemy import select, desc
-        
+
         result = await db.execute(
             select(SymptomCheckerResponse)
             .order_by(desc(SymptomCheckerResponse.created_at))
             .limit(1)
         )
         response_record = result.scalar_one_or_none()
-        
+
         if not response_record:
             raise HTTPException(
-                status_code=404, 
+                status_code=404,
                 detail="No analysis found. Please run symptom analysis first."
             )
-        
+
         # Validate action and required fields
         if payload.action not in ["email", "whatsapp"]:
             raise HTTPException(
                 status_code=400,
                 detail="Invalid action. Must be 'email' or 'whatsapp'."
             )
-        
+
         if payload.action == "email" and not payload.recipient_email:
             raise HTTPException(
                 status_code=400,
                 detail="Email address is required when action is 'email'."
             )
-        
+
         if payload.action == "whatsapp" and not payload.phone_number:
             raise HTTPException(
                 status_code=400,
                 detail="Phone number is required when action is 'whatsapp'."
             )
-        
+
         # Prepare report content
         report_content = _prepare_report_content(response_record, payload)
-        
+
         # Send report based on action
         send_result = None
-        
+
         if payload.action == "email":
             send_result = await _send_email_report(
                 recipient_email=payload.recipient_email,
@@ -596,13 +604,14 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
                 report_content=report_content,
                 patient_name=response_record.full_name or "Patient"
             )
-        
+
         # Delete the record after successful sending
         await db.delete(response_record)
         await db.commit()
-        
-        logger.info(f"Report sent successfully and record deleted for conversation_id: {response_record.conversation_id}")
-        
+
+        logger.info(
+            f"Report sent successfully and record deleted for conversation_id: {response_record.conversation_id}")
+
         return {
             "message": "Report sent successfully",
             "conversation_id": response_record.conversation_id,
@@ -610,7 +619,7 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
             "status": send_result,
             "success": True
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -631,25 +640,28 @@ def _prepare_report_content(response_record: SymptomCheckerResponse, payload: Se
         "is_emergency": response_record.is_emergency,
         "created_at": response_record.created_at.isoformat() if response_record.created_at else None,
         "conversation_id": response_record.conversation_id,
-        "user_id": response_record.full_name or "Unknown",  # Using full_name as user_id for now
+        # Using full_name as user_id for now
+        "user_id": response_record.full_name or "Unknown",
         "custom_message": payload.custom_message,
         # Additional fields for email template
         "duration": response_record.duration or "Not specified",
         "pain_level": response_record.severity_scale or "Not specified",
         "additional_notes": response_record.additional_notes or "None"
     }
-    
+
     # Include breakdown if available
     if response_record.breakdown:
         content["breakdown"] = response_record.breakdown
-    
+
     # Include articles if requested and available
     if payload.include_articles and response_record.email:
         # Extract article links from email
-        article_links = re.findall(r'<a href="([^"]*)"[^>]*>\[(\d+)\]</a>', response_record.email)
+        article_links = re.findall(
+            r'<a href="([^"]*)"[^>]*>\[(\d+)\]</a>', response_record.email)
         if article_links:
-            content["articles"] = [{"url": url, "reference": ref} for url, ref in article_links]
-    
+            content["articles"] = [{"url": url, "reference": ref}
+                                   for url, ref in article_links]
+
     # Include vitals if available
     content["vitals"] = {
         "heart_rate": {
@@ -663,7 +675,7 @@ def _prepare_report_content(response_record: SymptomCheckerResponse, payload: Se
             "confidence": None  # TODO: Add confidence field if needed
         }
     }
-    
+
     return content
 
 
@@ -674,22 +686,24 @@ async def _send_email_report(recipient_email: str, report_content: Dict[str, Any
     try:
         # Initialize email service
         email_service = EmailService()
-        
+
         # Send the medical report
         success = await email_service.send_medical_report(
             recipient_email=recipient_email,
             report_content=report_content
         )
-        
-        logger.info(f"Email service returned: {success} (type: {type(success)})")
-        
+
+        logger.info(
+            f"Email service returned: {success} (type: {type(success)})")
+
         if success:
-            logger.info(f"Medical report sent successfully to {recipient_email}")
+            logger.info(
+                f"Medical report sent successfully to {recipient_email}")
             return "email_sent"
         else:
             logger.error(f"Failed to send medical report to {recipient_email}")
             return "email_failed"
-        
+
     except Exception as e:
         logger.error(f"Failed to send email to {recipient_email}: {str(e)}")
         return "email_failed"
@@ -702,45 +716,23 @@ async def _send_whatsapp_report(phone_number: str, report_content: Dict[str, Any
     try:
         # TODO: Implement actual WhatsApp sending logic
         # This is a placeholder - you'll need to integrate with your WhatsApp service
-        
-        # Create WhatsApp message
-        emergency_text = "🚨 URGENT: " if report_content['is_emergency'] else ""
-        whatsapp_message = f"""{emergency_text}Medical Report for {patient_name}
 
-📋 SYMPTOMS:
-{report_content['symptoms']}
+        whatsapp_service = WhatsAppService()
 
-📊 ANALYSIS:
-{report_content['summary']}
+        # report_content.get('breakdown')
+        success = await whatsapp_service.send_template_message(phone_number, report_content.get('breakdown'))
 
-⚠️ SEVERITY: {report_content['severity'].upper()}
-🚨 EMERGENCY: {'YES - SEEK IMMEDIATE MEDICAL ATTENTION' if report_content['is_emergency'] else 'No'}
+        logger.info(
+            f"Whatsapp service returned: {success} (type: {type(success)})")
 
-"""
-        
-        if report_content.get('breakdown'):
-            whatsapp_message += "\n📝 DETAILED BREAKDOWN:\n"
-            for key, value in report_content['breakdown'].items():
-                if value:
-                    whatsapp_message += f"• {value}\n"
-        
-        if report_content.get('articles'):
-            whatsapp_message += "\n📚 REFERENCE ARTICLES:\n"
-            for article in report_content['articles']:
-                whatsapp_message += f"• {article['url']}\n"
-        
-        if report_content.get('custom_message'):
-            whatsapp_message += f"\n💬 ADDITIONAL MESSAGE:\n{report_content['custom_message']}\n"
-        
-        whatsapp_message += f"\n📅 Generated: {report_content['created_at'] or 'Unknown'}"
-        whatsapp_message += "\n\n⚠️ Please consult with a healthcare professional for proper medical advice."
-        
-        # TODO: Replace with actual WhatsApp sending
-        logger.info(f"WhatsApp message would be sent to {phone_number}")
-        logger.info(f"WhatsApp message: {whatsapp_message[:200]}...")
-        
-        return "whatsapp_sent"
-        
+        if success:
+            logger.info(
+                f"Medical report sent successfully to {phone_number}")
+            return "whatsapp_sent"
+        else:
+            logger.error(f"Failed to send medical report to {phone_number}")
+            return "whatsapp_failed"
+
     except Exception as e:
         logger.error(f"Failed to send WhatsApp message: {str(e)}")
         return "whatsapp_failed"
