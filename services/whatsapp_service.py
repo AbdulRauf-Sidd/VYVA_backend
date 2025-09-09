@@ -29,7 +29,6 @@ class WhatsAppService:
     async def send_template_message(
         self,
         to_phone: str,
-        template_sid: str,
         template_data: Dict[str, Any]
     ) -> bool:
         """
@@ -48,13 +47,17 @@ class WhatsAppService:
             if not to_phone.startswith("whatsapp:"):
                 to_phone = f"whatsapp:{to_phone}"
             
+            if not self.from_number.startswith("whatsapp:"):
+                self.from_number = f"whatsapp:{self.from_number}"
+                
             # Prepare the message data
             message_data = {
                 "From": self.from_number,
                 "To": to_phone,
-                "TemplateSid": template_sid,
-                "TemplateData": template_data
+                "ContentSid": self.template_sid,
+                "ContentVariables": template_data
             }
+            
             
             # Send the message
             async with httpx.AsyncClient() as client:
@@ -62,6 +65,7 @@ class WhatsAppService:
                     self.base_url,
                     auth=(self.account_sid, self.auth_token),
                     data=message_data,
+                    headers={"Content-Type": "application/x-www-form-urlencoded"},
                     timeout=30.0
                 )
                 
