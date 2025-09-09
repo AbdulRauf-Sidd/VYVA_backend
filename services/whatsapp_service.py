@@ -21,8 +21,7 @@ class WhatsAppService:
             raise ValueError("TWILIO_AUTH_TOKEN is not configured")
         if not self.from_number:
             raise ValueError("TWILIO_WHATSAPP_FROM_NUMBER is not configured")
-        if not self.template_sid:
-            raise ValueError("TWILIO_WHATSAPP_TEMPLATE_SID is not configured")
+        # Template SID is optional - only required for template messages
             
         self.base_url = f"https://api.twilio.com/2010-04-01/Accounts/{self.account_sid}/Messages.json"
     
@@ -36,23 +35,28 @@ class WhatsAppService:
         
         Args:
             to_phone: Recipient phone number (format: +1234567890)
-            template_sid: Twilio template SID
             template_data: Data to populate template variables
             
         Returns:
             bool: True if message sent successfully, False otherwise
         """
         try:
+            # Check if template_sid is configured
+            if not self.template_sid:
+                logger.error("TWILIO_WHATSAPP_TEMPLATE_SID is not configured")
+                return False
             # Ensure phone number has whatsapp: prefix
             if not to_phone.startswith("whatsapp:"):
                 to_phone = f"whatsapp:{to_phone}"
             
-            if not self.from_number.startswith("whatsapp:"):
-                self.from_number = f"whatsapp:{self.from_number}"
+            from_number = self.from_number
+            if not from_number.startswith("whatsapp:"):
+                from_number = f"whatsapp:{from_number}"
                 
-            # Prepare the message data
+            # Prepare the message data for form URL encoding
+            # Template data is already a JSON object from the database
             message_data = {
-                "From": self.from_number,
+                "From": from_number,
                 "To": to_phone,
                 "ContentSid": self.template_sid,
                 "ContentVariables": template_data
@@ -115,7 +119,6 @@ class WhatsAppService:
             # Send the template message
             success = await self.send_template_message(
                 to_phone=recipient_phone,
-                template_sid=self.template_sid,  # Use template SID from settings
                 template_data=template_data
             )
             
