@@ -1,19 +1,13 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel
 from typing import Optional, List
-from datetime import datetime, time
-from enum import Enum
+from datetime import time, date, datetime
 
-# MedicationTime Schemas
 class MedicationTimeBase(BaseModel):
-    time_of_day: Optional[time] = None
+    time_of_day: time
     notes: Optional[str] = None
 
 class MedicationTimeCreate(MedicationTimeBase):
     pass
-
-class MedicationTimeUpdate(BaseModel):
-    time_of_day: Optional[time] = None
-    notes: Optional[str] = None
 
 class MedicationTimeInDB(MedicationTimeBase):
     id: int
@@ -21,55 +15,31 @@ class MedicationTimeInDB(MedicationTimeBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
-# Medication Schemas
 class MedicationBase(BaseModel):
     name: str
     dosage: str
-    frequency: str
-    start_date: Optional[datetime] = None
-    end_date: Optional[datetime] = None
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
     purpose: Optional[str] = None
     side_effects: Optional[str] = None
     notes: Optional[str] = None
-
-    # @validator('name', 'dosage', 'frequency')
-    # def validate_required_fields(cls, v, field):
-    #     if not v or not v.strip():
-    #         raise ValueError(f"{field.name} cannot be empty")
-    #     return v.strip()
-
-    # @validator('dosage')
-    # def validate_dosage_format(cls, v):
-    #     if v and not any(char.isdigit() for char in v):
-    #         raise ValueError("Dosage should contain numeric values (e.g., '10mg', '1 tablet')")
-    #     return v
+    times_of_day: List[MedicationTimeCreate] = []
 
 class MedicationCreate(MedicationBase):
-    times_of_day: Optional[List[MedicationTimeCreate]] = None
-
-class MedicationRead(MedicationBase):
-    pass
+    user_id: int
 
 class MedicationUpdate(BaseModel):
     name: Optional[str] = None
     dosage: Optional[str] = None
-    frequency: Optional[str] = None
-    start_date: Optional[datetime] = None
-    end_date: Optional[datetime] = None
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
     purpose: Optional[str] = None
     side_effects: Optional[str] = None
     notes: Optional[str] = None
-
-    # @validator('name', 'dosage', 'frequency', pre=True, always=True)
-    # def validate_optional_fields(cls, v, field):
-    #     if v is not None:
-    #         if not v or not v.strip():
-    #             raise ValueError(f"{field.name} cannot be empty if provided")
-    #         return v.strip()
-    #     return v
 
 class MedicationInDB(MedicationBase):
     id: int
@@ -78,17 +48,25 @@ class MedicationInDB(MedicationBase):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
-# Optional: Response schemas for specific endpoints
-class MedicationWithTimes(MedicationInDB):
-    """Schema for medication with times of day"""
-    pass
+# For your input format
+class MedicationInput(BaseModel):
+    name: str
+    dosage: str
+    times: List[str]  # Accept string times like "09:00"
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
 
-class MedicationTimeWithMedication(MedicationTimeInDB):
-    """Schema for medication time with medication details"""
-    medication: Optional[MedicationInDB] = None
-
-    class Config:
-        orm_mode = True
+class BulkMedicationRequest(BaseModel):
+    medication_details: List[MedicationInput]
+    user_id: int  # Added user_id since it's required
+    channel: str
+    email: str
+    phone: str
+    want_caregiver_alerts: bool
+    care_giver_channel: Optional[str] = None
+    caregiver_email: Optional[str] = None
+    caregiver_phone: Optional[str] = None

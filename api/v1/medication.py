@@ -1,186 +1,250 @@
-from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
-from sqlalchemy.orm import Session
-from typing import List, Optional
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from typing import List
 import logging
-from datetime import datetime
+import time
 from core.database import get_db
 from services.medication import MedicationService
+from repositories.user import UserRepository
+from repositories.medication import MedicationRepository
 from schemas.medication import (
-    MedicationCreate, 
-    MedicationRead, 
+    BulkMedicationRequest,
+    MedicationCreate,
     MedicationUpdate,
-    # HTTPErrorResponse
+    MedicationInDB
 )
 
-
-from repositories.user import UserRepository
-
-router = APIRouter()
+# Configure logging
 logger = logging.getLogger(__name__)
 
-# Common error responses
-# ERROR_RESPONSES = {
-#     400: {"model": HTTPErrorResponse, "description": "Bad Request - Validation error"},
-#     401: {"model": HTTPErrorResponse, "description": "Unauthorized - Invalid credentials"},
-#     403: {"model": HTTPErrorResponse, "description": "Forbidden - Access denied"},
-#     404: {"model": HTTPErrorResponse, "description": "Not Found - Resource not found"},
-#     500: {"model": HTTPErrorResponse, "description": "Internal Server Error"}
-# }
-
-
+router = APIRouter()
 
 @router.post(
     "",
+    response_model=List[MedicationInDB],
     status_code=status.HTTP_201_CREATED,
-    summary="Create multiple medications for a user",
-    description="Create multiple medications for a user with their times of day in a single operation."
+    summary="Create multiple medications"
 )
-async def create_medications_bulk(
-    medications_data: List[MedicationCreate],
-    background_tasks: BackgroundTasks,
-    user_id: int,
-    db: Session = Depends(get_db),
+async def bulk_create_medications(
+    request: BulkMedicationRequest,
+    db: AsyncSession = Depends(get_db)
 ):
     """
-    Create multiple medications for a user in bulk.
-    
-    - **user_id**: ID of the user to create medications for
-    - **medications_data**: List of medication creation data
+    Create multiple medications with their times in a single request.
     """
+    start_time = time.time()
+    request_id = f"bulk_create_{int(start_time * 1000)}"
+    
+    logger.info(
+        f"Request {request_id}: Starting bulk medication creation for user {request.user_id} "
+        f"with {len(request.medication_details)} medications"
+    )
+    
     try:
-
-        # FIRST CREATE USER RECORD WITH NO DETAILS, THEN PASS THIS USER ID TO MEDICATION CREATION 
-        medication_service = MedicationService(db)
-        medications = await medication_service.create_medications_bulk(user_id, medications_data)       
-        return medications #REPLACE THIS WITH USER_ID. JUST USER_ID SHOULD BE RETURNED 
+        first_name = request.first_name or "User"
+        last_name = request.last_name or ""
+        user_repo = UserRepository(db)
+        user_params = {
+            'first_name': first_name,
+            'last_name': last_name,
+            'channel': request.channel,
+            'email': request.email,
+            'phone': request.phone,
+            # 'want_caretaker_alerts': request.want_caretaker_alerts if request.want_caretaker_alerts is not None else True,
+            # 'wants_reminders': True,
+            # 'takes_medication': True,
+            # 'missed_dose_alerts': True,
+            # 'caretaker_preferred_channel': request.caretaker_channel,
+            # 'caretaker_email': request.caretaker_email,
+            # 'caretaker_phone_number': request.caretaker_phone
+        }
+        user = await user_repo.create_user(user_params)
+        logger.debug(f"Request {request_id}: Created user {user.id} for medication assignment")
+        request['user_id'] = user.id
+        logger.debug(f"Request {request_id}: request body {request}")
+        medication_repo = MedicationRepository(db)
+        medication_service = MedicationService(medication_repo)
+        
+        logger.debug(
+            f"Request {request_id}: Processing medications: {[med.name for med in request.medication_details]}"
+        )
+        
+        result = await medication_service.process_bulk_medication_request(request)
+        
+        duration = time.time() - start_time
+        logger.info(
+            f"Request {request_id}: Successfully created {len(result)} medications "
+            f"for user {request.user_id} in {duration:.2f}s"
+        )
+        
+        return result
         
     except ValueError as e:
-        logger.warning(f"Validation error creating bulk medications for user {user_id}: {e}")
+        logger.warning(
+            f"Request {request_id}: Validation failed for user {request.user_id}: {str(e)}"
+        )
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+    except Exception as e:
+        logger.error(
+            f"Request {request_id}: Unexpected error creating medications for user {request.user_id}: {str(e)}",
+            exc_info=True
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to create medications"
+        )
+
+@router.get(
+    "/user/{user_id}",
+    response_model=List[MedicationInDB],
+    summary="Get all medications for a user"
+)
+async def get_user_medications(
+    user_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Retrieve all medications for a specific user, including medication times.
+    """
+    start_time = time.time()
+    request_id = f"get_user_{user_id}_{int(start_time * 1000)}"
+    
+    logger.info(f"Request {request_id}: Fetching medications for user {user_id}")
+    
+    try:
+        medication_repo = MedicationRepository(db)
+        medication_service = MedicationService(medication_repo)
+        
+        result = await medication_service.get_user_medications(user_id)
+        
+        duration = time.time() - start_time
+        logger.info(
+            f"Request {request_id}: Found {len(result)} medications for user {user_id} "
+            f"in {duration:.2f}s"
+        )
+        
+        if not result:
+            logger.debug(f"Request {request_id}: No medications found for user {user_id}")
+        
+        return result
+        
+    except ValueError as e:
+        logger.warning(f"Request {request_id}: Invalid user ID {user_id}: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+    except Exception as e:
+        logger.error(
+            f"Request {request_id}: Failed to fetch medications for user {user_id}: {str(e)}",
+            exc_info=True
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch medications"
+        )
+
+@router.get(
+    "/{medication_id}",
+    response_model=MedicationInDB,
+    summary="Get a specific medication"
+)
+async def get_medication(
+    medication_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Retrieve a specific medication by ID, including its times.
+    """
+    start_time = time.time()
+    request_id = f"get_med_{medication_id}_{int(start_time * 1000)}"
+    
+    logger.info(f"Request {request_id}: Fetching medication {medication_id}")
+    
+    try:
+        medication_repo = MedicationRepository(db)
+        medication_service = MedicationService(medication_repo)
+        
+        result = await medication_service.get_medication(medication_id)
+        
+        duration = time.time() - start_time
+        if result:
+            logger.info(
+                f"Request {request_id}: Found medication '{result.name}' (ID: {medication_id}) "
+                f"in {duration:.2f}s"
+            )
+        else:
+            logger.warning(f"Request {request_id}: Medication {medication_id} not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Medication not found"
+            )
+            
+        return result
+        
+    except ValueError as e:
+        logger.warning(f"Request {request_id}: Invalid medication ID {medication_id}: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e)
         )
     except HTTPException:
-        raise
+        raise  # Re-raise HTTP exceptions
     except Exception as e:
-        logger.error(f"Unexpected error creating bulk medications for user {user_id}: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An unexpected error occurred while creating medications"
+        logger.error(
+            f"Request {request_id}: Failed to fetch medication {medication_id}: {str(e)}",
+            exc_info=True
         )
-
-@router.get(
-    "",
-    response_model=List[MedicationRead],
-    summary="Get user medications",
-    description="Retrieve all medications for a specific user including their times of day."
-)
-async def get_user_medications(
-    user_id: int,
-    db: Session = Depends(get_db)
-):
-    """
-    Get all medications for a specific user.
-    
-    - **user_id**: ID of the user to retrieve medications for
-    """
-    try:
-        medication_service = MedicationService(db)
-        medications = await medication_service.get_user_medications(user_id)
-        
-        if not medications:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="No medications found for this user"
-            )
-        
-        return medications
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Unexpected error getting medications for user {user_id}: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An unexpected error occurred while retrieving medications"
-        )
-
-@router.get(
-    "/{medication_id}",
-    response_model=MedicationRead,
-    summary="Get specific medication",
-    description="Retrieve a specific medication by ID with ownership validation."
-)
-async def get_medication(
-    medication_id: int,
-    user_id: int,
-    db: Session = Depends(get_db)
-):
-    """
-    Get a specific medication by ID.
-    
-    - **user_id**: ID of the user who owns the medication
-    - **medication_id**: ID of the medication to retrieve
-    """
-    try:
-        # Initialize service
-        medication_service = MedicationService(db)
-        medication = await medication_service.get_medication(medication_id, user_id)
-        
-        if not medication:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Medication not found or you don't have access to it"
-            )
-        
-        return medication
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Unexpected error getting medication {medication_id}: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An unexpected error occurred while retrieving the medication"
+            detail="Failed to fetch medication"
         )
 
 @router.put(
     "/{medication_id}",
-    response_model=MedicationRead,
-    summary="Update medication",
-    description="Update a specific medication with validation and ownership check."
+    response_model=MedicationInDB,
+    summary="Update a medication"
 )
 async def update_medication(
-    user_id: int,
     medication_id: int,
     update_data: MedicationUpdate,
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     """
-    Update a specific medication.
-    
-    - **user_id**: ID of the user who owns the medication
-    - **medication_id**: ID of the medication to update
-    - **update_data**: Fields to update
+    Update a medication and its times.
     """
+    start_time = time.time()
+    request_id = f"update_med_{medication_id}_{int(start_time * 1000)}"
+    
+    logger.info(f"Request {request_id}: Updating medication {medication_id}")
+    logger.debug(f"Request {request_id}: Update data: {update_data.dict(exclude_unset=True)}")
+    
     try:
-        # Initialize service
-        medication_service = MedicationService(db)
-        # Convert Pydantic model to dict for the service
-        update_dict = update_data.dict(exclude_unset=True)
-        # Update medication using service (includes ownership validation)
-        medication = await medication_service.update_medication(medication_id, user_id, update_dict)
+        medication_repo = MedicationRepository(db)
+        medication_service = MedicationService(medication_repo)
         
-        if not medication:
+        result = await medication_service.update_medication(medication_id, update_data)
+        
+        duration = time.time() - start_time
+        if result:
+            logger.info(
+                f"Request {request_id}: Successfully updated medication '{result.name}' "
+                f"(ID: {medication_id}) in {duration:.2f}s"
+            )
+        else:
+            logger.warning(f"Request {request_id}: Medication {medication_id} not found for update")
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Medication not found or you don't have permission to update it"
+                detail="Medication not found"
             )
-        
-        return medication
+            
+        return result
         
     except ValueError as e:
-        logger.warning(f"Validation error updating medication {medication_id}: {e}")
+        logger.warning(f"Request {request_id}: Validation failed for medication {medication_id}: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e)
@@ -188,80 +252,74 @@ async def update_medication(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Unexpected error updating medication {medication_id}: {e}")
+        logger.error(
+            f"Request {request_id}: Failed to update medication {medication_id}: {str(e)}",
+            exc_info=True
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An unexpected error occurred while updating the medication"
+            detail="Failed to update medication"
         )
 
-@router.delete(
-    "/{medication_id}",
-    status_code=status.HTTP_204_NO_CONTENT,
-    summary="Delete medication",
-    description="Delete a specific medication with ownership validation."
+@router.put(
+    "/bulk/{user_id}",
+    response_model=List[MedicationInDB],
+    summary="Bulk update user medications"
 )
-async def delete_medication(
-    medication_id: int,
+async def bulk_update_medications(
     user_id: int,
-    db: Session = Depends(get_db),
+    medications_data: List[MedicationUpdate],
+    db: AsyncSession = Depends(get_db)
 ):
     """
-    Delete a specific medication.
-    
-    - **user_id**: ID of the user who owns the medication
-    - **medication_id**: ID of the medication to delete
+    Bulk update multiple medications for a user.
     """
+    start_time = time.time()
+    request_id = f"bulk_update_{user_id}_{int(start_time * 1000)}"
+    
+    logger.info(
+        f"Request {request_id}: Starting bulk update for user {user_id} "
+        f"with {len(medications_data)} medication updates"
+    )
+    
     try:
-        # Initialize service
-        medication_service = MedicationService(db)
+        medication_repo = MedicationRepository(db)
+        medication_service = MedicationService(medication_repo)
         
-        # Delete medication using service (includes ownership validation)
-        success = await medication_service.delete_medication(medication_id, user_id)
+        # Get user's current medications
+        current_medications = await medication_service.get_user_medications(user_id)
+        logger.debug(f"Request {request_id}: Found {len(current_medications)} current medications")
         
-        if not success:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Medication not found or you don't have permission to delete it"
-            )
+        updated_medications = []
+        for medication in current_medications:
+            # Find corresponding update data
+            update_data = next((med for med in medications_data if getattr(med, 'id', None) == medication.id), None)
+            if update_data:
+                logger.debug(f"Request {request_id}: Updating medication {medication.id}")
+                result = await medication_service.update_medication(medication.id, update_data)
+                if result:
+                    updated_medications.append(result)
         
-        # No content response for successful deletion
+        duration = time.time() - start_time
+        logger.info(
+            f"Request {request_id}: Successfully updated {len(updated_medications)} medications "
+            f"for user {user_id} in {duration:.2f}s"
+        )
         
-    except HTTPException:
-        raise
+        return updated_medications
+        
+    except ValueError as e:
+        logger.warning(f"Request {request_id}: Validation failed for user {user_id}: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
     except Exception as e:
-        logger.error(f"Unexpected error deleting medication {medication_id}: {e}")
+        logger.error(
+            f"Request {request_id}: Failed to bulk update medications for user {user_id}: {str(e)}",
+            exc_info=True
+        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An unexpected error occurred while deleting the medication"
+            detail="Failed to update medications"
         )
-
-
-
-
-
-
-
-
-
-
-
-
-# Background task functions
-async def log_bulk_creation(user_id: int, medication_count: int, medication_ids: List[int]):
-    """Background task to log bulk medication creation."""
-    try:
-        logger.info(
-            f"User {user_id} successfully created {medication_count} medications. "
-            f"Medication IDs: {medication_ids}"
-        )
-        # Add any additional logging, analytics, or notifications here
-    except Exception as e:
-        logger.error(f"Error in background task for bulk medication creation: {e}")
-
-async def send_medication_notification(user_id: int, medication_id: int, action: str):
-    """Background task to send notifications about medication changes."""
-    try:
-        logger.info(f"Sending {action} notification for medication {medication_id} to user {user_id}")
-        # Implement notification logic here (email, push, etc.)
-    except Exception as e:
-        logger.error(f"Error sending medication notification: {e}")
