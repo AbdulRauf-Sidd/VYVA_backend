@@ -22,7 +22,7 @@ class MedicationRepository:
         """Create a new medication with times"""
         try:
             # Create medication
-            medication_dict = medication_data.dict(exclude={"times_of_day"})
+            medication_dict = medication_data.model_dump(exclude={"times_of_day"})
             medication = Medication(**medication_dict)
             
             self.db_session.add(medication)
@@ -37,6 +37,7 @@ class MedicationRepository:
                 )
                 self.db_session.add(medication_time)
             
+            logger.info(f"Created medication {medication.name} for user {medication.user_id}")
             await self.db_session.commit()
             await self.db_session.refresh(medication)
             
@@ -53,7 +54,7 @@ class MedicationRepository:
             created_medications = []
             
             for medication_data in medications_data:
-                medication_dict = medication_data.dict(exclude={"times_of_day"})
+                medication_dict = medication_data.model_dump(exclude={"times_of_day"})
                 medication = Medication(**medication_dict)
                 
                 self.db_session.add(medication)
@@ -69,6 +70,8 @@ class MedicationRepository:
                     self.db_session.add(medication_time)
                 
                 created_medications.append(medication)
+                
+
             
             await self.db_session.commit()
             

@@ -7,11 +7,13 @@ from core.database import get_db
 from services.medication import MedicationService
 from repositories.user import UserRepository
 from repositories.medication import MedicationRepository
+from schemas.user import UserCreate
 from schemas.medication import (
     BulkMedicationRequest,
     MedicationCreate,
     MedicationUpdate,
-    MedicationInDB
+    MedicationInDB,
+    BulkMedicationSchema
 )
 
 # Configure logging
@@ -41,40 +43,50 @@ async def bulk_create_medications(
     )
     
     try:
-        first_name = request.first_name or "User"
-        last_name = request.last_name or ""
+        full_name = request.name
+        if full_name:
+            name_parts = full_name.strip().split()
+            first_name = name_parts[0]
+            last_name = " ".join(name_parts[1:]) if len(name_parts) > 1 else None
+        else:
+            first_name = None
+            last_name = None
+
+        # last_name = request.last_name or ""
         user_repo = UserRepository(db)
-        user_params = {
-            'first_name': first_name,
-            'last_name': last_name,
-            'channel': request.channel,
-            'email': request.email,
-            'phone': request.phone,
-            # 'want_caretaker_alerts': request.want_caretaker_alerts if request.want_caretaker_alerts is not None else True,
-            # 'wants_reminders': True,
-            # 'takes_medication': True,
-            # 'missed_dose_alerts': True,
-            # 'caretaker_preferred_channel': request.caretaker_channel,
-            # 'caretaker_email': request.caretaker_email,
-            # 'caretaker_phone_number': request.caretaker_phone
-        }
-        user = await user_repo.create_user(user_params)
-        logger.debug(f"Request {request_id}: Created user {user.id} for medication assignment")
-        request['user_id'] = user.id
-        logger.debug(f"Request {request_id}: request body {request}")
+        user_data = UserCreate(
+                first_name=first_name,
+                last_name=last_name,
+                email=request.email,
+                phone_number=request.phone,
+                wants_reminders=True,
+                missed_dose_alerts=True,
+                preferred_channel=request.channel,
+                wants_caretaker_alerts=request.caretaker_alerts,
+                caretaker_preferred_channel=request.caretaker_channel,
+                caretaker_email=request.caretaker_email,
+                caretaker_phone_number=request.caretaker_phone
+            )
+        user = await user_repo.create_user(user_data)
+        logger.info(f"Request {request_id}: Created user {user.id} for medication assignment")
+        medication_request = BulkMedicationSchema(
+            medication_details=request.medication_details,
+            user_id=user.id,
+        )
+        logger.info(f"Request {request_id}: request body {request}")
         medication_repo = MedicationRepository(db)
         medication_service = MedicationService(medication_repo)
         
-        logger.debug(
+        logger.info(
             f"Request {request_id}: Processing medications: {[med.name for med in request.medication_details]}"
         )
         
-        result = await medication_service.process_bulk_medication_request(request)
+        result = await medication_service.process_bulk_medication_request(medication_request)
         
         duration = time.time() - start_time
         logger.info(
             f"Request {request_id}: Successfully created {len(result)} medications "
-            f"for user {request.user_id} in {duration:.2f}s"
+            f"for user {medication_request.user_id} in {duration:.2f}s"
         )
         
         return result
@@ -127,7 +139,7 @@ async def get_user_medications(
         )
         
         if not result:
-            logger.debug(f"Request {request_id}: No medications found for user {user_id}")
+            logger.info(f"Request {request_id}: No medications found for user {user_id}")
         
         return result
         
@@ -220,7 +232,7 @@ async def update_medication(
     request_id = f"update_med_{medication_id}_{int(start_time * 1000)}"
     
     logger.info(f"Request {request_id}: Updating medication {medication_id}")
-    logger.debug(f"Request {request_id}: Update data: {update_data.dict(exclude_unset=True)}")
+    logger.info(f"Request {request_id}: Update data: {update_data.dict(exclude_unset=True)}")
     
     try:
         medication_repo = MedicationRepository(db)
@@ -288,14 +300,14 @@ async def bulk_update_medications(
         
         # Get user's current medications
         current_medications = await medication_service.get_user_medications(user_id)
-        logger.debug(f"Request {request_id}: Found {len(current_medications)} current medications")
+        logger.info(f"Request {request_id}: Found {len(current_medications)} current medications")
         
         updated_medications = []
         for medication in current_medications:
             # Find corresponding update data
             update_data = next((med for med in medications_data if getattr(med, 'id', None) == medication.id), None)
             if update_data:
-                logger.debug(f"Request {request_id}: Updating medication {medication.id}")
+                logger.info(f"Request {request_id}: Updating medication {medication.id}")
                 result = await medication_service.update_medication(medication.id, update_data)
                 if result:
                     updated_medications.append(result)
