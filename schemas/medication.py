@@ -27,10 +27,11 @@ class MedicationBase(BaseModel):
     purpose: Optional[str] = None
     side_effects: Optional[str] = None
     notes: Optional[str] = None
-    times_of_day: List[MedicationTimeCreate] = []
+    
 
 class MedicationCreate(MedicationBase):
     user_id: int
+    times_of_day: List[MedicationTimeCreate] = []
 
 class MedicationUpdate(BaseModel):
     name: Optional[str] = None
@@ -44,7 +45,6 @@ class MedicationUpdate(BaseModel):
 class MedicationInDB(MedicationBase):
     id: int
     user_id: int
-    times_of_day: List[MedicationTimeInDB] = []
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
@@ -62,11 +62,17 @@ class MedicationInput(BaseModel):
 
 class BulkMedicationRequest(BaseModel):
     medication_details: List[MedicationInput]
-    user_id: int  # Added user_id since it's required
-    channel: str
-    email: str
-    phone: str
-    want_caregiver_alerts: bool
-    care_giver_channel: Optional[str] = None
-    caregiver_email: Optional[str] = None
-    caregiver_phone: Optional[str] = None
+    user_id: Optional[int] = None
+    name: Optional[str] = None
+    channel: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    caretaker_alerts: Optional[bool] = None
+    caretaker_channel: Optional[str] = None
+    caretaker_email: Optional[str] = None
+    caretaker_phone: Optional[str] = None
+
+
+class BulkMedicationSchema(BaseModel):
+    medication_details: List[MedicationInput]
+    user_id: Optional[int] = None

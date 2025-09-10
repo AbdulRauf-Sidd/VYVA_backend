@@ -166,8 +166,6 @@ class MedicationService:
             if not time_data.time_of_day:
                 raise ValueError("Time of day is required")
             
-            if time_data.notes and len(time_data.notes) > 150:
-                raise ValueError("Time notes cannot exceed 150 characters")
 
     def _parse_time_string(self, time_str: str) -> time:
         """Parse time string (e.g., '09:00') to time object"""
