@@ -2,7 +2,7 @@
 Medication model for medication management.
 """
 
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean, Float, Enum as SQLEnum
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean, Float, Enum as SQLEnum, Date
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from sqlalchemy import Time
@@ -26,9 +26,8 @@ class Medication(Base):
     # Medication Information
     name = Column(String(255), nullable=False)
     dosage = Column(String(100), nullable=False)  # e.g., "10mg", "1 tablet"
-    frequency = Column(String(100), nullable=False)  # e.g., "twice daily", "every 8 hours"
-    start_date = Column(DateTime, nullable=True)
-    end_date = Column(DateTime, nullable=True)
+    start_date = Column(Date, nullable=True)
+    end_date = Column(Date, nullable=True)
     purpose = Column(Text, nullable=True)  # e.g., "Blood pressure control"
     side_effects = Column(Text, nullable=True)
     notes = Column(Text, nullable=True)

@@ -131,6 +131,15 @@ class User(Base):
     preferred_doctor_type = Column(SQLEnum(PreferredDoctorTypeEnum), nullable=True)  
     preferred_consultation_type = Column(SQLEnum(PreferredConsultationTypeEnum), nullable=True)  
     preferred_consultation_language = Column(SQLEnum(PreferredConsultationLanguageEnum), nullable=True)  
+
+    #Reminders
+    preffered_channel = Column(String(50), nullable=True)  # e.g., "email", "sms", "push"
+
+
+    #Caretaker Information
+    caretaker_preferred_channel = Column(String(50), nullable=True)  # e.g., "email", "sms", "push"
+    caretaker_email = Column(String(255), nullable=True)
+    caretaker_phone_number = Column(String(20), nullable=True)
     
     
     #Auth
