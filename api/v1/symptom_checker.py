@@ -24,6 +24,7 @@ router = APIRouter()
 
 class SymptomCheckRequest(BaseModel):
     symptoms: str
+    conversation_id: str  # Required - provided by frontend
     full_name: Optional[str] = None
     language: Optional[str] = None
     model_type: Optional[str] = "pro"
@@ -43,6 +44,7 @@ class SymptomCheckRequest(BaseModel):
 
 class SendReportRequest(BaseModel):
     action: str  # "email" or "whatsapp"
+    conversation_id: str  # Required - to identify the specific report
     recipient_email: Optional[str] = None
     phone_number: Optional[str] = None
     include_articles: Optional[bool] = True
@@ -235,14 +237,13 @@ def _is_emergency(text: str) -> bool:
     return False
 
 
-async def _call_medisearch_api(symptoms: str, language: str = "en", model_type: str = "pro",
+async def _call_medisearch_api(symptoms: str, conversation_id: str, language: str = "en", model_type: str = "pro",
                                system_prompt: str = None, followup_count: int = 2) -> Dict[str, Any]:
     """
     Call the MediSearch API and process the SSE response.
     Returns processed medical analysis with articles and emergency detection.
     """
-    # Generate unique ID
-    conversation_id = _generate_id()
+    # Use the provided conversation_id
 
     # Prepare request payload
     request_payload = {
@@ -439,7 +440,8 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
     logger.info("=== SYMPTOM CHECKER ENDPOINT CALLED ===")
     logger.info(f"Received payload: {payload.model_dump()}")
 
-    conversation_id = _generate_id()
+    # Use the conversation_id provided by the frontend
+    conversation_id = payload.conversation_id
 
     try:
         # Formulate comprehensive search query
@@ -449,6 +451,7 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
         # Call MediSearch API with formulated query
         api_result = await _call_medisearch_api(
             symptoms=formulated_symptoms,
+            conversation_id=conversation_id,
             language=payload.language or "en",
             model_type=payload.model_type,
             system_prompt=payload.system_prompt,
@@ -579,20 +582,19 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
     logger.info(f"Received payload: {payload.model_dump()}")
 
     try:
-        # Get the latest analysis record from database (most recent one)
-        from sqlalchemy import select, desc
+        # Get the specific analysis record by conversation_id
+        from sqlalchemy import select
 
         result = await db.execute(
             select(SymptomCheckerResponse)
-            .order_by(desc(SymptomCheckerResponse.created_at))
-            .limit(1)
+            .where(SymptomCheckerResponse.conversation_id == payload.conversation_id)
         )
         response_record = result.scalar_one_or_none()
 
         if not response_record:
             raise HTTPException(
                 status_code=404,
-                detail="No analysis found. Please run symptom analysis first."
+                detail=f"No analysis found for conversation_id: {payload.conversation_id}. Please run symptom analysis first."
             )
 
         # Validate action and required fields
