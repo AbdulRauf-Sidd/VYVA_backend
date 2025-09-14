@@ -756,13 +756,13 @@ async def _send_whatsapp_report(phone_number: str, report_content: Dict[str, Any
         # Convert breakdown dict to the format expected by WhatsApp template
         # If breakdown is a dict with numbered keys, use it directly
         # If it's a string or other format, convert it appropriately
-        if isinstance(breakdown_data, dict):
-            template_data = breakdown_data
-        else:
-            # If breakdown is not a dict, create a simple template data structure
-            template_data = {"breakdown": str(breakdown_data)}
+        # if isinstance(breakdown_data, dict):
+        #     template_data = breakdown_data
+        # else:
+        #     # If breakdown is not a dict, create a simple template data structure
+        #     template_data = {"breakdown": str(breakdown_data)}
         
-        success = await whatsapp_service.send_medical_report(phone_number, template_data)
+        success = await whatsapp_service.send_medical_report(phone_number, breakdown_data)
 
         logger.info(
             f"Whatsapp service returned: {success} (type: {type(success)})")
