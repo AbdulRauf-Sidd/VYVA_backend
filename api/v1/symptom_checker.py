@@ -762,7 +762,8 @@ async def _send_whatsapp_report(phone_number: str, report_content: Dict[str, Any
         #     # If breakdown is not a dict, create a simple template data structure
         #     template_data = {"breakdown": str(breakdown_data)}
         
-        success = await whatsapp_service.send_medical_report(phone_number, breakdown_data)
+        # success = await whatsapp_service.send_medical_report(phone_number, breakdown_data)
+        success = await whatsapp_service.send_template_message(phone_number, breakdown_data);
 
         logger.info(
             f"Whatsapp service returned: {success} (type: {type(success)})")
