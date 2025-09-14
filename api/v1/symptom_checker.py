@@ -394,7 +394,7 @@ def _create_breakdown(email: str, full_name: str = None) -> Dict[str, str]:
     lines = [line.strip() for line in email.split('\n') if line.strip()]
 
     breakdown = {
-        "1": full_name or "Patient",
+        "1": full_name or "User",
         "2": _clean_html_text(lines[0]) if lines else "",
         "3": _clean_html_text(lines[1].replace("1.", "").strip()) if len(lines) > 1 else "",
         "4": _clean_html_text(lines[2].replace("2.", "").strip()) if len(lines) > 2 else "",
@@ -626,13 +626,13 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
             send_result = await _send_email_report(
                 recipient_email=payload.recipient_email,
                 report_content=report_content,
-                patient_name=response_record.full_name or "Patient"
+                patient_name=response_record.full_name or "User"
             )
         elif payload.action == "whatsapp":
             send_result = await _send_whatsapp_report(
                 phone_number=payload.phone_number,
                 report_content=report_content,
-                patient_name=response_record.full_name or "Patient"
+                patient_name=response_record.full_name or "User"
             )
 
         # Delete the record after successful sending
@@ -662,7 +662,7 @@ def _prepare_report_content(response_record: SymptomCheckerResponse, payload: Se
     Prepare the report content for sending.
     """
     content = {
-        "patient_name": response_record.full_name or "Patient",
+        "patient_name": response_record.full_name or "User",
         "symptoms": response_record.symptoms,
         "summary": response_record.summary,
         "email": response_record.email,  # Full email content for analysis section
