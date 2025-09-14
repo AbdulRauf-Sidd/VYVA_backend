@@ -133,7 +133,7 @@ class User(Base):
     preferred_consultation_language = Column(SQLEnum(PreferredConsultationLanguageEnum), nullable=True)  
 
     #Reminders
-    preffered_channel = Column(String(50), nullable=True)  # e.g., "email", "sms", "push"
+    preferred_channel = Column(String(50), nullable=True)  # e.g., "email", "sms", "push"
 
 
     #Caretaker Information
