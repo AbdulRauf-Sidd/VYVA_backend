@@ -61,6 +61,7 @@ async def bulk_create_medications(
                 phone_number=request.phone,
                 wants_reminders=True,
                 missed_dose_alerts=True,
+                takes_medication=True,
                 preferred_channel=request.channel,
                 wants_caretaker_alerts=request.caretaker_alerts,
                 caretaker_preferred_channel=request.caretaker_channel,

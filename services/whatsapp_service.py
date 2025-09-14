@@ -216,3 +216,145 @@ class WhatsAppService:
         except Exception as e:
             logger.error(f"Error sending WhatsApp message: {str(e)}")
             return False
+
+    async def send_reminder_message(
+        self,
+        to_phone: str,
+        template_data: Dict[str, Any],
+        template_id: str = settings.TWILIO_WHATSAPP_REMINDER_TEMPLATE_SID
+    ) -> bool:
+        """
+        Send a WhatsApp message using a Twilio template.
+
+        Args:
+            to_phone: Recipient phone number (format: +1234567890)
+            template_data: Data to populate template variables
+
+        Returns:
+            bool: True if message sent successfully, False otherwise
+        """
+        try:
+            # Check if template_sid is configured
+            if not template_id:
+                logger.error("Template id is required")
+                return False
+            # Ensure phone number has whatsapp: prefix
+            if not to_phone.startswith("whatsapp:"):
+                to_phone = f"whatsapp:{to_phone}"
+
+            from_number = self.from_number
+            if not from_number.startswith("whatsapp:"):
+                from_number = f"whatsapp:{from_number}"
+
+            # Prepare the message data for form URL encoding
+            # ContentVariables must be a JSON string, not a list
+            content_variables_json = json.dumps(template_data)
+            
+            # Log the data being sent for debugging
+            logger.info(f"Sending template message with ContentSid: {template_id}")
+            logger.info(f"ContentVariables: {content_variables_json}")
+            
+            message_data = {
+                "From": from_number,
+                "To": to_phone,
+                "ContentSid": template_id,
+                "ContentVariables": content_variables_json
+            }
+
+            # Send the message
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    self.base_url,
+                    auth=(self.account_sid, self.auth_token),
+                    data=message_data,
+                    headers={"Content-Type": "application/x-www-form-urlencoded"},
+                    timeout=30.0
+                )
+
+                response.raise_for_status()
+                result = response.json()
+
+                logger.info(
+                    f"WhatsApp message sent successfully to {to_phone}. Message SID: {result.get('sid', 'unknown')}")
+                return True
+
+        except httpx.HTTPStatusError as e:
+            logger.error(
+                f"Twilio API error: {e.response.status_code} - {e.response.text}")
+            return False
+        except Exception as e:
+            logger.error(f"Error sending WhatsApp message: {str(e)}")
+            return False
+        
+    
+    async def send_brain_coach_report(
+        self,
+        to_phone: str,
+        template_data: Dict[str, Any],
+        template_id: str = settings.TWILIO_WHATSAPP_BRAIN_COACH_TEMPLATE_SID
+    ) -> bool:
+        """
+        Send a WhatsApp message using a Twilio template.
+
+        Args:
+            to_phone: Recipient phone number (format: +1234567890)
+            template_data: Data to populate template variables
+
+        Returns:
+            bool: True if message sent successfully, False otherwise
+        """
+        try:
+            # Check if template_sid is configured
+            if not template_id:
+                logger.error("Template id is required")
+                return False
+            # Ensure phone number has whatsapp: prefix
+            if not to_phone.startswith("whatsapp:"):
+                to_phone = f"whatsapp:{to_phone}"
+
+            from_number = self.from_number
+            if not from_number.startswith("whatsapp:"):
+                from_number = f"whatsapp:{from_number}"
+
+            # Prepare the message data for form URL encoding
+            # ContentVariables must be a JSON string, not a list
+            content_variables_json = json.dumps(template_data)
+            
+            # Log the data being sent for debugging
+            logger.info(f"Sending template message with ContentSid: {template_id}")
+            logger.info(f"ContentVariables: {content_variables_json}")
+            
+            message_data = {
+                "From": from_number,
+                "To": to_phone,
+                "ContentSid": template_id,
+                "ContentVariables": content_variables_json
+            }
+
+            # Send the message
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    self.base_url,
+                    auth=(self.account_sid, self.auth_token),
+                    data=message_data,
+                    headers={"Content-Type": "application/x-www-form-urlencoded"},
+                    timeout=30.0
+                )
+
+                response.raise_for_status()
+                result = response.json()
+
+                logger.info(
+                    f"WhatsApp message sent successfully to {to_phone}. Message SID: {result.get('sid', 'unknown')}")
+                return True
+
+        except httpx.HTTPStatusError as e:
+            logger.error(
+                f"Twilio API error: {e.response.status_code} - {e.response.text}")
+            return False
+        except Exception as e:
+            logger.error(f"Error sending WhatsApp message: {str(e)}")
+            return False
+        
+
+whatsapp = WhatsAppService()

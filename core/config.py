@@ -95,6 +95,9 @@ class Settings(BaseSettings):
     # WhatsApp Configuration (Twilio)
     TWILIO_WHATSAPP_FROM_NUMBER: Optional[str] = Field(default=None, env="TWILIO_WHATSAPP_FROM_NUMBER")
     TWILIO_WHATSAPP_TEMPLATE_SID: Optional[str] = Field(default=None, env="TWILIO_WHATSAPP_TEMPLATE_SID")
+    TWILIO_WHATSAPP_REMINDER_TEMPLATE_SID: Optional[str] = Field(default=None, env="TWILIO_WHATSAPP_REMINDER_TEMPLATE_SID")
+    TWILIO_WHATSAPP_BRAIN_COACH_TEMPLATE_SID: Optional[str] = Field(default=None, env="TWILIO_WHATSAPP_BRAIN_COACH_TEMPLATE_SID")
+
     
     # ElevenLabs TTS
     ELEVENLABS_API_KEY: Optional[str] = Field(default=None, env="ELEVENLABS_API_KEY")
@@ -105,6 +108,14 @@ class Settings(BaseSettings):
     ELEVENLABS_HEADER_KEY: Optional[str] = Field(
         default="xi-api-key",
         env="ELEVENLABS_HEADER_KEY"
+    )
+    ELEVENLABS_MEDICATION_AGENT_ID: Optional[str] = Field(
+        default=None,
+        env="ELEVENLABS_MEDICATION_AGENT_ID"
+    )
+    ELEVENLABS_AGENT_PHONE_NUMBER_ID: Optional[str] = Field(
+        default=None,
+        env="ELEVENLABS_AGENT_PHONE_NUMBER"
     )
     
     # Sentry (Optional)
