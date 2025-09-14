@@ -10,7 +10,9 @@ import uuid
 from repositories.user import UserRepository
 from schemas.user import UserCreate, UserUpdate
 from typing import Optional
+from services.whatsapp_service import whatsapp
 import random
+from services.helpers import construct_whatsapp_brain_coach_message, construct_email_brain_coach_message
 
 
 logger = logging.getLogger(__name__)
@@ -348,8 +350,6 @@ async def send_report(
                 detail=f"User with ID {user_id} not found"
             )
         
-        
-        
         # Check if email is being updated and if it's already taken
         # if user_data.email: TODO remove this after event
         #     user_with_email = await repo.get_user_by_email(user_data.email)
@@ -374,7 +374,7 @@ async def send_report(
             first_name = "N/A"
             last_name = "N/A"
 
-        logging.info(f"Parsed name: first_name='{first_name}', last_name='{last_name}'")
+        logger.info(f"Parsed name: first_name='{first_name}', last_name='{last_name}'")
 
         user_data = UserUpdate(email=email, phone_number=phone_number, first_name=first_name, last_name=last_name)
         
@@ -390,26 +390,14 @@ async def send_report(
             brain_coach_question_repo = BrainCoachQuestionRepository(db)
             responses = await brain_coach_response_repo.get_responses_by_user_and_session(user_id)
             logger.info(f"User {user_id} has {len(responses)} brain coach responses")
-            logger.info(f"User Responses: {responses}")
+ 
+            report_content = await construct_email_brain_coach_message(responses, brain_coach_question_repo)            
 
-            report_content = []
-            for response in responses:
-                question = await brain_coach_question_repo.get_question_translation(response.question_id, 'en')
-                if question:
-                    report_content.append({
-                        "question_text": question.question_text,
-                        "question_type": question.question_type,
-                        "theme": question.theme,
-                        'score': response.score,
-                        "max_score": question.max_score,
-                        'tier': question.tier,
-                        'session': question.session,
-                    })
-                else:
-                    logger.warning(f"Question ID {response.question_id} not found for response ID {response.id}")
-
-            await email_service.send_brain_coach_report(email, report_content, name, suggestions, performance_tier)
-
+            if email:
+                await email_service.send_brain_coach_report(email, report_content, name, suggestions, performance_tier)
+            elif phone_number:
+                whatsapp_content = construct_whatsapp_brain_coach_message(first_name, report_content, suggestions)
+                await whatsapp.send_brain_coach_report(phone_number, whatsapp_content)
 
         return updated_user
     except HTTPException:

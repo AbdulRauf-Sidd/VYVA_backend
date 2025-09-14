@@ -280,7 +280,7 @@ class EmailService:
             total_max_score += item.get('max_score', 0)
 
         html = f"""
-            <!DOCTYPE html>
+                        <!DOCTYPE html>
             <html lang="en">
             <head>
               <meta charset="UTF-8">
@@ -301,11 +301,6 @@ class EmailService:
                   border: 1px solid #ddd;
                   border-radius: 8px;
                   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-                }}
-                h1 {{
-                  text-align: center;
-                  font-size: 22px;
-                  margin-bottom: 20px;
                 }}
                 .row {{
                   display: flex;
@@ -345,9 +340,11 @@ class EmailService:
                 th {{
                   background: #f0f0f0;
                 }}
-            	.header_bg {{
-            		background:#642997;
-            	}}
+                .header_bg {{
+                  background: #642997;
+                  border-radius: 6px 6px 0 0;
+                  margin: -20px -20px 20px -20px;
+                }}
                 @media (max-width: 600px) {{
                   .row {{
                     flex-direction: column;
@@ -356,38 +353,75 @@ class EmailService:
                     flex: 1 0 100%;
                   }}
                 }}
-            	.logo img{{
-            		max-width:100%;
-            	}}
-            	.logo_div{{
-            		width:20%;
-            		padding:26px 0px 8px 19px;
-            	}}
-            	.main{{
-            		width:100%;
-            		display:flex;
-            	}}
-            	.second_div{{
-            		width:74%;
-            		margin:20px 0px 0px;
-            	}}
+                @media only screen and (max-width: 690px) {{
+                  .new_dic {{
+                    color: #FFF;
+                    font-size: 8px !important;
+                    text-align: right;
+                    padding: 0px 14px 0px 0px !important;
+                  }}
+                  .second_div {{
+                    margin: 2px 0px 0px !important;
+                  }}
+                }}
+                .logo img {{
+                  max-width: 100%;
+                  height: auto;
+                }}
+                .logo_div {{
+                  width: 20%; 
+                  padding: 15px 0px 8px 19px;
+                }}
+                .main {{
+                  width: 100%;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                }}
+                .second_div {{
+                  width: 74%;
+                  margin: 15px 0px;
+                  padding-right: 15px;
+                }}
+                .new_dic {{
+                  color: #FFF; 
+                  font-size: 18px; 
+                  text-align: right;
+                  margin: 0;
+                }}
               </style>
             </head>
             <body>
               <div class="report-container">
-              <div class="header_bg">
-              <div class="main">
-              <div class="logo logo_div"><img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png" ></div>
-               <div class="second_div"> <h1 style="color:#FFF; font-size:18px; text-align:right;">VYVA Brain Coach – Daily Cognitive Session Report</h1></div>
+                <div class="header_bg">
+                  <div class="main">
+                    <div class="logo logo_div">
+                      <img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png" alt="VYVA Logo">
+                    </div>
+                    <div class="second_div">
+                      <h1 class="new_dic">VYVA Brain Coach – Daily Cognitive Session Report</h1>
+                    </div>
+                  </div>
                 </div>
-            </div>
-                <div  style="margin-top:35px; "class="row"><div class="label">Name:</div><div class="value"> {name}</div></div>
-                <div class="row"><div class="label">Cognitive Tier:</div><div class="value">Tier {tier} – Moderate Impairment</div></div>
-                <div class="row"><div class="label">Date:</div><div class="value"> {current_date}</div></div>
-                <div class="row"><div class="label">Session ID:</div><div class="value"># {session_id}</div></div>
 
+                <div class="row">
+                  <div class="label">Name:</div>
+                  <div class="value"> {name}</div>
+                </div>
+                <div class="row">
+                  <div class="label">Cognitive Tier:</div>
+                  <div class="value">Tier {tier} – Moderate Impairment</div>
+                </div>
+                <div class="row">
+                  <div class="label">Date:</div>
+                  <div class="value"> {current_date}</div>
+                </div>
+                <div class="row">
+                  <div class="label">Session ID:</div>
+                  <div class="value"># {session_id}</div>
+                </div>
 
-            <div class="section-title">Activity Domain Scores</div>
+                <div class="section-title">Activity Domain Scores</div>
                 <table>
                   <tr>
                     <th>Activity Domain</th>
@@ -396,9 +430,20 @@ class EmailService:
                   </tr>
                   {table_rows}
                 </table>
-                <div style="margin-top:55px;" class="row"><div class="label">Total Score:</div><div class="value"> {user_score} / {total_max_score}</div></div>
-                <div class="row"><div class="label">Performance Tier:</div><div class="value"> {performance_tier}</div></div>
-                <div class="row"><div class="label">Session Completed:</div><div class="value">Yes</div></div>
+
+                <div class="row">
+                  <div class="label">Total Score:</div>
+                  <div class="value"> {user_score} / {total_max_score}</div>
+                </div>
+                <div class="row">
+                  <div class="label">Performance Tier:</div>
+                  <div class="value"> {performance_tier}</div>
+                </div>
+                <div class="row">
+                  <div class="label">Session Completed:</div>
+                  <div class="value">Yes</div>
+                </div>
+
                 <div class="section-title">Agent Notes & Suggestions</div>
                 <div class="notes">
                   {suggestions}<br><br>
@@ -414,3 +459,261 @@ class EmailService:
 
         logger.info(f"Medical report sent successfully to {recipient_email}")
         return True
+    
+    async def send_medication_reminder(
+        self,
+        user
+    ):
+        try:
+            name = user['first_name']
+
+            medication_content = ''
+            medications = user['medications']
+            for medication in medications:
+                name = medication['medication_name']
+                dosage = medication['medication_dosage']
+                medication_content += f"""
+                    <li class="medication-item">
+                      <span class="med-name">{name}</span>
+                      <span class="med-dosage">{dosage}</span>
+                    </li>"""
+
+
+            html = f"""<!DOCTYPE html>
+                <html lang="en">
+                <head>
+                  <meta charset="UTF-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <title>VYVA Medication Reminder</title>
+                  <style>
+                    * {{
+                      margin: 0;
+                      padding: 0;
+                      box-sizing: border-box;
+                      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    }}
+
+                body {{
+                      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+                      color: #333;
+                      line-height: 1.6;
+                      padding: 20px;
+                      min-height: 100vh;
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+                    }}
+
+                    .container {{
+                      max-width: 800px;
+                      width: 100%;
+                      background: white;
+                      border-radius: 15px;
+                      overflow: hidden;
+                      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                    }}
+
+                    .header {{
+                      background: linear-gradient(135deg, #642997 0%, #8a54c5 100%);
+                      padding: 25px;
+                      text-align: center;
+                      color: white;
+                    }}
+
+                    .logo {{
+                      max-width: 150px;
+                      height: auto;
+                      margin-bottom: 15px;
+                    }}
+
+                    .header h1 {{
+                      font-weight: 500;
+                      font-size: 28px;
+                      margin-bottom: 5px;
+                    }}
+
+                    .header p {{
+                      opacity: 0.9;
+                    }}
+
+                    .content {{
+                      padding: 30px;
+                    }}
+
+                    .greeting {{
+                      font-size: 24px;
+                      color: #642997;
+                      margin-bottom: 20px;
+                      font-weight: 600;
+                    }}
+
+                    .message {{
+                      font-size: 17px;
+                      margin-bottom: 25px;
+                      color: #555;
+                      line-height: 1.6;
+                    }}
+
+                    .reminder-time {{
+                      background: #e8f5e9;
+                      padding: 15px;
+                      border-radius: 10px;
+                      margin: 25px 0;
+                      text-align: center;
+                      font-weight: 500;
+                      color: #2e7d32;
+                      border: 2px dashed #4caf50;
+                      font-size: 18px;
+                    }}
+
+                    .medication-list {{
+                      list-style-type: none;
+                      margin: 25px 0;
+                    }}
+
+                    .medication-item {{
+                      background: #f9f5ff;
+                      margin-bottom: 15px;
+                      padding: 20px;
+                      border-radius: 10px;
+                      border-left: 5px solid #642997;
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    }}
+
+                    .medication-item:hover {{
+                      transform: translateY(-3px);
+                      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+                    }}
+
+                    .med-name {{
+                      font-weight: 600;
+                      color: #642997;
+                      font-size: 18px;
+                    }}
+
+                    .med-dosage {{
+                      color: #6c757d;
+                      font-size: 16px;
+                      background: #fff;
+                      padding: 5px 12px;
+                      border-radius: 20px;
+                      border: 1px solid #e0d4f7;
+                    }}
+
+                    .footer {{
+                      background: #f9f9f9;
+                      padding: 25px;
+                      text-align: center;
+                      font-size: 15px;
+                      color: #777;
+                      border-top: 1px solid #eee;
+                    }}
+
+                    .actions {{
+                      display: flex;
+                      justify-content: center;
+                      gap: 15px;
+                      margin-top: 20px;
+                    }}
+
+                    .btn {{
+                      padding: 12px 25px;
+                      border-radius: 30px;
+                      border: none;
+                      font-weight: 600;
+                      cursor: pointer;
+                      transition: all 0.3s ease;
+                      font-size: 16px;
+                    }}
+
+                    .btn-primary {{
+                      background: #642997;
+                      color: white;
+                    }}
+
+                    .btn-primary:hover {{
+                      background: #5a238a;
+                      transform: translateY(-2px);
+                    }}
+
+                    .btn-secondary {{
+                      background: #f0e6ff;
+                      color: #642997;
+                    }}
+
+                    .btn-secondary:hover {{
+                      background: #e4d5ff;
+                      transform: translateY(-2px);
+                    }}
+
+                    @media (max-width: 600px) {{
+                      .content {{
+                        padding: 20px;
+                      }}
+
+                      .greeting {{
+                        font-size: 22px;
+                      }}
+
+                      .medication-item {{
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 10px;
+                      }}
+
+                      .med-dosage {{
+                        align-self: flex-start;
+                      }}
+
+                      .actions {{
+                        flex-direction: column;
+                      }}
+                    }}
+                  </style>
+                </head>
+                <body>
+                  <div class="container">
+                    <div class="header">
+                      <img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png" alt="VYVA Logo" class="logo">
+                      <h1>Medication Reminder</h1>
+                      <p>Your health is our priority</p>
+                    </div>
+
+                    <div class="content">
+                      <h1 class="greeting">Hi <span id="patient-name"> {name}</span>,</h1>
+
+                      <p class="message">This is VYVA. Remember to take the following medications:</p>
+
+                      <ul class="medication-list" id="medication-list">
+                        {medication_content}
+                      </ul>
+
+                      <p class="message">Please take your medications as prescribed by your healthcare provider. Set up additional reminders in the VYVA app.</p>
+                    </div>
+
+                    <div class="footer">
+                      <p>This is an automated reminder from VYVA Medication Reminder.</p>
+                      <p>© 2025 VYVA Health. All rights reserved.</p>
+                    </div>
+                  </div>
+
+
+                </body>
+                </html>"""
+
+            result = await self.send_email_via_mailgun(
+                to=[user['email']],
+                subject='VYVA Brain Coach – Daily Cognitive Session Report',
+                html=html
+            )
+
+            logger.info(f"Medical report sent successfully to {user['email']}")
+            return True
+        except Exception as e:
+            logger.error(f'Error while sending reminder email for user {user['user_id']}: {e}')
+            return False
+        
+email_service = EmailService()

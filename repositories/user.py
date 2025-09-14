@@ -6,6 +6,8 @@ import logging
 from sqlalchemy.orm import selectinload
 from models.user import User
 from schemas.user import UserCreate, UserUpdate, UserRead
+from models.medication import Medication, MedicationTime
+from sqlalchemy import and_, exists
 
 logger = logging.getLogger(__name__)
 
@@ -204,4 +206,63 @@ class UserRepository:
         except Exception as e:
             await self.db_session.rollback()
             logger.exception(f"Unexpected error in activate_user: {str(e)}")
+            raise
+
+    async def get_active_users_with_medication_times(self) -> List[dict]:
+        """
+        Retrieve only user ID and medication times for active users who want reminders and take medication.
+        """
+        try:
+            # Subquery to check if user has at least one medication
+            has_meds = exists().where(Medication.user_id == User.id)
+
+            # Main query: select only user ID and medication times
+            query = (
+                select(User)
+                .where(
+                    and_(
+                        User.is_active == True,
+                        User.wants_reminders == True,
+                        User.takes_medication == True,
+                        has_meds,
+                    )
+                )
+                .options(
+                    selectinload(User.medications)
+                    .load_only(Medication.id)
+                    .selectinload(Medication.times_of_day)
+                )
+                .order_by(User.id)
+            )
+
+            result = await self.db_session.execute(query)
+            users = result.scalars().unique().all()
+
+            logger.info(f"Fetched {len(users)} active users with medication times")
+
+            # Prepare the response
+            response = []
+            for user in users:
+                user_data = {
+                    "user_id": user.id,
+                    "medications": [
+                        {
+                            "medication_id": med.id,
+                            "times_of_day": [
+                                {
+                                    "time_of_day": time.time_of_day,
+                                    "notes": time.notes,
+                                }
+                                for time in med.times_of_day
+                            ],
+                        }
+                        for med in user.medications
+                    ],
+                }
+                response.append(user_data)
+
+            return response
+
+        except Exception as e:
+            logger.error(f"Error fetching users with medication times: {e}")
             raise
