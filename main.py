@@ -148,7 +148,7 @@ async def minute_background_task():
                     batch_id=batch_id
                 )
                 batch_repo = ElevenLabsBatchCallRepository(session)
-                batch_repo.create(param)
+                await batch_repo.create(param)
             except Exception as e:
                 logger.info(f"Error occured while making record for batch: {e}")
 
