@@ -79,7 +79,7 @@ class WhatsAppService:
             # Prepare the message data for form URL encoding
             # ContentVariables must be a JSON string, not a list
             content_variables_json = json.dumps(template_data)
-            
+            logger.info(f"Template data: {template_data}")
             # Log the data being sent for debugging
             logger.info(f"Sending template message with ContentSid: {self.template_sid}")
             logger.info(f"ContentVariables: {content_variables_json}")
