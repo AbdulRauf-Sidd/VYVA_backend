@@ -133,23 +133,24 @@ class WhatsAppService:
         """
         try:
             # Extract breakdown from report content
-            breakdown = report_content.get('breakdown', {})
+            # breakdown = report_content.get('breakdown', {})
 
             # Use breakdown directly as template data if it's a dict
             # This allows for multiple template variables like {{1}}, {{2}}, etc.
-            if isinstance(breakdown, dict):
-                template_data = breakdown
-            else:
-                # If breakdown is not a dict, convert to string and use as single variable
-                breakdown_text = str(breakdown)
-                template_data = {
-                    "breakdown": breakdown_text
-                }
+            # if isinstance(breakdown, dict):
+            #     template_data = breakdown
+            # else:
+            #     # If breakdown is not a dict, convert to string and use as single variable
+            #     breakdown_text = str(breakdown)
+            #     template_data = {
+            #         "breakdown": breakdown_text
+            #     }
 
+            logger.info(f"Sending Report content: {report_content}")
             # Send the template message
             success = await self.send_template_message(
                 to_phone=recipient_phone,
-                template_data=template_data
+                template_data=report_content
             )
 
             if success:
