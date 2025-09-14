@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db
 import asyncio
 from fastapi import BackgroundTasks
-from fastapi_utils.tasks import repeat_every
+# from fastapi_utils.tasks import repeat_every
 
 logger = logging.getLogger(__name__)
 
