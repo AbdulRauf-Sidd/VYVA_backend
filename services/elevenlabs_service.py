@@ -1,5 +1,6 @@
 from elevenlabs import ElevenLabs, OutboundCallRecipient, ConversationConfigOverrideConfig
 from core.config import settings
+import requests
 
 client = ElevenLabs(
     api_key=settings.ELEVENLABS_API_KEY,
@@ -49,32 +50,50 @@ async def make_reminder_call_batch(users: list):
 
 async def make_fall_detection_batch(user):
     try:
-        
-        objects = OutboundCallRecipient(
-            phone_number=user['phone_number'],
-            dynamic_variables={
-                'first_name': user['first_name']
+        # Outbound call via twilio (POST /v1/convai/twilio/outbound-call)
+        response = requests.post(
+          "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
+          headers={
+            "xi-api-key": settings.ELEVENLABS_API_KEY
+          },
+          json={
+            "agent_id": settings.ELEVENLABS_FALL_DETECTION_AGENT_ID,
+            "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
+            "to_number": user['phone_number'],
+            "conversation_initiation_client_data": {
+              "conversation_config_override": {
+                "agent": {
+                  "first_message": f"Hello, is this {user['caretaker_name']}?"
+                }
+              },
+              "dynamic_variables": {
+                "first_name": user['first_name']
+              }
             }
+          },
         )
 
-        override_config = ConversationConfigOverrideConfig(
-            agent={
-                "first_message": f"Hello, Is this {user['caretaker_name']}?",
-            }
-        )
+        logger.info(f"Call response for fall detection: {response.json()}")
+        
+        # objects = OutboundCallRecipient(
+        #     phone_number=user['phone_number'],
+        #     dynamic_variables={
+        #         'first_name': user['first_name']
+        #     }
+        # )
  
         
-        obj = client.conversational_ai.batch_calls.create(
-            call_name="Fall Dectection Batch Calls",
-            agent_id=settings.ELEVENLABS_FALL_DETECTION_AGENT_ID,
-            agent_phone_number_id=settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
-            scheduled_time_unix=1,
-            recipients=[objects],
-            overrides=override_config
-        )
+        # obj = client.conversational_ai.batch_calls.create(
+        #     call_name="Fall Dectection Batch Calls",
+        #     agent_id=settings.ELEVENLABS_FALL_DETECTION_AGENT_ID,
+        #     agent_phone_number_id=settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
+        #     scheduled_time_unix=1,
+        #     recipients=[objects],
+        #     overrides=override_config
+        # )
 
-        logger.info(f"Called on {user['phone_number']}")
+        # logger.info(f"Called on {user['phone_number']}")
 
-        return obj.id
+        return response.json
     except Exception as e:
         logger.error(f"Elevenlabs fall detection call failed: {e}")
