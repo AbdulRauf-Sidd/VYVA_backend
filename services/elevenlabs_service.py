@@ -59,7 +59,7 @@ async def make_fall_detection_batch(users):
             agent_id=settings.ELEVENLABS_MEDICATION_AGENT_ID,
             agent_phone_number_id=settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
             scheduled_time_unix=1,
-            recipients=objects
+            recipients=[objects]
         )
 
         logger.info(f"Called on {users['phone_number']}")
