@@ -43,4 +43,27 @@ async def make_reminder_call_batch(users: list):
 
         return obj.id
     except Exception as e:
-        logger.error(f"Elevenlabs bacth call failed: {e}")
+        logger.error(f"Elevenlabs batch call failed: {e}")
+
+
+
+async def make_fall_detection_batch(users):
+    try:
+        
+        objects = OutboundCallRecipient(
+            phone_number=users['phone_number']
+        ) 
+        
+        obj = client.conversational_ai.batch_calls.create(
+            call_name="Fall Dectection Batch Calls",
+            agent_id=settings.ELEVENLABS_MEDICATION_AGENT_ID,
+            agent_phone_number_id=settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
+            scheduled_time_unix=1,
+            recipients=objects
+        )
+
+        logger.info(f"Called on {users['phone_number']}")
+
+        return obj.id
+    except Exception as e:
+        logger.error(f"Elevenlabs fall detection call failed: {e}")
