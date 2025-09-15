@@ -47,11 +47,15 @@ async def make_reminder_call_batch(users: list):
 
 
 
-async def make_fall_detection_batch(users):
+async def make_fall_detection_batch(user):
     try:
         
         objects = OutboundCallRecipient(
-            phone_number=users['phone_number']
+            phone_number=user['phone_number'],
+            first_message=f"Hello, Is this {user['caretaker_name']}?",
+            dynamic_variables={
+                'first_name': user['first_name']
+            }
         ) 
         
         obj = client.conversational_ai.batch_calls.create(
@@ -62,7 +66,7 @@ async def make_fall_detection_batch(users):
             recipients=[objects]
         )
 
-        logger.info(f"Called on {users['phone_number']}")
+        logger.info(f"Called on {user['phone_number']}")
 
         return obj.id
     except Exception as e:
