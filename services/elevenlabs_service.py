@@ -1,4 +1,4 @@
-from elevenlabs import ElevenLabs, OutboundCallRecipient
+from elevenlabs import ElevenLabs, OutboundCallRecipient, ConversationConfigOverrideConfig
 from core.config import settings
 
 client = ElevenLabs(
@@ -52,18 +52,25 @@ async def make_fall_detection_batch(user):
         
         objects = OutboundCallRecipient(
             phone_number=user['phone_number'],
-            first_message=f"Hello, Is this {user['caretaker_name']}?",
             dynamic_variables={
                 'first_name': user['first_name']
             }
-        ) 
+        )
+
+        override_config = ConversationConfigOverrideConfig(
+            agent={
+                "first_message": f"Hello, Is this {user['caretaker_name']}?",
+            }
+        )
+ 
         
         obj = client.conversational_ai.batch_calls.create(
             call_name="Fall Dectection Batch Calls",
             agent_id=settings.ELEVENLABS_FALL_DETECTION_AGENT_ID,
             agent_phone_number_id=settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
             scheduled_time_unix=1,
-            recipients=[objects]
+            recipients=[objects],
+            overrides=override_config
         )
 
         logger.info(f"Called on {user['phone_number']}")
