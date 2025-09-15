@@ -21,9 +21,9 @@ async def report_fall_event():
     try:
         logger.info(f"======== Fall Dectected =========")
         user = {
-            'first_name': 'Rauf',
-            'phone_number': "+923152526525",
-            'caretaker_name': 'Hassan'
+            'first_name': 'Karim',
+            'phone_number': "+34664338991",
+            'caretaker_name': 'Anna'
         }
 
         await make_fall_detection_batch(user)
