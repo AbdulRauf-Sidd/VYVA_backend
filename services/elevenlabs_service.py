@@ -60,7 +60,7 @@ async def make_fall_detection_batch(user):
         
         obj = client.conversational_ai.batch_calls.create(
             call_name="Fall Dectection Batch Calls",
-            agent_id=settings.ELEVENLABS_MEDICATION_AGENT_ID,
+            agent_id=settings.ELEVENLABS_FALL_DETECTION_AGENT_ID,
             agent_phone_number_id=settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
             scheduled_time_unix=1,
             recipients=[objects]
