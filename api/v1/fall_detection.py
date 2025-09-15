@@ -4,7 +4,7 @@ Fall Detection API endpoints.
 Handles fall detection and safety monitoring.
 """
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 import logging
 from core.database import get_db
@@ -16,10 +16,8 @@ router = APIRouter()
 
 
 
-@router.post("")
-async def report_fall_event(
-    db: AsyncSession = Depends(get_db)
-):
+@router.get("")
+async def report_fall_event():
     try:
         logger.info(f"======== Fall Dectected =========")
         user = {
