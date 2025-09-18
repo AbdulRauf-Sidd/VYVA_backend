@@ -394,7 +394,7 @@ async def send_report(
             report_content = await construct_email_brain_coach_message(responses, brain_coach_question_repo)            
 
             if email:
-                await email_service.send_brain_coach_report(email, report_content, name, suggestions, performance_tier)
+                await email_service.send_brain_coach_report(email, report_content, name, suggestions, performance_tier, language='es')
             elif phone_number:
                 whatsapp_content = construct_whatsapp_brain_coach_message(first_name, report_content, suggestions)
                 await whatsapp.send_brain_coach_report(phone_number, whatsapp_content)

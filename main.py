@@ -35,12 +35,13 @@ from celery import chain
 from tasks import process_medication_reminders
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
-from services.elevenlabs_service import make_reminder_call_batch
+from services.elevenlabs_service import make_reminder_call_batch, check_batch_for_missed, make_caretaker_call_batch
 from services.helpers import construct_whatsapp_sms_message
 from services.whatsapp_service import whatsapp
 from services.email_service import email_service
 from schemas.eleven_labs_batch_calls import ElevenLabsBatchCallCreate
 from repositories.eleven_labs_batch_calls import ElevenLabsBatchCallRepository
+from repositories.user import UserRepository
 
 
 
@@ -93,6 +94,23 @@ app = FastAPI(
 
 
 scheduler = AsyncIOScheduler()
+
+
+async def process_missed_calls(batch_id):
+    phone_number_set = check_batch_for_missed(batch_id=batch_id)
+    session = AsyncSessionLocal()
+    try:
+        user_repo = UserRepository(session)
+        users = await user_repo.get_users_by_phone_numbers(phone_number_set)
+        logger.info(f"fetched {len(users)} missed medications")
+        await make_caretaker_call_batch(users)
+    except Exception as e:
+        logger.error(f"Error processing missed calls: {e}")
+        session.rollback()
+    finally:
+        session.close()
+
+
 
 async def minute_background_task():
     """Background task that runs every minute and has database access"""
@@ -165,28 +183,6 @@ async def minute_background_task():
         # Always close the session
         await session.close()
 
-
-# scheduler = AsyncIOScheduler()
-# scheduler.add_job(run_async_job, 'cron', minute='*')
-# scheduler.start()
-
-# Start the scheduler
-
-# scheduler = BackgroundScheduler()
-# scheduler.add_job(check_medication_time, 'cron', minute='*')  # every minute
-# scheduler.start()
-
-# # @app.on_event("startup")
-# async def startup_event():
-#     # Start Celery worker
-#     subprocess.Popen(
-#         ["celery", "-A", "vyva-celery", "worker", "--loglevel=info"]
-#     )
-
-#     # Start Celery beat
-#     subprocess.Popen(
-#         ["celery", "-A", "vyva-celery", "beat", "--loglevel=info"]
-#     )
 
 # Add middleware
 app.add_middleware(
