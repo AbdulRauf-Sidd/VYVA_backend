@@ -1,9 +1,9 @@
 from sqlalchemy import select, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
-from typing import Optional, List
+from typing import Optional, List, Set
 import logging
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, load_only
 from models.user import User
 from schemas.user import UserCreate, UserUpdate, UserRead
 from models.medication import Medication, MedicationTime
@@ -265,4 +265,42 @@ class UserRepository:
 
         except Exception as e:
             logger.error(f"Error fetching users with medication times: {e}")
+            raise
+
+
+    async def get_users_by_phone_numbers(
+        self, phone_numbers: Set[str]
+    ) -> List[dict]:
+        """
+        Fetch users by a set of phone numbers. 
+        Returns first_name, caretaker_name, and user_id only.
+        Ensures one record per user.
+        """
+        try:
+            if not phone_numbers:
+                return []
+
+            query = (
+                select(User)
+                .options(load_only(User.id, User.first_name, User.caretaker_name, User.phone_number))
+                .where(User.phone_number.in_(phone_numbers))
+            )
+
+            result = await self.db_session.execute(query)
+            users = result.scalars().unique().all()  # ensure unique users
+
+            return [
+                {
+                    "user_id": user.id,
+                    "first_name": user.first_name,
+                    "caretaker_name": user.caretaker_name,
+                }
+                for user in users
+            ]
+
+        except SQLAlchemyError as e:
+            logger.exception(f"Database error in get_users_by_phone_numbers: {str(e)}")
+            raise
+        except Exception as e:
+            logger.exception(f"Unexpected error in get_users_by_phone_numbers: {str(e)}")
             raise

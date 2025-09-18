@@ -264,7 +264,8 @@ class EmailService:
         report_content: List[Dict[str, any]],
         name: Optional[str] = "N/A",
         suggestions: Optional[str] = None,
-        performance_tier: Optional[str] = None
+        performance_tier: Optional[str] = None,
+        language: Optional[str] = 'en'
     ):
         tier = report_content[0].get(
             'tier', 'N/A') if report_content else 'N/A'
@@ -278,6 +279,130 @@ class EmailService:
             table_rows += f"<tr><td>{item.get('question_type', '')}</td><td>{item.get('question_text', '')}</td><td>{item.get('score', '')}</td></tr>"
             user_score += item.get('score', 0)
             total_max_score += item.get('max_score', 0)
+
+        body_en = f"""<body>
+              <div class="report-container">
+                <div class="header_bg">
+                  <div class="main">
+                    <div class="logo logo_div">
+                      <img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png" alt="VYVA Logo">
+                    </div>
+                    <div class="second_div">
+                      <h1 class="new_dic">VYVA Brain Coach – Daily Cognitive Session Report</h1>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="label">Name:</div>
+                  <div class="value"> {name}</div>
+                </div>
+                <div class="row">
+                  <div class="label">Cognitive Tier:</div>
+                  <div class="value">Tier {tier} – Moderate Impairment</div>
+                </div>
+                <div class="row">
+                  <div class="label">Date:</div>
+                  <div class="value"> {current_date}</div>
+                </div>
+                <div class="row">
+                  <div class="label">Session ID:</div>
+                  <div class="value"># {session_id}</div>
+                </div>
+
+                <div class="section-title">Activity Domain Scores</div>
+                <table>
+                  <tr>
+                    <th>Activity Domain</th>
+                    <th>Question</th>
+                    <th>Score</th>
+                  </tr>
+                  {table_rows}
+                </table>
+
+                <div class="row">
+                  <div class="label">Total Score:</div>
+                  <div class="value"> {user_score} / {total_max_score}</div>
+                </div>
+                <div class="row">
+                  <div class="label">Performance Tier:</div>
+                  <div class="value"> {performance_tier}</div>
+                </div>
+                <div class="row">
+                  <div class="label">Session Completed:</div>
+                  <div class="value">Yes</div>
+                </div>
+
+                <div class="section-title">Agent Notes & Suggestions</div>
+                <div class="notes">
+                  {suggestions}<br><br>
+                </div>
+              </div>
+            </body>"""
+        
+        body_es = f"""<body>
+            <div class="report-container">
+              <div class="header_bg">
+                <div class="main">
+                  <div class="logo logo_div">
+                    <img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png" alt="Logo VYVA">
+                  </div>
+                  <div class="second_div">
+                    <h1 class="new_dic">VYVA Brain Coach – Informe Diario de Sesión Cognitiva</h1>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="label">Nombre:</div>
+                <div class="value"> {name}</div>
+              </div>
+              <div class="row">
+                <div class="label">Nivel Cognitivo:</div>
+                <div class="value">Nivel {tier} – Deterioro Moderado</div>
+              </div>
+              <div class="row">
+                <div class="label">Fecha:</div>
+                <div class="value"> {current_date}</div>
+              </div>
+              <div class="row">
+                <div class="label">ID de Sesión:</div>
+                <div class="value"># {session_id}</div>
+              </div>
+
+              <div class="section-title">Puntajes por Dominio de Actividad</div>
+              <table>
+                <tr>
+                  <th>Dominio de Actividad</th>
+                  <th>Pregunta</th>
+                  <th>Puntaje</th>
+                </tr>
+                {table_rows}
+              </table>
+
+              <div class="row">
+                <div class="label">Puntaje Total:</div>
+                <div class="value"> {user_score} / {total_max_score}</div>
+              </div>
+              <div class="row">
+                <div class="label">Nivel de Rendimiento:</div>
+                <div class="value"> {performance_tier}</div>
+              </div>
+              <div class="row">
+                <div class="label">Sesión Completada:</div>
+                <div class="value">Sí</div>
+              </div>
+
+              <div class="section-title">Notas y Sugerencias del Agente</div>
+              <div class="notes">
+                {suggestions}<br><br>
+              </div>
+            </div>
+          </body>
+          """
+        body = body_en
+        if language == 'es':
+            body = body_es
 
         html = f"""
                         <!DOCTYPE html>
@@ -391,78 +516,26 @@ class EmailService:
                 }}
               </style>
             </head>
-            <body>
-              <div class="report-container">
-                <div class="header_bg">
-                  <div class="main">
-                    <div class="logo logo_div">
-                      <img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png" alt="VYVA Logo">
-                    </div>
-                    <div class="second_div">
-                      <h1 class="new_dic">VYVA Brain Coach – Daily Cognitive Session Report</h1>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="label">Name:</div>
-                  <div class="value"> {name}</div>
-                </div>
-                <div class="row">
-                  <div class="label">Cognitive Tier:</div>
-                  <div class="value">Tier {tier} – Moderate Impairment</div>
-                </div>
-                <div class="row">
-                  <div class="label">Date:</div>
-                  <div class="value"> {current_date}</div>
-                </div>
-                <div class="row">
-                  <div class="label">Session ID:</div>
-                  <div class="value"># {session_id}</div>
-                </div>
-
-                <div class="section-title">Activity Domain Scores</div>
-                <table>
-                  <tr>
-                    <th>Activity Domain</th>
-                    <th>Question</th>
-                    <th>Score</th>
-                  </tr>
-                  {table_rows}
-                </table>
-
-                <div class="row">
-                  <div class="label">Total Score:</div>
-                  <div class="value"> {user_score} / {total_max_score}</div>
-                </div>
-                <div class="row">
-                  <div class="label">Performance Tier:</div>
-                  <div class="value"> {performance_tier}</div>
-                </div>
-                <div class="row">
-                  <div class="label">Session Completed:</div>
-                  <div class="value">Yes</div>
-                </div>
-
-                <div class="section-title">Agent Notes & Suggestions</div>
-                <div class="notes">
-                  {suggestions}<br><br>
-                </div>
-              </div>
-            </body>
+            {body}
+            
             </html>"""
+        
+        subject = 'VYVA Brain Coach – Daily Cognitive Session Report'
+        if language == 'es':
+            subject = 'VYVA Brain Coach – Informe Diario de Sesión Cognitiva'
         result = await self.send_email_via_mailgun(
             to=[recipient_email],
-            subject='VYVA Brain Coach – Daily Cognitive Session Report',
+            subject=subject,
             html=html
         )
 
-        logger.info(f"Medical report sent successfully to {recipient_email}")
+        logger.info(f"Medical report sent successfully to {recipient_email} with language {language}")
         return True
     
     async def send_medication_reminder(
         self,
-        user
+        user,
+        language = 'en'
     ):
         try:
             name = user['first_name']
@@ -478,6 +551,67 @@ class EmailService:
                       <span class="med-dosage">{dosage}</span>
                     </li>"""
 
+
+            body_en = f"""<body>
+                  <div class="container">
+                    <div class="header">
+                      <img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png" alt="VYVA Logo" class="logo">
+                      <h1>Medication Reminder</h1>
+                      <p>Your health is our priority</p>
+                    </div>
+
+                    <div class="content">
+                      <h1 class="greeting">Hi <span id="patient-name"> {name}</span>,</h1>
+
+                      <p class="message">This is VYVA. Remember to take the following medications:</p>
+
+                      <ul class="medication-list" id="medication-list">
+                        {medication_content}
+                      </ul>
+
+                      <p class="message">Please take your medications as prescribed by your healthcare provider. Set up additional reminders in the VYVA app.</p>
+                    </div>
+
+                    <div class="footer">
+                      <p>This is an automated reminder from VYVA Medication Reminder.</p>
+                      <p>© 2025 VYVA Health. All rights reserved.</p>
+                    </div>
+                  </div>
+
+
+                </body>"""
+            
+            body_es = f"""<body>
+                  <div class="container">
+                    <div class="header">
+                      <img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png" alt="Logo VYVA" class="logo">
+                      <h1>Recordatorio de Medicación</h1>
+                      <p>Tu salud es nuestra prioridad</p>
+                    </div>
+
+                    <div class="content">
+                      <h1 class="greeting">Hola <span id="patient-name"> {name}</span>,</h1>
+
+                      <p class="message">Soy VYVA. Recuerda tomar los siguientes medicamentos:</p>
+
+                      <ul class="medication-list" id="medication-list">
+                        {medication_content}
+                      </ul>
+
+                      <p class="message">Por favor, toma tus medicamentos según lo indicado por tu profesional de salud. Configura recordatorios adicionales en la aplicación VYVA.</p>
+                    </div>
+
+                    <div class="footer">
+                      <p>Este es un recordatorio automático de VYVA Recordatorio de Medicación.</p>
+                      <p>© 2025 VYVA Health. Todos los derechos reservados.</p>
+                    </div>
+                  </div>
+                </body>
+                """
+            
+            body = body_en
+            if language == 'es':
+                body = body_es
 
             html = f"""<!DOCTYPE html>
                 <html lang="en">
@@ -674,39 +808,17 @@ class EmailService:
                     }}
                   </style>
                 </head>
-                <body>
-                  <div class="container">
-                    <div class="header">
-                      <img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png" alt="VYVA Logo" class="logo">
-                      <h1>Medication Reminder</h1>
-                      <p>Your health is our priority</p>
-                    </div>
-
-                    <div class="content">
-                      <h1 class="greeting">Hi <span id="patient-name"> {name}</span>,</h1>
-
-                      <p class="message">This is VYVA. Remember to take the following medications:</p>
-
-                      <ul class="medication-list" id="medication-list">
-                        {medication_content}
-                      </ul>
-
-                      <p class="message">Please take your medications as prescribed by your healthcare provider. Set up additional reminders in the VYVA app.</p>
-                    </div>
-
-                    <div class="footer">
-                      <p>This is an automated reminder from VYVA Medication Reminder.</p>
-                      <p>© 2025 VYVA Health. All rights reserved.</p>
-                    </div>
-                  </div>
-
-
-                </body>
+                {body}
                 </html>"""
+            
+            subject = "VYVA Brain Coach – Daily Cognitive Session Report"
+            if language == 'es':
+                subject = "VYVA Brain Coach – Informe Diario de Sesión Cognitiva"
+
 
             result = await self.send_email_via_mailgun(
                 to=[user['email']],
-                subject='VYVA Brain Coach – Daily Cognitive Session Report',
+                subject=subject,
                 html=html
             )
 
