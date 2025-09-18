@@ -139,7 +139,7 @@ async def minute_background_task():
                 elif user['preferred_channel'] == 'email':
                     # Simulate sending Email
                     logger.info(f"Sending Email to user {user['user_id']} for medication {user['medications']} at {current_time}")
-                    await email_service.send_medication_reminder(user)
+                    await email_service.send_medication_reminder(user, language='es')
                     continue
                 elif user['preferred_channel'] == 'phone':
                     # Simulate making a phone call
