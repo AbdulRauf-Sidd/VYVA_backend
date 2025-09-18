@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 import logging
 from core.database import get_db
-from services.elevenlabs_service import make_fall_detection_batch
+from services.elevenlabs_service import make_fall_detection_call
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ async def report_fall_event():
             'caretaker_name': 'Anna'
         }
 
-        await make_fall_detection_batch(user)
+        await make_fall_detection_call(user)
         return {"message": "Fall event reporting - to be implemented"} 
     except Exception as e:
         logger.info(f'Fall detection endpoint failed')
@@ -46,7 +46,7 @@ async def report_fall_event():
             'caretaker_name': 'Anna'
         }
 
-        await make_fall_detection_batch(user)
+        await make_fall_detection_call(user)
         return {"message": "Fall event reporting - to be implemented"} 
     except Exception as e:
         logger.info(f'Fall detection endpoint failed')

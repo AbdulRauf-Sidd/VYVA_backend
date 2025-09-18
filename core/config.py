@@ -121,6 +121,11 @@ class Settings(BaseSettings):
         default=None,
         env="ELEVENLABS_FALL_DETECTION_AGENT_ID"
     )
+
+    ELEVENLABS_EMERGENCY_AGENT_ID: Optional[str] = Field(
+        default=None,
+        env="ELEVENLABS_EMERGENCY_AGENT_ID"
+    )
     
     # Sentry (Optional)
     SENTRY_DSN: Optional[str] = Field(default=None, env="SENTRY_DSN")
