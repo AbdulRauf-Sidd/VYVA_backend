@@ -80,7 +80,7 @@ async def make_caretaker_call_batch(users: list):
           },
           json={
             "call_name": "Medication Reminder Caretaker Batch",
-            "agent_id": "string",
+            "agent_id": settings.ELEVENLABS_EMERGENCY_AGENT_ID,
             "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
             "scheduled_time_unix": 1,
             "recipients": recipients
