@@ -134,6 +134,7 @@ class UserBase(BaseModel):
     caretaker_preferred_channel: Optional[str] = None  # e.g., "email", "sms", "push"
     caretaker_email: Optional[str] = None
     caretaker_phone_number: Optional[str] = None
+    caretaker_name: Optional[str] = None
 
 class UserCreate(UserBase):
     pass
