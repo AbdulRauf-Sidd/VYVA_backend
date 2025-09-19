@@ -10,6 +10,10 @@ import json
 import logging
 from contextlib import asynccontextmanager
 from typing import Dict, Any
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 from fastapi import FastAPI, Request, Response, status, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
