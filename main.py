@@ -33,15 +33,16 @@ from repositories.medication import MedicationRepository
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from celery import chain
 from tasks import process_medication_reminders
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 from services.elevenlabs_service import make_reminder_call_batch, check_batch_for_missed, make_caretaker_call_batch
-from services.helpers import construct_whatsapp_sms_message
+from services.helpers import construct_whatsapp_sms_message, construct_sms_body_from_template_for_reminders
 from services.whatsapp_service import whatsapp
 from services.email_service import email_service
 from schemas.eleven_labs_batch_calls import ElevenLabsBatchCallCreate
 from repositories.eleven_labs_batch_calls import ElevenLabsBatchCallRepository
 from repositories.user import UserRepository
+from apscheduler.triggers.date import DateTrigger
 
 
 
@@ -97,18 +98,36 @@ scheduler = AsyncIOScheduler()
 
 
 async def process_missed_calls(batch_id):
+    logger(f"Proccessing missed calls for batch {batch_id}")
     phone_number_set = check_batch_for_missed(batch_id=batch_id)
     session = AsyncSessionLocal()
     try:
         user_repo = UserRepository(session)
         users = await user_repo.get_users_by_phone_numbers(phone_number_set)
         logger.info(f"fetched {len(users)} missed medications")
-        await make_caretaker_call_batch(users)
+        alert_by_phone = []
+        for user in users:
+            preferred_channel = user['caretaker_preferred_channel']
+            if preferred_channel == 'phone':
+                alert_by_phone.append(user)
+            elif preferred_channel == 'email':
+                pass
+            elif preferred_channel == 'sms':
+                pass
+            elif preferred_channel == 'whatsapp':
+                pass
+
+        if alert_by_phone:
+            logger.info(f"Making caretaker batch for missed medication for {len(alert_by_phone)}")
+            await make_caretaker_call_batch(alert_by_phone)
+        return True
     except Exception as e:
         logger.error(f"Error processing missed calls: {e}")
         session.rollback()
     finally:
         session.close()
+
+
 
 
 
@@ -133,20 +152,19 @@ async def minute_background_task():
             # Option 1a: Chain tasks (runs sequentially)
             for user in user_list:
                 if user['preferred_channel'] == 'sms':
-                    # Simulate sending SMS
                     logger.info(f"Sending SMS to user {user['user_id']} for medication {user['medications']} at {current_time}")
+                    content = construct_whatsapp_sms_message(user)
+                    body = construct_sms_body_from_template_for_reminders(content, language='es')
+                    await whatsapp.send_sms(user['phone_number'], body)
                     continue
                 elif user['preferred_channel'] == 'email':
-                    # Simulate sending Email
                     logger.info(f"Sending Email to user {user['user_id']} for medication {user['medications']} at {current_time}")
                     await email_service.send_medication_reminder(user, language='es')
                     continue
                 elif user['preferred_channel'] == 'phone':
-                    # Simulate making a phone call
                     call_users.append(user)
                     continue
                 elif user['preferred_channel'] == 'whatsapp':
-                    # Simulate sending WhatsApp message
                     logger.info(f"Sending WhatsApp message to user {user['user_id']} for medication {user['medications']} at {current_time}")
                     content = construct_whatsapp_sms_message(user)
                     await whatsapp.send_reminder_message(user['phone_number'], content)
@@ -159,6 +177,9 @@ async def minute_background_task():
         if call_users:
             logger.info(f"Making Batch calls for {len(call_users)} users at {current_time}")
             batch_id = await make_reminder_call_batch(call_users)
+            if batch_id:
+                run_time = datetime.now() + timedelta(minutes=5)
+                scheduler.add_job(process_missed_calls, trigger=DateTrigger(run_date=run_time))
 
 
             try:

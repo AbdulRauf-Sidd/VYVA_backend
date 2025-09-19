@@ -137,6 +137,7 @@ class User(Base):
 
 
     #Caretaker Information
+    caretaker_name = Column(String(100), nullable=True)
     caretaker_preferred_channel = Column(String(50), nullable=True)  # e.g., "email", "sms", "push"
     caretaker_email = Column(String(255), nullable=True)
     caretaker_phone_number = Column(String(20), nullable=True)
