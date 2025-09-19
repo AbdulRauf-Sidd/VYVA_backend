@@ -71,6 +71,7 @@ class BulkMedicationRequest(BaseModel):
     caretaker_channel: Optional[str] = None
     caretaker_email: Optional[str] = None
     caretaker_phone: Optional[str] = None
+    caretaker_name: Optional[str] = None
 
 
 class BulkMedicationSchema(BaseModel):
