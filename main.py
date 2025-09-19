@@ -98,7 +98,7 @@ scheduler = AsyncIOScheduler()
 
 
 async def process_missed_calls(batch_id):
-    logger(f"Proccessing missed calls for batch {batch_id}")
+    logger.info(f"Proccessing missed calls for batch {batch_id}")
     phone_number_set = check_batch_for_missed(batch_id=batch_id)
     session = AsyncSessionLocal()
     try:
