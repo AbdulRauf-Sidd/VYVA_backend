@@ -115,6 +115,61 @@ class WhatsAppService:
         except Exception as e:
             logger.error(f"Error sending WhatsApp message: {str(e)}")
             return False
+        
+    async def send_sms(
+        self,
+        to_phone: str,
+        body: str
+    ) -> bool:
+        """
+        Send a WhatsApp message using a Twilio template.
+
+        Args:
+            to_phone: Recipient phone number (format: +1234567890)
+            template_data: Data to populate template variables
+
+        Returns:
+            bool: True if message sent successfully, False otherwise
+        """
+        try:
+            # Check if template_sid is configured
+            
+            # Ensure phone number has whatsapp: prefix
+            
+            logger.info(f"SMS Body: {body}")
+            # Log the data being sent for debugging
+
+            
+            message_data = {
+                "From": "+18782842340",
+                "To": to_phone,
+                "Body": body
+            }
+
+            # Send the message
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    self.base_url,
+                    auth=(self.account_sid, self.auth_token),
+                    data=message_data,
+                    headers={"Content-Type": "application/x-www-form-urlencoded"},
+                    timeout=30.0
+                )
+
+                response.raise_for_status()
+                result = response.json()
+
+                logger.info(
+                    f"WhatsApp message sent successfully to {to_phone}. Message SID: {result.get('sid', 'unknown')}")
+                return True
+
+        except httpx.HTTPStatusError as e:
+            logger.error(
+                f"Twilio API error: {e.response.status_code} - {e.response.text}")
+            return False
+        except Exception as e:
+            logger.error(f"Error sending WhatsApp message: {str(e)}")
+            return False
 
     async def send_medical_report(
         self,

@@ -135,7 +135,7 @@ async def make_emergency_call(user):
             "xi-api-key": settings.ELEVENLABS_API_KEY
           },
           json={
-            "agent_id": settings.ELEVENLABS_FALL_DETECTION_AGENT_ID,
+            "agent_id": settings.ELEVENLABS_EMERGENCY_AGENT_ID,
             "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
             "to_number": user['phone_number'],
             "conversation_initiation_client_data": {

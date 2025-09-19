@@ -27,6 +27,13 @@ def construct_whatsapp_sms_message(user):
     logger.info(f"Whatsapp Message Generated for User {user['user_id']}: {content}")
     return content
 
+def construct_sms_body_from_template_for_reminders(content, language='en'):
+    if language == 'en':
+        return f"Hello {content[1]}, \nPlease remember to take the following medications:\n{content[2]} \n\n- VYVA"
+    if language == 'es':
+        return f"Hola {content[1]}, \nes hora de tus medicamentos:\n{content[2]} \n\n- VYVA"
+
+
 
 async def construct_whatsapp_brain_coach_message(first_name, report_content, suggestions):
     user_score = 0

@@ -282,8 +282,11 @@ class UserRepository:
 
             query = (
                 select(User)
-                .options(load_only(User.id, User.first_name, User.caretaker_name, User.phone_number))
-                .where(User.phone_number.in_(phone_numbers))
+                .options(load_only(User.id, User.first_name, User.caretaker_name, User.caretaker_phone_number, User.caretaker_preferred_channel, User.caretaker_email))
+                .where(
+                    User.phone_number.in_(phone_numbers),
+                    User.wants_caretaker_alerts.is_(True)
+                )
             )
 
             result = await self.db_session.execute(query)
@@ -294,6 +297,9 @@ class UserRepository:
                     "user_id": user.id,
                     "first_name": user.first_name,
                     "caretaker_name": user.caretaker_name,
+                    "caretaker_phone_number": user.caretaker_phone_number,
+                    "caretaker_preferred_channel": user.caretaker_preferred_channel,
+                    "caretaker_email": user.caretaker_email
                 }
                 for user in users
             ]

@@ -34,25 +34,3 @@ async def report_fall_event():
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error occurred while creating question"
         )
-    
-
-@router.get("/emergency")
-async def report_fall_event():
-    try:
-        logger.info(f"======== Fall Dectected =========")
-        user = {
-            'first_name': 'Karim',
-            'phone_number': "+34664338991",
-            'caretaker_name': 'Anna'
-        }
-
-        await make_fall_detection_call(user)
-        return {"message": "Fall event reporting - to be implemented"} 
-    except Exception as e:
-        logger.info(f'Fall detection endpoint failed')
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error occurred while creating question"
-        )
-    
-
