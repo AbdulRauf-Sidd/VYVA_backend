@@ -17,11 +17,19 @@ class WhatsAppService:
         self.template_sid = settings.TWILIO_WHATSAPP_TEMPLATE_SID
 
         if not self.account_sid:
-            raise ValueError("TWILIO_ACCOUNT_SID is not configured")
+            logger.warning("TWILIO_ACCOUNT_SID is not configured - WhatsApp service will be disabled")
+            self.enabled = False
+            return
         if not self.auth_token:
-            raise ValueError("TWILIO_AUTH_TOKEN is not configured")
+            logger.warning("TWILIO_AUTH_TOKEN is not configured - WhatsApp service will be disabled")
+            self.enabled = False
+            return
         if not self.from_number:
-            raise ValueError("TWILIO_WHATSAPP_FROM_NUMBER is not configured")
+            logger.warning("TWILIO_WHATSAPP_FROM_NUMBER is not configured - WhatsApp service will be disabled")
+            self.enabled = False
+            return
+        
+        self.enabled = True
         # Template SID is optional - only required for template messages
 
         self.base_url = f"https://api.twilio.com/2010-04-01/Accounts/{self.account_sid}/Messages.json"
@@ -59,10 +67,10 @@ class WhatsAppService:
         Args:
             to_phone: Recipient phone number (format: +1234567890)
             template_data: Data to populate template variables
-
-        Returns:
-            bool: True if message sent successfully, False otherwise
         """
+        if not self.enabled:
+            logger.warning("WhatsApp service is disabled - cannot send template message")
+            return False
         try:
             # Check if template_sid is configured
             if not self.template_sid:

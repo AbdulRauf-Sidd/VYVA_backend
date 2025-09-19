@@ -22,7 +22,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from core.config import settings
 from core.logging import setup_logging
 from core.database import engine, Base
-from api.v1 import auth, users, profiles, health_care, social, brain_coach, medication, fall_detection, emergency, tts, symptom_checker, post_call
+from api.v1 import auth, users, profiles, health_care, social, brain_coach, medication, fall_detection, emergency, tts, symptom_checker, post_call, ai_assistant
 import subprocess
 from apscheduler.schedulers.background import BackgroundScheduler
 # from tasks import check_medication_time, run_async_job
@@ -267,6 +267,7 @@ app.include_router(emergency.router, prefix="/api/v1/emergency", tags=["Emergenc
 app.include_router(tts.router, prefix="/api/v1/tts", tags=["Text-to-Speech"])
 app.include_router(symptom_checker.router, prefix="/api/v1/symptoms", tags=["Symptoms Checker"])
 app.include_router(post_call.router, prefix="/api/v1/post-call", tags=["Post Call"])
+app.include_router(ai_assistant.router, prefix="/api/v1/ai-assistant", tags=["AI Assistant"])
 
 
 if __name__ == "__main__":
