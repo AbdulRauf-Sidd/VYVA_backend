@@ -102,8 +102,8 @@ scheduler = AsyncIOScheduler()
 
 
 async def process_missed_calls(batch_id):
-    logger(f"Proccessing missed calls for batch {batch_id}")
-    phone_number_set = check_batch_for_missed(batch_id=batch_id)
+    logger.info(f"Proccessing missed calls for batch {batch_id}")
+    phone_number_set = await check_batch_for_missed(batch_id=batch_id)
     session = AsyncSessionLocal()
     try:
         user_repo = UserRepository(session)
@@ -182,8 +182,9 @@ async def minute_background_task():
             logger.info(f"Making Batch calls for {len(call_users)} users at {current_time}")
             batch_id = await make_reminder_call_batch(call_users)
             if batch_id:
-                run_time = datetime.now() + timedelta(minutes=5)
-                scheduler.add_job(process_missed_calls, trigger=DateTrigger(run_date=run_time))
+                run_time = datetime.now() + timedelta(minutes=3)
+                scheduler.add_job(process_missed_calls, trigger=DateTrigger(run_date=run_time), args=[batch_id])
+                logger.info(f"Job scheduled for missed calls with batch id {batch_id}")
 
 
             try:
