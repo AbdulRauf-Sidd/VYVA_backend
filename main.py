@@ -179,7 +179,8 @@ async def minute_background_task():
             batch_id = await make_reminder_call_batch(call_users)
             if batch_id:
                 run_time = datetime.now() + timedelta(minutes=5)
-                scheduler.add_job(process_missed_calls, trigger=DateTrigger(run_date=run_time))
+                scheduler.add_job(process_missed_calls(batch_id), trigger=DateTrigger(run_date=run_time))
+                logger.info(f"Job scheduled for missed calls with batch id {batch_id}")
 
 
             try:
