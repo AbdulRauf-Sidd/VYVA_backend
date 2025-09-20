@@ -126,6 +126,26 @@ class Settings(BaseSettings):
         default=None,
         env="ELEVENLABS_EMERGENCY_AGENT_ID"
     )
+
+    OPENAI_MODEL: Optional[str] = Field(
+        default=None,
+        env="OPENAI_MODEL"
+    )
+
+    OPENAI_MAX_TOKENS: Optional[str] = Field(
+        default=None,
+        env="OPENAI_MAX_TOKENS"
+    )
+
+    OPENAI_TEMPERATURE: Optional[str] = Field(
+        default=None,
+        env="OPENAI_TEMPERATURE"
+    )
+
+    OPENAI_API_KEY: Optional[str] = Field(
+        default=None,
+        env="OPENAI_API_KEY"
+    )
     
     # Sentry (Optional)
     SENTRY_DSN: Optional[str] = Field(default=None, env="SENTRY_DSN")
