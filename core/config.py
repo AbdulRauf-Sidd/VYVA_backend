@@ -132,12 +132,12 @@ class Settings(BaseSettings):
         env="OPENAI_MODEL"
     )
 
-    OPENAI_MAX_TOKENS: Optional[str] = Field(
+    OPENAI_MAX_TOKENS: Optional[int] = Field(
         default=None,
         env="OPENAI_MAX_TOKENS"
     )
 
-    OPENAI_TEMPERATURE: Optional[str] = Field(
+    OPENAI_TEMPERATURE: Optional[float] = Field(
         default=None,
         env="OPENAI_TEMPERATURE"
     )
