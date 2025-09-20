@@ -348,7 +348,7 @@ class EmailService:
                     <img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png" alt="Logo VYVA">
                   </div>
                   <div class="second_div">
-                    <h1 class="new_dic">VYVA Brain Coach – Informe Diario de Sesión Cognitiva</h1>
+                    <h1 class="new_dic">Sesión Cognitiva</h1>
                   </div>
                 </div>
               </div>
