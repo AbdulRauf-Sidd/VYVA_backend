@@ -146,6 +146,16 @@ class Settings(BaseSettings):
         default=None,
         env="OPENAI_API_KEY"
     )
+
+    SERP_API_KEY: Optional[str] = Field(
+        default=None,
+        env="SERP_API_KEY"
+    )
+    
+    SERP_BASE_URL: str = Field(
+        default=None,
+        env='SERP_BASE_URL'
+    )
     
     # Sentry (Optional)
     SENTRY_DSN: Optional[str] = Field(default=None, env="SENTRY_DSN")
