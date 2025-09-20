@@ -353,6 +353,7 @@ class EmailService:
                 </div>
               </div>
 
+              <br></br>
               <div class="row">
                 <div class="label">Nombre: </div>
                 <div class="value"> {name}</div>
@@ -379,9 +380,8 @@ class EmailService:
                 </tr>
                 {table_rows}
               </table>
-
+              <br></br>
               <div class="row">
-                <br></br>
                 <div class="label">Puntaje Total: </div>
                 <div class="value"> {user_score} / {total_max_score}</div>
               </div>
@@ -539,7 +539,7 @@ class EmailService:
         language = 'en'
     ):
         try:
-            name = user['first_name']
+            first_name = user['first_name']
 
             medication_content = ''
             medications = user['medications']
@@ -562,7 +562,7 @@ class EmailService:
                     </div>
 
                     <div class="content">
-                      <h1 class="greeting">Hi <span id="patient-name"> {name}</span>,</h1>
+                      <h1 class="greeting">Hi <span id="patient-name"> {first_name}</span>,</h1>
 
                       <p class="message">This is VYVA. Remember to take the following medications:</p>
 
@@ -591,7 +591,7 @@ class EmailService:
                     </div>
 
                     <div class="content">
-                      <h1 class="greeting">Hola <span id="patient-name"> {name}</span>,</h1>
+                      <h1 class="greeting">Hola <span id="patient-name"> {first_name}</span>,</h1>
 
                       <p class="message">Soy VYVA. Recuerda tomar los siguientes medicamentos:</p>
 
