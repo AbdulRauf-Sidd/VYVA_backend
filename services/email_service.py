@@ -354,19 +354,19 @@ class EmailService:
               </div>
 
               <div class="row">
-                <div class="label">Nombre:</div>
+                <div class="label">Nombre: </div>
                 <div class="value"> {name}</div>
               </div>
               <div class="row">
-                <div class="label">Nivel Cognitivo:</div>
+                <div class="label">Nivel Cognitivo: </div>
                 <div class="value">Nivel {tier} – Deterioro Moderado</div>
               </div>
               <div class="row">
-                <div class="label">Fecha:</div>
+                <div class="label">Fecha: </div>
                 <div class="value"> {current_date}</div>
               </div>
               <div class="row">
-                <div class="label">ID de Sesión:</div>
+                <div class="label">ID de Sesión: </div>
                 <div class="value"># {session_id}</div>
               </div>
 
@@ -381,15 +381,16 @@ class EmailService:
               </table>
 
               <div class="row">
-                <div class="label">Puntaje Total:</div>
+                <br></br>
+                <div class="label">Puntaje Total: </div>
                 <div class="value"> {user_score} / {total_max_score}</div>
               </div>
               <div class="row">
-                <div class="label">Nivel de Rendimiento:</div>
+                <div class="label">Nivel de Rendimiento: </div>
                 <div class="value"> {performance_tier}</div>
               </div>
               <div class="row">
-                <div class="label">Sesión Completada:</div>
+                <div class="label">Sesión Completada: </div>
                 <div class="value">Sí</div>
               </div>
 
