@@ -136,7 +136,7 @@ def _levenshtein(a: str, b: str) -> int:
 
 KEYWORDS: Dict[str, List[str]] = {
     "en": [
-        "emergency", "urgent", "immediate", "serious", "severe", "critical",
+        "emergency", "urgent", "immediate", "serious", "grave", "severe", "critical",
         "seek medical attention", "seek medical care", "call doctor", "call a doctor",
         "hospital", "911", "can't breathe", "cannot breathe", "difficulty breathing",
         "chest pain", "heavy bleeding", "bleeding heavily", "loss of consciousness",
@@ -520,7 +520,7 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
             email=email,
             summary=summary,
             breakdown=breakdown,
-            severity="severe" if is_emergency else "mild",
+            severity="grave" if is_emergency else "leve",
             is_emergency=is_emergency,
             status="success"
         )
