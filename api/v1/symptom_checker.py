@@ -394,7 +394,7 @@ def _create_breakdown(email: str, full_name: str = None) -> Dict[str, str]:
     lines = [line.strip() for line in email.split('\n') if line.strip()]
 
     breakdown = {
-        "1": full_name or "User",
+        "1": full_name or " ",
         "2": _clean_html_text(lines[0]) if lines else "",
         "3": _clean_html_text(lines[1].replace("1.", "").strip()) if len(lines) > 1 else "",
         "4": _clean_html_text(lines[2].replace("2.", "").strip()) if len(lines) > 2 else "",
@@ -452,7 +452,7 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
         api_result = await _call_medisearch_api(
             symptoms=formulated_symptoms,
             conversation_id=conversation_id,
-            language=payload.language or "en",
+            language=payload.language or "Spanish",
             model_type=payload.model_type,
             system_prompt=payload.system_prompt,
             followup_count=payload.followup_count
@@ -626,13 +626,13 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
             send_result = await _send_email_report(
                 recipient_email=payload.recipient_email,
                 report_content=report_content,
-                patient_name=response_record.full_name or "User"
+                patient_name=response_record.full_name or " "
             )
         elif payload.action == "whatsapp":
             send_result = await _send_whatsapp_report(
                 phone_number=payload.phone_number,
                 report_content=report_content,
-                patient_name=response_record.full_name or "User"
+                patient_name=response_record.full_name or " "
             )
 
         # Delete the record after successful sending
@@ -662,7 +662,7 @@ def _prepare_report_content(response_record: SymptomCheckerResponse, payload: Se
     Prepare the report content for sending.
     """
     content = {
-        "patient_name": response_record.full_name or "User",
+        "patient_name": response_record.full_name or " ",
         "symptoms": response_record.symptoms,
         "summary": response_record.summary,
         "email": response_record.email,  # Full email content for analysis section

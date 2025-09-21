@@ -111,7 +111,7 @@ class EmailService:
         Send a medical report email with the provided content.
         """
         try:
-            subject = "Your VYVA Health Symptom Assessment"
+            subject = "Su Evaluación de Síntomas VYVA Health"
 
             # Extract content for email template
             symptoms = report_content.get('symptoms', 'N/A')
@@ -139,11 +139,11 @@ class EmailService:
                 <meta charset="UTF-8">
                 <style>
                     body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; }}
-                    .header {{ background-color: #2c5aa0; color: white; padding: 20px; text-align: center; }}
+                    .header {{ background-color: #642997; color: white; padding: 20px; text-align: center; }}
                     .content {{ padding: 20px; }}
                     .section {{ margin-bottom: 25px; }}
-                    .section-title {{ color: #2c5aa0; font-size: 18px; font-weight: bold; margin-bottom: 10px; border-bottom: 2px solid #2c5aa0; padding-bottom: 5px; }}
-                    .symptom-item {{ background-color: #f8f9fa; padding: 10px; margin: 5px 0; border-left: 4px solid #2c5aa0; }}
+                    .section-title {{ color: #642997; font-size: 18px; font-weight: bold; margin-bottom: 10px; border-bottom: 2px solid #642997; padding-bottom: 5px; }}
+                    .symptom-item {{ background-color: #f8f9fa; padding: 10px; margin: 5px 0; border-left: 4px solid #642997; }}
                     .severity {{ padding: 15px; text-align: center; font-weight: bold; border-radius: 5px; }}
                     .severe {{ background-color: #ffe6e6; color: #d63384; border: 2px solid #d63384; }}
                     .mild {{ background-color: #e6ffe6; color: #198754; border: 2px solid #198754; }}
@@ -163,20 +163,20 @@ class EmailService:
                 <div class="main">
                     <div class="logo logo_div"><img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png"></div>
                     <div class="second_div">
-                    <h1 style="color:#FFF; font-size:20px; text-align:right;">VYVA Symptom Checker</h1>
+                    <h1 style="color:#FFF; font-size:20px; text-align:right;">Verificador de Síntomas</h1>
                     </div>
                 </div>
                 </div>
                 <div class="content">
-                    <h2>Dear User,</h2>
-                    <p>Thank you for using VYVA Symptom Checker. Here is your detailed symptom assessment:</p>
+                    <h2>Estimado Usuario,</h2>
+                    <p>Gracias por usar el Verificador de Síntomas VYVA. Aquí está su evaluación detallada de síntomas:</p>
                     
                     <div class="section">
-                        <div class="section-title">📋 Symptoms Reported</div>
-                        <div class="symptom-item"><strong>Symptoms:</strong> {symptoms}</div>
-                        <div class="symptom-item"><strong>Duration:</strong> {duration}</div>
-                        <div class="symptom-item"><strong>Pain Level:</strong> {pain_level}</div>
-                        <div class="symptom-item"><strong>Additional Notes:</strong> {additional_notes}</div>
+                        <div class="section-title">📋 Síntomas Reportados</div>
+                        <div class="symptom-item"><strong>Síntomas:</strong> {symptoms}</div>
+                        <div class="symptom-item"><strong>Duración:</strong> {duration}</div>
+                        <div class="symptom-item"><strong>Nivel de Dolor:</strong> {pain_level}</div>
+                        <div class="symptom-item"><strong>Notas Adicionales:</strong> {additional_notes}</div>
                     </div>
             """
 
@@ -184,23 +184,23 @@ class EmailService:
             if heart_rate.get('value') or respiratory_rate.get('value'):
                 html_body += """
                     <div class="section">
-                        <div class="section-title">🩺 Vital Signs</div>
+                        <div class="section-title">🩺 Signos Vitales</div>
                         <div class="vitals">
                 """
 
                 if heart_rate.get('value'):
                     html_body += f"""
                             <div class="vital-item">
-                                <div style="font-weight: bold; color: #d32f2f;">❤️ Heart Rate</div>
-                                <div style="font-size: 14px; color: #d32f2f;">Value: {heart_rate.get('value', '—')} {heart_rate.get('unit', 'bpm')}</div>
+                                <div style="font-weight: bold; color: #d32f2f;">❤️ Frecuencia Cardíaca</div>
+                                <div style="font-size: 14px; color: #d32f2f;">Valor: {heart_rate.get('value', '—')} {heart_rate.get('unit', 'lpm')}</div>
                             </div>
                     """
 
                 if respiratory_rate.get('value'):
                     html_body += f"""
                             <div class="vital-item">
-                                <div style="font-weight: bold; color: #1976d2;">🫁 Respiratory Rate</div>
-                                <div style="font-size: 14px; color: #1976d2;">Value: {respiratory_rate.get('value', '—')} {respiratory_rate.get('unit', 'breaths/min')}</div>
+                                <div style="font-weight: bold; color: #1976d2;">🫁 Frecuencia Respiratoria</div>
+                                <div style="font-size: 14px; color: #1976d2;">Valor: {respiratory_rate.get('value', '—')} {respiratory_rate.get('unit', 'respiraciones/min')}</div>
                             </div>
                     """
 
@@ -212,31 +212,31 @@ class EmailService:
             # Continue with the rest of the email
             html_body += f"""
                     <div class="section">
-                        <div class="section-title">🩺 Medical Analysis</div>
+                        <div class="section-title">🩺 Análisis Médico</div>
                         <div class="analysis">{analysis_content}</div>
                     </div>
                     
                     <div class="section">
-                        <div class="section-title">⚠️ Severity Assessment</div>
+                        <div class="section-title">⚠️ Evaluación de Gravedad</div>
                         <div class="severity {'severe' if severity.lower() == 'severe' else 'mild'}">
-                            <strong>Classification:</strong> <span style="text-transform: uppercase;">{severity}</span>
+                            <strong>Clasificación:</strong> <span style="text-transform: uppercase;">{severity}</span>
                         </div>
                     </div>
                     
                     <div class="disclaimer">
-                        <strong>⚠️ Important Disclaimer:</strong><br>
-                        This assessment is for informational purposes only. Please consult with a healthcare professional for proper medical advice.
+                        <strong>⚠️ Descargo de Responsabilidad Importante:</strong><br>
+                        Esta evaluación es solo para fines informativos. Por favor, consulte con un profesional de la salud para obtener asesoramiento médico adecuado.
                     </div>
                     
                     <div style="margin-top: 30px;">
-                        <p><strong>Record ID:</strong> {record_id}</p>
-                        <p><strong>Assessment Date:</strong> {created_at}</p>
+                        <p><strong>ID de Registro:</strong> {record_id}</p>
+                        <p><strong>Fecha de Evaluación:</strong> {created_at}</p>
                     </div>
                 </div>
                 
                 <div class="footer">
-                    <p><strong>Best regards,<br>VYVA Symptom Checker Team</strong></p>
-                    <p style="font-size: 12px; color: #999;">This email was generated automatically by VYVA Symptom Checker System</p>
+                    <p><strong>Saludos cordiales,<br>Equipo del Verificador de Síntomas VYVA</strong></p>
+                    <p style="font-size: 12px; color: #999;">Este correo fue generado automáticamente por el Sistema Verificador de Síntomas VYVA</p>
                 </div>
             </body>
             </html>
@@ -339,7 +339,7 @@ class EmailService:
                 </div>
               </div>
             </body>"""
-        
+
         body_es = f"""<body>
             <div class="report-container">
               <div class="header_bg">
@@ -519,7 +519,7 @@ class EmailService:
             {body}
             
             </html>"""
-        
+
         subject = 'VYVA Brain Coach – Daily Cognitive Session Report'
         if language == 'es':
             subject = 'VYVA Brain Coach – Informe Diario de Sesión Cognitiva'
@@ -529,13 +529,14 @@ class EmailService:
             html=html
         )
 
-        logger.info(f"Medical report sent successfully to {recipient_email} with language {language}")
+        logger.info(
+            f"Medical report sent successfully to {recipient_email} with language {language}")
         return True
-    
+
     async def send_medication_reminder(
         self,
         user,
-        language = 'en'
+        language='en'
     ):
         try:
             name = user['first_name']
@@ -550,7 +551,6 @@ class EmailService:
                       <span class="med-name">{name}</span>
                       <span class="med-dosage">{dosage}</span>
                     </li>"""
-
 
             body_en = f"""<body>
                   <div class="container">
@@ -580,7 +580,7 @@ class EmailService:
 
 
                 </body>"""
-            
+
             body_es = f"""<body>
                   <div class="container">
                     <div class="header">
@@ -608,7 +608,7 @@ class EmailService:
                   </div>
                 </body>
                 """
-            
+
             body = body_en
             if language == 'es':
                 body = body_es
@@ -810,11 +810,10 @@ class EmailService:
                 </head>
                 {body}
                 </html>"""
-            
+
             subject = "VYVA Brain Coach – Daily Cognitive Session Report"
             if language == 'es':
                 subject = "VYVA Brain Coach – Informe Diario de Sesión Cognitiva"
-
 
             result = await self.send_email_via_mailgun(
                 to=[user['email']],
@@ -825,7 +824,9 @@ class EmailService:
             logger.info(f"Medical report sent successfully to {user['email']}")
             return True
         except Exception as e:
-            logger.error(f'Error while sending reminder email for user {user['user_id']}: {e}')
+            logger.error(
+                f'Error while sending reminder email for user {user['user_id']}: {e}')
             return False
-        
+
+
 email_service = EmailService()
