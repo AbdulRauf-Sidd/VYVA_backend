@@ -348,25 +348,26 @@ class EmailService:
                     <img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png" alt="Logo VYVA">
                   </div>
                   <div class="second_div">
-                    <h1 class="new_dic">VYVA Brain Coach – Informe Diario de Sesión Cognitiva</h1>
+                    <h1 class="new_dic">Sesión Cognitiva</h1>
                   </div>
                 </div>
               </div>
 
+              <br></br>
               <div class="row">
-                <div class="label">Nombre:</div>
+                <div class="label">Nombre: </div>
                 <div class="value"> {name}</div>
               </div>
               <div class="row">
-                <div class="label">Nivel Cognitivo:</div>
+                <div class="label">Nivel Cognitivo: </div>
                 <div class="value">Nivel {tier} – Deterioro Moderado</div>
               </div>
               <div class="row">
-                <div class="label">Fecha:</div>
+                <div class="label">Fecha: </div>
                 <div class="value"> {current_date}</div>
               </div>
               <div class="row">
-                <div class="label">ID de Sesión:</div>
+                <div class="label">ID de Sesión: </div>
                 <div class="value"># {session_id}</div>
               </div>
 
@@ -379,17 +380,17 @@ class EmailService:
                 </tr>
                 {table_rows}
               </table>
-
+              <br></br>
               <div class="row">
-                <div class="label">Puntaje Total:</div>
+                <div class="label">Puntaje Total: </div>
                 <div class="value"> {user_score} / {total_max_score}</div>
               </div>
               <div class="row">
-                <div class="label">Nivel de Rendimiento:</div>
+                <div class="label">Nivel de Rendimiento: </div>
                 <div class="value"> {performance_tier}</div>
               </div>
               <div class="row">
-                <div class="label">Sesión Completada:</div>
+                <div class="label">Sesión Completada: </div>
                 <div class="value">Sí</div>
               </div>
 
@@ -539,7 +540,7 @@ class EmailService:
         language='en'
     ):
         try:
-            name = user['first_name']
+            first_name = user['first_name']
 
             medication_content = ''
             medications = user['medications']
@@ -561,7 +562,7 @@ class EmailService:
                     </div>
 
                     <div class="content">
-                      <h1 class="greeting">Hi <span id="patient-name"> {name}</span>,</h1>
+                      <h1 class="greeting">Hi <span id="patient-name"> {first_name}</span>,</h1>
 
                       <p class="message">This is VYVA. Remember to take the following medications:</p>
 
@@ -590,7 +591,7 @@ class EmailService:
                     </div>
 
                     <div class="content">
-                      <h1 class="greeting">Hola <span id="patient-name"> {name}</span>,</h1>
+                      <h1 class="greeting">Hola <span id="patient-name"> {first_name}</span>,</h1>
 
                       <p class="message">Soy VYVA. Recuerda tomar los siguientes medicamentos:</p>
 

@@ -62,7 +62,7 @@ async def construct_whatsapp_brain_coach_message(first_name, report_content, sug
 async def construct_email_brain_coach_message(responses, repo):
     report_content = []
     for response in responses:
-        question = await repo.get_question_translation(response.question_id, 'en')
+        question = await repo.get_question_translation(response.question_id, 'es')
         if question:
             report_content.append({
                 "question_text": question.question_text,
