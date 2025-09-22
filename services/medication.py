@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from models.medication import Medication, MedicationTime
 from schemas.medication import MedicationCreate, MedicationInDB, MedicationUpdate, BulkMedicationRequest, MedicationTimeCreate
 from repositories.medication import MedicationRepository
-
+from datetime import datetime, timedelta
 logger = logging.getLogger(__name__)
 
 class MedicationService:
@@ -121,13 +121,16 @@ class MedicationService:
                     time_obj = self._parse_time_string(time_str)
                     time_objects.append(MedicationTimeCreate(time_of_day=time_obj))
                 
+                start_date_obj = datetime.strptime(med_input.start_date, "%Y-%m-%d").date()
+                end_date_obj = start_date_obj + timedelta(days=3)
+
                 # Create MedicationCreate object
                 medication_create = MedicationCreate(
                     user_id=request_data.user_id,
                     name=med_input.name,
                     dosage=med_input.dosage,
                     start_date=med_input.start_date,
-                    end_date=med_input.end_date,
+                    end_date=end_date_obj.strftime("%Y-%m-%d"),
                     times_of_day=time_objects
                 )
                 
