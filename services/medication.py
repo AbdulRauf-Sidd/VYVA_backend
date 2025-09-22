@@ -121,7 +121,7 @@ class MedicationService:
                     time_obj = self._parse_time_string(time_str)
                     time_objects.append(MedicationTimeCreate(time_of_day=time_obj))
                 
-                start_date_obj = datetime.strptime(med_input.start_date, "%Y-%m-%d").date()
+                start_date_obj = datetime.strptime(str(med_input.start_date), "%Y-%m-%d").date()
                 end_date_obj = start_date_obj + timedelta(days=3)
 
                 # Create MedicationCreate object
