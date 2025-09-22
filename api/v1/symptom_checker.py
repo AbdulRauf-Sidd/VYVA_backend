@@ -251,6 +251,7 @@ async def _call_medisearch_api(symptoms: str, conversation_id: str, language: st
         "key": "3d667019-0187-4793-b3a5-e6a14f078d40",  # API key
         "id": conversation_id,
         "settings": {
+            "language" : "Spanish",
             "model_type": model_type,
             "system_prompt": system_prompt or (
                 "Please provide all responses in simple, consumer-friendly language. "
