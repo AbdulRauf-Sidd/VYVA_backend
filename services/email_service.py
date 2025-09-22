@@ -340,186 +340,187 @@ class EmailService:
               </div>
             </body>"""
 
-        body_es = f"""<body>
-            <div class="report-container">
-              <div class="header_bg">
-                <div class="main">
-                  <div class="logo logo_div">
-                    <img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png" alt="Logo VYVA">
-                  </div>
-                  <div class="second_div">
-                    <h1 class="new_dic">Sesión Cognitiva</h1>
-                  </div>
+                body_es = f"""<body>
+          <div class="report-container">
+            <div class="header_bg">
+              <div class="main">
+                <div class="logo logo_div">
+                  <img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png" alt="Logo VYVA">
+                </div>
+                <div class="second_div">
+                  <h1 class="new_dic">Sesión Cognitiva</h1>
                 </div>
               </div>
-
-              <br></br>
-              <div class="row">
-                <div class="label">Nombre: </div>
-                <div class="value"> {name}</div>
-              </div>
-              <div class="row">
-                <div class="label">Nivel Cognitivo: </div>
-                <div class="value">Nivel {tier} – Deterioro Moderado</div>
-              </div>
-              <div class="row">
-                <div class="label">Fecha: </div>
-                <div class="value"> {current_date}</div>
-              </div>
-              <div class="row">
-                <div class="label">ID de Sesión: </div>
-                <div class="value"># {session_id}</div>
-              </div>
-
-              <div class="section-title">Puntajes por Dominio de Actividad</div>
-              <table>
-                <tr>
-                  <th>Dominio de Actividad</th>
-                  <th>Pregunta</th>
-                  <th>Puntaje</th>
-                </tr>
-                {table_rows}
-              </table>
-              <br></br>
-              <div class="row">
-                <div class="label">Puntaje Total: </div>
-                <div class="value"> {user_score} / {total_max_score}</div>
-              </div>
-              <div class="row">
-                <div class="label">Nivel de Rendimiento: </div>
-                <div class="value"> {performance_tier}</div>
-              </div>
-              <div class="row">
-                <div class="label">Sesión Completada: </div>
-                <div class="value">Sí</div>
-              </div>
-
-              <div class="section-title">Notas y Sugerencias del Agente</div>
-              <div class="notes">
-                {suggestions}<br><br>
-              </div>
             </div>
-          </body>
-          """
+        
+            <div class="row">
+              <div class="label">Nombre:</div>
+              <div class="value">{name}</div>
+            </div>
+            <div class="row">
+              <div class="label">Nivel Cognitivo:</div>
+              <div class="value">Nivel {tier} – Deterioro Moderado</div>
+            </div>
+            <div class="row">
+              <div class="label">Fecha:</div>
+              <div class="value">{current_date}</div>
+            </div>
+            <div class="row">
+              <div class="label">ID de Sesión:</div>
+              <div class="value">#{session_id}</div>
+            </div>
+        
+            <div class="section-title">Puntajes por Dominio de Actividad</div>
+            <table>
+              <tr>
+                <th>Dominio de Actividad</th>
+                <th>Pregunta</th>
+                <th>Puntaje</th>
+              </tr>
+              {table_rows}
+            </table>
+        
+            <div class="row">
+              <div class="label">Puntaje Total:</div>
+              <div class="value">{user_score} / {total_max_score}</div>
+            </div>
+            <div class="row">
+              <div class="label">Nivel de Rendimiento:</div>
+              <div class="value">{performance_tier}</div>
+            </div>
+            <div class="row">
+              <div class="label">Sesión Completada:</div>
+              <div class="value">Sí</div>
+            </div>
+        
+            <div class="section-title">Notas y Sugerencias del Agente</div>
+            <div class="notes">{suggestions}</div>
+          </div>
+        </body>
+        """
+        
         body = body_en
         if language == 'es':
             body = body_es
-
+        
         html = f"""
-                        <!DOCTYPE html>
-            <html lang="en">
-            <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>VYVA Brain Coach – Daily Cognitive Session Report</title>
-              <style>
-                body {{
-                  font-family: Arial, sans-serif;
-                  margin: 20px;
-                  background: #fff;
-                  color: #000;
-                  line-height: 1.5;
-                }}
-                .report-container {{
-                  max-width: 800px;
-                  margin: auto;
-                  padding: 20px;
-                  border: 1px solid #ddd;
-                  border-radius: 8px;
-                  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-                }}
-                .row {{
-                  display: flex;
-                  flex-wrap: wrap;
-                  margin-bottom: 10px;
-                }}
-                .label {{
-                  flex: 1 0 200px;
-                  font-weight: bold;
-                }}
-                .value {{
-                  flex: 2 0 300px;
-                }}
-                .section-title {{
-                  font-size: 18px;
-                  margin-top: 20px;
-                  border-bottom: 1px solid #ccc;
-                  padding-bottom: 5px;
-                }}
-                .notes {{
-                  background: #f9f9f9;
-                  padding: 10px;
-                  border-radius: 6px;
-                  margin-top: 10px;
-                  font-style: italic;
-                }}
-                table {{
-                  width: 100%;
-                  border-collapse: collapse;
-                  margin-top: 15px;
-                }}
-                th, td {{
-                  border: 1px solid #ccc;
-                  padding: 8px;
-                  text-align: center;
-                }}
-                th {{
-                  background: #f0f0f0;
-                }}
-                .header_bg {{
-                  background: #642997;
-                  border-radius: 6px 6px 0 0;
-                  margin: -20px -20px 20px -20px;
-                }}
-                @media (max-width: 600px) {{
-                  .row {{
-                    flex-direction: column;
-                  }}
-                  .label, .value {{
-                    flex: 1 0 100%;
-                  }}
-                }}
-                @media only screen and (max-width: 690px) {{
-                  .new_dic {{
-                    color: #FFF;
-                    font-size: 8px !important;
-                    text-align: right;
-                    padding: 0px 14px 0px 0px !important;
-                  }}
-                  .second_div {{
-                    margin: 2px 0px 0px !important;
-                  }}
-                }}
-                .logo img {{
-                  max-width: 100%;
-                  height: auto;
-                }}
-                .logo_div {{
-                  width: 20%; 
-                  padding: 15px 0px 8px 19px;
-                }}
-                .main {{
-                  width: 100%;
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                }}
-                .second_div {{
-                  width: 74%;
-                  margin: 15px 0px;
-                  padding-right: 15px;
-                }}
-                .new_dic {{
-                  color: #FFF; 
-                  font-size: 18px; 
-                  text-align: right;
-                  margin: 0;
-                }}
-              </style>
-            </head>
-            {body}
-            
-            </html>"""
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>VYVA Brain Coach – Daily Cognitive Session Report</title>
+          <style>
+            body {{
+              font-family: Arial, sans-serif;
+              margin: 20px;
+              background: #fff;
+              color: #000;
+              font-size: 15px;
+              line-height: 1.6;
+            }}
+            .report-container {{
+              max-width: 820px;
+              margin: auto;
+              padding: 24px;
+              border: 1px solid #ddd;
+              border-radius: 10px;
+              box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+              background: #fff;
+            }}
+            .row {{
+              display: flex;
+              flex-wrap: wrap;
+              margin-bottom: 12px;
+            }}
+            .label {{
+              flex: 1 0 200px;
+              font-weight: bold;
+              color: #333;
+            }}
+            .value {{
+              flex: 2 0 300px;
+              color: #555;
+            }}
+            .section-title {{
+              font-size: 18px;
+              margin-top: 25px;
+              border-bottom: 2px solid #642997;
+              padding-bottom: 6px;
+              color: #642997;
+            }}
+            .notes {{
+              background: #fdf8ff;
+              padding: 14px;
+              border-radius: 6px;
+              margin-top: 12px;
+              font-style: italic;
+              border-left: 4px solid #642997;
+            }}
+            table {{
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 15px;
+              font-size: 14px;
+            }}
+            th, td {{
+              border: 1px solid #ccc;
+              padding: 10px;
+              text-align: center;
+            }}
+            th {{
+              background: #f5f0fa;
+              color: #333;
+            }}
+            tr:nth-child(even) td {{
+              background: #fafafa;
+            }}
+            tr:hover td {{
+              background: #f0f7ff;
+            }}
+            .header_bg {{
+              background: #642997;
+              border-radius: 8px 8px 0 0;
+              margin: -24px -24px 20px -24px;
+              padding: 12px 20px;
+            }}
+            .logo img {{
+              max-width: 120px;
+              height: auto;
+            }}
+            .main {{
+              width: 100%;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            }}
+            .second_div {{
+              flex: 1;
+              text-align: right;
+            }}
+            .new_dic {{
+              color: #FFF; 
+              font-size: 20px; 
+              margin: 0;
+            }}
+            @media (max-width: 600px) {{
+              .row {{
+                flex-direction: column;
+              }}
+              .label, .value {{
+                flex: 1 0 100%;
+              }}
+              .second_div {{
+                text-align: left;
+                margin-top: 10px;
+              }}
+            }}
+          </style>
+        </head>
+        {body}
+        </html>
+        """
+
 
         subject = 'VYVA Brain Coach – Daily Cognitive Session Report'
         if language == 'es':
