@@ -340,7 +340,7 @@ class EmailService:
               </div>
             </body>"""
 
-                body_es = f"""<body>
+        body_es = f"""<body>
           <div class="report-container">
             <div class="header_bg">
               <div class="main">
@@ -352,7 +352,7 @@ class EmailService:
                 </div>
               </div>
             </div>
-        
+
             <div class="row">
               <div class="label">Nombre:</div>
               <div class="value">{name}</div>
@@ -369,7 +369,7 @@ class EmailService:
               <div class="label">ID de Sesión:</div>
               <div class="value">#{session_id}</div>
             </div>
-        
+
             <div class="section-title">Puntajes por Dominio de Actividad</div>
             <table>
               <tr>
@@ -379,7 +379,7 @@ class EmailService:
               </tr>
               {table_rows}
             </table>
-        
+
             <div class="row">
               <div class="label">Puntaje Total:</div>
               <div class="value">{user_score} / {total_max_score}</div>
@@ -392,17 +392,17 @@ class EmailService:
               <div class="label">Sesión Completada:</div>
               <div class="value">Sí</div>
             </div>
-        
+
             <div class="section-title">Notas y Sugerencias del Agente</div>
             <div class="notes">{suggestions}</div>
           </div>
         </body>
         """
-        
+
         body = body_en
         if language == 'es':
             body = body_es
-        
+
         html = f"""
         <!DOCTYPE html>
         <html lang="en">
