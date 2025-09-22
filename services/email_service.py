@@ -341,22 +341,18 @@ class EmailService:
             </body>"""
 
         body_es = f"""<body>
-            <div class="report-container">
-              <div class="header_bg">
-                <div class="main">
-                  <div class="logo logo_div">
-                    <img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png" alt="Logo VYVA">
-                  </div>
-                  <div class="second_div">
-                    <h1 class="new_dic">Sesión Cognitiva</h1>
-                  </div>
-                </div>
-              </div>
-
-              <br></br>
+          <div class="report-container">
+            <div class="header">
+              <img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png" 
+                   alt="Logo VYVA" class="logo">
+              <h1>Informe Diario de Sesión Cognitiva</h1>
+              <p>VYVA Brain Coach</p>
+            </div>
+            <br></br>
+            <div class="content">
               <div class="row">
                 <div class="label">Nombre: </div>
-                <div class="value"> {name}</div>
+                <div class="value">{name}</div>
               </div>
               <div class="row">
                 <div class="label">Nivel Cognitivo: </div>
@@ -364,7 +360,7 @@ class EmailService:
               </div>
               <div class="row">
                 <div class="label">Fecha: </div>
-                <div class="value"> {current_date}</div>
+                <div class="value">{current_date}</div>
               </div>
               <div class="row">
                 <div class="label">ID de Sesión: </div>
@@ -383,11 +379,11 @@ class EmailService:
               <br></br>
               <div class="row">
                 <div class="label">Puntaje Total: </div>
-                <div class="value"> {user_score} / {total_max_score}</div>
+                <div class="value">{user_score} / {total_max_score}</div>
               </div>
               <div class="row">
                 <div class="label">Nivel de Rendimiento: </div>
-                <div class="value"> {performance_tier}</div>
+                <div class="value">{performance_tier}</div>
               </div>
               <div class="row">
                 <div class="label">Sesión Completada: </div>
@@ -399,8 +395,14 @@ class EmailService:
                 {suggestions}<br><br>
               </div>
             </div>
-          </body>
-          """
+
+            <div class="footer">
+              <p>© 2025 VYVA Health. Todos los derechos reservados.</p>
+            </div>
+          </div>
+        </body>
+        """
+
         body = body_en
         if language == 'es':
             body = body_es
