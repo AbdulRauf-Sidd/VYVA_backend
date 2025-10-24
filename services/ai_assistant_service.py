@@ -1,23 +1,20 @@
 """
-AI Assistant service using OpenAI with built-in web search capabilities.
+AI Assistant service using OpenAI Responses API with optional web search and concierge (Google Places).
 
-This service leverages OpenAI's native web search functionality through function calling,
-providing intelligent responses with current information for ElevenLabs voice consumption.
-
-Key Features:
-- OpenAI GPT-4 for intelligent responses
-- Built-in web search via OpenAI function calling
-- Voice-optimized response formatting
-- No external search API dependencies required
+Key features:
+- OpenAI Responses API for robust text generation
+- Optional real web search (SERP provider) for current info
+- Optional Google Places concierge lookups (text search + details)
+- Voice-optimized response formatting for ElevenLabs
 """
 
-import openai
-import httpx
-import json
+from openai import OpenAI
 import logging
+import json
 from typing import Dict, Any, List, Optional
 from core.config import settings
 from core.logging import get_logger
+from .google_places_service import google_places
 
 logger = get_logger(__name__)
 
@@ -27,61 +24,62 @@ class AIAssistantService:
     def __init__(self):
         # Initialize OpenAI client with proper configuration
         try:
-            # Create client with explicit parameters to avoid proxy issues
-            self.openai_client = openai.OpenAI(
+            # Initialize Responses API client
+            self.openai_client = OpenAI(
                 api_key=settings.OPENAI_API_KEY,
-                timeout=30.0
             )
         except Exception as e:
             logger.error(f"Failed to initialize OpenAI client: {e}")
             # Fallback initialization
             self.openai_client = None
         
-        self.model = settings.OPENAI_MODEL
-        self.max_tokens = settings.OPENAI_MAX_TOKENS
-        self.temperature = settings.OPENAI_TEMPERATURE
+        # Safe defaults
+        self.model = settings.OPENAI_MODEL or "gpt-4o-mini"
+        self.max_tokens = int(settings.OPENAI_MAX_TOKENS or 300)
+        self.temperature = float(settings.OPENAI_TEMPERATURE or 0.5)
         
     async def search_web(self, query: str, num_results: int = 3) -> List[Dict[str, Any]]:
         """
-        Search the web using OpenAI's built-in web search capabilities.
-        
-        Args:
-            query: Search query
-            num_results: Number of results to return
-            
-        Returns:
-            List of search results with title, snippet, and link
+        Search the web using OpenAI Responses API web tool and return normalized results.
         """
+        if not self.openai_client:
+            logger.warning("OpenAI client not available, returning empty results")
+            return []
         try:
-            if not self.openai_client:
-                logger.warning("OpenAI client not available, returning empty results")
-                return []
-                
-            # Use OpenAI to search the web and provide current information
-            search_prompt = f"""Search the web for current information about: {query}
-            
-            Provide 2-3 recent, relevant search results with:
-            - Title of the source/article
-            - Brief summary of the content
-            - Source URL or website name
-            
-            Focus on the most current and accurate information available.
-            Format your response clearly with titles and summaries."""
-            
-            response = self.openai_client.chat.completions.create(
-                model=self.model,
-                messages=[{"role": "user", "content": search_prompt}],
-                max_tokens=800,
-                temperature=0.3
+            sys = (
+                "You can search the web. Return ONLY JSON: an array of up to "
+                f"{num_results} objects with fields title, snippet, and link."
             )
-            
-            # Parse the response into search-like results
-            content = response.choices[0].message.content
-            results = self._parse_search_results(content, query, num_results)
-            
+            user = f"Search the web and extract current, trustworthy results for: {query}"
+            response = self.openai_client.responses.create(
+                model=self.model,
+                input=[
+                    {"role": "system", "content": sys},
+                    {"role": "user", "content": user},
+                ],
+                tools=[{"type": "web_search"}],
+                tool_choice="auto",
+                max_output_tokens=500,
+                temperature=0.2,
+            )
+            content = response.output_text
+            results: List[Dict[str, Any]] = []
+            try:
+                parsed = json.loads(content)
+                if isinstance(parsed, list):
+                    for item in parsed[:num_results]:
+                        results.append({
+                            "title": (item.get("title") if isinstance(item, dict) else str(item)) or "Result",
+                            "snippet": (item.get("snippet") if isinstance(item, dict) else "") or "",
+                            "link": (item.get("link") if isinstance(item, dict) else "") or "",
+                        })
+                else:
+                    results = self._parse_search_results(content, query, num_results)
+            except Exception:
+                results = self._parse_search_results(content, query, num_results)
+
             logger.info(f"OpenAI web search completed for query: {query[:50]}...")
             return results
-            
         except Exception as e:
             logger.error(f"OpenAI web search failed: {str(e)}")
             return []
@@ -122,6 +120,34 @@ class AIAssistantService:
             }]
         
         return results[:num_results]  # Limit to requested number of results
+
+    async def concierge_places(
+        self,
+        query: str,
+        latitude: Optional[float] = None,
+        longitude: Optional[float] = None,
+        radius_meters: Optional[int] = 3000,
+        with_details: bool = False,
+        max_results: int = 5,
+    ) -> Dict[str, Any]:
+        """Search nearby places and optionally fetch details for each place."""
+        location = None
+        if latitude is not None and longitude is not None:
+            location = (latitude, longitude)
+        summaries = await google_places.text_search(
+            query=query, location=location, radius_meters=radius_meters, max_results=max_results
+        )
+        if not with_details:
+            return {"results": summaries}
+        detailed: List[Dict[str, Any]] = []
+        for s in summaries:
+            pid = s.get("place_id")
+            if not pid:
+                detailed.append(s)
+                continue
+            details = await google_places.place_details(pid)
+            detailed.append(details or s)
+        return {"results": detailed}
     
     def _needs_web_search(self, question: str) -> bool:
         """Determine if a question needs web search for current information."""
@@ -137,7 +163,9 @@ class AIAssistantService:
         self, 
         question: str, 
         user_context: Optional[str] = None,
-        include_web_search: bool = True
+        include_web_search: bool = True,
+        conversation_id: Optional[str] = None,
+        force_web: bool = False,
     ) -> Dict[str, Any]:
         """
         Generate AI response using OpenAI with optional web search.
@@ -155,9 +183,9 @@ class AIAssistantService:
                 logger.warning("OpenAI client not available, returning error response")
                 return self._create_error_response("OpenAI client not available. Please check API key configuration.")
                 
-            # Perform web search if enabled and question seems to need current info
+            # Perform web search via OpenAI tool if enabled and question seems to need current info
             web_results = []
-            if include_web_search and self._needs_web_search(question):
+            if include_web_search and (force_web or self._needs_web_search(question)):
                 try:
                     web_results = await self.search_web(question, num_results=3)
                 except Exception as e:
@@ -175,31 +203,30 @@ class AIAssistantService:
                     web_context += f"{i}. {result.get('title', 'Result')}: {result.get('snippet', 'No description available')}\n"
                 user_question = question + web_context
             
-            # Prepare messages for OpenAI
-            messages = [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_question}
-            ]
-            
-            # Generate response using OpenAI (no function calling)
-            response = self.openai_client.chat.completions.create(
+            # Generate response using OpenAI (no additional tool calls here)
+            response = self.openai_client.responses.create(
                 model=self.model,
-                messages=messages,
-                max_tokens=self.max_tokens,
-                temperature=self.temperature
+                input=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_question}],
+                max_output_tokens=self.max_tokens,
+                temperature=self.temperature,
             )
-            
-            ai_response = response.choices[0].message.content
+
+            ai_response = response.output_text
             
             # Format response for ElevenLabs voice consumption
             formatted_response = self._format_for_voice(ai_response, web_results)
+            if conversation_id:
+                formatted_response["conversation_id"] = conversation_id
             
             logger.info(f"AI response generated for question: {question[:50]}...")
             return formatted_response
             
         except Exception as e:
             logger.error(f"AI response generation failed: {str(e)}")
-            return self._create_error_response(str(e))
+            err = self._create_error_response(str(e))
+            if conversation_id:
+                err["conversation_id"] = conversation_id
+            return err
     
     def _create_system_prompt(self, user_context: Optional[str]) -> str:
         """Create system prompt for OpenAI with web search context."""
@@ -241,12 +268,11 @@ Your role is to answer questions helpfully and accurately. You have access to we
         """Clean text for optimal voice synthesis."""
         # Remove markdown formatting
         text = text.replace("**", "").replace("*", "")
-        text = text.replace("##", "").replace("#", "")
+        text = text.replace("##", "")
         
         # Replace problematic characters
         text = text.replace("&", "and")
         text = text.replace("@", "at")
-        text = text.replace("#", "number")
         
         # Ensure proper sentence endings
         if not text.endswith(('.', '!', '?')):

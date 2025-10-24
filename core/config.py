@@ -152,10 +152,7 @@ class Settings(BaseSettings):
         env="SERP_API_KEY"
     )
     
-    SERP_BASE_URL: str = Field(
-        default=None,
-        env='SERP_BASE_URL'
-    )
+    SERP_BASE_URL: Optional[str] = Field(default=None, env='SERP_BASE_URL')
     
     # Sentry (Optional)
     SENTRY_DSN: Optional[str] = Field(default=None, env="SENTRY_DSN")
@@ -163,6 +160,10 @@ class Settings(BaseSettings):
     
     # Redis (Optional, for caching)
     REDIS_URL: Optional[str] = Field(default=None, env="REDIS_URL")
+
+    # Google Places (v1)
+    GOOGLE_PLACES_API_KEY: Optional[str] = Field(default=None, env="GOOGLE_PLACES_API_KEY")
+    GOOGLE_PLACES_BASE_URL: str = Field(default="https://places.googleapis.com/v1", env="GOOGLE_PLACES_BASE_URL")
     
     class Config:
         env_file = ".env"

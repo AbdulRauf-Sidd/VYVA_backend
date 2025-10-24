@@ -5,29 +5,22 @@ Provides intelligent responses using OpenAI with web search capabilities for Ele
 """
 
 from fastapi import APIRouter, HTTPException, status, Depends, Query
-from pydantic import BaseModel, Field
-from typing import Optional, Dict, Any
+from typing import Optional
 import logging
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db
 from core.config import settings
 from services.ai_assistant_service import ai_assistant_service
+from services.google_places_service import google_places
+from schemas.ai_assistant import (
+    AIAssistantRequest,
+    AIAssistantResponse,
+    VoiceFormatTestResponse,
+)
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
-
-
-class AIAssistantRequest(BaseModel):
-    """AI Assistant request schema."""
-    question: str = Field(..., description="User's question", min_length=1, max_length=1000)
-    include_web_search: bool = Field(True, description="Whether to include web search results")
-    conversation_id: Optional[str] = Field(None, description="Optional conversation ID for tracking")
-
-
-class AIAssistantResponse(BaseModel):
-    """AI Assistant response schema - simplified for ElevenLabs consumption."""
-    response: str = Field(..., description="Voice-optimized response")
 
 
 @router.post("/ask", response_model=AIAssistantResponse)
@@ -51,11 +44,13 @@ async def ask_ai_assistant(
         ai_response = await ai_assistant_service.generate_response(
             question=request.question,
             user_context=default_context,
-            include_web_search=request.include_web_search
+            include_web_search=request.include_web_search,
+            conversation_id=request.conversation_id,
         )
         
         logger.info(f"AI Assistant response generated successfully")
-        return AIAssistantResponse(response=ai_response["response"])
+        # Return full response payload per schema
+        return AIAssistantResponse(**ai_response)
         
     except Exception as e:
         logger.error(f"AI Assistant error: {str(e)}")
@@ -71,23 +66,20 @@ async def health_check():
     Health check endpoint for AI Assistant service.
     """
     try:
-        # Check if OpenAI is configured
-        if not ai_assistant_service.openai_client or not settings.OPENAI_API_KEY:
-            return {
-                "status": "unhealthy",
-                "message": "OpenAI API key not configured",
-                "services": {
-                    "openai": False,
-                    "web_search": False
-                }
-            }
-        
+        # Reflect actual configured services
+        openai_ok = bool(ai_assistant_service.openai_client and settings.OPENAI_API_KEY)
+        # Web search is handled via OpenAI web tool; mark as available if OpenAI is configured
+        web_ok = openai_ok
+        places_ok = bool(google_places._is_enabled())
+        status_text = "healthy" if openai_ok else "unhealthy"
+        message = "AI Assistant service is operational" if openai_ok else "OpenAI API key not configured"
         return {
-            "status": "healthy",
-            "message": "AI Assistant service is operational",
+            "status": status_text,
+            "message": message,
             "services": {
-                "openai": True,
-                "web_search": True  # OpenAI handles web search natively
+                "openai": openai_ok,
+                "web_search": web_ok,
+                "google_places": places_ok,
             }
         }
         
@@ -103,7 +95,7 @@ async def health_check():
         }
 
 
-@router.post("/test-voice-format")
+@router.post("/test-voice-format", response_model=VoiceFormatTestResponse)
 async def test_voice_format(
     text: str = Query(..., description="Text to test voice formatting", min_length=1, max_length=1000)
 ):
@@ -122,7 +114,7 @@ async def test_voice_format(
             "voice_formatted_text": voice_text,
             "estimated_speech_duration_seconds": duration,
             "character_count": len(voice_text),
-            "word_count": len(voice_text.split())
+            "word_count": len(voice_text.split()),
         }
         
     except Exception as e:
