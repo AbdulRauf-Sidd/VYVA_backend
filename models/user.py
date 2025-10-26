@@ -108,6 +108,7 @@ class User(Base):
 
 
     #Social Companion
+    password_hash = Column(String(255), nullable=True)
     social_check_ins = Column(Boolean, nullable=True)
     faith_tradition = Column(SQLEnum(FaithTraditionEnum), nullable=True)
     local_event_recommendations = Column(Boolean, nullable=True)
