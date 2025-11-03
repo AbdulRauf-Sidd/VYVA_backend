@@ -78,14 +78,13 @@ async def find_places(req: FindPlacesRequest) -> FindPlacesResponse:
 @router.post("/get-information", response_model=GetInformationResponse)
 async def get_information(req: GetInformationRequest) -> GetInformationResponse:
     try:
-        # Use existing assistant service; set include_web_search from req.web and prompt policies
         ai = await ai_assistant_service.generate_response(
             question=req.question,
             user_context=(
                 "You are a helpful assistant for seniors. Keep answers short and clear. Cite source names if web was used."
             ),
-            include_web_search=req.web,
-            force_web=req.web,
+            include_web_search=True,
+            force_web=bool(req.web),
         )
 
         sources: List[Source] = []
