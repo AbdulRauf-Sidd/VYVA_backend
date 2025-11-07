@@ -8,6 +8,7 @@ from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.pool import NullPool
+from sqlalchemy.orm import sessionmaker
 from contextlib import asynccontextmanager
 
 from core.config import settings
@@ -35,6 +36,7 @@ AsyncSessionLocal = async_sessionmaker(
 
 # Create declarative base
 Base = declarative_base()
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:

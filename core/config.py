@@ -29,6 +29,10 @@ class Settings(BaseSettings):
     # Server
     HOST: str = Field(default="0.0.0.0", env="HOST")
     PORT: int = Field(default=8000, env="PORT")
+
+    REDIS_URL: str = Field(default="redis://localhost:6379/0", env="REDIS_URL")
+    CELERY_BROKER_URL = REDIS_URL
+    CELERY_RESULT_BACKEND = REDIS_URL
     
     # CORS
     ALLOWED_HOSTS: List[str] = Field(

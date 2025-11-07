@@ -101,7 +101,8 @@ class User(Base):
     age = Column(Integer, nullable=True)
     living_situation = Column(SQLEnum(LivingSituation), nullable=True)
     admin_profile = relationship("AdminUser", back_populates="user", uselist=False)
-    # date_of_birth = Column(DateTime, nullable=True)
+    date_of_birth = Column(DateTime, nullable=True)
+    organization = relationship("Organization", backref="users")
 
 
     #Health and Care
@@ -136,6 +137,8 @@ class User(Base):
 
     #Reminders
     preferred_channel = Column(String(50), nullable=True)  # e.g., "email", "sms", "push"
+    whatsapp_reports = Column(Boolean, nullable=False)
+    email_reports = Column(Boolean, nullable=False)
 
 
     #Caretaker Information
@@ -189,22 +192,6 @@ class User(Base):
     auth = Column(String(100), nullable=True)
 
 
-
-
-
-    
-    # is_verified = Column(Boolean, default=False)
-    # is_superuser = Column(Boolean, default=False)
-    
-    # # Relationships
-    # profile = relationship("Profile", back_populates="user", uselist=False)
-    # health_care_records = relationship("HealthCare", back_populates="user")
-    # social_connections = relationship("Social", back_populates="user")
-    # brain_coach_sessions = relationship("BrainCoach", back_populates="user")
-    # medications = relationship("Medication", back_populates="user")
-    # fall_detections = relationship("FallDetection", back_populates="user")
-    # emergency_contacts = relationship("EmergencyContact", back_populates="user")
-    
     def __repr__(self):
         return f"<User(id={self.id}, email='{self.email}')>"
     
