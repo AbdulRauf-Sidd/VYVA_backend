@@ -3,7 +3,7 @@ User model for authentication and user management.
 """
 
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, Enum as SQLEnum
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, ForeignKey, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from enum import Enum as PyEnum
@@ -100,6 +100,7 @@ class User(Base):
     phone_number = Column(String(20), nullable=True)
     age = Column(Integer, nullable=True)
     living_situation = Column(SQLEnum(LivingSituation), nullable=True)
+    admin_profile = relationship("AdminUser", back_populates="user", uselist=False)
     # date_of_birth = Column(DateTime, nullable=True)
 
 
@@ -108,6 +109,7 @@ class User(Base):
 
 
     #Social Companion
+    password_hash = Column(String(255), nullable=True)
     social_check_ins = Column(Boolean, nullable=True)
     faith_tradition = Column(SQLEnum(FaithTraditionEnum), nullable=True)
     local_event_recommendations = Column(Boolean, nullable=True)
@@ -216,3 +218,18 @@ class User(Base):
         elif self.last_name:
             return self.last_name
         return self.email 
+    
+
+class AdminUser(Base):
+    __tablename__ = "admin_users"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False)
+    username = Column(String(100), unique=True, nullable=False)
+    password_hash = Column(String(255), nullable=False)
+    is_superadmin = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    user = relationship("User", back_populates="admin_profile", uselist=False)
+    
+    def __repr__(self):
+        return f"<AdminUser(id={self.id}, username='{self.username}')>"

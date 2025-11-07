@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-from fastapi import FastAPI, Request, Response, status, APIRouter
+from fastapi import FastAPI, HTTPException, Request, Response, status, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
@@ -224,37 +224,59 @@ app.add_middleware(
     allowed_hosts=["*"]  # Allow all hosts for development
 )
 
-# Request/response logging middleware removed to prevent body parsing issues
-
-
-# Exception handlers
-@app.exception_handler(StarletteHTTPException)
-async def http_exception_handler(request: Request, exc: StarletteHTTPException):
-    """Handle HTTP exceptions."""
-    logger.error(f"HTTP Exception: {exc.status_code} - {exc.detail}")
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={"detail": exc.detail}
-    )
-
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     """Handle validation exceptions."""
-    logger.error(f"Validation Error: {exc.errors()}")
+    logger.error(
+        f"Validation Exception: {exc.errors} | "
+        f"Path: {request.url.path} | "
+        f"Method: {request.method} | "
+        f"Client: {request.client.host}"
+    )
+    user_message = exc.errors()[0].get("msg", "Invalid input data")
+    
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content={"detail": exc.errors()}
+        content={
+            "success": False,
+            "message": user_message,
+            "detail": exc.errors()  # Full details for debugging
+        }
     )
 
-
 @app.exception_handler(Exception)
-async def general_exception_handler(request: Request, exc: Exception):
-    """Handle general exceptions."""
-    logger.error(f"Unhandled Exception: {str(exc)}", exc_info=True)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(
+        f"Server Exception: {exc.detail} | "
+        f"Path: {request.url.path} | "
+        f"Method: {request.method} | "
+        f"Client: {request.client.host}"
+    )
     return JSONResponse(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={"detail": "Internal server error"}
+        status_code=500,
+        content={
+            "success": False,
+            "message": "Internal server error",
+            "detail": str(exc)
+        }
+    )
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    logger.error(
+        f"HTTP Exception: {exc.detail} | "
+        f"Path: {request.url.path} | "
+        f"Method: {request.method} | "
+        f"Client: {request.client.host}"
+    )
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "success": False,
+            "message": exc.detail,
+            "detail": str(exc)
+        }
     )
 
 
@@ -275,6 +297,7 @@ app.include_router(post_call.router, prefix="/api/v1/post-call", tags=["Post Cal
 app.include_router(ai_assistant.router, prefix="/api/v1/ai-assistant", tags=["AI Assistant"])
 app.include_router(news.router, prefix="/api/v1/news", tags=["News"])
 app.include_router(tools.router, prefix="/api/v1/tools", tags=["Tools"])
+app.include_router(emergency.router, prefix="/api/v1/emergency", tags=["Emergency Contacts"])
 
 
 if __name__ == "__main__":

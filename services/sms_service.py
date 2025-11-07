@@ -126,3 +126,14 @@ class SMSService:
         message += "\n\nPlease arrive 10 minutes early."
         
         return await self.send_sms(to_number, message.strip()) 
+    
+    async def send_otp(
+        self,
+        to_number: str,
+        otp_code: str
+    ) -> bool:
+
+        message = f"Your verification code is: {otp_code}"
+        return await self.send_sms(to_number, message)
+    
+sms_service = SMSService()

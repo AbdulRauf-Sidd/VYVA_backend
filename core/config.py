@@ -39,30 +39,25 @@ class Settings(BaseSettings):
     DATABASE_URL: Optional[str] = Field(default=None, env="DATABASE_URL")
     PRODUCTION_DATABASE_URL: Optional[str] = Field(default=None, env="PRODUCTION_DATABASE_URL")
 
+    OTP_TTL_MINUTES = 10
+    MAX_ATTEMPTS = 5
+
+    SESSION_DURATION = 60 * 24 * 90  # 90 days
+
 
     @property
     def database_url(self) -> str:
-        print('hi')
         if self.ENV == "development":
             return self.DATABASE_URL or ""
         return self.PRODUCTION_DATABASE_URL or ""    
     
-    # # Database
-    # if ENV == 'development':
-    #     DATABASE_URL: str = Field(
-    #         env="DATABASE_URL"
-    #     )
-    # else:
-    #     DATABASE_URL: str = Field(
-    #         env="PRODUCTION_DATABASE_URL"
-    #     )
         
     DATABASE_POOL_SIZE: int = Field(default=10, env="DATABASE_POOL_SIZE")
     DATABASE_MAX_OVERFLOW: int = Field(default=20, env="DATABASE_MAX_OVERFLOW")
     
     # Security
     SECRET_KEY: str = Field(
-        default="your-secret-key-change-in-production",
+        default="secret-key",
         env="SECRET_KEY"
     )
     ALGORITHM: str = Field(default="HS256", env="ALGORITHM")
