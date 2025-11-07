@@ -26,7 +26,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from core.config import settings
 from core.logging import setup_logging
 from core.database import engine, Base
-from api.v1 import auth, users, profiles, health_care, social, brain_coach, medication, fall_detection, emergency, tts, symptom_checker, post_call, ai_assistant, news, tools
+from api.v1 import users, profiles, health_care, social, brain_coach, medication, fall_detection, emergency, tts, symptom_checker, post_call, ai_assistant, news, tools
 import subprocess
 from apscheduler.schedulers.background import BackgroundScheduler
 # from tasks import check_medication_time, run_async_job
@@ -36,7 +36,6 @@ import asyncio
 from repositories.medication import MedicationRepository
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from celery import chain
-from tasks import process_medication_reminders
 from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 from services.elevenlabs_service import make_reminder_call_batch, check_batch_for_missed, make_caretaker_call_batch
@@ -282,7 +281,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 
 
 # Include API routers
-app.include_router(auth.router, prefix="/api/v1/auth", tags=["Authentication"])
+# app.include_router(authen.router, prefix="/api/v1/auth", tags=["Authentication"])
 app.include_router(users.router, prefix="/api/v1/users", tags=["Users"])
 app.include_router(profiles.router, prefix="/api/v1/profiles", tags=["Profiles"])
 app.include_router(health_care.router, prefix="/api/v1/health-care", tags=["Health & Care"])

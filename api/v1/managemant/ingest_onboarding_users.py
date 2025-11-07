@@ -1,11 +1,14 @@
 import csv
 import io
 import re
+from select import select
+from unittest import result
 from fastapi import UploadFile, File, HTTPException
 from core.database import get_db
 from fastapi import APIRouter, Depends
 from schemas.responses import StandardSuccessResponse
 from models.user import User
+from models.organization import Organization
 
 router = APIRouter()
 
@@ -76,7 +79,12 @@ def process_valid_data(file_content: str):
     return {"message": "File validated and processed successfully."}
 
 @router.post("/admin/ingest-csv", response_model=StandardSuccessResponse)
-async def ingest_csv(file: UploadFile = File(...), db=Depends(get_db)):
+async def ingest_csv(organization: str, file: UploadFile = File(...), db=Depends(get_db)):
+    organization = organization.strip()
+    result = await db.execute(select(Organization).where(Organization.name == organization))
+    exists = result.scalar()
+    if not exists:
+        raise HTTPException(status_code=400, detail="Organization does not exist.")
     content = (await file.read()).decode("utf-8")
     errors = validate_csv(content)
     

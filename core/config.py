@@ -31,8 +31,8 @@ class Settings(BaseSettings):
     PORT: int = Field(default=8000, env="PORT")
 
     REDIS_URL: str = Field(default="redis://localhost:6379/0", env="REDIS_URL")
-    CELERY_BROKER_URL = REDIS_URL
-    CELERY_RESULT_BACKEND = REDIS_URL
+    CELERY_BROKER_URL: str = REDIS_URL
+    CELERY_RESULT_BACKEND: str = REDIS_URL
     
     # CORS
     ALLOWED_HOSTS: List[str] = Field(
@@ -43,10 +43,10 @@ class Settings(BaseSettings):
     DATABASE_URL: Optional[str] = Field(default=None, env="DATABASE_URL")
     PRODUCTION_DATABASE_URL: Optional[str] = Field(default=None, env="PRODUCTION_DATABASE_URL")
 
-    OTP_TTL_MINUTES = 10
-    MAX_ATTEMPTS = 5
+    OTP_TTL_MINUTES: int = 10
+    MAX_ATTEMPTS: int = 5
 
-    SESSION_DURATION = 60 * 24 * 90  # 90 days
+    SESSION_DURATION: int = 60 * 24 * 90  # 90 days
 
 
     @property
