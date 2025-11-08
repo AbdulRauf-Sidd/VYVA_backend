@@ -1,25 +1,22 @@
 from celery import Celery
-from celery.schedules import crontab
+from core.config import settings
 
-# Minimal Celery configuration
 celery_app = Celery(
-    'vyva-celery',
-    broker="memory://",
-    backend="rpc://",
-    include=['tasks']
+    settings.APP_NAME,
+    broker=settings.CELERY_BROKER_URL,
+    backend=settings.CELERY_RESULT_BACKEND,
+    include=["tasks.management_tasks"],  # import your tasks here
 )
 
-# Basic configuration
 celery_app.conf.update(
-    task_serializer='json',
-    result_serializer='json',
-    accept_content=['json'],
-    timezone='CET',
+    task_serializer="json",
+    result_serializer="json",
+    accept_content=["json"],
+    timezone="UTC",
+    enable_utc=True,
 )
 
-celery_app.conf.beat_schedule = {
-    "check-medication-every-minute": {
-        "task": "tasks.check_medication_time",
-        "schedule": crontab(minute="*"),  # every minute
-    },
+# Optional: autoretry policy
+celery_app.conf.task_annotations = {
+    "*": {"max_retries": 3, "default_retry_delay": 5}
 }

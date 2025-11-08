@@ -83,6 +83,9 @@ class UserBase(BaseModel):
     last_name: Optional[str] = None
     phone_number: Optional[str] = None
     age: Optional[int] = None
+
+class MainUser(UserBase):
+    password: Optional[str] = None
     living_situation: Optional[LivingSituation] = None
     street: Optional[str] = None
     city: Optional[str] = None
@@ -136,67 +139,18 @@ class UserBase(BaseModel):
     caretaker_phone_number: Optional[str] = None
     caretaker_name: Optional[str] = None
 
-class UserCreate(UserBase):
+class UserUpdate(MainUser):
     pass
+    
 
-class UserUpdate(BaseModel):
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
-    phone_number: Optional[str] = None
-    email: Optional[str] = None
-    age: Optional[int] = None
-    living_situation: Optional[LivingSituation] = None
-    street: Optional[str] = None
-    city: Optional[str] = None
-    postal_code: Optional[str] = None
-    country: Optional[str] = None
-    # Health and Care
-    social_check_ins: Optional[bool] = None
-    faith_tradition: Optional[FaithTraditionEnum] = None
-    local_event_recommendations: Optional[bool] = None
-    preferred_check_in_time: Optional[PreferredCheckInTimeEnum] = None
-    check_in_frequency: Optional[CheckInFrequencyEnum] = None
-    # Medications
-    wants_caretaker_alerts: Optional[bool] = None
-    wants_reminders: Optional[bool] = None
-    takes_medication: Optional[bool] = None
-    missed_dose_alerts: Optional[bool] = None
-    escalate_to_emergency_contact: Optional[bool] = None
-    medical_devices: Optional[str] = None
-    mobility: Optional[MobilityEnum] = None
-    telehealth_activation: Optional[bool] = None
-    preferred_doctor_type: Optional[PreferredDoctorTypeEnum] = None
-    preferred_consultation_type: Optional[PreferredConsultationTypeEnum] = None
-    preferred_consultation_language: Optional[PreferredConsultationLanguageEnum] = None
-    # Brain Coach
-    brain_coach_activation: Optional[bool] = None
-    brain_coach_time: Optional[BrainCoachTimeEnum] = None
-    brain_coach_complexity: Optional[BrainCoachComplexityEnum] = None
-    performance_reports: Optional[bool] = None
-    cognitive_decline_alerts: Optional[bool] = None
-    # Fall Detection
-    fall_detection_activation: Optional[bool] = None
-    fall_auto_alert_to_caregiver: Optional[bool] = None
-    regular_safety_check_ins: Optional[RegularSafetyCheckInsEnum] = None
-    # Doctor and Pharmacy
-    primary_doctor_name: Optional[str] = None
-    primary_doctor_phone: Optional[str] = None
-    preferred_pharmacy_name: Optional[str] = None
-    preferred_pharmacy_phone: Optional[str] = None
-    preferred_hospital_name: Optional[str] = None
-    preferred_hospital_phone: Optional[str] = None
-    # Device Notifications
-    device_token: Optional[str] = None
-    expiration: Optional[str] = None
-    p256dh: Optional[str] = None
-    auth: Optional[str] = None
+class UserCreate(MainUser):
+    pass
 
 class UserRead(UserBase):
     id: int
     is_active: bool
     created_at: datetime
     updated_at: Optional[datetime] = None
-    last_login: Optional[datetime] = None
     street: Optional[str] = None
     city: Optional[str] = None
     postal_code: Optional[str] = None

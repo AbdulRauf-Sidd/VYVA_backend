@@ -4,10 +4,6 @@ Vyva Backend - FastAPI Application Entry Point
 A production-ready FastAPI backend for senior care applications.
 """
 
-import os
-import time
-import json
-import logging
 from contextlib import asynccontextmanager
 from typing import Dict, Any
 from dotenv import load_dotenv
@@ -15,19 +11,18 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-from fastapi import FastAPI, Request, Response, status, APIRouter
+from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 from apscheduler.triggers.interval import IntervalTrigger
 from fastapi.exceptions import RequestValidationError
-from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from core.config import settings
 from core.logging import setup_logging
 from core.database import engine, Base
-from api.v1 import auth, users, profiles, health_care, social, brain_coach, medication, fall_detection, emergency, tts, symptom_checker, post_call, ai_assistant, news, tools
-import subprocess
+from api.v1 import users, profiles, health_care, social, brain_coach, medication, fall_detection, emergency, tts, symptom_checker, post_call, ai_assistant, news, tools
+from api.v1.managemant import ingest_onboarding_users
 from apscheduler.schedulers.background import BackgroundScheduler
 # from tasks import check_medication_time, run_async_job
 from core.database import AsyncSessionLocal, get_db
@@ -36,7 +31,6 @@ import asyncio
 from repositories.medication import MedicationRepository
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from celery import chain
-from tasks import process_medication_reminders
 from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 from services.elevenlabs_service import make_reminder_call_batch, check_batch_for_missed, make_caretaker_call_batch
@@ -224,44 +218,67 @@ app.add_middleware(
     allowed_hosts=["*"]  # Allow all hosts for development
 )
 
-# Request/response logging middleware removed to prevent body parsing issues
-
-
-# Exception handlers
-@app.exception_handler(StarletteHTTPException)
-async def http_exception_handler(request: Request, exc: StarletteHTTPException):
-    """Handle HTTP exceptions."""
-    logger.error(f"HTTP Exception: {exc.status_code} - {exc.detail}")
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={"detail": exc.detail}
-    )
-
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     """Handle validation exceptions."""
-    logger.error(f"Validation Error: {exc.errors()}")
+    logger.error(
+        f"Validation Exception: {exc.errors} | "
+        f"Path: {request.url.path} | "
+        f"Method: {request.method} | "
+        f"Client: {request.client.host}"
+    )
+    user_message = exc.errors()[0].get("msg", "Invalid input data")
+    
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content={"detail": exc.errors()}
+        content={
+            "success": False,
+            "message": user_message,
+            "detail": exc.errors()  # Full details for debugging
+        }
     )
 
-
 @app.exception_handler(Exception)
-async def general_exception_handler(request: Request, exc: Exception):
-    """Handle general exceptions."""
-    logger.error(f"Unhandled Exception: {str(exc)}", exc_info=True)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(
+        f"Server Exception: {exc.detail} | "
+        f"Path: {request.url.path} | "
+        f"Method: {request.method} | "
+        f"Client: {request.client.host}"
+    )
     return JSONResponse(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={"detail": "Internal server error"}
+        status_code=500,
+        content={
+            "success": False,
+            "message": "Internal server error",
+            "detail": str(exc)
+        }
+    )
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    logger.error(
+        f"HTTP Exception: {exc.detail} | "
+        f"Path: {request.url.path} | "
+        f"Method: {request.method} | "
+        f"Client: {request.client.host}"
+    )
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "success": False,
+            "message": exc.detail,
+            "detail": str(exc)
+        }
     )
 
 
 
 # Include API routers
-app.include_router(auth.router, prefix="/api/v1/auth", tags=["Authentication"])
+# app.include_router(authen.router, prefix="/api/v1/auth", tags=["Authentication"])
 app.include_router(users.router, prefix="/api/v1/users", tags=["Users"])
+app.include_router(ingest_onboarding_users.router, prefix="/api/v1/admin", tags=["Management"])
 app.include_router(profiles.router, prefix="/api/v1/profiles", tags=["Profiles"])
 app.include_router(health_care.router, prefix="/api/v1/health-care", tags=["Health & Care"])
 app.include_router(social.router, prefix="/api/v1/social", tags=["Social"])
@@ -275,6 +292,7 @@ app.include_router(post_call.router, prefix="/api/v1/post-call", tags=["Post Cal
 app.include_router(ai_assistant.router, prefix="/api/v1/ai-assistant", tags=["AI Assistant"])
 app.include_router(news.router, prefix="/api/v1/news", tags=["News"])
 app.include_router(tools.router, prefix="/api/v1/tools", tags=["Tools"])
+app.include_router(emergency.router, prefix="/api/v1/emergency", tags=["Emergency Contacts"])
 
 
 if __name__ == "__main__":

@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     
     # Environment
     ENV: str = Field(default="development", env="ENV")
-    DEBUG: bool = Field(default=True, env="DEBUG")
+    DEBUG: bool = Field(default=False, env="DEBUG")
     LOG_LEVEL: str = Field(default="INFO", env="LOG_LEVEL")
     
     # Logging Control
@@ -29,6 +29,10 @@ class Settings(BaseSettings):
     # Server
     HOST: str = Field(default="0.0.0.0", env="HOST")
     PORT: int = Field(default=8000, env="PORT")
+
+    REDIS_URL: str = Field(default="redis://localhost:6379/0", env="REDIS_URL")
+    CELERY_BROKER_URL: str = REDIS_URL
+    CELERY_RESULT_BACKEND: str = REDIS_URL
     
     # CORS
     ALLOWED_HOSTS: List[str] = Field(
@@ -39,30 +43,25 @@ class Settings(BaseSettings):
     DATABASE_URL: Optional[str] = Field(default=None, env="DATABASE_URL")
     PRODUCTION_DATABASE_URL: Optional[str] = Field(default=None, env="PRODUCTION_DATABASE_URL")
 
+    OTP_TTL_MINUTES: int = 10
+    MAX_ATTEMPTS: int = 5
+
+    SESSION_DURATION: int = 60 * 24 * 90  # 90 days
+
 
     @property
     def database_url(self) -> str:
-        print('hi')
         if self.ENV == "development":
             return self.DATABASE_URL or ""
         return self.PRODUCTION_DATABASE_URL or ""    
     
-    # # Database
-    # if ENV == 'development':
-    #     DATABASE_URL: str = Field(
-    #         env="DATABASE_URL"
-    #     )
-    # else:
-    #     DATABASE_URL: str = Field(
-    #         env="PRODUCTION_DATABASE_URL"
-    #     )
         
     DATABASE_POOL_SIZE: int = Field(default=10, env="DATABASE_POOL_SIZE")
     DATABASE_MAX_OVERFLOW: int = Field(default=20, env="DATABASE_MAX_OVERFLOW")
     
     # Security
     SECRET_KEY: str = Field(
-        default="your-secret-key-change-in-production",
+        default="secret-key",
         env="SECRET_KEY"
     )
     ALGORITHM: str = Field(default="HS256", env="ALGORITHM")

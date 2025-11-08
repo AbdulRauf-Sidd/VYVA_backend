@@ -31,6 +31,7 @@ router = APIRouter()
 @router.post("/find-places", response_model=FindPlacesResponse)
 async def find_places(req: FindPlacesRequest) -> FindPlacesResponse:
     try:
+        logger.info(f"=====================> find-places called with request: {req}")
         # Require either coords or a location_text; otherwise signal needs_location
         has_coords = req.latitude is not None and req.longitude is not None
         if not has_coords and not req.location_text:

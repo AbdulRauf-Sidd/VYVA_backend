@@ -174,8 +174,38 @@ async def check_batch_for_missed(batch_id):
     return missed_phones
 
 
+async def make_onboarding_call(user):
+    try:
+        id = user.id
+        organization = user.organization
+        agent_id = organization.onboarding_agent_id
+        phone_number = user.phone_number
+        first_name = user.first_name
+        last_name = user.last_name
+        response = requests.post(
+          "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
+          headers={
+            "xi-api-key": settings.ELEVENLABS_API_KEY
+          },
+          json={
+            "agent_id": agent_id,
+            "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
+            "to_number": phone_number,
+            "conversation_initiation_client_data": {
+              "dynamic_variables": {
+                "user_id": id,
+                "first_name": first_name,
+                "last_name": last_name
+              }
+            }
+          },
+        )
 
-
+        logger.info(f"Call response for onboarding call: {response.json()}")
+        
+        return response.json
+    except Exception as e:
+        logger.error(f"Elevenlabs onboarding call failed: {e}")
                     
         
           

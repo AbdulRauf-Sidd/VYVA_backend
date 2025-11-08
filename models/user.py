@@ -3,10 +3,11 @@ User model for authentication and user management.
 """
 
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, Enum as SQLEnum
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, ForeignKey, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from enum import Enum as PyEnum
+from models.organization import Organization
 
 from core.database import Base
 
@@ -100,7 +101,10 @@ class User(Base):
     phone_number = Column(String(20), nullable=True)
     age = Column(Integer, nullable=True)
     living_situation = Column(SQLEnum(LivingSituation), nullable=True)
-    # date_of_birth = Column(DateTime, nullable=True)
+    admin_profile = relationship("AdminUser", back_populates="user", uselist=False)
+    date_of_birth = Column(DateTime, nullable=True)
+    organization = relationship("Organization", back_populates="users")
+    organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=True)
 
 
     #Health and Care
@@ -108,6 +112,7 @@ class User(Base):
 
 
     #Social Companion
+    password_hash = Column(String(255), nullable=True)
     social_check_ins = Column(Boolean, nullable=True)
     faith_tradition = Column(SQLEnum(FaithTraditionEnum), nullable=True)
     local_event_recommendations = Column(Boolean, nullable=True)
@@ -134,6 +139,9 @@ class User(Base):
 
     #Reminders
     preferred_channel = Column(String(50), nullable=True)  # e.g., "email", "sms", "push"
+    whatsapp_reports = Column(Boolean, nullable=False, default=False)
+    email_reports = Column(Boolean, nullable=False, default=False)
+    preferred_communication_channel = Column(String(50), nullable=True)  # e.g., "email", "sms", "push"
 
 
     #Caretaker Information
@@ -187,22 +195,6 @@ class User(Base):
     auth = Column(String(100), nullable=True)
 
 
-
-
-
-    
-    # is_verified = Column(Boolean, default=False)
-    # is_superuser = Column(Boolean, default=False)
-    
-    # # Relationships
-    # profile = relationship("Profile", back_populates="user", uselist=False)
-    # health_care_records = relationship("HealthCare", back_populates="user")
-    # social_connections = relationship("Social", back_populates="user")
-    # brain_coach_sessions = relationship("BrainCoach", back_populates="user")
-    # medications = relationship("Medication", back_populates="user")
-    # fall_detections = relationship("FallDetection", back_populates="user")
-    # emergency_contacts = relationship("EmergencyContact", back_populates="user")
-    
     def __repr__(self):
         return f"<User(id={self.id}, email='{self.email}')>"
     
@@ -216,3 +208,18 @@ class User(Base):
         elif self.last_name:
             return self.last_name
         return self.email 
+    
+
+class AdminUser(Base):
+    __tablename__ = "admin_users"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False)
+    username = Column(String(100), unique=True, nullable=False)
+    password_hash = Column(String(255), nullable=False)
+    is_superadmin = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    user = relationship("User", back_populates="admin_profile", uselist=False)
+    
+    def __repr__(self):
+        return f"<AdminUser(id={self.id}, username='{self.username}')>"
