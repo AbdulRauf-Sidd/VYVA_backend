@@ -34,8 +34,8 @@ class AIAssistantService:
             # Fallback initialization
             self.openai_client = None
 
-        # Safe defaults
-        self.model = settings.OPENAI_MODEL or "gpt-4o-mini"
+        # Safe defaults (prefer a model with web tool support)
+        self.model = settings.OPENAI_MODEL or "gpt-4.1-mini"
         self.max_tokens = int(settings.OPENAI_MAX_TOKENS or 300)
         self.temperature = float(settings.OPENAI_TEMPERATURE or 0.5)
 

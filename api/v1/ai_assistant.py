@@ -68,8 +68,12 @@ async def health_check():
     try:
         # Reflect actual configured services
         openai_ok = bool(ai_assistant_service.openai_client and settings.OPENAI_API_KEY)
-        # Web search is handled via OpenAI web tool; mark as available if OpenAI is configured
-        web_ok = openai_ok
+        # Web search via OpenAI Responses API; available if OpenAI configured and client exposes responses
+        try:
+            supports_web_tool = bool(getattr(ai_assistant_service.openai_client, "responses", None))
+        except Exception:
+            supports_web_tool = False
+        web_ok = openai_ok and supports_web_tool
         places_ok = bool(google_places._is_enabled())
         status_text = "healthy" if openai_ok else "unhealthy"
         message = "AI Assistant service is operational" if openai_ok else "OpenAI API key not configured"
@@ -80,7 +84,9 @@ async def health_check():
                 "openai": openai_ok,
                 "web_search": web_ok,
                 "google_places": places_ok,
-            }
+            },
+            "model": getattr(ai_assistant_service, "model", None),
+            "web_tool_available": supports_web_tool
         }
         
     except Exception as e:
