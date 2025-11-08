@@ -24,7 +24,7 @@ class PlaceSummary(BaseModel):
     open_now: Optional[bool] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
-    price_level: Optional[int] = None
+    price_level: Optional[str] = None
     distance_meters: Optional[int] = None
 
 
