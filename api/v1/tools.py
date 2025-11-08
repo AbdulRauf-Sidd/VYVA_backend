@@ -43,6 +43,7 @@ async def find_places(req: FindPlacesRequest) -> FindPlacesResponse:
 
         results_raw = await google_places.text_search(
             query=req.query,
+            location_text=req.location_text,
             location=location,
             radius_meters=req.radius_meters if location else None,
             max_results=req.result_limit,

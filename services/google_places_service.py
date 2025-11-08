@@ -23,6 +23,7 @@ class GooglePlacesService:
     async def text_search(
         self,
         query: str,
+        location_text: Optional[str] = None,
         location: Optional[Tuple[float, float]] = None,
         radius_meters: Optional[int] = None,
         max_results: int = 5,
@@ -42,7 +43,11 @@ class GooglePlacesService:
             ),
             "Content-Type": "application/json",
         }
-        body: Dict[str, Any] = {"textQuery": query}
+        # If only a textual location is available, bias results by including it in the text query
+        text_query = query
+        if location_text:
+            text_query = f"{query} in {location_text}"
+        body: Dict[str, Any] = {"textQuery": text_query}
         if location and radius_meters:
             lat, lng = location
             body["locationBias"] = {
