@@ -63,16 +63,16 @@ async def lifespan(app: FastAPI):
         logger.info("Database tables created (development mode)")
 
 
-    if not scheduler.running:
-        scheduler.add_job(
-            minute_background_task,
-            trigger=IntervalTrigger(seconds=60),
-            id="minute_task",
-            name="Run every minute",
-            replace_existing=True
-        )
-        scheduler.start()
-        logger.info("Background task scheduler started")
+    # if not scheduler.running:
+    #     scheduler.add_job(
+    #         minute_background_task,
+    #         trigger=IntervalTrigger(seconds=60),
+    #         id="minute_task",
+    #         name="Run every minute",
+    #         replace_existing=True
+    #     )
+    #     scheduler.start()
+    #     logger.info("Background task scheduler started")
     
     yield
     
