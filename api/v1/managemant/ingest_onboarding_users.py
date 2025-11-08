@@ -160,7 +160,7 @@ async def process_valid_data(file_content, organization_name, db):
             )
 
             task_result = initiate_onboarding_call.apply_async(
-                args=[user.id],
+                args=[user],
                 eta=final_utc_dt
             )
             print(f"Scheduled onboarding call task {task_result.id} for user {phone_number} at {final_utc_dt} UTC")

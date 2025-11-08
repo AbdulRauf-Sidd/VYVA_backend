@@ -174,7 +174,7 @@ async def check_batch_for_missed(batch_id):
     return missed_phones
 
 
-async def make_onboarding_call(user):
+async def find_placesmake_onboarding_call(user):
     try:
         id = user.id
         organization = user.organization
