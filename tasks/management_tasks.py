@@ -1,8 +1,8 @@
 from core.database import SessionLocal
 import celery_app
 
-@celery_app.task(name="process_csv_task")
-def process_csv_task(file_content: str):
+@celery_app.task(name="initiate_onboarding_call")
+def initiate_onboarding_call(self, user_id: int):
     db = SessionLocal()
     # try:
     #     errors = validate_csv(file_content)

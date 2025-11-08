@@ -139,6 +139,7 @@ class User(Base):
     preferred_channel = Column(String(50), nullable=True)  # e.g., "email", "sms", "push"
     whatsapp_reports = Column(Boolean, nullable=False)
     email_reports = Column(Boolean, nullable=False)
+    preferred_communication_channel = Column(String(50), nullable=True)  # e.g., "email", "sms", "push"
 
 
     #Caretaker Information

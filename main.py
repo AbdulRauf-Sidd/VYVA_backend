@@ -4,10 +4,6 @@ Vyva Backend - FastAPI Application Entry Point
 A production-ready FastAPI backend for senior care applications.
 """
 
-import os
-import time
-import json
-import logging
 from contextlib import asynccontextmanager
 from typing import Dict, Any
 from dotenv import load_dotenv

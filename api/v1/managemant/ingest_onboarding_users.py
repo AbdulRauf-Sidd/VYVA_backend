@@ -7,8 +7,13 @@ from fastapi import UploadFile, File, HTTPException
 from core.database import get_db
 from fastapi import APIRouter, Depends
 from schemas.responses import StandardSuccessResponse
-from models.user import User
+from models.onboarding_user import OnboardingUser
 from models.organization import Organization
+from scripts.utils import time_to_utc, date_time_to_utc, add_one_day
+from datetime import datetime, date
+from models.user import User
+from zoneinfo import ZoneInfo
+from tasks.management_tasks import initiate_onboarding_call
 
 router = APIRouter()
 
@@ -27,7 +32,7 @@ VALID_TIMEZONES = {"utc", "cet", "est"}
 VALID_COMM_METHODS = {"phone", "email"}
 VALID_YES_NO = {"yes", "no"}
 
-def validate_csv(file_content: str):
+def validate_csv(file_content: str, db):
     errors = []
     reader = csv.DictReader(io.StringIO(file_content))
 
@@ -43,6 +48,11 @@ def validate_csv(file_content: str):
         phone = row.get("Phone Number*", "")
         if phone and not re.match(r"^\+\d{6,15}$", phone.strip()):
             errors.append(f"Row {i}: Invalid phone number '{phone}'. Expected format: + followed by digits.")
+
+        if phone:
+            existing_user = db.execute(select(User).where(User.phone_number == phone.strip())).scalar()
+            if existing_user:
+                errors.append(f"Row {i}: Phone number '{phone}' already exists.")
 
         email = row.get("Email", "")
         if email and not re.match(r"^[^@]+@[^@]+\.[^@]+$", email.strip()):
@@ -74,9 +84,70 @@ def validate_csv(file_content: str):
 
     return errors
 
-def process_valid_data(file_content: str):
-    
-    return {"message": "File validated and processed successfully."}
+async def process_valid_data(file_content, organization_name, db):
+    try:
+
+        reader = csv.DictReader(io.StringIO(file_content))
+        result = await db.execute(select(Organization).where(Organization.name == organization_name))
+        org = result.scalar_one_or_none()
+        new_users = []
+
+        for i, row in enumerate(reader, start=2):
+            first_name=row["First Name*"].strip()
+            last_name=row["Last Name*"].strip()
+            phone_number=row["Phone Number*"].strip()
+            email=row.get("Email", "").strip() or None
+            language=row["Language*"].strip().lower()
+            preferred_time=row.get("Preferred Time", "").strip() or None
+            timezone=row["Time Zone*"].strip().lower()
+
+            if preferred_time:
+                preferred_time = datetime.strptime(preferred_time, "%H:%M").time()
+                utc_time_object = time_to_utc(preferred_time, timezone)
+                utc_dt = datetime.combine(date.today(), utc_time_object, tzinfo=ZoneInfo("UTC"))
+                final_utc_dt = add_one_day(utc_dt)
+            else:
+                preferred_time = datetime.strptime('09:00', "%H:%M").time()
+                utc_time_object = time_to_utc(preferred_time, 'cet')
+                utc_dt = datetime.combine(date.today(), utc_time_object, tzinfo=ZoneInfo("UTC"))
+                final_utc_dt = add_one_day(utc_dt)
+
+
+            preferred_communication_channel=row.get("Preferred Communication Method", "").strip().lower() or None
+            email_reports=row["Reporting: Email (Yes/No)"].strip().lower()
+            whatsapp_reports=row["Reporting: WhatsApp (Yes/No)"].strip().lower()
+            email_reports = True if email_reports == "yes" else False
+            whatsapp_reports = True if whatsapp_reports == "yes" else False
+
+            user = OnboardingUser(
+                first_name=first_name,
+                last_name=last_name,
+                phone_number=phone_number,
+                email=email,
+                language=language,
+                preferred_time=preferred_time,
+                timezone=timezone,
+                preferred_communication_channel=preferred_communication_channel,
+                email_reports=email_reports,
+                whatsapp_reports=whatsapp_reports,
+                organization=org,
+            )
+
+            task_result = initiate_onboarding_call.apply_async(
+                args=[user.id],
+                eta=final_utc_dt
+            )
+            print(f"Scheduled onboarding call task {task_result.id} for user {phone_number} at {final_utc_dt} UTC")
+            new_users.append(user)
+
+        if new_users:
+            await db.add_all(new_users)
+            await db.commit()
+
+        return True, len(new_users)
+    except Exception as e:
+        await db.rollback()
+        return False, 0
 
 @router.post("/admin/ingest-csv", response_model=StandardSuccessResponse)
 async def ingest_csv(organization: str, file: UploadFile = File(...), db=Depends(get_db)):
@@ -85,10 +156,18 @@ async def ingest_csv(organization: str, file: UploadFile = File(...), db=Depends
     exists = result.scalar()
     if not exists:
         raise HTTPException(status_code=400, detail="Organization does not exist.")
+    
     content = (await file.read()).decode("utf-8")
     errors = validate_csv(content)
     
     if errors:
         raise HTTPException(status_code=400, detail=errors)
     
-    success = process_valid_data(content)
+    success, count = process_valid_data(content, organization, db)
+    if not success:
+        raise HTTPException(status_code=500, detail="Failed to process data.")
+    
+    return {
+        'success': True,
+        "message": f"Created Onboarding Batch for {count} users.",
+    }

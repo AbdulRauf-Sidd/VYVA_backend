@@ -1,11 +1,10 @@
-from datetime import datetime
+from datetime import date, datetime, time, timedelta
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.sql import func
 from zoneinfo import ZoneInfo
 from sqlalchemy.orm import relationship
 
 from core.database import Base
-
 
 class Organization(Base):
     __tablename__ = "organizations"
@@ -21,8 +20,3 @@ class Organization(Base):
     
     def __repr__(self):
         return f"<Organization(id={self.id}, name='{self.name}')>"
-
-def to_local_time(dt: datetime, tz_name: str) -> datetime:
-    if not dt.tzinfo:
-        dt = dt.replace(tzinfo=ZoneInfo("UTC"))
-    return dt.astimezone(ZoneInfo(tz_name))
