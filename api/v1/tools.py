@@ -80,6 +80,7 @@ async def find_places(req: FindPlacesRequest) -> FindPlacesResponse:
 @router.post("/get-information", response_model=GetInformationResponse)
 async def get_information(req: GetInformationRequest) -> GetInformationResponse:
     try:
+        logger.info(f"=====================> get-information called with request: {req}")
         ai = await ai_assistant_service.generate_response(
             question=req.question,
             user_context=(
