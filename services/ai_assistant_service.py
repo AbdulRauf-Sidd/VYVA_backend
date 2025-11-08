@@ -68,8 +68,12 @@ class AIAssistantService:
                         {"role": "system", "content": sys},
                         {"role": "user", "content": user},
                     ],
-                    tools=[{"type": "web_search"}],
-                    tool_choice="auto",
+                    tools=[{
+                        "type": "web_search_preview",
+                        "user_location": {"type": "approximate"},
+                        "search_context_size": "medium",
+                    }],
+                    tool_choice="required",
                     max_output_tokens=500,
                     temperature=0.2,
                 )
@@ -254,8 +258,12 @@ class AIAssistantService:
             }
             if include_web_search and self._supports_responses_api():
                 create_kwargs.update({
-                    "tools": [{"type": "web_search"}],
-                    "tool_choice": "auto",
+                    "tools": [{
+                        "type": "web_search_preview",
+                        "user_location": {"type": "approximate"},
+                        "search_context_size": "medium",
+                    }],
+                    "tool_choice": "required" if force_web else "auto",
                 })
 
             if self._supports_responses_api():

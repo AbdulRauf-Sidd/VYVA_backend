@@ -87,7 +87,7 @@ async def get_information(req: GetInformationRequest) -> GetInformationResponse:
                 "You are a helpful assistant for seniors. Keep answers short and clear. Cite source names if web was used."
             ),
             include_web_search=True,
-            force_web=bool(req.web),
+            force_web=True,
         )
 
         sources: List[Source] = []
