@@ -11,19 +11,18 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-from fastapi import FastAPI, HTTPException, Request, Response, status, APIRouter
+from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 from apscheduler.triggers.interval import IntervalTrigger
 from fastapi.exceptions import RequestValidationError
-from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from core.config import settings
 from core.logging import setup_logging
 from core.database import engine, Base
 from api.v1 import users, profiles, health_care, social, brain_coach, medication, fall_detection, emergency, tts, symptom_checker, post_call, ai_assistant, news, tools
-import subprocess
+from api.v1.managemant import ingest_onboarding_users
 from apscheduler.schedulers.background import BackgroundScheduler
 # from tasks import check_medication_time, run_async_job
 from core.database import AsyncSessionLocal, get_db
@@ -279,6 +278,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 # Include API routers
 # app.include_router(authen.router, prefix="/api/v1/auth", tags=["Authentication"])
 app.include_router(users.router, prefix="/api/v1/users", tags=["Users"])
+app.include_router(ingest_onboarding_users.router, prefix="/api/v1/admin", tags=["Management"])
 app.include_router(profiles.router, prefix="/api/v1/profiles", tags=["Profiles"])
 app.include_router(health_care.router, prefix="/api/v1/health-care", tags=["Health & Care"])
 app.include_router(social.router, prefix="/api/v1/social", tags=["Social"])

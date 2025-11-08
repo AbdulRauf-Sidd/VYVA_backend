@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     
     # Environment
     ENV: str = Field(default="development", env="ENV")
-    DEBUG: bool = Field(default=True, env="DEBUG")
+    DEBUG: bool = Field(default=False, env="DEBUG")
     LOG_LEVEL: str = Field(default="INFO", env="LOG_LEVEL")
     
     # Logging Control

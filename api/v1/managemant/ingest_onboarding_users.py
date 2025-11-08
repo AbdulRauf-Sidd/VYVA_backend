@@ -1,7 +1,7 @@
 import csv
 import io
 import re
-from select import select
+from sqlalchemy import select
 from unittest import result
 from fastapi import UploadFile, File, HTTPException
 from core.database import get_db
@@ -27,12 +27,12 @@ REQUIRED_COLUMNS = [
     "Reporting: WhatsApp (Yes/No)",
 ]
 
-VALID_LANGUAGES = {"en", "de", "es"}
+VALID_LANGUAGES = {"english", "german", "spanish"}
 VALID_TIMEZONES = {"utc", "cet", "est"}
 VALID_COMM_METHODS = {"phone", "email"}
 VALID_YES_NO = {"yes", "no"}
 
-def validate_csv(file_content: str, db):
+async def validate_csv(file_content: str, db):
     errors = []
     reader = csv.DictReader(io.StringIO(file_content))
 
@@ -46,11 +46,14 @@ def validate_csv(file_content: str, db):
                 errors.append(f"Row {i}: '{col}' is required.")
 
         phone = row.get("Phone Number*", "")
+        if phone and not phone.startswith("+"):
+            phone = "+" + phone
         if phone and not re.match(r"^\+\d{6,15}$", phone.strip()):
             errors.append(f"Row {i}: Invalid phone number '{phone}'. Expected format: + followed by digits.")
 
         if phone:
-            existing_user = db.execute(select(User).where(User.phone_number == phone.strip())).scalar()
+            result = await db.execute(select(User).where(User.phone_number == phone.strip()))
+            existing_user = result.scalar_one_or_none()
             if existing_user:
                 errors.append(f"Row {i}: Phone number '{phone}' already exists.")
 
@@ -63,8 +66,17 @@ def validate_csv(file_content: str, db):
             errors.append(f"Row {i}: Invalid language '{lang}'. Must be one of {VALID_LANGUAGES}.")
 
         time_pref = row.get("Preferred Time", "")
-        if time_pref and not re.match(r"^(?:[01]\d|2[0-3]):[0-5]\d$", time_pref.strip()):
-            errors.append(f"Row {i}: Invalid Preferred Time '{time_pref}'. Must be in HH:MM 24-hour format.")
+        if time_pref:
+            if re.match(r"^(?:[01]\d|2[0-3]):[0-5]\d$", time_pref):
+                pass
+            else:
+                try:
+                    dt = datetime.strptime(time_pref, "%I:%M %p")
+                    dt.strftime("%H:%M")
+                except ValueError:
+                    errors.append(
+                        f"Row {i}: Invalid Preferred Time '{time_pref}'. Must be HH:MM 24-hour or hh:mm AM/PM format."
+                    )
 
         tz = row.get("Time Zone*", "").lower()
         if tz and tz not in VALID_TIMEZONES:
@@ -101,8 +113,22 @@ async def process_valid_data(file_content, organization_name, db):
             preferred_time=row.get("Preferred Time", "").strip() or None
             timezone=row["Time Zone*"].strip().lower()
 
+            converted_time = None
+
             if preferred_time:
-                preferred_time = datetime.strptime(preferred_time, "%H:%M").time()
+                # Try 24-hour format first
+                if re.match(r"^(?:[01]\d|2[0-3]):[0-5]\d$", preferred_time):
+                    converted_time = preferred_time
+                else:
+                    # Try 12-hour format (e.g., 02:30 PM)
+                    try:
+                        dt = datetime.strptime(preferred_time, "%I:%M %p")
+                        converted_time = dt.strftime("%H:%M")  # convert to 24-hour
+                    except ValueError:
+                        pass
+
+            if converted_time:
+                preferred_time = datetime.strptime(converted_time, "%H:%M").time()
                 utc_time_object = time_to_utc(preferred_time, timezone)
                 utc_dt = datetime.combine(date.today(), utc_time_object, tzinfo=ZoneInfo("UTC"))
                 final_utc_dt = add_one_day(utc_dt)
@@ -141,16 +167,17 @@ async def process_valid_data(file_content, organization_name, db):
             new_users.append(user)
 
         if new_users:
-            await db.add_all(new_users)
+            db.add_all(new_users)
             await db.commit()
 
         return True, len(new_users)
     except Exception as e:
         await db.rollback()
+        print(e)
         return False, 0
 
-@router.post("/admin/ingest-csv", response_model=StandardSuccessResponse)
-async def ingest_csv(organization: str, file: UploadFile = File(...), db=Depends(get_db)):
+@router.post("/ingest-csv", response_model=StandardSuccessResponse)
+async def ingest_csv(organization: str = 'Red Cross', file: UploadFile = File(...), db=Depends(get_db)):
     organization = organization.strip()
     result = await db.execute(select(Organization).where(Organization.name == organization))
     exists = result.scalar()
@@ -158,12 +185,14 @@ async def ingest_csv(organization: str, file: UploadFile = File(...), db=Depends
         raise HTTPException(status_code=400, detail="Organization does not exist.")
     
     content = (await file.read()).decode("utf-8")
-    errors = validate_csv(content)
+    errors = await validate_csv(content, db)
     
     if errors:
+        print(errors)
+        print('error_messages', errors)
         raise HTTPException(status_code=400, detail=errors)
-    
-    success, count = process_valid_data(content, organization, db)
+
+    success, count = await process_valid_data(content, organization, db)
     if not success:
         raise HTTPException(status_code=500, detail="Failed to process data.")
     

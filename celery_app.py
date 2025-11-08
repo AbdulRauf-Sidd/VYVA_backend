@@ -5,7 +5,7 @@ celery_app = Celery(
     settings.APP_NAME,
     broker=settings.CELERY_BROKER_URL,
     backend=settings.CELERY_RESULT_BACKEND,
-    include=["app.tasks.management_tasks"],  # import your tasks here
+    include=["tasks.management_tasks"],  # import your tasks here
 )
 
 celery_app.conf.update(

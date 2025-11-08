@@ -7,6 +7,7 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, Foreign
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from enum import Enum as PyEnum
+from models.organization import Organization
 
 from core.database import Base
 
@@ -102,7 +103,8 @@ class User(Base):
     living_situation = Column(SQLEnum(LivingSituation), nullable=True)
     admin_profile = relationship("AdminUser", back_populates="user", uselist=False)
     date_of_birth = Column(DateTime, nullable=True)
-    organization = relationship("Organization", backref="users")
+    organization = relationship("Organization", back_populates="users")
+    organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=True)
 
 
     #Health and Care
@@ -137,8 +139,8 @@ class User(Base):
 
     #Reminders
     preferred_channel = Column(String(50), nullable=True)  # e.g., "email", "sms", "push"
-    whatsapp_reports = Column(Boolean, nullable=False)
-    email_reports = Column(Boolean, nullable=False)
+    whatsapp_reports = Column(Boolean, nullable=False, default=False)
+    email_reports = Column(Boolean, nullable=False, default=False)
     preferred_communication_channel = Column(String(50), nullable=True)  # e.g., "email", "sms", "push"
 
 

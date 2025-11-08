@@ -1,8 +1,9 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, Time, Enum as SQLEnum
+from sqlalchemy import Column, Integer, ForeignKey, String, Boolean, DateTime, Time, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from enum import Enum as PyEnum
+from models.organization import Organization
 
 from core.database import Base
 
@@ -30,3 +31,5 @@ class OnboardingUser(Base):
     called_at = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     organization=relationship("Organization", back_populates="onboarding_users")
+    organization_id=Column(Integer, ForeignKey("organizations.id"), nullable=True)
+    onboarding_logs=relationship("OnboardingLogs", back_populates="onboarding_user")

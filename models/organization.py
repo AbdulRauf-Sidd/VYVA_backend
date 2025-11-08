@@ -16,6 +16,7 @@ class Organization(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     onboarding_agent_id = Column(String(100), nullable=False)
     users = relationship("User", back_populates="organization")
+    onboarding_users = relationship("OnboardingUser", back_populates="organization")
     is_active = Column(Boolean, default=True)
     
     def __repr__(self):
