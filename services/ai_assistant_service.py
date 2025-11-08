@@ -39,32 +39,62 @@ class AIAssistantService:
         self.max_tokens = int(settings.OPENAI_MAX_TOKENS or 300)
         self.temperature = float(settings.OPENAI_TEMPERATURE or 0.5)
 
+    def _supports_responses_api(self) -> bool:
+        """Return True if the installed OpenAI SDK exposes the Responses API."""
+        try:
+            return bool(getattr(self.openai_client, "responses", None))
+        except Exception:
+            return False
+
     async def search_web(self, query: str, num_results: int = 3) -> List[Dict[str, Any]]:
         """
-        Search the web using OpenAI Responses API web tool and return normalized results.
+        Search the web using OpenAI Responses API web tool when available.
+        Fall back to an LLM-only summary if the web tool isn't supported.
         """
         if not self.openai_client:
             logger.warning(
                 "OpenAI client not available, returning empty results")
             return []
         try:
-            sys = (
-                "You can search the web. Return ONLY JSON: an array of up to "
-                f"{num_results} objects with fields title, snippet, and link."
-            )
-            user = f"Search the web and extract current, trustworthy results for: {query}"
-            response = self.openai_client.responses.create(
-                model=self.model,
-                input=[
-                    {"role": "system", "content": sys},
-                    {"role": "user", "content": user},
-                ],
-                tools=[{"type": "web_search"}],
-                tool_choice="auto",
-                max_output_tokens=500,
-                temperature=0.2,
-            )
-            content = response.output_text
+            if self._supports_responses_api():
+                sys = (
+                    "You can search the web. Return ONLY JSON: an array of up to "
+                    f"{num_results} objects with fields title, snippet, and link."
+                )
+                user = f"Search the web and extract current, trustworthy results for: {query}"
+                response = self.openai_client.responses.create(
+                    model=self.model,
+                    input=[
+                        {"role": "system", "content": sys},
+                        {"role": "user", "content": user},
+                    ],
+                    tools=[{"type": "web_search"}],
+                    tool_choice="auto",
+                    max_output_tokens=500,
+                    temperature=0.2,
+                )
+                content = response.output_text
+            else:
+                # Fallback: ask the model to synthesize search-like results (no live browsing)
+                messages = [
+                    {
+                        "role": "system",
+                        "content": (
+                            "Return ONLY JSON: an array (max "
+                            f"{num_results}) with objects having fields title, snippet, and link."
+                        ),
+                    },
+                    {
+                        "role": "user",
+                        "content": f"Provide up-to-date information for: {query}. Include source/site names when possible.",
+                    },
+                ]
+                chat = self.openai_client.chat.completions.create(
+                    model=self.model,
+                    messages=messages,
+                    temperature=0.2,
+                )
+                content = (chat.choices[0].message.content or "").strip() or "[]"
             results: List[Dict[str, Any]] = []
             try:
                 parsed = json.loads(content)
@@ -194,9 +224,9 @@ class AIAssistantService:
                     "OpenAI client not available, returning error response")
                 return self._create_error_response("OpenAI client not available. Please check API key configuration.")
 
-            # Optionally prefetch web results only when force_web is true (for minimal source hints)
+            # Optionally prefetch web results only when force_web is true and Responses API is supported
             web_results: List[Dict[str, Any]] = []
-            if include_web_search and force_web:
+            if include_web_search and force_web and self._supports_responses_api():
                 try:
                     web_results = await self.search_web(question, num_results=3)
                 except Exception as e:
@@ -207,7 +237,7 @@ class AIAssistantService:
             system_prompt = self._create_system_prompt(user_context)
 
             # Add gentle instruction to browse when necessary
-            if include_web_search and force_web:
+            if include_web_search and force_web and self._supports_responses_api():
                 system_prompt += "\n\nWhen answering, you MUST use the web_search tool to verify the latest information before responding."
             elif include_web_search:
                 system_prompt += "\n\nWhen information may be time-sensitive or uncertain, you MAY use the web_search tool to verify before responding."
@@ -222,15 +252,27 @@ class AIAssistantService:
                 "max_output_tokens": self.max_tokens,
                 "temperature": self.temperature,
             }
-            if include_web_search:
+            if include_web_search and self._supports_responses_api():
                 create_kwargs.update({
                     "tools": [{"type": "web_search"}],
                     "tool_choice": "auto",
                 })
 
-            response = self.openai_client.responses.create(**create_kwargs)
-
-            ai_response = response.output_text
+            if self._supports_responses_api():
+                response = self.openai_client.responses.create(**create_kwargs)
+                ai_response = response.output_text
+            else:
+                # Fallback to chat completions without web tool
+                messages = [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": question},
+                ]
+                chat = self.openai_client.chat.completions.create(
+                    model=self.model,
+                    messages=messages,
+                    temperature=self.temperature,
+                )
+                ai_response = chat.choices[0].message.content or ""
 
             # Format response for ElevenLabs voice consumption
             formatted_response = self._format_for_voice(
