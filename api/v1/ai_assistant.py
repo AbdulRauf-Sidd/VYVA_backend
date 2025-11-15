@@ -67,21 +67,19 @@ async def health_check():
     """
     try:
         # Reflect actual configured services
-        openai_ok = bool(ai_assistant_service.openai_client and settings.OPENAI_API_KEY)
-        # Web search via OpenAI Responses API; available if OpenAI configured and client exposes responses
-        try:
-            supports_web_tool = bool(getattr(ai_assistant_service.openai_client, "responses", None))
-        except Exception:
-            supports_web_tool = False
-        web_ok = openai_ok and supports_web_tool
+        workflow_ready = bool(ai_assistant_service.workflow_engine and settings.OPENAI_API_KEY)
+        supports_web_tool = bool(
+            workflow_ready and ai_assistant_service.workflow_engine and ai_assistant_service.workflow_engine.supports_web_tool
+        )
+        web_ok = workflow_ready and supports_web_tool
         places_ok = bool(google_places._is_enabled())
-        status_text = "healthy" if openai_ok else "unhealthy"
-        message = "AI Assistant service is operational" if openai_ok else "OpenAI API key not configured"
+        status_text = "healthy" if workflow_ready else "unhealthy"
+        message = "AI Assistant service is operational" if workflow_ready else "OpenAI workflow not configured"
         return {
             "status": status_text,
             "message": message,
             "services": {
-                "openai": openai_ok,
+                "openai": workflow_ready,
                 "web_search": web_ok,
                 "google_places": places_ok,
             },
