@@ -330,7 +330,7 @@ email_service = EmailService()
     description="Update an existing user's information"
 )
 async def send_report(
-    user_id: Annotated[int, Path(..., description="The ID of the user")],
+    user_id: int,
     user_data: UserFeedback,
     db: AsyncSession = Depends(get_db)
 ):
