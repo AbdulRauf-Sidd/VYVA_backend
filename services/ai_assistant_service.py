@@ -1,165 +1,180 @@
 """
-AI Assistant service using OpenAI Responses API with optional web search and concierge (Google Places).
+AI Assistant service using OpenAI Workflows/Agents SDK with optional web search
+and concierge (Google Places).
 
 Key features:
-- OpenAI Responses API for robust text generation
-- Optional real web search (SERP provider) for current info
+- OpenAI Agents/Workflows SDK for robust text generation
+- Optional real web search (web_search_preview tool) for current info
 - Optional Google Places concierge lookups (text search + details)
 - Voice-optimized response formatting for ElevenLabs
 """
 
-from openai import OpenAI
 import logging
-import json
-from typing import Dict, Any, List, Optional
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel
+
 from core.config import settings
 from core.logging import get_logger
 from .google_places_service import google_places
 
+try:
+    from agents import Agent, ModelSettings, Runner, RunConfig, WebSearchTool, trace  # type: ignore[import]
+    from openai.types.shared.reasoning import Reasoning
+
+    AGENT_SDK_AVAILABLE = True
+except ImportError:
+    AGENT_SDK_AVAILABLE = False
+    Agent = ModelSettings = Runner = RunConfig = WebSearchTool = trace = None  # type: ignore
+    Reasoning = None  # type: ignore
+
 logger = get_logger(__name__)
 
 
+class WorkflowInput(BaseModel):
+    input_as_text: str
+
+
+@dataclass
+class WorkflowRunOutput:
+    text: str
+    raw_result: Any
+    new_items: List[Any]
+
+
+class AgentWorkflowEngine:
+    """Wrapper around the OpenAI Agents/Workflows SDK."""
+
+    def __init__(self, model: str, logger: logging.Logger):
+        if not AGENT_SDK_AVAILABLE:
+            raise RuntimeError("OpenAI Agent SDK is not installed.")
+
+        self.model = model
+        self.logger = logger
+        self.web_search_tool = WebSearchTool(
+            search_context_size="medium",
+            user_location={"type": "approximate"},
+        )
+
+    async def run(
+        self,
+        question: str,
+        instructions: str,
+        include_web_search: bool,
+        trace_metadata: Optional[Dict[str, Any]] = None,
+    ) -> WorkflowRunOutput:
+        """Execute the workflow for a single-turn question."""
+        conversation_history = [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "input_text",
+                        "text": WorkflowInput(input_as_text=question).input_as_text,
+                    }
+                ],
+            }
+        ]
+
+        tools = [self.web_search_tool] if include_web_search else []
+        model_settings_kwargs: Dict[str, Any] = {"store": True}
+        if Reasoning:
+            model_settings_kwargs["reasoning"] = Reasoning(effort="medium")
+
+        agent = Agent(
+            name="AI Assistant",
+            instructions=instructions,
+            model=self.model,
+            tools=tools,
+            model_settings=ModelSettings(**model_settings_kwargs),
+        )
+
+        metadata = trace_metadata or {}
+        try:
+            with trace("AI Assistant Workflow"):
+                result = await Runner.run(
+                    agent,
+                    input=conversation_history,
+                    run_config=RunConfig(trace_metadata=metadata),
+                )
+        except Exception as exc:
+            self.logger.error("OpenAI workflow run failed: %s", exc, exc_info=True)
+            raise
+
+        return WorkflowRunOutput(
+            text=result.final_output_as(str),
+            raw_result=result,
+            new_items=list(getattr(result, "new_items", [])),
+        )
+
+    @property
+    def supports_web_tool(self) -> bool:
+        return self.web_search_tool is not None
+
+    @staticmethod
+    def detect_web_tool_usage(output: WorkflowRunOutput) -> bool:
+        """Best-effort detection of web_search tool usage."""
+        target_keywords = ("web_search", "web-search", "web search")
+
+        for item in output.new_items:
+            name = AgentWorkflowEngine._extract_tool_name(item)
+            if any(keyword in name for keyword in target_keywords):
+                return True
+
+        raw = output.raw_result
+        for attr in ("invocations", "tool_invocations", "steps"):
+            entries = getattr(raw, attr, None)
+            if not entries:
+                continue
+            for entry in entries:
+                name = AgentWorkflowEngine._extract_tool_name(entry)
+                if any(keyword in name for keyword in target_keywords):
+                    return True
+        return False
+
+    @staticmethod
+    def _extract_tool_name(item: Any) -> str:
+        if not item:
+            return ""
+        if isinstance(item, dict):
+            for key in ("tool_name", "name", "type"):
+                value = item.get(key)
+                if value:
+                    return str(value).lower()
+        else:
+            for attr in ("tool_name", "name", "type"):
+                value = getattr(item, attr, None)
+                if value:
+                    return str(value).lower()
+        return ""
+
+
 class AIAssistantService:
-    """AI Assistant service with OpenAI and web search integration."""
+    """AI Assistant service with OpenAI workflow integration."""
 
     def __init__(self):
-        # Initialize OpenAI client with proper configuration
-        try:
-            # Initialize Responses API client
-            self.openai_client = OpenAI(
-                api_key=settings.OPENAI_API_KEY,
-            )
-        except Exception as e:
-            logger.error(f"Failed to initialize OpenAI client: {e}")
-            # Fallback initialization
-            self.openai_client = None
+        self.model = settings.OPENAI_MODEL or "gpt-5"
+        self.workflow_engine: Optional[AgentWorkflowEngine] = None
 
-        # Safe defaults (prefer a model with web tool support)
-        self.model = settings.OPENAI_MODEL or "gpt-4.1-mini"
-        self.max_tokens = int(settings.OPENAI_MAX_TOKENS or 300)
-        self.temperature = float(settings.OPENAI_TEMPERATURE or 0.5)
-
-    def _supports_responses_api(self) -> bool:
-        """Return True if the installed OpenAI SDK exposes the Responses API."""
-        try:
-            return bool(getattr(self.openai_client, "responses", None))
-        except Exception:
-            return False
-
-    async def search_web(self, query: str, num_results: int = 3) -> List[Dict[str, Any]]:
-        """
-        Search the web using OpenAI Responses API web tool when available.
-        Fall back to an LLM-only summary if the web tool isn't supported.
-        """
-        if not self.openai_client:
+        if not settings.OPENAI_API_KEY:
             logger.warning(
-                "OpenAI client not available, returning empty results")
-            return []
-        try:
-            if self._supports_responses_api():
-                sys = (
-                    "You can search the web. Return ONLY JSON: an array of up to "
-                    f"{num_results} objects with fields title, snippet, and link."
-                )
-                user = f"Search the web and extract current, trustworthy results for: {query}"
-                response = self.openai_client.responses.create(
-                    model=self.model,
-                    input=[
-                        {"role": "system", "content": sys},
-                        {"role": "user", "content": user},
-                    ],
-                    tools=[{
-                        "type": "web_search_preview",
-                        "user_location": {"type": "approximate"},
-                        "search_context_size": "medium",
-                    }],
-                    tool_choice="required",
-                    max_output_tokens=500,
-                    temperature=0.2,
-                )
-                content = response.output_text
-            else:
-                # Fallback: ask the model to synthesize search-like results (no live browsing)
-                messages = [
-                    {
-                        "role": "system",
-                        "content": (
-                            "Return ONLY JSON: an array (max "
-                            f"{num_results}) with objects having fields title, snippet, and link."
-                        ),
-                    },
-                    {
-                        "role": "user",
-                        "content": f"Provide up-to-date information for: {query}. Include source/site names when possible.",
-                    },
-                ]
-                chat = self.openai_client.chat.completions.create(
-                    model=self.model,
-                    messages=messages,
-                    temperature=0.2,
-                )
-                content = (chat.choices[0].message.content or "").strip() or "[]"
-            results: List[Dict[str, Any]] = []
+                "OPENAI_API_KEY is not configured; AI assistant workflow is disabled."
+            )
+            return
+
+        if AGENT_SDK_AVAILABLE:
             try:
-                parsed = json.loads(content)
-                if isinstance(parsed, list):
-                    for item in parsed[:num_results]:
-                        results.append({
-                            "title": (item.get("title") if isinstance(item, dict) else str(item)) or "Result",
-                            "snippet": (item.get("snippet") if isinstance(item, dict) else "") or "",
-                            "link": (item.get("link") if isinstance(item, dict) else "") or "",
-                        })
-                else:
-                    results = self._parse_search_results(
-                        content, query, num_results)
-            except Exception:
-                results = self._parse_search_results(
-                    content, query, num_results)
-
-            logger.info(
-                f"OpenAI web search completed for query: {query[:50]}...")
-            return results
-        except Exception as e:
-            logger.error(f"OpenAI web search failed: {str(e)}")
-            return []
-
-    def _parse_search_results(self, content: str, query: str, num_results: int = 3) -> List[Dict[str, Any]]:
-        """Parse OpenAI response into search-like results."""
-        lines = content.split('\n')
-        results = []
-        current_result = {}
-
-        for line in lines:
-            line = line.strip()
-            # Look for titles (various formats)
-            if (line.startswith('Title:') or line.startswith('**') or
-                    line.startswith('#') or (line.isupper() and len(line) > 10)):
-
-                if current_result:
-                    results.append(current_result)
-
-                title = line.replace('Title:', '').replace(
-                    '**', '').replace('#', '').strip()
-                current_result = {
-                    "title": title,
-                    "snippet": "",
-                    "link": f"Web Search Result - {query}"
-                }
-            elif line and current_result and not line.startswith('Title:') and not line.startswith('**'):
-                current_result["snippet"] += line + " "
-
-        if current_result:
-            results.append(current_result)
-
-        # If parsing failed, create a simple result
-        if not results:
-            results = [{
-                "title": f"Current Information about {query}",
-                "snippet": content[:300] + "..." if len(content) > 300 else content,
-                "link": "Web Search"
-            }]
-
-        return results[:num_results]  # Limit to requested number of results
+                self.workflow_engine = AgentWorkflowEngine(self.model, logger)
+            except Exception as exc:
+                logger.error(
+                    "Failed to initialize OpenAI workflow agent: %s", exc, exc_info=True
+                )
+                self.workflow_engine = None
+        else:
+            logger.warning(
+                "OpenAI Agent SDK not installed. Install the Agents SDK to enable AI assistant workflows."
+            )
 
     async def concierge_places(
         self,
@@ -212,7 +227,7 @@ class AIAssistantService:
         force_web: bool = False,
     ) -> Dict[str, Any]:
         """
-        Generate AI response using OpenAI with optional web search.
+        Generate AI response using OpenAI Workflows with optional web search.
 
         Args:
             question: User's question
@@ -223,73 +238,54 @@ class AIAssistantService:
             Formatted response for ElevenLabs voice consumption
         """
         try:
-            if not self.openai_client:
-                logger.warning(
-                    "OpenAI client not available, returning error response")
-                return self._create_error_response("OpenAI client not available. Please check API key configuration.")
-
-            # Optionally prefetch web results only when force_web is true and Responses API is supported
-            web_results: List[Dict[str, Any]] = []
-            if include_web_search and force_web and self._supports_responses_api():
-                try:
-                    web_results = await self.search_web(question, num_results=3)
-                except Exception as e:
-                    logger.warning(f"Prefetch web search failed: {str(e)}")
-                    web_results = []
-
-            # Prepare system prompt for voice-friendly responses
-            system_prompt = self._create_system_prompt(user_context)
-
-            # Add gentle instruction to browse when necessary
-            if include_web_search and force_web and self._supports_responses_api():
-                system_prompt += "\n\nWhen answering, you MUST use the web_search tool to verify the latest information before responding."
-            elif include_web_search:
-                system_prompt += "\n\nWhen information may be time-sensitive or uncertain, you MAY use the web_search tool to verify before responding."
-
-            # Generate response using OpenAI; expose web_search tool with auto selection when enabled
-            create_kwargs: Dict[str, Any] = {
-                "model": self.model,
-                "input": [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": question},
-                ],
-                "max_output_tokens": self.max_tokens,
-                "temperature": self.temperature,
-            }
-            if include_web_search and self._supports_responses_api():
-                create_kwargs.update({
-                    "tools": [{
-                        "type": "web_search_preview",
-                        "user_location": {"type": "approximate"},
-                        "search_context_size": "medium",
-                    }],
-                    "tool_choice": "required" if force_web else "auto",
-                })
-
-            if self._supports_responses_api():
-                response = self.openai_client.responses.create(**create_kwargs)
-                ai_response = response.output_text
-            else:
-                # Fallback to chat completions without web tool
-                messages = [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": question},
-                ]
-                chat = self.openai_client.chat.completions.create(
-                    model=self.model,
-                    messages=messages,
-                    temperature=self.temperature,
+            if not self.workflow_engine:
+                logger.warning("Workflow engine not available.")
+                err = self._create_error_response(
+                    "AI workflow is unavailable. Please verify the Agents SDK installation."
                 )
-                ai_response = chat.choices[0].message.content or ""
+                if conversation_id:
+                    err["conversation_id"] = conversation_id
+                return err
+
+            needs_web = include_web_search and self._needs_web_search(question)
+            use_web_tool = include_web_search and self.workflow_engine.supports_web_tool
+            system_prompt = self._create_system_prompt(
+                user_context=user_context,
+                include_web_search=use_web_tool,
+                force_web=force_web,
+                needs_web=needs_web,
+            )
+
+            trace_metadata: Dict[str, Any] = {
+                "__trace_source__": "ai-assistant-service",
+            }
+            if conversation_id:
+                trace_metadata["conversation_id"] = conversation_id
+
+            workflow_output = await self.workflow_engine.run(
+                question=question,
+                instructions=system_prompt,
+                include_web_search=use_web_tool,
+                trace_metadata=trace_metadata,
+            )
+
+            ai_response = workflow_output.text
+            web_search_used = (
+                use_web_tool
+                and AgentWorkflowEngine.detect_web_tool_usage(workflow_output)
+            )
+            web_results: List[Dict[str, Any]] = []
 
             # Format response for ElevenLabs voice consumption
             formatted_response = self._format_for_voice(
-                ai_response, web_results)
+                ai_response, web_results, web_search_used=web_search_used
+            )
             if conversation_id:
                 formatted_response["conversation_id"] = conversation_id
 
             logger.info(
-                f"AI response generated for question: {question[:50]}...")
+                f"AI response generated for question: {question[:50]}..."
+            )
             return formatted_response
 
         except Exception as e:
@@ -299,7 +295,13 @@ class AIAssistantService:
                 err["conversation_id"] = conversation_id
             return err
 
-    def _create_system_prompt(self, user_context: Optional[str]) -> str:
+    def _create_system_prompt(
+        self,
+        user_context: Optional[str],
+        include_web_search: bool,
+        force_web: bool,
+        needs_web: bool,
+    ) -> str:
         """Create system prompt for OpenAI with web search context."""
 
         prompt = """You are a helpful AI assistant designed to provide clear, conversational responses that will be converted to speech by ElevenLabs voice synthesis.
@@ -317,18 +319,34 @@ Your role is to answer questions helpfully and accurately. You have access to we
         if user_context:
             prompt += f"\n\nUSER CONTEXT: {user_context}"
 
+        if force_web and include_web_search:
+            prompt += "\n\nWhen answering, you MUST invoke the web_search tool to verify the latest information before responding."
+        elif include_web_search:
+            prompt += "\n\nWhen information may be time-sensitive or uncertain, you MAY use the web_search tool to verify before responding."
+
+        if needs_web and not force_web and include_web_search:
+            prompt += "\n\nThis particular question appears current or time-sensitive. Strongly consider running a web_search query before finalizing your answer."
+
         return prompt
 
-    def _format_for_voice(self, ai_response: str, web_results: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def _format_for_voice(
+        self,
+        ai_response: str,
+        web_results: List[Dict[str, Any]],
+        web_search_used: Optional[bool] = None,
+    ) -> Dict[str, Any]:
         """Format the response for ElevenLabs voice consumption."""
 
         # Clean up the response for voice synthesis
         voice_text = self._clean_for_voice(ai_response)
+        web_flag = (
+            len(web_results) > 0 if web_search_used is None else bool(web_search_used)
+        )
 
         return {
             "response": voice_text,
             "original_response": ai_response,
-            "web_search_used": len(web_results) > 0,
+            "web_search_used": web_flag,
             "web_results": web_results,
             "format": "voice_optimized",
             "length": len(voice_text),
