@@ -21,15 +21,18 @@ REQUIRED_COLUMNS = [
     "First Name*",
     "Last Name*",
     "Phone Number*",
+    "Email"
+    "Preferred Time of call (if blank, agent will call next day at 9am CET)"
     "Language*",
     "Time Zone*",
-    "Reporting: Email (Yes/No)",
+    "Preferred Communication Method",
     "Reporting: WhatsApp (Yes/No)",
+    "Landline",
 ]
 
 VALID_LANGUAGES = {"english", "german", "spanish"}
 VALID_TIMEZONES = {"utc", "cet", "est"}
-VALID_COMM_METHODS = {"phone", "email"}
+VALID_COMM_METHODS = {"phone", "Web App"}
 VALID_YES_NO = {"yes", "no"}
 
 async def validate_csv(file_content: str, db):
@@ -51,11 +54,23 @@ async def validate_csv(file_content: str, db):
         if phone and not re.match(r"^\+\d{6,15}$", phone.strip()):
             errors.append(f"Row {i}: Invalid phone number '{phone}'. Expected format: + followed by digits.")
 
+        landline = row.get("Landline", "")
+        if landline and not landline.startswith("+"):
+            landline = "+" + landline
+        if landline and not re.match(r"^\+\d{6,15}$", landline.strip()):
+            errors.append(f"Row {i}: Invalid landline number '{landline}'. Expected format: + followed by digits.")
+
         if phone:
             result = await db.execute(select(User).where(User.phone_number == phone.strip()))
             existing_user = result.scalar_one_or_none()
             if existing_user:
                 errors.append(f"Row {i}: Phone number '{phone}' already exists.")
+
+        if landline:
+            result = await db.execute(select(User).where(User.land_line == landline.strip()))
+            existing_user = result.scalar_one_or_none()
+            if existing_user:
+                errors.append(f"Row {i}: Landline '{landline}' already exists.")
 
         email = row.get("Email", "")
         if email and not re.match(r"^[^@]+@[^@]+\.[^@]+$", email.strip()):
@@ -65,7 +80,7 @@ async def validate_csv(file_content: str, db):
         if lang and lang not in VALID_LANGUAGES:
             errors.append(f"Row {i}: Invalid language '{lang}'. Must be one of {VALID_LANGUAGES}.")
 
-        time_pref = row.get("Preferred Time", "")
+        time_pref = row.get("Preferred Time of call (if blank, agent will call next day at 9am CET)", "")
         if time_pref:
             if re.match(r"^(?:[01]\d|2[0-3]):[0-5]\d$", time_pref):
                 pass
@@ -86,9 +101,9 @@ async def validate_csv(file_content: str, db):
         if comm and comm.lower() not in VALID_COMM_METHODS:
             errors.append(f"Row {i}: Invalid Communication Method '{comm}'. Must be one of {VALID_COMM_METHODS}.")
 
-        email_report = row.get("Reporting: Email (Yes/No)", "").lower()
-        if email_report not in VALID_YES_NO:
-            errors.append(f"Row {i}: Invalid 'Reporting: Email (Yes/No)' value '{email_report}'. Must be Yes or No.")
+        # email_report = row.get("Reporting: Email (Yes/No)", "").lower()
+        # if email_report not in VALID_YES_NO:
+        #     errors.append(f"Row {i}: Invalid 'Reporting: Email (Yes/No)' value '{email_report}'. Must be Yes or No.")
 
         whatsapp_report = row.get("Reporting: WhatsApp (Yes/No)", "").lower()
         if whatsapp_report not in VALID_YES_NO:
@@ -96,11 +111,10 @@ async def validate_csv(file_content: str, db):
 
     return errors
 
-async def process_valid_data(file_content, organization_name, db):
+async def process_valid_data(file_content, organization_id, db):
     try:
 
         reader = csv.DictReader(io.StringIO(file_content))
-        result = await db.execute(select(Organization).where(Organization.name == organization_name))
         org = result.scalar_one_or_none()
         new_users = []
 
@@ -108,10 +122,12 @@ async def process_valid_data(file_content, organization_name, db):
             first_name=row["First Name*"].strip()
             last_name=row["Last Name*"].strip()
             phone_number=row["Phone Number*"].strip()
+            land_line=row.get("Landline", "").strip() or None
             email=row.get("Email", "").strip() or None
             language=row["Language*"].strip().lower()
-            preferred_time=row.get("Preferred Time", "").strip() or None
+            preferred_time=row.get("Preferred Time of call (if blank, agent will call next day at 9am CET)", "").strip() or None
             timezone=row["Time Zone*"].strip().lower()
+            whatsapp_reports=row["Reporting: WhatsApp (Yes/No)"].strip().lower()
 
             converted_time = None
 
@@ -140,9 +156,9 @@ async def process_valid_data(file_content, organization_name, db):
 
 
             preferred_communication_channel=row.get("Preferred Communication Method", "").strip().lower() or None
-            email_reports=row["Reporting: Email (Yes/No)"].strip().lower()
-            whatsapp_reports=row["Reporting: WhatsApp (Yes/No)"].strip().lower()
-            email_reports = True if email_reports == "yes" else False
+            # email_reports=row["Reporting: Email (Yes/No)"].strip().lower()
+            # whatsapp_reports=row["Reporting: WhatsApp (Yes/No)"].strip().lower()
+            # email_reports = True if email_reports == "yes" else False
             whatsapp_reports = True if whatsapp_reports == "yes" else False
 
             user = OnboardingUser(
@@ -154,9 +170,9 @@ async def process_valid_data(file_content, organization_name, db):
                 preferred_time=preferred_time,
                 timezone=timezone,
                 preferred_communication_channel=preferred_communication_channel,
-                email_reports=email_reports,
+                land_line=land_line,
                 whatsapp_reports=whatsapp_reports,
-                organization=org,
+                organization_id=organization_id,
             )
 
             task_result = initiate_onboarding_call.apply_async(
@@ -192,7 +208,7 @@ async def ingest_csv(organization: str = 'Red Cross', file: UploadFile = File(..
         print('error_messages', errors)
         raise HTTPException(status_code=400, detail=errors)
 
-    success, count = await process_valid_data(content, organization, db)
+    success, count = await process_valid_data(content, exists.id, db)
     if not success:
         raise HTTPException(status_code=500, detail="Failed to process data.")
     

@@ -9,6 +9,7 @@ from core.config import settings
 from core.logging import get_logger
 from services.helpers import generate_random_string
 from datetime import datetime
+from core.constants import VYVA_ZAMORA_LINK
 
 
 logger = get_logger(__name__)
@@ -863,6 +864,263 @@ class EmailService:
         except Exception as e:
             logger.error(
                 f'Error while sending reminder email for user {user['user_id']}: {e}')
+            return False
+        
+    
+    async def send_welcome_email(
+        self,
+        first_name: str,
+        email: str,
+        language='en'
+    ):
+        try:
+            
+            body_en = f"""<body>
+                  <div class="container">
+                    <div class="header">
+                      <img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png" alt="VYVA Logo" class="logo">
+                      <h1>Welcome to VYVA!</h1>
+                      <p>Your journey to better life starts here</p>
+                    </div>
+
+                    <div class="content">
+                      <h1 class="greeting">Hi <span id="patient-name">{first_name}</span>,</h1>
+
+                      <p class="message">Welcome to VYVA! We're thrilled to have you join our community dedicated to improving health and wellbeing.</p>
+
+
+                      <div class="cta-section">
+                        <p class="message">Get started by exploring the app and setting up your profile:</p>
+                        <a href="{VYVA_ZAMORA_LINK}" class="btn btn-primary">Open VYVA App</a>
+                      </div>
+
+                      <p class="message">If you have any questions or need assistance, don't hesitate to reach out to our support team.</p>
+                    </div>
+
+                    <div class="footer">
+                      <p>Welcome to the VYVA family!</p>
+                      <p>© 2025 VYVA Health. All rights reserved.</p>
+                    </div>
+                  </div>
+                </body>"""
+
+            body_es = f"""<body>
+                  <div class="container">
+                    <div class="header">
+                      <img src="https://pub-5793da9d92e544e7a4e39b1d9957215d.r2.dev/assets/logo.png" alt="Logo VYVA" class="logo">
+                      <h1>¡Bienvenido a VYVA!</h1>
+                      <p>Tu camino hacia una mejor salud comienza aquí</p>
+                    </div>
+
+                    <div class="content">
+                      <h1 class="greeting">Hola <span id="patient-name">{first_name}</span>,</h1>
+
+                      <p class="message">¡Bienvenido a VYVA! Estamos encantados de que te unas a nuestra comunidad dedicada a mejorar la salud y el bienestar.</p>
+
+
+                      <div class="cta-section">
+                        <p class="message">Comienza explorando la aplicación y configurando tu perfil:</p>
+                        <a href="{VYVA_ZAMORA_LINK}" class="btn btn-primary">Abrir App VYVA</a>
+                      </div>
+
+                      <p class="message">Si tienes alguna pregunta o necesitas ayuda, no dudes en contactar a nuestro equipo de soporte.</p>
+                    </div>
+
+                    <div class="footer">
+                      <p>¡Bienvenido a la familia VYVA!</p>
+                      <p>© 2025 VYVA Health. Todos los derechos reservados.</p>
+                    </div>
+                  </div>
+                </body>"""
+
+            body = body_en
+            if language == 'es':
+                body = body_es
+
+            html = f"""<!DOCTYPE html>
+                <html lang="en">
+                <head>
+                  <meta charset="UTF-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <title>Welcome to VYVA</title>
+                  <style>
+                    * {{
+                      margin: 0;
+                      padding: 0;
+                      box-sizing: border-box;
+                      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    }}
+
+                    body {{
+                      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+                      color: #333;
+                      line-height: 1.6;
+                      padding: 20px;
+                      min-height: 100vh;
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+                    }}
+
+                    .container {{
+                      max-width: 800px;
+                      width: 100%;
+                      background: white;
+                      border-radius: 15px;
+                      overflow: hidden;
+                      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                    }}
+
+                    .header {{
+                      background: linear-gradient(135deg, #642997 0%, #8a54c5 100%);
+                      padding: 25px;
+                      text-align: center;
+                      color: white;
+                    }}
+
+                    .logo {{
+                      max-width: 150px;
+                      height: auto;
+                      margin-bottom: 15px;
+                    }}
+
+                    .header h1 {{
+                      font-weight: 500;
+                      font-size: 28px;
+                      margin-bottom: 5px;
+                    }}
+
+                    .header p {{
+                      opacity: 0.9;
+                    }}
+
+                    .content {{
+                      padding: 30px;
+                    }}
+
+                    .greeting {{
+                      font-size: 24px;
+                      color: #642997;
+                      margin-bottom: 20px;
+                      font-weight: 600;
+                    }}
+
+                    .message {{
+                      font-size: 17px;
+                      margin-bottom: 25px;
+                      color: #555;
+                      line-height: 1.6;
+                    }}
+
+                    .feature-list {{
+                      list-style-type: none;
+                      margin: 25px 0;
+                    }}
+
+                    .feature-list li {{
+                      background: #f9f5ff;
+                      margin-bottom: 12px;
+                      padding: 15px 20px;
+                      border-radius: 10px;
+                      border-left: 5px solid #642997;
+                      color: #555;
+                      font-size: 16px;
+                      transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    }}
+
+                    .feature-list li:hover {{
+                      transform: translateX(5px);
+                      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+                    }}
+
+                    .feature-list li:before {{
+                      content: "✓";
+                      color: #642997;
+                      font-weight: bold;
+                      margin-right: 10px;
+                    }}
+
+                    .cta-section {{
+                      text-align: center;
+                      margin: 30px 0;
+                      padding: 25px;
+                      background: #f9f5ff;
+                      border-radius: 10px;
+                      border: 2px dashed #8a54c5;
+                    }}
+
+                    .btn {{
+                      display: inline-block;
+                      padding: 15px 35px;
+                      border-radius: 30px;
+                      border: none;
+                      font-weight: 600;
+                      cursor: pointer;
+                      transition: all 0.3s ease;
+                      font-size: 18px;
+                      text-decoration: none;
+                      margin-top: 15px;
+                    }}
+
+                    .btn-primary {{
+                      background: #642997;
+                      color: white;
+                    }}
+
+                    .btn-primary:hover {{
+                      background: #5a238a;
+                      transform: translateY(-2px);
+                      box-shadow: 0 5px 15px rgba(100, 41, 151, 0.3);
+                    }}
+
+                    .footer {{
+                      background: #f9f9f9;
+                      padding: 25px;
+                      text-align: center;
+                      font-size: 15px;
+                      color: #777;
+                      border-top: 1px solid #eee;
+                    }}
+
+                    @media (max-width: 600px) {{
+                      .content {{
+                        padding: 20px;
+                      }}
+
+                      .greeting {{
+                        font-size: 22px;
+                      }}
+
+                      .btn {{
+                        display: block;
+                        width: 100%;
+                        text-align: center;
+                      }}
+
+                      .feature-list li {{
+                        padding: 12px 15px;
+                        font-size: 15px;
+                      }}
+                    }}
+                  </style>
+                </head>
+                {body}
+                </html>"""
+
+            subject = "Welcome to VYVA - Get Started with Your Health Journey"
+            if language == 'es':
+                subject = "Bienvenido a VYVA - Comienza tu Viaje de Salud"
+
+            result = await self.send_email_via_mailgun(
+                to=[email],
+                subject=subject,
+                html=html
+            )
+
+            logger.info(f"Welcome email sent successfully to {email}")
+            return True
+        except Exception as e:
+            logger.error(f'Error while sending welcome email for {first_name, email}: {e}')
             return False
 
 
