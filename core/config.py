@@ -146,6 +146,11 @@ class Settings(BaseSettings):
         env="OPENAI_API_KEY"
     )
 
+    OPENAI_WORKFLOW_ID: Optional[str] = Field(
+        default=None,
+        env="OPENAI_WORKFLOW_ID"
+    )
+
     SERP_API_KEY: Optional[str] = Field(
         default=None,
         env="SERP_API_KEY"
