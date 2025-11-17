@@ -20,7 +20,15 @@ from core.logging import get_logger
 from .google_places_service import google_places
 
 try:
-    from agents import Agent, ModelSettings, Runner, RunConfig, WebSearchTool, trace  # type: ignore[import]
+    from agents import (  # type: ignore[import]
+        Agent,
+        ModelSettings,
+        Runner,
+        RunConfig,
+        WebSearchTool,
+        trace,
+        TResponseInputItem,
+    )
     from openai.types.shared.reasoning import Reasoning
 
     AGENT_SDK_AVAILABLE = True
@@ -30,6 +38,15 @@ except ImportError:
     Reasoning = None  # type: ignore
 
 logger = get_logger(__name__)
+
+DEFAULT_AGENT_INSTRUCTIONS = (
+    "You are a helpful, gentle, kind, and calm assistant designed to support seniors. "
+    "Respond to their queries with patience and clarity. Whenever necessary, search the web "
+    "to provide accurate and up-to-date information. Always communicate in a considerate and reassuring manner."
+)
+DEFAULT_WORKFLOW_ID = "wf_68eb7f8508dc81909a25f60b95ee0cba0410232f0e072ed7"
+DEFAULT_REASONING_EFFORT = "minimal"
+DEFAULT_MODEL = "gpt-5-mini"
 
 
 class WorkflowInput(BaseModel):
@@ -46,12 +63,22 @@ class WorkflowRunOutput:
 class AgentWorkflowEngine:
     """Wrapper around the OpenAI Agents/Workflows SDK."""
 
-    def __init__(self, model: str, logger: logging.Logger):
+    def __init__(
+        self,
+        model: str,
+        base_instructions: str,
+        workflow_id: Optional[str],
+        reasoning_effort: str,
+        logger: logging.Logger,
+    ):
         if not AGENT_SDK_AVAILABLE:
             raise RuntimeError("OpenAI Agent SDK is not installed.")
 
         self.model = model
         self.logger = logger
+        self.base_instructions = base_instructions
+        self.workflow_id = workflow_id or DEFAULT_WORKFLOW_ID
+        self.reasoning_effort = reasoning_effort or DEFAULT_REASONING_EFFORT
         self.web_search_tool = WebSearchTool(
             search_context_size="medium",
             user_location={"type": "approximate"},
@@ -60,12 +87,12 @@ class AgentWorkflowEngine:
     async def run(
         self,
         question: str,
-        instructions: str,
+        dynamic_instructions: Optional[str],
         include_web_search: bool,
         trace_metadata: Optional[Dict[str, Any]] = None,
     ) -> WorkflowRunOutput:
         """Execute the workflow for a single-turn question."""
-        conversation_history = [
+        conversation_history: List[TResponseInputItem] = [
             {
                 "role": "user",
                 "content": [
@@ -80,17 +107,26 @@ class AgentWorkflowEngine:
         tools = [self.web_search_tool] if include_web_search else []
         model_settings_kwargs: Dict[str, Any] = {"store": True}
         if Reasoning:
-            model_settings_kwargs["reasoning"] = Reasoning(effort="medium")
+            model_settings_kwargs["reasoning"] = Reasoning(
+                effort=self.reasoning_effort
+            )
+
+        final_instructions = self.base_instructions
+        if dynamic_instructions:
+            final_instructions = f"{self.base_instructions}\n\n{dynamic_instructions}"
 
         agent = Agent(
             name="AI Assistant",
-            instructions=instructions,
+            instructions=final_instructions,
             model=self.model,
             tools=tools,
             model_settings=ModelSettings(**model_settings_kwargs),
         )
 
         metadata = trace_metadata or {}
+        if self.workflow_id and "workflow_id" not in metadata:
+            metadata["workflow_id"] = self.workflow_id
+
         try:
             with trace("AI Assistant Workflow"):
                 result = await Runner.run(
@@ -154,7 +190,10 @@ class AIAssistantService:
     """AI Assistant service with OpenAI workflow integration."""
 
     def __init__(self):
-        self.model = settings.OPENAI_MODEL or "gpt-5"
+        self.model = settings.OPENAI_MODEL or DEFAULT_MODEL
+        self.base_instructions = DEFAULT_AGENT_INSTRUCTIONS
+        self.workflow_id = settings.OPENAI_WORKFLOW_ID or DEFAULT_WORKFLOW_ID
+        self.reasoning_effort = DEFAULT_REASONING_EFFORT
         self.workflow_engine: Optional[AgentWorkflowEngine] = None
 
         if not settings.OPENAI_API_KEY:
@@ -165,7 +204,13 @@ class AIAssistantService:
 
         if AGENT_SDK_AVAILABLE:
             try:
-                self.workflow_engine = AgentWorkflowEngine(self.model, logger)
+                self.workflow_engine = AgentWorkflowEngine(
+                    model=self.model,
+                    base_instructions=self.base_instructions,
+                    workflow_id=self.workflow_id,
+                    reasoning_effort=self.reasoning_effort,
+                    logger=logger,
+                )
             except Exception as exc:
                 logger.error(
                     "Failed to initialize OpenAI workflow agent: %s", exc, exc_info=True
@@ -249,7 +294,7 @@ class AIAssistantService:
 
             needs_web = include_web_search and self._needs_web_search(question)
             use_web_tool = include_web_search and self.workflow_engine.supports_web_tool
-            system_prompt = self._create_system_prompt(
+            dynamic_instructions = self._create_system_prompt(
                 user_context=user_context,
                 include_web_search=use_web_tool,
                 force_web=force_web,
@@ -264,7 +309,7 @@ class AIAssistantService:
 
             workflow_output = await self.workflow_engine.run(
                 question=question,
-                instructions=system_prompt,
+                dynamic_instructions=dynamic_instructions,
                 include_web_search=use_web_tool,
                 trace_metadata=trace_metadata,
             )

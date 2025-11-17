@@ -19,7 +19,7 @@ class OnboardingUser(Base):
     last_name = Column(String(100), nullable=True)
     email = Column(String(255), nullable=True, unique=False) 
     phone_number = Column(String(20), index=True, nullable=False, unique=False)
-    # age = Column(Integer, nullable=True)
+    land_line=Column(String(20), nullable=True)
     language=Column(String(50), nullable=True)
     preferred_time=Column(Time, nullable=True)
     timezone=Column(String(30), nullable=True)
