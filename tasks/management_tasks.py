@@ -1,11 +1,15 @@
 from core.database import SessionLocal
 from celery_app import celery_app
 from services.elevenlabs_service import make_onboarding_call
+from models.user import User
+import logging
+
+logger = logging.getLogger(__name__)
 
 @celery_app.task(name="initiate_onboarding_call")
-def initiate_onboarding_call(user):
-    db = SessionLocal()
-    response = make_onboarding_call(user)
+def initiate_onboarding_call(payload: dict):
+    response = make_onboarding_call(payload)
+    logger.info(f"Initiate onboarding call response: {response}")
     # try:
     #     errors = validate_csv(file_content)
     #     if errors:

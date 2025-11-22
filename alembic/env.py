@@ -9,10 +9,10 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 # Import all models to ensure they are registered with SQLAlchemy
-from models import Base
-from models import eleven_labs_batch_calls, eleven_labs_sessions
+# from models import Base
+from models import eleven_labs_batch_calls, eleven_labs_sessions, onboarding_user, onboarding_logs, organization, user
 from core.config import settings
-# from core.database import Base
+from core.database import Base
 
 config = context.config
 

@@ -14,6 +14,9 @@ from datetime import datetime, date
 from models.user import User
 from zoneinfo import ZoneInfo
 from tasks.management_tasks import initiate_onboarding_call
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -21,13 +24,14 @@ REQUIRED_COLUMNS = [
     "First Name*",
     "Last Name*",
     "Phone Number*",
-    "Email"
-    "Preferred Time of call (if blank, agent will call next day at 9am CET)"
+    "Email",
+    "Preferred Time of call (if blank, agent will call next day at 9am CET)",
     "Language*",
     "Time Zone*",
     "Preferred Communication Method",
     "Reporting: WhatsApp (Yes/No)",
     "Landline",
+    "Address"
 ]
 
 VALID_LANGUAGES = {"english", "german", "spanish"}
@@ -39,15 +43,16 @@ async def validate_csv(file_content: str, db):
     errors = []
     reader = csv.DictReader(io.StringIO(file_content))
 
+    if reader.fieldnames is None:
+        errors.append("CSV has no header row")
+        return errors
+
     missing_cols = [col for col in REQUIRED_COLUMNS if col not in reader.fieldnames]
     if missing_cols:
         raise HTTPException(status_code=400, detail=f"Missing required columns: {', '.join(missing_cols)}")
 
     for i, row in enumerate(reader, start=2):  
-        for col in REQUIRED_COLUMNS:
-            if not row.get(col) or row[col].strip() == "":
-                errors.append(f"Row {i}: '{col}' is required.")
-
+        
         phone = row.get("Phone Number*", "")
         if phone and not phone.startswith("+"):
             phone = "+" + phone
@@ -82,16 +87,12 @@ async def validate_csv(file_content: str, db):
 
         time_pref = row.get("Preferred Time of call (if blank, agent will call next day at 9am CET)", "")
         if time_pref:
-            if re.match(r"^(?:[01]\d|2[0-3]):[0-5]\d$", time_pref):
-                pass
+            if re.match(r"^(0?[1-9]|1[0-2]):[0-5]\d\s?(am|pm)$", time_pref.strip(), re.IGNORECASE):
+                pass  # valid 12-hour time
             else:
-                try:
-                    dt = datetime.strptime(time_pref, "%I:%M %p")
-                    dt.strftime("%H:%M")
-                except ValueError:
-                    errors.append(
-                        f"Row {i}: Invalid Preferred Time '{time_pref}'. Must be HH:MM 24-hour or hh:mm AM/PM format."
-                    )
+                errors.append(
+                    f"Row {i}: Invalid Preferred Time '{time_pref}'. Must be in 12-hour format like '12:30pm' or '11:00am'."
+                )
 
         tz = row.get("Time Zone*", "").lower()
         if tz and tz not in VALID_TIMEZONES:
@@ -111,12 +112,14 @@ async def validate_csv(file_content: str, db):
 
     return errors
 
-async def process_valid_data(file_content, organization_id, db):
+async def process_valid_data(file_content, organization, db):
     try:
 
         reader = csv.DictReader(io.StringIO(file_content))
-        org = result.scalar_one_or_none()
         new_users = []
+        agent_id = organization.onboarding_agent_id
+        organization_id = organization.id
+
 
         for i, row in enumerate(reader, start=2):
             first_name=row["First Name*"].strip()
@@ -128,6 +131,7 @@ async def process_valid_data(file_content, organization_id, db):
             preferred_time=row.get("Preferred Time of call (if blank, agent will call next day at 9am CET)", "").strip() or None
             timezone=row["Time Zone*"].strip().lower()
             whatsapp_reports=row["Reporting: WhatsApp (Yes/No)"].strip().lower()
+            address=row.get("Address", "").strip() or None
 
             converted_time = None
 
@@ -173,23 +177,37 @@ async def process_valid_data(file_content, organization_id, db):
                 land_line=land_line,
                 whatsapp_reports=whatsapp_reports,
                 organization_id=organization_id,
+                address=address
             )
 
+            db.add(user)
+            await db.commit()
+
+            payload = {
+                'first_name': first_name,
+                'last_name': last_name,
+                'phone_number': phone_number,
+                'email': email,
+                'language': language,
+                'user_id': user.id,
+                'agent_id': agent_id,
+                'address': user.address
+            }
+
             task_result = initiate_onboarding_call.apply_async(
-                args=[user],
-                eta=final_utc_dt
+                args=[payload,],
+                # eta=final_utc_dt
             )
-            print(f"Scheduled onboarding call task {task_result.id} for user {phone_number} at {final_utc_dt} UTC")
+            logger.info(f"Scheduled onboarding call task {task_result.id} for user {phone_number} at {final_utc_dt} UTC")
             new_users.append(user)
 
         if new_users:
-            db.add_all(new_users)
             await db.commit()
 
         return True, len(new_users)
     except Exception as e:
         await db.rollback()
-        print(e)
+        logger.error(f"Error processing onboarding users: {e}")
         return False, 0
 
 @router.post("/ingest-csv", response_model=StandardSuccessResponse)
@@ -204,11 +222,10 @@ async def ingest_csv(organization: str = 'Red Cross', file: UploadFile = File(..
     errors = await validate_csv(content, db)
     
     if errors:
-        print(errors)
-        print('error_messages', errors)
+        logger.error(f"CSV validation errors: {errors}")
         raise HTTPException(status_code=400, detail=errors)
 
-    success, count = await process_valid_data(content, exists.id, db)
+    success, count = await process_valid_data(content, exists, db)
     if not success:
         raise HTTPException(status_code=500, detail="Failed to process data.")
     

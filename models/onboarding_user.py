@@ -20,6 +20,7 @@ class OnboardingUser(Base):
     email = Column(String(255), nullable=True, unique=False) 
     phone_number = Column(String(20), index=True, nullable=False, unique=False)
     land_line=Column(String(20), nullable=True)
+    address=Column(String(255), nullable=True)
     language=Column(String(50), nullable=True)
     preferred_time=Column(Time, nullable=True)
     timezone=Column(String(30), nullable=True)
