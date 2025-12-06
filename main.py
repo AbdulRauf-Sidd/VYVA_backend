@@ -21,7 +21,7 @@ from fastapi.exceptions import RequestValidationError
 from core.config import settings
 from core.logging import setup_logging
 from core.database import engine, Base
-from api.v1 import onboarding_user, users, profiles, health_care, social, brain_coach, medication, fall_detection, emergency, tts, symptom_checker, post_call, ai_assistant, news, tools, organization
+from api.v1 import onboarding_user, users, profiles, health_care, social, brain_coach, medication, fall_detection, emergency, tts, symptom_checker, post_call, ai_assistant, news, tools, organization, authentication
 from api.v1.managemant import ingest_onboarding_users
 from apscheduler.schedulers.background import BackgroundScheduler
 # from tasks import check_medication_time, run_async_job
@@ -292,6 +292,7 @@ async def list_tasks():
 # app.include_router(authen.router, prefix="/api/v1/auth", tags=["Authentication"])
 app.include_router(users.router, prefix="/api/v1/users", tags=["Users"])
 app.include_router(onboarding_user.router, prefix="/api/v1/onboarding", tags=["Onboarding"])
+app.include_router(authentication.router, prefix="/api/v1/auth", tags=["Authentication"])
 app.include_router(organization.router, prefix="/api/v1/organizations", tags=["Organizations"])
 app.include_router(ingest_onboarding_users.router, prefix="/api/v1/admin", tags=["Management"])
 app.include_router(profiles.router, prefix="/api/v1/profiles", tags=["Profiles"])

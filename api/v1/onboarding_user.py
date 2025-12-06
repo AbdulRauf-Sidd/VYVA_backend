@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from models.user import User
 from models.onboarding_user import OnboardingUser
-
+from datetime import datetime
+from sqlalchemy.sql import func
 from core.database import get_db
 from services.email_service import email_service
 import logging
@@ -52,9 +53,12 @@ async def onboard_user(
 
     if onboarding_user is None:
         raise HTTPException(status_code=404, detail="User not found")
+    
+    onboarding_user.onboarding_status = True
+    onboarding_user.onboarded_at = func.now()
+    
 
     user = User(
-            id=user_id,
             phone_number=onboarding_user.phone_number,
             land_line=onboarding_user.land_line,
             first_name=onboarding_user.first_name,

@@ -7,21 +7,23 @@ from schemas.responses import StandardSuccessResponse
 from sqlalchemy import select
 from models.user import User
 from core.config import settings
+from fastapi import Body
+
 
 router = APIRouter()
 
-@router.post("/v1/auth/request-otp", response_model=StandardSuccessResponse)
-async def request_otp(contact: str, db: AsyncSession = Depends(get_db)):
-    if not is_valid_phone_number(contact):
+@router.post("/request-otp/", response_model=StandardSuccessResponse)
+async def request_otp(phone: str = Body(...), db: AsyncSession = Depends(get_db)):
+    if not is_valid_phone_number(phone):
         raise HTTPException(status_code=400, detail="Invalid phone number")
 
-    if not await db.execute(select(User).where(User.phone_number == contact)).scalar():
+    if not await db.execute(select(User).where(User.phone_number == phone)).scalar():
         raise HTTPException(status_code=400, detail="No user found with this phone number")
     
-    user_id = (await db.execute(select(User.id).where(User.phone_number == contact))).scalar_one()
+    user_id = (await db.execute(select(User.id).where(User.phone_number == phone))).scalar_one()
 
-    otp, session_id = await create_otp_session(db, contact, user_id)
-    send_otp_via_sms(contact, otp)
+    otp, session_id = await create_otp_session(db, phone, user_id)
+    send_otp_via_sms(phone, otp)
     
     return {
         'success': True,
