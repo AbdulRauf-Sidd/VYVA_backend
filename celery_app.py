@@ -1,5 +1,6 @@
 from celery import Celery
 from core.config import settings
+from celery.schedules import crontab
 
 celery_app = Celery(
     settings.APP_NAME,
@@ -19,4 +20,12 @@ celery_app.conf.update(
 # Optional: autoretry policy
 celery_app.conf.task_annotations = {
     "*": {"max_retries": 3, "default_retry_delay": 5}
+}
+
+
+celery_app.conf.beat_schedule = {
+    "check-pending-onboarding-daily": {
+        "task": "check_pending_onboarding_users",
+        "schedule": crontab(minute=0, hour=0),  # runs every day at 12 AM
+    }
 }

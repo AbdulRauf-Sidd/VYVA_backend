@@ -3,8 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from typing import List
 from core.database import get_db
-from schemas.brain_coach import BrainCoachQuestionRead, BrainCoachQuestionCreate, BrainCoachResponseRead, BrainCoachResponseCreate, UserFeedback
-from repositories.brain_coach import BrainCoachQuestionRepository, BrainCoachResponseRepository
+from schemas.brain_coach import BrainCoachQuestionRead, BrainCoachQuestionCreate, BrainCoachResponseRead, UserFeedback
+from repositories.brain_coach import BrainCoachQuestionRepository
 import logging
 import uuid
 from repositories.user import UserRepository
@@ -265,145 +265,145 @@ async def get_questions_by_filters(
 
 from typing import Annotated
 
-@router.post("/user-responses/{user_id}", response_model=BrainCoachResponseRead, status_code=status.HTTP_201_CREATED)
-async def create_response(
-    user_id: Annotated[int, Path(..., description="The ID of the user")],
-    response_data: BrainCoachResponseCreate,
-    db: AsyncSession = Depends(get_db)
-):
-    """Create a new brain coach response"""
-    try:
-        logger.info(f"Creating response for user_id: {user_id} with data: {response_data}")
-        repo = BrainCoachResponseRepository(db)
-        response_data.user_id = user_id  # Ensure the user_id from path is used
-        created_response = await repo.create_response(response_data)
-        return created_response
+# @router.post("/user-responses/{user_id}", response_model=BrainCoachResponseRead, status_code=status.HTTP_201_CREATED)
+# async def create_response(
+#     # user_id: Annotated[int, Path(..., description="The ID of the user")],
+#     response_data: BrainCoachResponseCreate,
+#     db: AsyncSession = Depends(get_db)
+# ):
+#     """Create a new brain coach response"""
+#     try:
+#         logger.info(f"Creating response for user_id: {user_id} with data: {response_data}")
+#         repo = BrainCoachResponseRepository(db)
+#         response_data.user_id = user_id  # Ensure the user_id from path is used
+#         created_response = await repo.create_response(response_data)
+#         return created_response
 
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
+#     except ValueError as e:
+#         raise HTTPException(
+#             status_code=status.HTTP_400_BAD_REQUEST,
+#             detail=str(e)
+#         )
 
-    except Exception as e:
-        logger.exception(f"Unexpected error creating response: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
-        )
+#     except Exception as e:
+#         logger.exception(f"Unexpected error creating response: {str(e)}")
+#         raise HTTPException(
+#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#             detail="Internal server error"
+#         )
 
-@router.get("/user-responses/{user_id}", response_model=List[BrainCoachResponseRead])
-async def get_user_responses(
-    user_id: int,
-    session_id: Optional[str] = None,
-    db: AsyncSession = Depends(get_db)
-):
-    """Get all responses for a user, optionally filtered by session_id"""
-    try:
-        repo = BrainCoachResponseRepository(db)
-        responses = await repo.get_responses_by_user_and_session(user_id, session_id)
+# @router.get("/user-responses/{user_id}", response_model=List[BrainCoachResponseRead])
+# async def get_user_responses(
+#     user_id: int,
+#     session_id: Optional[str] = None,
+#     db: AsyncSession = Depends(get_db)
+# ):
+#     """Get all responses for a user, optionally filtered by session_id"""
+#     try:
+#         repo = BrainCoachResponseRepository(db)
+#         responses = await repo.get_responses_by_user_and_session(user_id, session_id)
         
-        if not responses:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="No responses found for the given criteria"
-            )
+#         if not responses:
+#             raise HTTPException(
+#                 status_code=status.HTTP_404_NOT_FOUND,
+#                 detail="No responses found for the given criteria"
+#             )
             
-        return responses
+#         return responses
 
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.exception(f"Unexpected error retrieving responses: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
-        )
+#     except HTTPException:
+#         raise
+#     except Exception as e:
+#         logger.exception(f"Unexpected error retrieving responses: {str(e)}")
+#         raise HTTPException(
+#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#             detail="Internal server error"
+#         )
     
 from services.email_service import EmailService
 
 email_service = EmailService()
 
-@router.put(
-    "/report/{user_id}", 
-    summary="Update user",
-    description="Update an existing user's information"
-)
-async def send_report(
-    user_id: Annotated[int, Path(..., description="The ID of the user")],
-    user_data: UserFeedback,
-    db: AsyncSession = Depends(get_db)
-):
-    """
-    Update a user's information.
+    # @router.put(
+    #     "/report/{user_id}", 
+    #     summary="Update user",
+    #     description="Update an existing user's information"
+    # )
+    # async def send_report(
+    #     user_id: Annotated[int, Path(..., description="The ID of the user")],
+    #     user_data: UserFeedback,
+    #     db: AsyncSession = Depends(get_db)
+    # ):
+    #     """
+    #     Update a user's information.
+        
+    #     - **user_id**: The unique identifier of the user to update
+    #     - **user_data**: The updated user data (only provided fields will be updated)
+    #     """
+    #     repo = UserRepository(db)
+    #     try:
+    #         # Check if user exists first
+    #         existing_user = await repo.get_user_by_id(user_id)
+    #         if not existing_user:
+    #             raise HTTPException(
+    #                 status_code=status.HTTP_404_NOT_FOUND,
+    #                 detail=f"User with ID {user_id} not found"
+    #             )
+            
+    #         # Check if email is being updated and if it's already taken
+    #         # if user_data.email: TODO remove this after event
+    #         #     user_with_email = await repo.get_user_by_email(user_data.email)
+    #         #     if user_with_email and user_with_email.id != user_id:
+    #         #         raise HTTPException(
+    #         #             status_code=status.HTTP_400_BAD_REQUEST,
+    #         #             detail="Email already in use by another user"
+    #         #         )
+    #         email = user_data.email
+    #         phone_number = user_data.phone_number
+    #         name = user_data.name if user_data.name else "N/A"
+    #         suggestions = user_data.suggestions if user_data.suggestions else "N/A"
+    #         performance_tier = user_data.performance_tier if user_data.performance_tier else "N/A"
+
+    #         if name.strip():
+    #             if len(name.strip().split(" ")) > 1:
+    #                 first_name, last_name = name.strip().split(" ", 1)
+    #             else:
+    #                 first_name = name.strip()
+    #                 last_name = ""
+    #         else:
+    #             first_name = "N/A"
+    #             last_name = "N/A"
+
+    #         logger.info(f"Parsed name: first_name='{first_name}', last_name='{last_name}'")
+
+    #         user_data = UserUpdate(email=email, phone_number=phone_number, first_name=first_name, last_name=last_name)
+            
+    #         updated_user = await repo.update_user(user_id, user_data)
+    #         if not updated_user:
+    #             raise HTTPException(
+    #                 status_code=status.HTTP_404_NOT_FOUND,
+    #                 detail=f"User with ID {user_id} not found after update"
+    #             )
+    #         else:
+    #             logger.info(f"User {user_id} updated successfully with data: {user_data}")
+    #             brain_coach_response_repo = BrainCoachResponseRepository(db)
+    #             brain_coach_question_repo = BrainCoachQuestionRepository(db)
+    #             responses = await brain_coach_response_repo.get_responses_by_user_and_session(user_id)
+    #             logger.info(f"User {user_id} has {len(responses)} brain coach responses")
     
-    - **user_id**: The unique identifier of the user to update
-    - **user_data**: The updated user data (only provided fields will be updated)
-    """
-    repo = UserRepository(db)
-    try:
-        # Check if user exists first
-        existing_user = await repo.get_user_by_id(user_id)
-        if not existing_user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"User with ID {user_id} not found"
-            )
-        
-        # Check if email is being updated and if it's already taken
-        # if user_data.email: TODO remove this after event
-        #     user_with_email = await repo.get_user_by_email(user_data.email)
-        #     if user_with_email and user_with_email.id != user_id:
-        #         raise HTTPException(
-        #             status_code=status.HTTP_400_BAD_REQUEST,
-        #             detail="Email already in use by another user"
-        #         )
-        email = user_data.email
-        phone_number = user_data.phone_number
-        name = user_data.name if user_data.name else "N/A"
-        suggestions = user_data.suggestions if user_data.suggestions else "N/A"
-        performance_tier = user_data.performance_tier if user_data.performance_tier else "N/A"
+    #             report_content = await construct_email_brain_coach_message(responses, brain_coach_question_repo)            
 
-        if name.strip():
-            if len(name.strip().split(" ")) > 1:
-                first_name, last_name = name.strip().split(" ", 1)
-            else:
-                first_name = name.strip()
-                last_name = ""
-        else:
-            first_name = "N/A"
-            last_name = "N/A"
+    #             if email:
+    #                 await email_service.send_brain_coach_report(email, report_content, name, suggestions, performance_tier, language='es')
+    #             elif phone_number:
+    #                 whatsapp_content = construct_whatsapp_brain_coach_message(first_name, report_content, suggestions)
+    #                 await whatsapp.send_brain_coach_report(phone_number, whatsapp_content)
 
-        logger.info(f"Parsed name: first_name='{first_name}', last_name='{last_name}'")
-
-        user_data = UserUpdate(email=email, phone_number=phone_number, first_name=first_name, last_name=last_name)
-        
-        updated_user = await repo.update_user(user_id, user_data)
-        if not updated_user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"User with ID {user_id} not found after update"
-            )
-        else:
-            logger.info(f"User {user_id} updated successfully with data: {user_data}")
-            brain_coach_response_repo = BrainCoachResponseRepository(db)
-            brain_coach_question_repo = BrainCoachQuestionRepository(db)
-            responses = await brain_coach_response_repo.get_responses_by_user_and_session(user_id)
-            logger.info(f"User {user_id} has {len(responses)} brain coach responses")
- 
-            report_content = await construct_email_brain_coach_message(responses, brain_coach_question_repo)            
-
-            if email:
-                await email_service.send_brain_coach_report(email, report_content, name, suggestions, performance_tier, language='es')
-            elif phone_number:
-                whatsapp_content = construct_whatsapp_brain_coach_message(first_name, report_content, suggestions)
-                await whatsapp.send_brain_coach_report(phone_number, whatsapp_content)
-
-        return updated_user
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to update user: {str(e)}"
-        )
+    #         return updated_user
+    #     except HTTPException:
+    #         raise
+    #     except Exception as e:
+    #         raise HTTPException(
+    #             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+    #             detail=f"Failed to update user: {str(e)}"
+    #         )

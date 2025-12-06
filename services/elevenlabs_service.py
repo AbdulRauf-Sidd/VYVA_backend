@@ -1,5 +1,6 @@
 from elevenlabs import ElevenLabs, OutboundCallRecipient, ConversationConfigOverrideConfig
 from core.config import settings
+from models.onboarding_user import OnboardingUser
 import requests
 
 client = ElevenLabs(
@@ -209,4 +210,25 @@ async def make_onboarding_call(user):
                     
         
           
-        
+async def check_onboarding_status(user, db):
+    try:
+        pending_users = (
+            db.query(OnboardingUser)
+            .filter(OnboardingUser.onboarding_status == False)
+            .all()
+        )
+
+        print(f"[Celery] Found {len(pending_users)} pending onboarding users.")
+
+        for user in pending_users:
+            print(f" - {user.first_name} {user.last_name} ({user.phone_number})")
+            # OPTIONAL → trigger onboarding call:
+            # make_onboarding_call(user)
+
+        return {"status": "ok", "count": len(pending_users)}
+    
+    except Exception as e:
+        db.rollback()
+        raise e
+    finally:
+        db.close()

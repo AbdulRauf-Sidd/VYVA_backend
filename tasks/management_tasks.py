@@ -1,6 +1,6 @@
 from core.database import SessionLocal
 from celery_app import celery_app
-from services.elevenlabs_service import make_onboarding_call
+from services.elevenlabs_service import make_onboarding_call, check_onboarding_status
 
 @celery_app.task(name="initiate_onboarding_call")
 def initiate_onboarding_call(user):
@@ -20,4 +20,10 @@ def initiate_onboarding_call(user):
     #     db.rollback()
     #     raise e
     # finally:
-    #     db.close()
+    #     db.close()a
+    
+@celery_app.task(name="check_pending_onboarding_users")
+def check_pending_onboarding_users(user):
+    """Runs every day at 12 AM: Finds users whose onboarding is not completed."""
+    db = SessionLocal()
+    response = check_onboarding_status(user, db)
