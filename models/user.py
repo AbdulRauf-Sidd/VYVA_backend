@@ -8,7 +8,8 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from enum import Enum as PyEnum
 from models.organization import Organization
-
+from models.elevenlabs_agents import ElevenLabsAgents, ElevenLabsUserAgents
+from models.onboarding_logs import OnboardingLogs
 from core.database import Base
 
 #ENUM VALUES

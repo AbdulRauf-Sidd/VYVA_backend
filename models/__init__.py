@@ -22,5 +22,5 @@ __all__ = [
     "Medication",
     "LongTermCondition",
     "SymptomCheckerResponse",
-    "CareTaker"
+    "CareTaker",
 ] 

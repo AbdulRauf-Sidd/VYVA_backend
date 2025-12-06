@@ -265,6 +265,19 @@ async def get_questions_by_filters(
 
 from typing import Annotated
 
+@router.post("/user-responses/{user_id}", response_model=BrainCoachResponseRead, status_code=status.HTTP_201_CREATED)
+async def create_response(
+    user_id: int,
+    response_data: BrainCoachResponseCreate,
+    db: AsyncSession = Depends(get_db)
+):
+    """Create a new brain coach response"""
+    try:
+        logger.info(f"Creating response for user_id: {user_id} with data: {response_data}")
+        repo = BrainCoachResponseRepository(db)
+        response_data.user_id = user_id  # Ensure the user_id from path is used
+        created_response = await repo.create_response(response_data)
+        return created_response
 # @router.post("/user-responses/{user_id}", response_model=BrainCoachResponseRead, status_code=status.HTTP_201_CREATED)
 # async def create_response(
 #     # user_id: Annotated[int, Path(..., description="The ID of the user")],
@@ -324,6 +337,45 @@ from services.email_service import EmailService
 
 email_service = EmailService()
 
+@router.put(
+    "/report/{user_id}", 
+    summary="Update user",
+    description="Update an existing user's information"
+)
+async def send_report(
+    user_id: int,
+    user_data: UserFeedback,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Update a user's information.
+    
+    - **user_id**: The unique identifier of the user to update
+    - **user_data**: The updated user data (only provided fields will be updated)
+    """
+    repo = UserRepository(db)
+    try:
+        # Check if user exists first
+        existing_user = await repo.get_user_by_id(user_id)
+        if not existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User with ID {user_id} not found"
+            )
+        
+        # Check if email is being updated and if it's already taken
+        # if user_data.email: TODO remove this after event
+        #     user_with_email = await repo.get_user_by_email(user_data.email)
+        #     if user_with_email and user_with_email.id != user_id:
+        #         raise HTTPException(
+        #             status_code=status.HTTP_400_BAD_REQUEST,
+        #             detail="Email already in use by another user"
+        #         )
+        email = user_data.email
+        phone_number = user_data.phone_number
+        name = user_data.name if user_data.name else "N/A"
+        suggestions = user_data.suggestions if user_data.suggestions else "N/A"
+        performance_tier = user_data.performance_tier if user_data.performance_tier else "N/A"
     # @router.put(
     #     "/report/{user_id}", 
     #     summary="Update user",

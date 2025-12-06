@@ -9,9 +9,19 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sess
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.pool import NullPool
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
 from contextlib import asynccontextmanager
 
 from core.config import settings
+
+SYNC_DB_URL = settings.database_url.replace("+asyncpg", "")
+
+engine_sync = create_engine(
+    SYNC_DB_URL,
+    pool_pre_ping=True,
+    pool_size=20,
+    max_overflow=10
+)
 
 # Create async engine
 engine = create_async_engine(
@@ -36,7 +46,7 @@ AsyncSessionLocal = async_sessionmaker(
 
 # Create declarative base
 Base = declarative_base()
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine_sync)
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:

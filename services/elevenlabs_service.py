@@ -175,14 +175,16 @@ async def check_batch_for_missed(batch_id):
     return missed_phones
 
 
-async def make_onboarding_call(user):
+def make_onboarding_call(payload: dict):
     try:
-        id = user.id
-        organization = user.organization
-        agent_id = organization.onboarding_agent_id
-        phone_number = user.phone_number
-        first_name = user.first_name
-        last_name = user.last_name
+        id = payload.get("user_id")
+        agent_id = payload.get("agent_id")
+        phone_number = payload.get("phone_number")
+        first_name = payload.get("first_name")
+        last_name = payload.get("last_name")
+        email = payload.get("email")
+        address = payload.get("address")
+        logger.info(f"Making onboarding call to {phone_number} via ElevenLabs with agent {agent_id}")
         response = requests.post(
           "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
           headers={
@@ -196,7 +198,10 @@ async def make_onboarding_call(user):
               "dynamic_variables": {
                 "user_id": id,
                 "first_name": first_name,
-                "last_name": last_name
+                "last_name": last_name,
+                "email": email,
+                "address": address,
+                "language": "English"
               }
             }
           },

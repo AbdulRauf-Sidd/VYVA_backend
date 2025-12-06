@@ -20,4 +20,4 @@ class Organization(Base):
     is_active = Column(Boolean, default=True)
     
     def __repr__(self):
-        return f"<Organization(id={self.id}, name='{self.name}')>"
+        return f"<Organization(id={self.id}, name='{self.name}')>"  
