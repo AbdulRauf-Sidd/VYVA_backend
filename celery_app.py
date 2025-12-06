@@ -22,10 +22,9 @@ celery_app.conf.task_annotations = {
     "*": {"max_retries": 3, "default_retry_delay": 5}
 }
 
-
 celery_app.conf.beat_schedule = {
-    "check-pending-onboarding-daily": {
-        "task": "check_pending_onboarding_users",
-        "schedule": crontab(minute=0, hour=0),  # runs every day at 12 AM
+    "daily-process-pending-onboarding-users": {
+        "task": "process_pending_onboarding_users",
+        "schedule": crontab(hour=0, minute=0),  # runs daily at 12 AM
     }
 }

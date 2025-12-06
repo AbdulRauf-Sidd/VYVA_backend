@@ -2,10 +2,11 @@ from core.database import SessionLocal
 from celery_app import celery_app
 from services.elevenlabs_service import make_onboarding_call
 from models.user import User
+from models.onboarding_user import OnboardingUser
 import logging
 
 logger = logging.getLogger(__name__)
-from services.elevenlabs_service import make_onboarding_call, check_onboarding_status
+from services.elevenlabs_service import make_onboarding_call
 
 @celery_app.task(name="initiate_onboarding_call")
 def initiate_onboarding_call(payload: dict):
@@ -27,8 +28,48 @@ def initiate_onboarding_call(payload: dict):
     # finally:
     #     db.close()a
     
-@celery_app.task(name="check_pending_onboarding_users")
-def check_pending_onboarding_users(user):
-    """Runs every day at 12 AM: Finds users whose onboarding is not completed."""
+@celery_app.task(name="process_pending_onboarding_users")
+def process_pending_onboarding_users():
+
     db = SessionLocal()
-    response = check_onboarding_status(user, db)
+
+    try:
+        pending_users = (
+            db.query(OnboardingUser)
+            .filter(OnboardingUser.onboarding_status == False)
+            .all()
+        )
+
+        print(f"[Celery] Found {len(pending_users)} pending onboarding users.")
+
+        for user in pending_users:
+            payload = {
+                "user_id": user.id,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "phone_number": user.phone_number,
+                "email": user.email,
+                "language": user.language,
+                "preferred_time": str(user.preferred_time) if user.preferred_time else None,
+                "timezone": user.timezone,
+                "preferred_communication_channel": user.preferred_communication_channel,
+                "land_line": user.land_line,
+                "whatsapp_reports": user.whatsapp_reports,
+                "organization_id": user.organization_id,
+            }
+
+            # Schedule onboarding call task
+            celery_app.send_task(
+                "initiate_onboarding_call",
+                args=[payload],
+            )
+
+            print(f"[Celery] Assigned onboarding task for user {user.id}")
+
+        return {"status": "ok", "count": len(pending_users)}
+
+    except Exception as e:
+        db.rollback()
+        raise e
+    finally:
+        db.close()

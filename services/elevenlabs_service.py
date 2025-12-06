@@ -212,28 +212,3 @@ def make_onboarding_call(payload: dict):
         return response.json
     except Exception as e:
         logger.error(f"Elevenlabs onboarding call failed: {e}")
-                    
-        
-          
-async def check_onboarding_status(user, db):
-    try:
-        pending_users = (
-            db.query(OnboardingUser)
-            .filter(OnboardingUser.onboarding_status == False)
-            .all()
-        )
-
-        print(f"[Celery] Found {len(pending_users)} pending onboarding users.")
-
-        for user in pending_users:
-            print(f" - {user.first_name} {user.last_name} ({user.phone_number})")
-            # OPTIONAL → trigger onboarding call:
-            # make_onboarding_call(user)
-
-        return {"status": "ok", "count": len(pending_users)}
-    
-    except Exception as e:
-        db.rollback()
-        raise e
-    finally:
-        db.close()
