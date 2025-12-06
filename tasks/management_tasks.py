@@ -26,7 +26,7 @@ def initiate_onboarding_call(payload: dict):
     #     db.rollback()
     #     raise e
     # finally:
-    #     db.close()a
+    #     db.close()
     
 @celery_app.task(name="process_pending_onboarding_users")
 def process_pending_onboarding_users():
