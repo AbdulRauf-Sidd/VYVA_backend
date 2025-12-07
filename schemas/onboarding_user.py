@@ -1,6 +1,8 @@
 from schemas.user import UserBase
-from typing import Optional
-from datetime import datetime
+from typing import List, Optional
+from datetime import datetime, date
+from pydantic import BaseModel
+
 
 class OnboardingUserCreate(UserBase):
     pass
@@ -16,4 +18,34 @@ class OnboardingUserRead(UserBase):
     called_at: Optional[datetime]
     created_at: datetime
 
+class MedicationDetailsItem(BaseModel):
+    end_date: date
+    name: str
+    purpose: Optional[str] = None
+    side_effects: Optional[str] = None
+    dosage: str
+    start_date: date
+    times: List[str]
 
+
+class CheckInDetails(BaseModel):
+    wants_check_ins: bool
+    frequency_in_days: Optional[int] = None
+
+
+class BrainCoach(BaseModel):
+    wants_brain_coach_sessions: bool
+    frequency_in_days: Optional[int] = None 
+
+
+class OnboardingRequestBody(BaseModel):
+    user_id: int
+    medication_details: List[MedicationDetailsItem]
+    caretaker_phone: str
+    check_in_details: CheckInDetails
+    caretaker_name: str
+    brain_coach: BrainCoach
+    caretaker_consent: bool
+    health_conditions: List[str]
+    address: str
+    mobility: List[str]

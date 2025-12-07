@@ -61,7 +61,7 @@ target/
 
 .pdm.toml
 
-alembic/versions/*
+alembic/versions/
 
 # Celery stuff
 celerybeat-schedule

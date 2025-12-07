@@ -89,7 +89,9 @@ async def validate_csv(file_content: str, db):
     if missing_cols:
         raise HTTPException(status_code=400, detail=f"Missing required columns: {', '.join(missing_cols)}")
 
-    for i, row in enumerate(reader, start=3):
+    for i, row in enumerate(reader, start=1):
+        if i <= 2:
+            continue
         # Normalize for simpler validation:
         row_norm = {k.lower().strip(): (v or "").strip() for k, v in row.items()}
 
@@ -111,7 +113,7 @@ async def validate_csv(file_content: str, db):
 
         full_phone = f"+{country_code}{phone}" if "+" not in country_code else f"{country_code}{phone}"
         phone_pattern = re.compile(r"^\+\d{7,15}$")
-        if not phone_pattern.match(full_phone):
+        if not phone_pattern.match(full_phone.replace(" ", "").replace("-", "")):
             errors.append(f"Row {i}: Invalid phone number format '{full_phone}'. Must be in E.164 format.")
 
         timezone = row_norm.get("time zone", "")
@@ -152,7 +154,9 @@ async def process_valid_data(file_content, organization, db):
         organization_id = organization.id
 
 
-        for i, row in enumerate(reader, start=3):
+        for i, row in enumerate(reader, start=1):
+            if i <= 2:
+                continue
             row_norm = {k.lower().strip(): (v or "").strip() for k, v in row.items()}
 
             first_name = row_norm.get("first name", "")
@@ -234,7 +238,7 @@ async def process_valid_data(file_content, organization, db):
                 args=[payload,],
                 eta=final_utc_dt
             )
-            
+
             logger.info(f"Scheduled onboarding call task {task_result.id} for user {phone_number} at {final_utc_dt} UTC")
             new_users.append(user)
 

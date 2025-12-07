@@ -7,6 +7,7 @@ from sqlalchemy.sql import func
 from core.database import get_db
 from services.email_service import email_service
 import logging
+from schemas.onboarding_user import OnboardingRequestBody
 
 logger = logging.getLogger(__name__)
 
@@ -19,81 +20,19 @@ router = APIRouter()
     description="Create a new onboarding user with the provided details"
 )
 async def onboard_user(
-    user_id: int = Body(...),
-    language: str = Body(None),
-    address: str = Body(None),
-    emergency_contact_name: str = Body(None),
-    emergency_contact_phone: str = Body(None),
-    health_conditions: str = Body(None),
-    mobility: str = Body(None),
-    medication: bool = Body(None),
-    brain_coach: bool = Body(None),
-    nutrition: bool = Body(None),
-    concierge_services: bool = Body(None),
-    scam_protection: bool = Body(None),
-    email: str = Body(None),
+    payload: OnboardingRequestBody = Body(...),
     db: AsyncSession = Depends(get_db)
 ):
+    try:
+        # onboarding_user_record
+        print(payload.model_dump())
 
-    print("User ID:", user_id)
-    print("language:", language)
-    print("address:", address)
-    print("emergency_contact_name:", emergency_contact_name)
-    print("emergency_contact_phone:", emergency_contact_phone)
-    print("health_conditions:", health_conditions)
-    print("mobility:", mobility)
-    print("medication:", medication)
-    print("brain_coach:", brain_coach)
-    print("nutrition:", nutrition)
-    print("concierge_services:", concierge_services)
-    print("scam_protection:", scam_protection)
-    print("email:", email)
-
-    onboarding_user = await db.get(OnboardingUser, user_id)
-
-    if onboarding_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    onboarding_user.onboarding_status = True
-    onboarding_user.onboarded_at = func.now()
-    
-
-    user = User(
-            phone_number=onboarding_user.phone_number,
-            land_line=onboarding_user.land_line,
-            first_name=onboarding_user.first_name,
-            last_name=onboarding_user.last_name,
-            organization_id=onboarding_user.organization_id,
-            preferred_consultation_language=language,
-            street=address,
-            emergency_contact_name=emergency_contact_name,
-            emergency_contact_phone=emergency_contact_phone,
-            health_conditions=health_conditions,
-            mobility=mobility,
-            takes_medication=medication,
-            wants_reminders=medication,
-            brain_coach_activation=brain_coach,
-            brain_coach_time="Morning" if brain_coach else None,
-            nutrition_services_activation=nutrition,
-            concierge_services_activation=concierge_services,
-            scam_protection_activation=scam_protection,
-            email=email
-        )
-    
-    success = await email_service.send_welcome_email(first_name=onboarding_user.first_name, email=email)
-    
-    db.add(user)
-    db.commit()
-
-    if success:
         return {
-            "success": True,
-            "message": "User onboarded successfully and welcome email sent."
+            "status": "success",
+            "message": "Payload processed",
+            "received": payload.model_dump()
         }
+    except Exception as e:
+        logger.error(f"Error processing payload: {e}")
+        raise HTTPException(status_code=400, detail="Invalid payload")
     
-    return {
-        "success": False,
-        "message": "User onboarded successfully but failed to send welcome email."
-    }
-    
-
