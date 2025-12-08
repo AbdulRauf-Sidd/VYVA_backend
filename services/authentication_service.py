@@ -1,7 +1,10 @@
+from http.client import HTTPException
+from urllib.request import Request
 from pytz import utc
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete, update
-from scripts.authentication_helpers import generate_otp, hash_otp, is_expired
+from models.user import User
+from scripts.authentication_helpers import generate_otp, hash_otp, is_expired, get_current_user_from_session
 from models.authentication import OtpSession, UserSession
 from datetime import datetime, timedelta
 from core.config import settings

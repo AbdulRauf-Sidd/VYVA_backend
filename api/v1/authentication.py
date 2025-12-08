@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, Cookie
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db
 from services.authentication_service import create_otp_session, create_user_session, verify_otp_helper
-from scripts.authentication_helpers import send_otp_via_sms, is_valid_phone_number, is_expired
+from scripts.authentication_helpers import send_otp_via_sms, is_valid_phone_number, is_expired, get_current_user_from_session
 from schemas.responses import StandardSuccessResponse, SessionSuccessResponse, SessionCheckResponse
 from sqlalchemy import select
 from models.user import User
@@ -128,12 +128,10 @@ async def session_auth(
     db: AsyncSession = Depends(get_db)
 ):
     session_id = request.cookies.get("session_id")
-    print('cookies', request.cookies)
-
+    
     if not session_id:
         raise HTTPException(status_code=401, detail="Not authenticated")
 
-    # Get session from DB
     result = await db.execute(
         select(UserSession).where(UserSession.session_id == session_id)
     )
@@ -142,7 +140,6 @@ async def session_auth(
     if not session:
         raise HTTPException(status_code=401, detail="Invalid session")
 
-    # Check expiry
     if is_expired(session.expires_at):
         raise HTTPException(status_code=401, detail="Session expired")
     
@@ -153,7 +150,6 @@ async def session_auth(
     # session.last_seen_at = datetime.utcnow()
     # await db.commit()
 
-    # Fetch the user
     result = await db.execute(
         select(User).where(User.id == session.user_id)
     )
@@ -167,3 +163,29 @@ async def session_auth(
         "user_id": user.id,
         "first_name": user.first_name
     }
+
+@router.get("/profile")
+async def read_user_profile(
+    session_id: str = Cookie(None, alias=settings.SESSION_COOKIE_NAME), 
+    db: AsyncSession = Depends(get_db) 
+):
+    if not session_id:
+        raise HTTPException(
+            status_code=401, 
+            detail="Not authenticated: Missing session cookie"
+        )
+
+    user = await get_current_user_from_session(session_id, db)
+
+    if not user:
+        raise HTTPException(
+            status_code=401, 
+            detail="Not authenticated: Invalid or expired session"
+        )
+
+    return {
+        "user_id": user.id,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+    }
+

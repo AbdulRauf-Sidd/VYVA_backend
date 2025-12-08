@@ -3,6 +3,11 @@ import random
 from datetime import datetime, timedelta
 from services.sms_service import sms_service
 from pytz import utc
+from fastapi import HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from models.authentication import UserSession
+from models.user import User
 
 def generate_otp(length=4):
     return str(random.randint(10**(length-1), 10**length - 1))
@@ -25,3 +30,55 @@ def is_valid_phone_number(phone_number: str) -> bool:
         return False
 
     return 10 <= len(digits_only) <= 15
+
+
+async def get_current_user_from_session(
+    session_id: str, 
+    db: AsyncSession 
+) -> User:
+    
+    if not session_id:
+        raise HTTPException(
+            status_code=401, 
+            detail="Not authenticated: Missing session cookie"
+        )
+
+    session_result = await db.execute(
+        select(UserSession).where(UserSession.session_id == session_id)
+    )
+    session = session_result.scalar_one_or_none()
+
+    if not session:
+        raise HTTPException(
+            status_code=401, 
+            detail="Invalid session: Session ID not found"
+        )
+
+    if is_expired(session.expires_at):
+        raise HTTPException(
+            status_code=401, 
+            detail="Session expired"
+        )
+    
+    if session.is_active is False:
+        raise HTTPException(
+            status_code=401, 
+            detail="Session is inactive"
+        )
+
+    # Optional: Update last activity timestamp (uncomment if needed)
+    # session.last_seen_at = datetime.utcnow()
+    # await db.commit()
+
+    user_result = await db.execute(
+        select(User).where(User.id == session.user_id)
+    )
+    user = user_result.scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(
+            status_code=401, 
+            detail="User not found for session ID"
+        )
+
+    return user
