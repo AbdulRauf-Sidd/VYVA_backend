@@ -38,6 +38,7 @@ class Settings(BaseSettings):
         "http://localhost:8080",  # frontend URL
         "http://localhost:5173",
         "https://vyva.io", # production frontend
+        "https://4f214c49a3b2.ngrok-free.app"
     ]
     
     # CORS
