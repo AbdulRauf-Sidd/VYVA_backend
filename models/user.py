@@ -8,32 +8,9 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from enum import Enum as PyEnum
 from models.organization import Organization
-from models.elevenlabs_agents import ElevenLabsAgents, ElevenLabsUserAgents
-from models.onboarding_logs import OnboardingLogs
+from models.elevenlabs_agents import ElevenLabsAgents
 from core.database import Base
 
-#ENUM VALUES
-class LivingSituation(str, PyEnum):
-    """Enum for living situation options."""
-    ALONE = "Alone"
-    WITH_PARTNER = "With Partner"
-    WITH_FAMILY = "With Family"
-
-
-class MobilityEnum(str, PyEnum):
-    INDEPENDENT = "Independent"
-    WALK_WITH_ASSISTANCE = "Walk with assistance"
-    WHEELCHAIR = "Wheelchair"
-    BED_BOUND = "Bed-bound"
-
-class PreferredDoctorTypeEnum(str, PyEnum):
-    MY_OWN = "My own"
-    ANY_AVAILABLE = "Any available"
-    SPECIALIST = "Specialist"  
-
-class PreferredConsultationTypeEnum(str, PyEnum):
-    PHONE = "Phone"
-    VIDEO = "Video"
 
 class PreferredConsultationLanguageEnum(str, PyEnum):
     ENGLISH = "English"
@@ -41,39 +18,12 @@ class PreferredConsultationLanguageEnum(str, PyEnum):
     GERMAN = "German"
     FRENCH = "French"
 
-class BrainCoachTimeEnum(str, PyEnum):
-    MORNING = "Morning"
-    AFTERNOON = "Afternoon"
-    EVENING = "Evening"
 
 class BrainCoachComplexityEnum(str, PyEnum):
     EASY = "Easy"
     MEDIUM = "Medium"
     ADVANCED = "Advanced"
     PROGRESSIVE = "Progressive"
-
-class RegularSafetyCheckInsEnum(str, PyEnum):
-    DAILY = "Daily"
-    TWICE_DAILY = "Twice Daily"
-    # CUSTOM = "Custom" // Ask
-
-
-class PreferredCheckInTimeEnum(str, PyEnum):
-    EARLY_MORNING = "Early Morning (6–9 AM)"
-    LATE_MORNING = "Late Morning"
-    EARLY_AFTERNOON = "Early Afternoon"
-    LATE_AFTERNOON = "Late Afternoon"
-    EVENING = "Evening"
-    NIGHT = "Night"
-
-class CheckInFrequencyEnum(str, PyEnum):
-    MULTIPLE_PER_DAY = "Multiple per day"
-    DAILY = "Daily"
-    SEVERAL_PER_WEEK = "Several per week"
-    WEEKLY = "Weekly"
-    EMERGENCIES_ONLY = "Emergencies only"
-    WEEKENDS_ONLY = "Weekends only"
-    HOLIDAYS = "Holidays/special occasions"
 
 #-------------------------------------------------------
 
@@ -88,18 +38,15 @@ class User(Base):
     last_name = Column(String(100), nullable=True)
     email = Column(String(255), index=True, nullable=True) #TODO make unique true
     phone_number = Column(String(20), nullable=True)
-    land_line = Column(String(20), nullable=True)
+    # land_line = Column(String(20), nullable=True)
     age = Column(Integer, nullable=True)
-    living_situation = Column(SQLEnum(LivingSituation), nullable=True)
+    # living_situation = Column(SQLEnum(LivingSituation), nullable=True)
     admin_profile = relationship("AdminUser", back_populates="user", uselist=False)
     date_of_birth = Column(DateTime, nullable=True)
     organization = relationship("Organization", back_populates="users")
     organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=True)
     preferred_consultation_language = Column(SQLEnum(PreferredConsultationLanguageEnum), nullable=True)
     preferred_communication_channel = Column(String(50), nullable=True)
-
-    # Agents
-    eleven_labs_agents = relationship("ElevenLabsUserAgents", back_populates="user")
 
     #Health and Care
     health_conditions = Column(Text, nullable=True)
@@ -108,13 +55,11 @@ class User(Base):
 
     #Social Companion
     password_hash = Column(String(255), nullable=True)
-    social_check_ins = Column(Boolean, nullable=True)
-    faith = Column(String(20), nullable=True)
     local_event_recommendations = Column(Boolean, nullable=True)
-    preferred_check_in_time = Column(SQLEnum(PreferredCheckInTimeEnum), nullable=True)
-    check_in_frequency = Column(SQLEnum(CheckInFrequencyEnum), nullable=True)
-    topics_of_interest = Column(String(500), nullable=True)
-    preferred_activities = Column(String(500), nullable=True)
+
+    #sessions
+    scheduled_sessions = relationship("ScheduledSession", back_populates="user", cascade="all, delete-orphan")
+    user_checkins = relationship("UserCheckin", back_populates="user", cascade="all, delete-orphan")
 
 
     #Medications
@@ -123,23 +68,25 @@ class User(Base):
     wants_reminders = Column(Boolean, nullable=True)
     takes_medication = Column(Boolean, nullable=True)
     missed_dose_alerts = Column(Boolean, nullable=True)
-    escalate_to_emergency_contact = Column(Boolean, nullable=True)
-    preferred_doctor_type = Column(SQLEnum(PreferredDoctorTypeEnum), nullable=True)
+    # escalate_to_emergency_contact = Column(Boolean, nullable=True)
 
     #Reminders
-    preferred_channel = Column(String(50), nullable=True)
-    whatsapp_reports = Column(Boolean, nullable=False, default=False)
-    email_reports = Column(Boolean, nullable=False, default=False)
+    # preferred_channel = Column(String(50), nullable=True)
+    whatsapp_reports = Column(Boolean, nullable=True, default=False)
+    email_reports = Column(Boolean, nullable=True, default=False)
     preferred_communication_channel = Column(String(50), nullable=True)
 
-
-    #Caretaker Information
+    
+    #Care taker
     caretaker_id = Column(Integer, ForeignKey("caretakers.id"), nullable=True, index=True) 
-    caretaker = relationship("CareTaker", back_populates="assigned_users")
+    caretaker = relationship("Caretaker", back_populates="assigned_users")
+    caretaker_consent = Column(Boolean, nullable=True)
     
     emergency_contact_name = Column(String(80), nullable=True)
     emergency_contact_email = Column(String(255), nullable=True)
     emergency_contact_phone = Column(String(20), nullable=True)
+
+    emergency_line_phone = Column(String(20), nullable=True)
     
     
     #Auth
@@ -156,11 +103,8 @@ class User(Base):
     country = Column(String(100), nullable=True)
 
     #Brain Coach
-    brain_coach_activation = Column(Boolean, nullable=True)
-    brain_coach_time = Column(SQLEnum(BrainCoachTimeEnum), nullable=True) 
     brain_coach_complexity = Column(SQLEnum(BrainCoachComplexityEnum), nullable=True)  
-    performance_reports = Column(Boolean, nullable=True, default=True)  
-
+    
     #Nutrition Services
     nutrition_services_activation = Column(Boolean, nullable=True)
 
@@ -175,19 +119,6 @@ class User(Base):
     fall_detection_activation = Column(Boolean, nullable=True, default=True)
     fall_auto_alert_to_caregiver = Column(Boolean, nullable=True, default=True) 
     
-    # regular_safety_check_ins = Column(SQLEnum(RegularSafetyCheckInsEnum), nullable=True)  # Single select enum
-
-    
-    #Doctor and Pharmacy
-    # primary_doctor_name = Column(String(255), nullable=True)
-    # primary_doctor_phone = Column(String(20), nullable=True)
-
-    # preferred_pharmacy_name = Column(String(255), nullable=True)
-    # preferred_pharmacy_phone = Column(String(20), nullable=True)
-
-    # preferred_hospital_name = Column(String(255), nullable=True)
-    # preferred_hospital_phone = Column(String(20), nullable=True)
-
 
     #Device Notifications
     device_token = Column(String(150), nullable=True)
@@ -224,3 +155,20 @@ class AdminUser(Base):
     
     def __repr__(self):
         return f"<AdminUser(id={self.id}, username='{self.username}')>"
+    
+
+
+class Caretaker(Base):
+    __tablename__ = "caretakers"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+    email = Column(String(255), unique=True, nullable=True)
+    phone_number = Column(String(20), nullable=True, unique=True)
+    is_active = Column(Boolean, default=True)
+    # username = Column(String(100), unique=True, nullable=False)
+    # password_hash = Column(String(255), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    assigned_users = relationship("User", back_populates="caretaker")
+    

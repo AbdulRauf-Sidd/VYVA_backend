@@ -9,8 +9,6 @@ from core.config import settings
 from core.logging import get_logger
 from services.helpers import generate_random_string
 from datetime import datetime
-from core.constants import VYVA_ZAMORA_LINK
-
 
 logger = get_logger(__name__)
 

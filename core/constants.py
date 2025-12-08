@@ -1,1 +1,0 @@
-VYVA_ZAMORA_LINK = "https://vyva.io/"

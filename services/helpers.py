@@ -97,3 +97,6 @@ def construct_phone_call_message(user, medication):
 def construct_initial_agent_message_for_reminders(user, medication):
     return f'Hello {user['first_name']}!, this is VYVA. How are you doing?'
     # pass
+
+def constuct_initial_agent_message_for_onboarding(first_name):
+    return f"Hello {first_name}, How are you doing?"

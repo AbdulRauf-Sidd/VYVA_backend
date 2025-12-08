@@ -8,7 +8,7 @@ import logging, json, pytz
 from repositories.eleven_labs_sessions import ElevenLabsSessionRepository
 from schemas.eleven_labs_session import ElevenLabsSessionCreate
 from tasks.management_tasks import initiate_onboarding_call
-from models.onboarding_user import OnboardingUser
+from models.onboarding import OnboardingUser
 
 
 logger = logging.getLogger(__name__)
@@ -193,35 +193,27 @@ async def receive_message(request: Request, db: AsyncSession = Depends(get_db)):
             if callback_data and "value" in callback_data:
                 callback_time = callback_data["value"]  # e.g., "10:07"
             
-            user_id = conversation_initiation_client_data.get("dynamic_variables", {}).get("user_id")
+            user_id = conversation_initiation_client_data.get("dynamic_variables").get("user_id")
             
-            if callback_time and user_id:
+            if callback_time:
                 try:
-                    # Fetch the user from DB
                     result = await db.execute(select(OnboardingUser).where(OnboardingUser.id == user_id))
-                    user = result.scalar_one_or_none()
+                    user = result.scalar_one()
 
                     if user:
-                        # Determine the user's timezone, default to Europe/Paris
-                        user_timezone = getattr(user, "timezone", "Europe/Paris")
+                        user_timezone = user.timezone
                         tz = pytz.timezone(user_timezone)
 
-                        # Current time in user's timezone
                         now = datetime.now(tz)
 
-                        # Construct datetime for callback
                         hours, minutes = map(int, callback_time.split(":"))
                         final_dt = now.replace(hour=hours, minute=minutes, second=0, microsecond=0)
-                        print("FINAL_UTC_DT", final_dt)
-                        # If time has already passed today, schedule for tomorrow
+                    
                         if final_dt <= now:
                             final_dt += timedelta(days=1)
 
-                        # Convert to UTC for Celery ETA
                         final_utc_dt = final_dt.astimezone(pytz.UTC)
 
-                        print("FINAL_UTC_DT", final_utc_dt)
-                        # Schedule the Celery task
                         task_result = initiate_onboarding_call.apply_async(args=[user], eta=final_utc_dt)
                         logger.info(f"Scheduled onboarding call for {final_utc_dt} UTC, task_id={task_result.id}")
                     else:
@@ -233,20 +225,6 @@ async def receive_message(request: Request, db: AsyncSession = Depends(get_db)):
         except Exception as e:
             logger.error(f"Error extracting fields: {e}, payload={payload}")
             return {"status": "error", "reason": "field_extraction_failed"}
-
-        logger.info(
-            f"Post Call Received: "
-            f"Type={type}, "
-            f"AgentID={agent_id}, "
-            f"Status={status}, "
-            f"EventTimestamp={event_timestamp}, "
-            f"Duration={call_duration if metadata else 'N/A'}, "
-            f"TerminationReason={termination_reason if metadata else 'N/A'}, "
-            f"CallSuccessful={call_successful if analysis else 'N/A'}, "
-            f"TranscriptSummary={transcript_summary if analysis else 'N/A'}, "
-            f"UserID={user_id if conversation_initiation_client_data else 'N/A'}, "
-            f"TranscriptLength={len(transcript) if transcript else 0}"
-        )
 
         # --- Save to DB ---
         try:

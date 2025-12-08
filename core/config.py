@@ -33,12 +33,18 @@ class Settings(BaseSettings):
     REDIS_URL: str = Field(default="redis://localhost:6379/0", env="REDIS_URL")
     CELERY_BROKER_URL: str = REDIS_URL
     CELERY_RESULT_BACKEND: str = REDIS_URL
+
+    origins: List[str] = [
+        "http://localhost:8080",  # frontend URL
+        "http://localhost:5173",
+        "https://vyva.io", # production frontend
+    ]
     
     # CORS
-    ALLOWED_HOSTS: List[str] = Field(
-        default=["*"],
-        env="ALLOWED_HOSTS"
-    )
+    # ALLOWED_HOSTS: List[str] = Field(
+    #     default=["*"],
+    #     env="ALLOWED_HOSTS"
+    # )
 
     DATABASE_URL: Optional[str] = Field(default=None, env="DATABASE_URL")
     PRODUCTION_DATABASE_URL: Optional[str] = Field(default=None, env="PRODUCTION_DATABASE_URL")
@@ -47,6 +53,8 @@ class Settings(BaseSettings):
     MAX_ATTEMPTS: int = 5
 
     SESSION_DURATION: int = 60 * 24 * 90  # 90 days
+
+    FRONTEND_URL: str = Field(default="vyva.io", env="FRONTEND_URL")
 
 
     @property

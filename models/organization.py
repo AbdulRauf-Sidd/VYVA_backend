@@ -17,6 +17,7 @@ class Organization(Base):
     onboarding_agent_id = Column(String(100), nullable=False)
     users = relationship("User", back_populates="organization")
     onboarding_users = relationship("OnboardingUser", back_populates="organization")
+    sub_domain = Column(String(100), nullable=True, unique=True)
     is_active = Column(Boolean, default=True)
     
     def __repr__(self):

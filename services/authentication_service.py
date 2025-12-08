@@ -1,3 +1,4 @@
+from pytz import utc
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete, update
 from scripts.authentication_helpers import generate_otp, hash_otp, is_expired
@@ -9,7 +10,7 @@ from core.config import settings
 async def create_otp_session(db: AsyncSession, contact: str, user_id: int):
     otp = generate_otp()
     otp_hash = hash_otp(otp)
-    expires_at = datetime.utcnow() + timedelta(minutes=settings.OTP_TTL_MINUTES)
+    expires_at = datetime.now(tz=utc) + timedelta(minutes=settings.OTP_TTL_MINUTES)
 
     otp_session = OtpSession(contact=contact, otp_hash=otp_hash, expires_at=expires_at, user_id=user_id)
     db.add(otp_session)

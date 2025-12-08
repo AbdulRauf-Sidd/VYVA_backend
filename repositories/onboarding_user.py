@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.exc import SQLAlchemyError
 
-from models.onboarding_user import OnboardingUser
+from models.onboarding import OnboardingUser
 from schemas.onboarding_user import OnboardingUserCreate, OnboardingUserUpdate, OnboardingUserRead
 
 logger = logging.getLogger(__name__)

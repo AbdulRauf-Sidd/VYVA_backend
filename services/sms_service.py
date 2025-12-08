@@ -127,6 +127,17 @@ class SMSService:
         
         return await self.send_sms(to_number, message.strip()) 
     
+    async def send_magic_link(
+        self,
+        to_number: str,
+        token: str,
+        domain: str
+    ) -> bool:
+        """Send magic login link via SMS."""
+        magic_link = f"https://{domain}/magic-login?token={token}"
+        message = f"Welcome to VYVA! Tap the link to get started: {magic_link}"
+        return await self.send_sms(to_number, message)
+    
     async def send_otp(
         self,
         to_number: str,

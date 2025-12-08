@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 from sqlalchemy.future import select
 from sqlalchemy.exc import SQLAlchemyError
-from models.onboarding_user import OnboardingUser
+from models.onboarding import OnboardingUser
 from schemas.onboarding_user import OnboardingUserCreate, OnboardingUserUpdate
 from core.database import get_async_session  # <- your helper
 

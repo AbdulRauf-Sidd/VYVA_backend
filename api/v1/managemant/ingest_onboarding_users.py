@@ -7,7 +7,7 @@ from fastapi import UploadFile, File, HTTPException
 from core.database import get_db
 from fastapi import APIRouter, Depends
 from schemas.responses import StandardSuccessResponse
-from models.onboarding_user import OnboardingUser
+from models.onboarding import OnboardingUser
 from models.organization import Organization
 from scripts.utils import time_to_utc, date_time_to_utc, add_one_day
 from datetime import datetime, date
@@ -164,8 +164,8 @@ async def process_valid_data(file_content, organization, db):
             phone_number = row_norm.get("telephone number", "")
             country_code = row_norm.get("country code", "")
             full_phone = f"+{country_code}{phone_number}" if "+" not in country_code else f"{country_code}{phone_number}"
-            care_giver_name = row_norm.get("caregiver name", "") or None
-            care_giver_contact_number = row_norm.get("caregiver contact number", "") or None
+            care_giver_name = row_norm.get("caregiver name", None) or None
+            care_giver_contact_number = row_norm.get("caregiver contact number", None) or None
             full_caregiver_phone = f"+{country_code}{care_giver_contact_number}" if care_giver_contact_number and "+" not in country_code else (care_giver_contact_number or None)
             language = row_norm.get("language", "").lower()
             timezone = row_norm.get("time zone", "")  # NO LOWER()
@@ -199,6 +199,9 @@ async def process_valid_data(file_content, organization, db):
                 # Convert to UTC
                 final_utc_dt = local_dt_next_day.astimezone(ZoneInfo("UTC"))
 
+            city_state_province = row_norm.get('city/state/province', None)
+            postal_zip_code = row_norm.get('postal/zip code', None)
+
 
             user = OnboardingUser(
                 first_name=first_name,
@@ -212,12 +215,17 @@ async def process_valid_data(file_content, organization, db):
                 preferred_communication_channel=preferred_communication_channel,
                 organization_id=organization_id,
                 address=address,
-                city_state_province=row_norm.get("city/state/province", "") or None,
-                postal_zip_code=row_norm.get("postal/zip code", "") or None,
+                city_state_province=city_state_province,
+                postal_zip_code=postal_zip_code,
             )
 
             db.add(user)
             await db.commit()
+
+            if address or city_state_province or postal_zip_code:
+                combined_address = f"{address}, {city_state_province}, {postal_zip_code}"
+            else:
+                combined_address = "not available"
 
             payload = {
                 'first_name': first_name,
@@ -226,12 +234,10 @@ async def process_valid_data(file_content, organization, db):
                 'language': language,
                 'user_id': user.id,
                 'agent_id': agent_id,
-                'address': user.address,
-                'city_state_province': row_norm.get("city/state/province", ""),
-                'postal_zip_code': row_norm.get("postal/zip code", ""),
-                'preferred_communication_channel': preferred_communication_channel,
-                'caregiver_name': row_norm.get("caregiver name", ""),
-                'caregiver_contact_number': full_caregiver_phone,
+                'address': combined_address,
+                'user_type': preferred_communication_channel,
+                'caregiver_name': care_giver_name,
+                'caregiver_phone': full_caregiver_phone,
             }
 
             task_result = initiate_onboarding_call.apply_async(

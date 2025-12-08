@@ -1,7 +1,8 @@
 from elevenlabs import ElevenLabs, OutboundCallRecipient, ConversationConfigOverrideConfig
 from core.config import settings
-from models.onboarding_user import OnboardingUser
+from models.onboarding import OnboardingUser
 import requests
+from services.helpers import constuct_initial_agent_message_for_onboarding
 
 client = ElevenLabs(
     api_key=settings.ELEVENLABS_API_KEY,
@@ -180,11 +181,14 @@ def make_onboarding_call(payload: dict):
         id = payload.get("user_id")
         agent_id = payload.get("agent_id")
         phone_number = payload.get("phone_number")
+        user_type = payload.get("user_type")
+        language = payload.get("language")
         first_name = payload.get("first_name")
         last_name = payload.get("last_name")
-        email = payload.get("email")
         address = payload.get("address")
-        logger.info(f"Making onboarding call to {phone_number} via ElevenLabs with agent {agent_id}")
+        caregiver_name = payload.get("caregiver_name")
+        caregiver_phone = payload.get("caregiver_phone")
+        initial_message = constuct_initial_agent_message_for_onboarding(first_name)
         response = requests.post(
           "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
           headers={
@@ -194,14 +198,21 @@ def make_onboarding_call(payload: dict):
             "agent_id": agent_id,
             "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
             "to_number": phone_number,
+            "conversation_config_override": {
+              "agent": {
+                  "language": language,
+                  "first_message": initial_message
+              }
+            },
             "conversation_initiation_client_data": {
               "dynamic_variables": {
                 "user_id": id,
                 "first_name": first_name,
                 "last_name": last_name,
-                "email": email,
                 "address": address,
-                "language": "English"
+                "caregiver_name": caregiver_name,
+                "caregiver_phone": caregiver_phone,
+                "user_type": user_type
               }
             }
           },

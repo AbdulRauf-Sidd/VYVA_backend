@@ -29,6 +29,7 @@ class OnboardingUser(Base):
     caregiver_name=Column(String(100), nullable=True)
     caregiver_contact_number=Column(String(20), nullable=True)
     preferred_communication_channel=Column(String(20), nullable=True)
+    onboarding_call_scheduled = Column(Boolean, default=False)
     onboarding_status = Column(Boolean, default=False)
     onboarded_at = Column(DateTime(timezone=True), nullable=True)
     called_at = Column(DateTime(timezone=True), nullable=True)
@@ -36,3 +37,18 @@ class OnboardingUser(Base):
     organization=relationship("Organization", back_populates="onboarding_users")
     organization_id=Column(Integer, ForeignKey("organizations.id"), nullable=True)
     onboarding_logs=relationship("OnboardingLogs", back_populates="onboarding_user")
+
+
+class OnboardingLogs(Base):
+    """Onboarding Logs model."""
+
+    __tablename__ = "onboarding_logs"
+    
+    #Main
+    id = Column(Integer, primary_key=True, index=True)
+    call_at = Column(DateTime(timezone=True), nullable=True)
+    call_id = Column(String(255), nullable=True)
+    onboarding_user=relationship("OnboardingUser", back_populates="onboarding_logs")
+    onboarding_user_id=Column(Integer, ForeignKey("onboarding_users.id"), nullable=True)
+    summary = Column(String(1000), nullable=True)
+
