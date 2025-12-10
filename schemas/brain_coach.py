@@ -57,8 +57,8 @@ class BrainCoachResponseBase(BaseModel):
     score: int
 
 
-# class BrainCoachResponseCreate(BrainCoachResponseBase):
-#     pass
+class BrainCoachResponseCreate(BrainCoachResponseBase):
+    pass
 
 
 class BrainCoachResponseRead(BrainCoachResponseBase):
