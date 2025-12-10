@@ -2,7 +2,7 @@ import logging
 from sqlalchemy import select, and_
 from typing import Optional, List
 from core.database import get_db
-from schemas.brain_coach import  BrainCoachResponseRead, BrainCoachQuestionCreate, BrainCoachQuestionRead, BrainCoachQuestionReadWithLanguage, QuestionTranslationBase, QuestionTranslationRead
+from schemas.brain_coach import  BrainCoachResponseRead, BrainCoachQuestionCreate, BrainCoachQuestionRead, BrainCoachQuestionReadWithLanguage, QuestionTranslationBase, QuestionTranslationRead, BrainCoachResponseCreate
 from models.brain_coach import BrainCoachQuestions, BrainCoachResponses, BrainCoachQuestions, QuestionTranslations
 
 logger = logging.getLogger(__name__)
@@ -297,46 +297,46 @@ class BrainCoachQuestionRepository:
 
 
 
-# class BrainCoachResponseRepository:
-#     def __init__(self, db_session: get_db):
-#         self.db_session = db_session
+class BrainCoachResponseRepository:
+    def __init__(self, db_session: get_db):
+        self.db_session = db_session
 
-#     async def create_response(
-#         self, response_data: BrainCoachResponseCreate
-#     ) -> BrainCoachResponseRead:
-#         """Create a new brain coach response"""
-#         new_response = BrainCoachResponses(**response_data.model_dump())
-#         self.db_session.add(new_response)
-#         await self.db_session.commit()
-#         await self.db_session.refresh(new_response)
-#         return BrainCoachResponseRead.model_validate(new_response)
+    async def create_response(
+        self, response_data: BrainCoachResponseCreate
+    ) -> BrainCoachResponseRead:
+        """Create a new brain coach response"""
+        new_response = BrainCoachResponses(**response_data.model_dump())
+        self.db_session.add(new_response)
+        await self.db_session.commit()
+        await self.db_session.refresh(new_response)
+        return BrainCoachResponseRead.model_validate(new_response)
 
-#     async def get_response_by_id(
-#         self, response_id: int
-#     ) -> Optional[BrainCoachResponseRead]:
-#         """Get a response by its ID"""
-#         query = select(BrainCoachResponses).where(BrainCoachResponses.id == response_id)
-#         result = await self.db.execute(query)
-#         response = result.scalar_one_or_none()
+    async def get_response_by_id(
+        self, response_id: int
+    ) -> Optional[BrainCoachResponseRead]:
+        """Get a response by its ID"""
+        query = select(BrainCoachResponses).where(BrainCoachResponses.id == response_id)
+        result = await self.db.execute(query)
+        response = result.scalar_one_or_none()
 
-#         if response:
-#             return BrainCoachResponseRead.model_validate(response)
-#         return None
+        if response:
+            return BrainCoachResponseRead.model_validate(response)
+        return None
 
-#     async def get_responses_by_user_and_session(
-#         self, 
-#         user_id: int, 
-#         session_id: Optional[str] = None
-#     ) -> List[BrainCoachResponseRead]:
-#         """Get all responses for a user, optionally filtered by session_id"""
-#         query = select(BrainCoachResponses).where(BrainCoachResponses.user_id == user_id)
+    async def get_responses_by_user_and_session(
+        self, 
+        user_id: int, 
+        session_id: Optional[str] = None
+    ) -> List[BrainCoachResponseRead]:
+        """Get all responses for a user, optionally filtered by session_id"""
+        query = select(BrainCoachResponses).where(BrainCoachResponses.user_id == user_id)
         
-#         if session_id:
-#             query = query.where(BrainCoachResponses.session_id == session_id)
+        if session_id:
+            query = query.where(BrainCoachResponses.session_id == session_id)
         
-#         query = query.order_by(BrainCoachResponses.created.desc())
+        query = query.order_by(BrainCoachResponses.created.desc())
         
-#         result = await self.db_session.execute(query)
-#         responses = result.scalars().all()
+        result = await self.db_session.execute(query)
+        responses = result.scalars().all()
         
-#         return [BrainCoachResponseRead.model_validate(response) for response in responses]
+        return [BrainCoachResponseRead.model_validate(response) for response in responses]
