@@ -275,8 +275,8 @@ from typing import Annotated
 
 @router.post("/user-responses/{user_id}", response_model=BrainCoachResponseRead, status_code=status.HTTP_201_CREATED)
 async def create_response(
-    user_id: Annotated[int, Path(..., description="The ID of the user")],
     response_data: BrainCoachResponseCreate,
+    user_id: int = Path(..., description="The ID of the user"),
     db: AsyncSession = Depends(get_db)
 ):
     """Create a new brain coach response"""
