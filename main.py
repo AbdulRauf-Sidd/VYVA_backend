@@ -94,7 +94,7 @@ app = FastAPI(
     lifespan=mcp_app.lifespan
 )
 
-app.mount("/mcp", mcp_app)
+app.mount("/mcp/", mcp_app)
 
 scheduler = AsyncIOScheduler()
 
