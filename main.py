@@ -7,6 +7,7 @@ A production-ready FastAPI backend for senior care applications.
 from contextlib import asynccontextmanager
 from typing import Dict, Any
 from dotenv import load_dotenv
+from pydantic import BaseModel
 
 # Load environment variables from .env file
 load_dotenv()
@@ -43,41 +44,43 @@ from repositories.user import UserRepository
 from apscheduler.triggers.date import DateTrigger
 from celery.app.control import Inspect
 from celery_app import celery_app
-
+from fastmcp import FastMCP
 
 # Setup logging
 logger = setup_logging()
 
+mcp = FastMCP("Memory Tools")
+mcp_app = mcp.http_app(path='/mcp')
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Application lifespan events."""
-    # Startup
-    logger.info("Starting Vyva Backend application...")
+# @asynccontextmanager
+# async def lifespan(app: FastAPI):
+#     """Application lifespan events."""
+#     # Startup
+#     logger.info("Starting Vyva Backend application...")
     
-    # Create database tables (for development)
-    if settings.ENV == "development":
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
-        logger.info("Database tables created (development mode)")
+#     # Create database tables (for development)
+#     if settings.ENV == "development":
+#         async with engine.begin() as conn:
+#             await conn.run_sync(Base.metadata.create_all)
+#         logger.info("Database tables created (development mode)")
 
 
-    # if not scheduler.running:
-    #     scheduler.add_job(
-    #         minute_background_task,
-    #         trigger=IntervalTrigger(seconds=60),
-    #         id="minute_task",
-    #         name="Run every minute",
-    #         replace_existing=True
-    #     )
-    #     scheduler.start()
-    #     logger.info("Background task scheduler started")
+#     # if not scheduler.running:
+#     #     scheduler.add_job(
+#     #         minute_background_task,
+#     #         trigger=IntervalTrigger(seconds=60),
+#     #         id="minute_task",
+#     #         name="Run every minute",
+#     #         replace_existing=True
+#     #     )
+#     #     scheduler.start()
+#     #     logger.info("Background task scheduler started")
     
-    yield
+#     yield
     
-    # Shutdown
-    logger.info("Shutting down Vyva Backend application...")
+#     # Shutdown
+#     logger.info("Shutting down Vyva Backend application...")
 
 
 # Create FastAPI application
@@ -88,9 +91,10 @@ app = FastAPI(
     docs_url="/docs" if settings.DEBUG else None,
     redoc_url="/redoc" if settings.DEBUG else None,
     openapi_url="/openapi.json" if settings.DEBUG else None,
-    lifespan=lifespan
+    lifespan=mcp_app.lifespan
 )
 
+app.mount("", mcp_app)
 
 scheduler = AsyncIOScheduler()
 
@@ -309,6 +313,19 @@ app.include_router(ai_assistant.router, prefix="/api/v1/ai-assistant", tags=["AI
 app.include_router(news.router, prefix="/api/v1/news", tags=["News"])
 app.include_router(tools.router, prefix="/api/v1/tools", tags=["Tools"])
 app.include_router(emergency.router, prefix="/api/v1/emergency", tags=["Emergency Contacts"])
+
+class MathInput(BaseModel):
+    a: float
+    b: float
+
+@mcp.tool(
+    name="math_operations",
+    description="Performs math operations on two numbers"
+)
+def math_operations(input: MathInput):
+    return {
+        "result": input.a * input.b * 1237213712 // 1232
+    }
 
 
 if __name__ == "__main__":
