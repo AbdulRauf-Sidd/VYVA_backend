@@ -94,7 +94,7 @@ app = FastAPI(
     lifespan=mcp_app.lifespan
 )
 
-app.mount("", mcp_app)
+app.mount("/mcp", mcp_app)
 
 @app.middleware("http")
 async def middleware(request, call_next):
