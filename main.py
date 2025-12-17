@@ -50,7 +50,7 @@ from fastmcp import FastMCP
 logger = setup_logging()
 
 mcp = FastMCP("Memory Tools")
-mcp_app = mcp.http_app()
+mcp_app = mcp.http_app('/mcp')
 
 
 # @asynccontextmanager
@@ -94,7 +94,7 @@ app = FastAPI(
     lifespan=mcp_app.lifespan
 )
 
-app.mount("/mcp", mcp_app)
+app.mount("", mcp_app)
 
 @app.middleware("http")
 async def middleware(request, call_next):
