@@ -337,7 +337,8 @@ def math_operations(input: MathInput):
 if __name__ == "__main__":
     import uvicorn
     
-    mcp.run(transport="sse", host="127.0.0.1", port=8000)
+    # mcp.run(transport="sse", host="127.0.0.1", port=8000)
+    mcp.run(transport="http", host="127.0.0.1", port=8000, path="/mcp")
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
