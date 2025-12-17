@@ -94,7 +94,13 @@ app = FastAPI(
     lifespan=mcp_app.lifespan
 )
 
-app.mount("/mcp/", mcp_app)
+app.mount("/mcp", mcp_app)
+
+@app.middleware("http")
+async def middleware(request, call_next):
+    if request.url.path.startswith("/mcp"):
+        return await call_next(request)
+    # REST-only logic
 
 scheduler = AsyncIOScheduler()
 
