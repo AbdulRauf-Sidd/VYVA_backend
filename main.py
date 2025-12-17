@@ -50,7 +50,7 @@ from fastmcp import FastMCP
 logger = setup_logging()
 
 mcp = FastMCP("Memory Tools")
-mcp_app = mcp.http_app('/mcp')
+# mcp_app = mcp.http_app('/mcp')
 
 
 # @asynccontextmanager
@@ -94,7 +94,7 @@ app = FastAPI(
     lifespan=mcp_app.lifespan
 )
 
-app.mount("/mcp", mcp_app)
+# app.mount("/mcp", mcp_app)
 
 @app.middleware("http")
 async def middleware(request, call_next):
@@ -337,6 +337,7 @@ def math_operations(input: MathInput):
 if __name__ == "__main__":
     import uvicorn
     
+    mcp.run(transport="sse", host="127.0.0.1", port=8000)
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
