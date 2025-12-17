@@ -50,7 +50,7 @@ from fastmcp import FastMCP
 logger = setup_logging()
 
 mcp = FastMCP("Memory Tools")
-# mcp_app = mcp.http_app('/mcp')
+mcp_app = mcp.http_app('/mcp')
 
 
 # @asynccontextmanager
@@ -91,16 +91,16 @@ app = FastAPI(
     docs_url="/docs" if settings.DEBUG else None,
     redoc_url="/redoc" if settings.DEBUG else None,
     openapi_url="/openapi.json" if settings.DEBUG else None,
-    # lifespan=mcp_app.lifespan
+    lifespan=mcp_app.lifespan
 )
 
-# app.mount("/mcp", mcp_app)
+app.mount("/memory", mcp_app)
 
-@app.middleware("http")
-async def middleware(request, call_next):
-    if request.url.path.startswith("/mcp"):
-        return await call_next(request)
-    # REST-only logic
+# @app.middleware("http")
+# async def middleware(request, call_next):
+#     if request.url.path.startswith("/mcp"):
+#         return await call_next(request)
+#     # REST-only logic
 
 scheduler = AsyncIOScheduler()
 
@@ -252,7 +252,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logger.error(
-        f"Server Exception: {exc.detail} | "
+        f"Server Exception: {exc} | "
         f"Path: {request.url.path} | "
         f"Method: {request.method} | "
         f"Client: {request.client.host}"
@@ -328,7 +328,7 @@ class MathInput(BaseModel):
     name="math_operations",
     description="Performs math operations on two numbers"
 )
-def math_operations(input: MathInput):
+def math_operations(input: MathInput) -> dict:
     return {
         "result": input.a * input.b * 1237213712 // 1232
     }
@@ -338,7 +338,7 @@ if __name__ == "__main__":
     import uvicorn
     
     # mcp.run(transport="sse", host="127.0.0.1", port=8000)
-    mcp.run(transport="http", host="127.0.0.1", port=8000, path="/mcp")
+    # mcp.run(transport="http", host="127.0.0.1", port=8000, path="/mcp")
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
