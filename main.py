@@ -328,7 +328,7 @@ class MathInput(BaseModel):
     name="math_operations",
     description="Performs math operations on two numbers"
 )
-def math_operations(input: MathInput) -> dict:
+async def math_operations(input: MathInput) -> dict:
     return {
         "result": input.a * input.b * 1237213712 // 1232
     }
