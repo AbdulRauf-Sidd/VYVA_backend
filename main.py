@@ -52,37 +52,6 @@ logger = setup_logging()
 mcp = FastMCP("Memory Tools")
 mcp_app = mcp.http_app('/mcp')
 
-
-# @asynccontextmanager
-# async def lifespan(app: FastAPI):
-#     """Application lifespan events."""
-#     # Startup
-#     logger.info("Starting Vyva Backend application...")
-    
-#     # Create database tables (for development)
-#     if settings.ENV == "development":
-#         async with engine.begin() as conn:
-#             await conn.run_sync(Base.metadata.create_all)
-#         logger.info("Database tables created (development mode)")
-
-
-#     # if not scheduler.running:
-#     #     scheduler.add_job(
-#     #         minute_background_task,
-#     #         trigger=IntervalTrigger(seconds=60),
-#     #         id="minute_task",
-#     #         name="Run every minute",
-#     #         replace_existing=True
-#     #     )
-#     #     scheduler.start()
-#     #     logger.info("Background task scheduler started")
-    
-#     yield
-    
-#     # Shutdown
-#     logger.info("Shutting down Vyva Backend application...")
-
-
 # Create FastAPI application
 app = FastAPI(
     title="Vyva Backend API",
@@ -137,81 +106,79 @@ async def process_missed_calls(batch_id):
 
 
 
+# async def minute_background_task():
+#     """Background task that runs every minute and has database access"""
+#     # Create a new session for this background task
+#     session = AsyncSessionLocal()
+#     try:
+#         current_time = datetime.now(timezone.utc).replace(second=0, microsecond=0)
+#         cet_time = current_time.astimezone(ZoneInfo("Europe/Berlin")).time() 
+#         print('current_time', cet_time)
+#         logger.info(f"Processing medication reminders for users at {cet_time}")
+#         medication_repo = MedicationRepository(session)
+#         user_list = await medication_repo.get_active_medications_with_times()
+
+#         logger.info(f"User list: {user_list}")
+
+#         call_users = []
+
+#         if user_list:
+#             logger.info(f"Number of Users for medication call: {len(user_list)}")
+#             # Option 1a: Chain tasks (runs sequentially)
+#             for user in user_list:
+#                 if user['preferred_channel'] == 'sms':
+#                     logger.info(f"Sending SMS to user {user['user_id']} for medication {user['medications']} at {current_time}")
+#                     content = construct_whatsapp_sms_message(user)
+#                     body = construct_sms_body_from_template_for_reminders(content, language='es')
+#                     await whatsapp.send_sms(user['phone_number'], body)
+#                     continue
+#                 elif user['preferred_channel'] == 'email':
+#                     logger.info(f"Sending Email to user {user['user_id']} for medication {user['medications']} at {current_time}")
+#                     await email_service.send_medication_reminder(user, language='es')
+#                     continue
+#                 elif user['preferred_channel'] == 'phone':
+#                     call_users.append(user)
+#                     continue
+#                 elif user['preferred_channel'] == 'whatsapp':
+#                     logger.info(f"Sending WhatsApp message to user {user['user_id']} for medication {user['medications']} at {current_time}")
+#                     content = construct_whatsapp_sms_message(user)
+#                     await whatsapp.send_reminder_message(user['phone_number'], content)
+#                     continue
+
+#                 else:
+#                     logger.error(f"Unknown channel for user {user['user_id']}.")
+#                     continue
+
+#         if call_users:
+#             logger.info(f"Making Batch calls for {len(call_users)} users at {current_time}")
+#             batch_id = await make_reminder_call_batch(call_users)
+#             if batch_id:
+#                 run_time = datetime.now() + timedelta(minutes=3)
+#                 scheduler.add_job(process_missed_calls, trigger=DateTrigger(run_date=run_time), args=[batch_id])
+#                 logger.info(f"Job scheduled for missed calls with batch id {batch_id}")
 
 
-async def minute_background_task():
-    """Background task that runs every minute and has database access"""
-    # Create a new session for this background task
-    session = AsyncSessionLocal()
-    try:
-        current_time = datetime.now(timezone.utc).replace(second=0, microsecond=0)
-        cet_time = current_time.astimezone(ZoneInfo("Europe/Berlin")).time() 
-        print('current_time', cet_time)
-        logger.info(f"Processing medication reminders for users at {cet_time}")
-        medication_repo = MedicationRepository(session)
-        user_list = await medication_repo.get_active_medications_with_times()
+#             try:
+#                 param = ElevenLabsBatchCallCreate(
+#                     batch_id=batch_id
+#                 )
+#                 batch_repo = ElevenLabsBatchCallRepository(session)
+#                 await batch_repo.create(param)
+#             except Exception as e:
+#                 logger.info(f"Error occured while making record for batch: {e}")
 
-        logger.info(f"User list: {user_list}")
+#         else:
+#             logger.info("No users found for medication call at this time.")
 
-        call_users = []
+#         return {"found_users": len(user_list)}
 
-        if user_list:
-            logger.info(f"Number of Users for medication call: {len(user_list)}")
-            # Option 1a: Chain tasks (runs sequentially)
-            for user in user_list:
-                if user['preferred_channel'] == 'sms':
-                    logger.info(f"Sending SMS to user {user['user_id']} for medication {user['medications']} at {current_time}")
-                    content = construct_whatsapp_sms_message(user)
-                    body = construct_sms_body_from_template_for_reminders(content, language='es')
-                    await whatsapp.send_sms(user['phone_number'], body)
-                    continue
-                elif user['preferred_channel'] == 'email':
-                    logger.info(f"Sending Email to user {user['user_id']} for medication {user['medications']} at {current_time}")
-                    await email_service.send_medication_reminder(user, language='es')
-                    continue
-                elif user['preferred_channel'] == 'phone':
-                    call_users.append(user)
-                    continue
-                elif user['preferred_channel'] == 'whatsapp':
-                    logger.info(f"Sending WhatsApp message to user {user['user_id']} for medication {user['medications']} at {current_time}")
-                    content = construct_whatsapp_sms_message(user)
-                    await whatsapp.send_reminder_message(user['phone_number'], content)
-                    continue
-
-                else:
-                    logger.error(f"Unknown channel for user {user['user_id']}.")
-                    continue
-
-        if call_users:
-            logger.info(f"Making Batch calls for {len(call_users)} users at {current_time}")
-            batch_id = await make_reminder_call_batch(call_users)
-            if batch_id:
-                run_time = datetime.now() + timedelta(minutes=3)
-                scheduler.add_job(process_missed_calls, trigger=DateTrigger(run_date=run_time), args=[batch_id])
-                logger.info(f"Job scheduled for missed calls with batch id {batch_id}")
-
-
-            try:
-                param = ElevenLabsBatchCallCreate(
-                    batch_id=batch_id
-                )
-                batch_repo = ElevenLabsBatchCallRepository(session)
-                await batch_repo.create(param)
-            except Exception as e:
-                logger.info(f"Error occured while making record for batch: {e}")
-
-        else:
-            logger.info("No users found for medication call at this time.")
-
-        return {"found_users": len(user_list)}
-
-    except Exception as e:
-        print(f"Error in background task: {e}")
-        # Rollback in case of error
-        await session.rollback()
-    finally:
-        # Always close the session
-        await session.close()
+#     except Exception as e:
+#         print(f"Error in background task: {e}")
+#         # Rollback in case of error
+#         await session.rollback()
+#     finally:
+#         # Always close the session
+#         await session.close()
 
 
 # Add middleware
@@ -299,7 +266,6 @@ async def list_tasks():
     }
 
 # Include API routers
-# app.include_router(authen.router, prefix="/api/v1/auth", tags=["Authentication"])
 app.include_router(users.router, prefix="/api/v1/users", tags=["Users"])
 app.include_router(onboarding.router, prefix="/api/v1/onboarding", tags=["Onboarding"])
 app.include_router(authentication.router, prefix="/api/v1/auth", tags=["Authentication"])
@@ -326,7 +292,12 @@ class MathInput(BaseModel):
 
 @mcp.tool(
     name="math_operations",
-    description="Performs math operations on two numbers"
+    description=(
+        "Use this tool when the user asks for any calculation, "
+        "numeric result, multiplication, formula evaluation, "
+        "or when accuracy with large numbers is required. "
+        "Do NOT calculate manually."
+    )
 )
 async def math_operations(input: MathInput) -> dict:
     return {
@@ -337,8 +308,6 @@ async def math_operations(input: MathInput) -> dict:
 if __name__ == "__main__":
     import uvicorn
     
-    # mcp.run(transport="sse", host="127.0.0.1", port=8000)
-    # mcp.run(transport="http", host="127.0.0.1", port=8000, path="/mcp")
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
