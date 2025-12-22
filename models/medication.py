@@ -2,6 +2,7 @@
 Medication model for medication management.
 """
 
+import enum
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean, Float, Enum as SQLEnum, Date
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -10,9 +11,6 @@ from datetime import datetime
 
 
 from core.database import Base
-
-
-from enum import Enum
 
 class Medication(Base):
     """Medication model for medication management."""
@@ -51,3 +49,44 @@ class MedicationTime(Base):
 
     # Relationships
     medication = relationship("Medication", back_populates="times_of_day")
+
+
+class MedicationStatus(enum.Enum):
+    taken = "taken"
+    missed = "missed"
+    aa="as_assisted"
+
+
+class MedicationLog(Base):
+    __tablename__ = "medication_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    medication_id = Column(
+        Integer,
+        ForeignKey("medications.id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    medication_time_id = Column(
+        Integer,
+        ForeignKey("medication_times.id", ondelete="CASCADE"),
+        nullable=True
+    )
+
+    taken_at = Column(DateTime, nullable=True)
+
+    status = Column(
+        SQLEnum(MedicationStatus),
+        nullable=False
+    )
+
+    notes = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationships
+    medication = relationship("Medication")
+    medication_time = relationship("MedicationTime")
+    user = relationship("User")

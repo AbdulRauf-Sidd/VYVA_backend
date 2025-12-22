@@ -26,14 +26,10 @@ from api.v1 import onboarding, users, profiles, health_care, social, brain_coach
 from api.v1.managemant import ingest_onboarding_users
 from apscheduler.schedulers.background import BackgroundScheduler
 # from tasks import check_medication_time, run_async_job
+from admin.admin import setup_admin
 from core.database import AsyncSessionLocal, get_db
 from sqlalchemy.ext.asyncio import AsyncSession
-import asyncio
-from repositories.medication import MedicationRepository
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from celery import chain
-from datetime import datetime, timezone, timedelta
-from zoneinfo import ZoneInfo
 from services.elevenlabs_service import make_reminder_call_batch, check_batch_for_missed, make_caretaker_call_batch
 from services.helpers import construct_whatsapp_sms_message, construct_sms_body_from_template_for_reminders
 from services.whatsapp_service import whatsapp
@@ -45,6 +41,7 @@ from apscheduler.triggers.date import DateTrigger
 from celery.app.control import Inspect
 from celery_app import celery_app
 from fastmcp import FastMCP
+from mem0 import MemoryClient
 
 # Setup logging
 logger = setup_logging()
@@ -64,6 +61,8 @@ app = FastAPI(
 )
 
 app.mount("/memory", mcp_app)
+
+setup_admin(app) 
 
 # @app.middleware("http")
 # async def middleware(request, call_next):
@@ -180,6 +179,13 @@ async def process_missed_calls(batch_id):
 #         # Always close the session
 #         await session.close()
 
+from starlette.middleware.sessions import SessionMiddleware
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=settings.SECRET_KEY,
+)
+
 
 # Add middleware
 app.add_middleware(
@@ -224,6 +230,7 @@ async def global_exception_handler(request: Request, exc: Exception):
         f"Method: {request.method} | "
         f"Client: {request.client.host}"
     )
+    logger.exception("Error processing payload")
     return JSONResponse(
         status_code=500,
         content={
@@ -241,6 +248,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
         f"Method: {request.method} | "
         f"Client: {request.client.host}"
     )
+    logger.exception("Error processing payload")
     return JSONResponse(
         status_code=exc.status_code,
         content={

@@ -59,6 +59,7 @@ class MedicationInput(BaseModel):
     times: List[str]  # Accept string times like "09:00"
     start_date: Optional[date] = None
     end_date: Optional[date] = None
+    purpose: Optional[str] = None
 
 class BulkMedicationRequest(BaseModel):
     medication_details: List[MedicationInput]
@@ -76,4 +77,4 @@ class BulkMedicationRequest(BaseModel):
 
 class BulkMedicationSchema(BaseModel):
     medication_details: List[MedicationInput]
-    user_id: Optional[int] = None
+    user_id: int = None

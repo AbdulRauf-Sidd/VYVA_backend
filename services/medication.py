@@ -121,8 +121,8 @@ class MedicationService:
                     time_obj = self._parse_time_string(time_str)
                     time_objects.append(MedicationTimeCreate(time_of_day=time_obj))
                 
-                start_date_obj = datetime.strptime(str(med_input.start_date), "%Y-%m-%d").date()
-                end_date_obj = start_date_obj + timedelta(days=3)
+                start_date_obj = datetime.strptime(str(med_input.start_date), "%Y-%m-%d").date() if med_input.start_date else date.today()
+                end_date_obj = start_date_obj + timedelta(days=3) if start_date_obj else None
 
                 # Create MedicationCreate object
                 medication_create = MedicationCreate(
@@ -130,7 +130,8 @@ class MedicationService:
                     name=med_input.name,
                     dosage=med_input.dosage,
                     start_date=med_input.start_date,
-                    end_date=end_date_obj.strftime("%Y-%m-%d"),
+                    end_date=end_date_obj.strftime("%Y-%m-%d") if end_date_obj else None,
+                    purpose=med_input.purpose,
                     times_of_day=time_objects
                 )
                 

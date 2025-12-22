@@ -101,6 +101,7 @@ class User(Base):
     city = Column(String(100), nullable=True)  
     postal_code = Column(String(20), nullable=True)  
     country = Column(String(100), nullable=True)
+    address = Column(Text, nullable=True)
 
     #Brain Coach
     brain_coach_complexity = Column(SQLEnum(BrainCoachComplexityEnum), nullable=True)  
