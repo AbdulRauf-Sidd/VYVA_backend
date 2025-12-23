@@ -135,10 +135,11 @@ async def validate_csv(file_content: str, db):
         preferred_time = row_norm.get("preferred call time (24h)", "") or None
         converted_time = None
 
-        if preferred_time:
-            # 24-hour format first
-            if re.match(r"^(?:[01]\d|2[0-3]):[0-5]\d$", preferred_time):
-                converted_time = preferred_time
+        try:
+            preferred_time_obj = datetime.strptime(preferred_time, "%H:%M").time()
+            converted_time = preferred_time_obj.strftime("%H:%M")
+        except ValueError:
+            converted_time = None
 
         if not converted_time and preferred_time:
             errors.append(f"Row {i}: Invalid preferred call time '{preferred_time}'. Must be in HH:MM 24-hour format.")
