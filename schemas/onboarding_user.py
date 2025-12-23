@@ -40,12 +40,13 @@ class BrainCoach(BaseModel):
 
 class OnboardingRequestBody(BaseModel):
     user_id: int
-    medication_details: List[MedicationDetailsItem]
-    caretaker_phone: str
-    check_in_details: CheckInDetails
-    caretaker_name: str
-    brain_coach: BrainCoach
-    caretaker_consent: bool
-    health_conditions: List[str]
-    address: str
-    mobility: List[str]
+    medication_details: Optional[List[MedicationDetailsItem]] = None
+    caretaker_phone: Optional[str] = None
+    check_in_details: Optional[CheckInDetails] = None
+    caretaker_name: Optional[str] = None
+    brain_coach: Optional[BrainCoach] = None
+    caretaker_consent: Optional[bool] = None
+    health_conditions: Optional[List[str]] = None
+    address: Optional[str] = None
+    mobility: Optional[List[str]] = None
+    preferences: Optional[List[str]] = None
