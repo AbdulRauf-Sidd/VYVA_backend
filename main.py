@@ -16,7 +16,7 @@ from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
-from apscheduler.triggers.interval import IntervalTrigger
+# from apscheduler.triggers.interval import IntervalTrigger
 from fastapi.exceptions import RequestValidationError
 
 from core.config import settings
@@ -24,12 +24,12 @@ from core.logging import setup_logging
 from core.database import engine, Base
 from api.v1 import onboarding, users, profiles, health_care, social, brain_coach, medication, fall_detection, emergency, tts, symptom_checker, post_call, ai_assistant, news, tools, organization, authentication
 from api.v1.managemant import ingest_onboarding_users
-from apscheduler.schedulers.background import BackgroundScheduler
+# from apscheduler.schedulers.background import BackgroundScheduler
 # from tasks import check_medication_time, run_async_job
 from admin.admin import setup_admin
 from core.database import AsyncSessionLocal, get_db
-from sqlalchemy.ext.asyncio import AsyncSession
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+# from sqlalchemy.ext.asyncio import AsyncSession
+# from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from services.elevenlabs_service import make_reminder_call_batch, check_batch_for_missed, make_caretaker_call_batch
 from services.helpers import construct_whatsapp_sms_message, construct_sms_body_from_template_for_reminders
 from services.whatsapp_service import whatsapp
@@ -37,7 +37,7 @@ from services.email_service import email_service
 from schemas.eleven_labs_batch_calls import ElevenLabsBatchCallCreate
 from repositories.eleven_labs_batch_calls import ElevenLabsBatchCallRepository
 from repositories.user import UserRepository
-from apscheduler.triggers.date import DateTrigger
+# from apscheduler.triggers.date import DateTrigger
 from celery.app.control import Inspect
 from celery_app import celery_app
 from fastmcp import FastMCP
@@ -70,7 +70,7 @@ setup_admin(app)
 #         return await call_next(request)
 #     # REST-only logic
 
-scheduler = AsyncIOScheduler()
+# scheduler = AsyncIOScheduler()
 
 
 async def process_missed_calls(batch_id):

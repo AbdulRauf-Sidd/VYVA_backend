@@ -48,12 +48,12 @@ async def onboard_user(
         caretaker_phone = data.get("caretaker_phone", None)
         caretaker_name = data.get("caretaker_name", None)
         address = data["address"]
-        medication_details = data["medication_details"]
-        check_in_details = data["check_in_details"]
-        brain_coach = data["brain_coach"]
-        caretaker_consent = data["caretaker_consent"]
-        health_conditions = data["health_conditions"]
-        mobility = data["mobility"]
+        medication_details = data.get("medication_details", [])
+        check_in_details = data.get("check_in_details", {})
+        brain_coach = data.get("brain_coach", {})
+        caretaker_consent = data.get("caretaker_consent", False)
+        health_conditions = data.get("health_conditions", [])
+        mobility = data.get("mobility", [])
         city = record.city_state_province if record.city_state_province else ""
         postal_code = record.postal_zip_code if record.postal_zip_code else ""
         address = record.address if record.address else address
@@ -88,15 +88,7 @@ async def onboard_user(
 
         record.onboarding_status = True
         record.onboarded_at = datetime.now()
-        db.add(record)
-
-        medication_request = BulkMedicationSchema(
-            medication_details=medication_details,
-            user_id=user.id,
-        )
-
-        medication_repo = MedicationRepository(db)
-        medication_service = MedicationService(medication_repo)
+        db.add(record)        
 
         wants_brain_coach = brain_coach.get("wants_brain_coach_sessions", False)
         frequency_in_days = brain_coach.get("frequency_in_days", None)
@@ -118,7 +110,15 @@ async def onboard_user(
             )
             db.add(check_in)
 
-        await medication_service.process_bulk_medication_request(medication_request)
+        if medication_details:
+            print('medication_details', medication_details)
+            medication_request = BulkMedicationSchema(
+                medication_details=medication_details,
+                user_id=user.id,
+            )
+            medication_repo = MedicationRepository(db)
+            medication_service = MedicationService(medication_repo)
+            await medication_service.process_bulk_medication_request(medication_request)
 
         temp_token = UserTempToken(
             user_id=user.id,
