@@ -186,11 +186,9 @@ app.add_middleware(
     secret_key=settings.SECRET_KEY,
 )
 
-
-# Add middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.origins,  # Allow all origins for development
+    allow_origins=settings.origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -198,9 +196,8 @@ app.add_middleware(
 
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=["*"]  # Allow all hosts for development
+    allowed_hosts=["*"],
 )
-
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):

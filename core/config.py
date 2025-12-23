@@ -40,6 +40,7 @@ class Settings(BaseSettings):
         "https://vyva.io", # production frontend
         "https://4f214c49a3b2.ngrok-free.app",
         "https://onboarding.vyva.io",
+        "http://localhost:3000",
     ]
     
     # CORS
