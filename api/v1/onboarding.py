@@ -34,7 +34,6 @@ async def onboard_user(
 ):
     try:
         data = payload.model_dump()
-        print(data)
         user_id = data["user_id"]
         result = await db.execute(
             select(OnboardingUser)
@@ -55,11 +54,11 @@ async def onboard_user(
         caretaker_consent = data["caretaker_consent"]
         health_conditions = data["health_conditions"]
         mobility = data["mobility"]
-        city = record.city if record.city else ""
-        postal_code = record.postal_code if record.postal_code else ""
+        city = record.city_state_province if record.city_state_province else ""
+        postal_code = record.postal_zip_code if record.postal_zip_code else ""
         address = record.address if record.address else address
 
-        caregiver_phone = record.caretaker_contact_number if record.caretaker_contact_number else caretaker_phone
+        caregiver_phone = record.caregiver_contact_number if record.caregiver_contact_number else caretaker_phone
         
 
         if caregiver_phone:
@@ -69,24 +68,26 @@ async def onboard_user(
             first_name=record.first_name,
             last_name=record.last_name,
             phone_number=phone_number,
-            caretaker_phone=record.caretaker_contact_number if record.caretaker_contact_number else caretaker_phone,
-            caretaker_name=record.caretaker_name if record.caretaker_name else caretaker_name,
+            emergency_contact_phone=caregiver_phone,
+            emergency_contact_name=record.caregiver_name if record.caregiver_name else caretaker_name,
             address=address,
             city=city,
             postal_code=postal_code,
             preferred_communication_channel=record.preferred_communication_channel,
-            preferred_consultation_language=record.language,
+            preferred_consultation_language=record.language.title(),
             health_conditions=", ".join(health_conditions) if health_conditions else None,
             mobility=", ".join(mobility) if mobility else None,
-            caregiver_id=caregiver.id if caregiver_phone else None,
-            caregiver_consent=caretaker_consent
+            caretaker_id=caregiver.id if caregiver_phone else None,
+            caretaker_consent=caretaker_consent,
+            caretaker=caregiver if caregiver_phone else None,
         )
 
         db.add(user)
+        await db.flush()
         await db.refresh(user)
 
         record.onboarding_status = True
-        record.onboarded_at = datetime.utcnow()
+        record.onboarded_at = datetime.now()
         db.add(record)
 
         medication_request = BulkMedicationSchema(
@@ -121,13 +122,13 @@ async def onboard_user(
 
         temp_token = UserTempToken(
             user_id=user.id,
-            expires_at=datetime.utcnow() + timedelta(minutes=15),
+            expires_at=datetime.now() + timedelta(minutes=15),
             used=False
         )
         db.add(temp_token)
         await db.commit()
 
-        sms_service.send_magic_link(user.phone_number, temp_token.token, record.organization.sub_domain)
+        await sms_service.send_magic_link(user.phone_number, temp_token.token, record.organization.sub_domain)
 
         return {
             "status": "success",

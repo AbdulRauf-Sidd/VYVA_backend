@@ -41,5 +41,5 @@ async def get_or_create_caregiver(db: AsyncSession, phone: str, name: str):
     # Create a new one
     caregiver = Caretaker(phone_number=phone, name=name)
     db.add(caregiver)
-    await db.refresh(caregiver)
+    await db.flush()
     return caregiver, True

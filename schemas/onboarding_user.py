@@ -19,12 +19,12 @@ class OnboardingUserRead(UserBase):
     created_at: datetime
 
 class MedicationDetailsItem(BaseModel):
-    end_date: date
+    end_date: Optional[date] = None
     name: str
     purpose: Optional[str] = None
     side_effects: Optional[str] = None
     dosage: str
-    start_date: date
+    start_date: Optional[date] = None
     times: List[str]
 
 

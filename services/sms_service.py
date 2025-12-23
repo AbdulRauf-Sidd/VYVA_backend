@@ -134,7 +134,7 @@ class SMSService:
         domain: str
     ) -> bool:
         """Send magic login link via SMS."""
-        magic_link = f"https://{domain}/magic-login?token={token}"
+        magic_link = f"https://{domain}.vyva.io/magic-login?token={token}"
         message = f"Welcome to VYVA! Tap the link to get started: {magic_link}"
         return await self.send_sms(to_number, message)
     
