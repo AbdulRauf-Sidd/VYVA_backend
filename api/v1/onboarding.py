@@ -34,6 +34,7 @@ async def onboard_user(
 ):
     try:
         data = payload.model_dump()
+        print('data=====>', data)
         user_id = data["user_id"]
         result = await db.execute(
             select(OnboardingUser)
@@ -111,7 +112,6 @@ async def onboard_user(
             db.add(check_in)
 
         if medication_details:
-            print('medication_details', medication_details)
             medication_request = BulkMedicationSchema(
                 medication_details=medication_details,
                 user_id=user.id,
