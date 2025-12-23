@@ -10,11 +10,13 @@ from schemas.responses import StandardSuccessResponse
 from models.onboarding import OnboardingUser
 from models.organization import Organization
 from scripts.utils import time_to_utc, date_time_to_utc, add_one_day
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 from models.user import User
 from zoneinfo import ZoneInfo
 from tasks.management_tasks import initiate_onboarding_call
 import logging
+from pydantic import BaseModel, Field
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +40,7 @@ REQUIRED_COLUMNS = [
     "Emergency Alert Number"
 ]
 	
-VALID_LANGUAGES = {"english", "german", "spanish"}
+VALID_LANGUAGES = {"english", "german", "spanish", "french", "italian", "turkish", "portuguese", "Dutch", "swedish", "danish", "norwegian", "finnish", "polish", "other"}
 VALID_TIMEZONES = {
     "UTC",
     "Europe/Berlin",
@@ -70,7 +72,20 @@ VALID_TIMEZONES = {
 
     "Europe/London",     # UK (not CET)
     "Europe/Istanbul",   # Türkiye
-    "Europe/Lisbon"
+    "Europe/Lisbon",
+    "America/New_York",
+    "America/Chicago",
+    "America/Denver",
+    "America/Los_Angeles",
+    "America/Toronto",
+    "America/Vancouver",
+    "Pacific/Auckland",
+    "Australia/Sydney",
+    "Asia/Hong_Kong",
+    "Asia/Tokyo",
+    "Asia/Dubai",
+    "Asia/Kolkata",
+    "Asia/Singapore"
 }
 
 VALID_COMM_METHODS = {"telephone", "app"}
@@ -280,4 +295,98 @@ async def ingest_csv(organization: str = 'Red Cross', file: UploadFile = File(..
     return {
         'success': True,
         "message": f"Created Onboarding Batch for {count} users.",
+    }
+
+class IngestUserRequest(BaseModel):
+    first_name: str = Field(..., min_length=1)
+    last_name: str = Field(..., min_length=1)
+    country_code: str = Field(..., min_length=1)
+    telephone_number: str = Field(..., min_length=1)
+    time_zone: str = Field(..., min_length=1)
+    language: str = Field(..., min_length=1)
+    caregiver_name: Optional[str] = Field(None)
+    caregiver_contact_number: Optional[str] = Field(None)
+    city_state_province: Optional[str] = Field(None)
+    postal_zip_code: Optional[str] = Field(None)
+    preferred_call_time: Optional[str] = Field(..., min_length=1)
+    
+@router.post("/ingest-user", response_model=StandardSuccessResponse)
+async def ingest_csv(payload: IngestUserRequest, organization: str = 'zamora', db=Depends(get_db)):
+    
+    organization = organization.strip()
+    print(payload)
+    db = await get_db().__anext__()
+    result = await db.execute(select(Organization).where(Organization.name == organization))
+    exists = result.scalar()
+    
+    if not exists:
+        raise HTTPException(status_code=404, detail="Organization does not exist.")
+
+    full_phone = f"+{payload.country_code}{payload.telephone_number}" if "+" not in payload.country_code else f"{payload.country_code}{payload.telephone_number}"
+    phone_pattern = re.compile(r"^\+\d{7,15}$")
+    
+    if not phone_pattern.match(full_phone.replace(" ", "").replace("-", "")):
+        raise HTTPException(status_code=422, detail=f"Invalid phone number format '{full_phone}'. Must be in E.164 format.")
+    
+    if payload.time_zone not in VALID_TIMEZONES:
+        raise HTTPException(status_code=422, detail=f"Invalid time zone '{payload.time_zone}'. Must be IANA format.")  
+    
+    if not payload.first_name:
+        raise HTTPException(status_code=422, detail="Missing first name.")
+        
+    if not payload.last_name:
+        raise HTTPException(status_code=422, detail="Missing last name.")
+    
+    if not payload.telephone_number:
+        raise HTTPException(status_code=422, detail="Missing telephone number.")
+
+    if not payload.country_code:
+        raise HTTPException(status_code=422, detail="Missing country code.")
+    
+    if not payload.language.lower() in VALID_LANGUAGES:
+        raise HTTPException(status_code=422, detail=f"Invalid language '{payload.language}'. Allowed: {', '.join(VALID_LANGUAGES)}")
+    
+    utc_dt = None
+    if payload.preferred_call_time:
+        if re.match(r"^(?:[01]\d|2[0-3]):[0-5]\d$", payload.preferred_call_time):
+            converted_time = payload.preferred_call_time
+            preferred_time_obj = datetime.strptime(converted_time, "%H:%M").time()
+
+            local_dt = datetime.combine(date.today(), preferred_time_obj, tzinfo=ZoneInfo(payload.time_zone))
+            utc_dt = local_dt.astimezone(ZoneInfo("UTC"))
+            final_utc_dt = add_one_day(utc_dt)
+        else:
+            default_time = datetime.strptime("09:00", "%H:%M").time()
+
+            local_dt = datetime.combine(date.today(), default_time, tzinfo=ZoneInfo(payload.time_zone))
+            local_dt_next_day = add_one_day(local_dt)
+
+            final_utc_dt = local_dt_next_day.astimezone(ZoneInfo("UTC"))
+
+    user = OnboardingUser(
+                first_name=payload.first_name,
+                last_name=payload.last_name,
+                phone_number=payload.telephone_number,
+                timezone=payload.time_zone,
+                organization_id=exists.id,
+                language=payload.language.lower(),
+                caregiver_name=payload.caregiver_name,
+                caregiver_contact_number=payload.caregiver_contact_number,
+                city_state_province=payload.city_state_province,
+                postal_zip_code=payload.postal_zip_code,
+                preferred_time=final_utc_dt,
+            )
+    
+    task_result = initiate_onboarding_call.apply_async(
+                args=[payload,],
+                eta=final_utc_dt
+            )
+    
+    logger.info(f"Scheduled onboarding call task {task_result.id} for user {payload.telephone_number} at {final_utc_dt} UTC")
+    db.add(user)
+    await db.commit()
+    
+    return {
+        'success': True,
+        "message": f"Created Onboarding User {payload.first_name} {payload.last_name}.",
     }
