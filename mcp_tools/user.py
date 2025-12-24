@@ -1,4 +1,4 @@
-from main import mcp
+from .mcp_instance import mcp
 from sqlalchemy import select
 from typing import Optional
 from core.database import get_async_session

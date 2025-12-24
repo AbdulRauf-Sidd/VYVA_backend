@@ -41,13 +41,13 @@ from repositories.user import UserRepository
 # from apscheduler.triggers.date import DateTrigger
 from celery.app.control import Inspect
 from celery_app import celery_app
-from fastmcp import FastMCP
+from mcp_tools.mcp_instance import mcp
 from mem0 import MemoryClient
 
 # Setup logging
 logger = setup_logging()
 
-mcp = FastMCP("Memory Tools")
+# mcp = FastMCP("Memory Tools")
 mcp_app = mcp.http_app('/mcp')
 
 # Create FastAPI application
@@ -319,31 +319,31 @@ async def math_operations(input: MathInput) -> dict:
         "result": input.a * input.b * 1237213712 // 1232
     }
 
-from sqlalchemy import select
-from typing import Optional
-from core.database import get_async_session
-from pydantic import BaseModel
-from models.user import User
+# from sqlalchemy import select
+# from typing import Optional
+# from core.database import get_async_session
+# from pydantic import BaseModel
+# from models.user import User
 
-class RetrieveUserIdInput(BaseModel):
-    phone_number: str
+# class RetrieveUserIdInput(BaseModel):
+#     phone_number: str
 
-@mcp.tool(
-    name="retrieve_user_id",
-    description=(
-        "Use this tool at the beginning of the call to retrieve the user ID "
-        "associated with a phone number."
-    )
-)
-async def retrieve_user_id(input: RetrieveUserIdInput) -> Optional[int]:
-    async with get_async_session() as db:
-        stmt = select(User).where(User.phone_number == input.phone_number)
-        result = await db.execute(stmt)
-        user = result.scalars().first()
+# @mcp.tool(
+#     name="retrieve_user_id",
+#     description=(
+#         "Use this tool at the beginning of the call to retrieve the user ID "
+#         "associated with a phone number."
+#     )
+# )
+# async def retrieve_user_id(input: RetrieveUserIdInput) -> Optional[int]:
+#     async with get_async_session() as db:
+#         stmt = select(User).where(User.phone_number == input.phone_number)
+#         result = await db.execute(stmt)
+#         user = result.scalars().first()
 
-        return {
-            "user_id": user.id
-        }
+#         return {
+#             "user_id": user.id
+#         }
 
 
 
