@@ -421,4 +421,28 @@ class WhatsAppService:
             return False
         
 
-whatsapp = WhatsAppService()
+    async def send_onboarding_message(
+        self,
+        to_phone: str,
+        template_data: Dict[str, Any],
+        template_id: str = settings.TWILIO_WHATSAPP_ONBOARDING_TEMPLATE_SID
+    ) -> bool:
+        content_variables_json = json.dumps(template_data)
+        message_data = {
+                "From": self.from_number,
+                "To": to_phone,
+                "ContentSid": template_id,
+                "ContentVariables": content_variables_json
+            }
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                self.base_url,
+                auth=(self.account_sid, self.auth_token),
+                data=message_data,
+                headers={"Content-Type": "application/x-www-form-urlencoded"},
+                timeout=30.0
+            )
+            response.raise_for_status()
+            return True
+        
+whatsapp_service = WhatsAppService()

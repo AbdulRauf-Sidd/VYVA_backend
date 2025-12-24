@@ -6,6 +6,7 @@ from models.onboarding import OnboardingUser
 from models.onboarding import OnboardingLogs
 from admin.auth import AdminAuth
 from core.config import settings
+from models.medication import MedicationTime
 
 def setup_admin(app):
     admin = Admin(
@@ -22,6 +23,9 @@ def setup_admin(app):
     class MedicationAdmin(ModelView, model=Medication):
         column_list = "__all__"
 
+    class MedicationTimeAdmin(ModelView, model=MedicationTime):
+        column_list = "__all__" 
+
     class OrganizationAdmin(ModelView, model=Organization):
         column_list = "__all__"
 
@@ -33,6 +37,7 @@ def setup_admin(app):
 
     admin.add_view(UserAdmin)
     admin.add_view(MedicationAdmin)
+    admin.add_view(MedicationTimeAdmin)
     admin.add_view(OrganizationAdmin)
     admin.add_view(OnboardingUserAdmin)
     admin.add_view(OnboardingLogsAdmin)

@@ -108,6 +108,8 @@ class Settings(BaseSettings):
     TWILIO_WHATSAPP_TEMPLATE_SID: Optional[str] = Field(default=None, env="TWILIO_WHATSAPP_TEMPLATE_SID")
     TWILIO_WHATSAPP_REMINDER_TEMPLATE_SID: Optional[str] = Field(default=None, env="TWILIO_WHATSAPP_REMINDER_TEMPLATE_SID")
     TWILIO_WHATSAPP_BRAIN_COACH_TEMPLATE_SID: Optional[str] = Field(default=None, env="TWILIO_WHATSAPP_BRAIN_COACH_TEMPLATE_SID")
+    TWILIO_WHATSAPP_ONBOARDING_TEMPLATE_SID: Optional[str] = Field(default=None, env="TWILIO_WHATSAPP_ONBOARDING_TEMPLATE_SID")
+    TWILIO_WHATSAPP_OTP_TEMPLATE_SID: Optional[str] = Field(default=None, env="TWILIO_WHATSAPP_OTP_TEMPLATE_SID")
 
     
     # ElevenLabs TTS

@@ -12,7 +12,7 @@ import uuid
 from repositories.user import UserRepository
 from schemas.user import UserCreate, UserUpdate
 from typing import Optional
-from services.whatsapp_service import whatsapp
+# from services.whatsapp_service import whatsapp
 from services.email_service import EmailService
 import random
 from services.helpers import construct_whatsapp_brain_coach_message, construct_email_brain_coach_message
