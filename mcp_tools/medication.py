@@ -1,6 +1,8 @@
 from .mcp_instance import mcp
+from datetime import time
 from pydantic import BaseModel
 from models.medication import Medication
+from models.medication import MedicationTime
 from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 from core.database import get_async_session
@@ -44,3 +46,53 @@ async def retrieve_user_medications(user_id: int) -> list[dict]:
             }
             for med in medications
         ]
+        
+class AddMedication(BaseModel):
+    user_id: int
+    name: str
+    dosage: str
+    purpose: str
+    times: list[str]
+@mcp.tool(
+    name="add_medication",
+    description=(
+        "You will use this tool to add a new medication for a user."
+        "You will call this when the user wants to add a new medication."
+        "Times should be in 24-hour format."
+    )
+)
+
+async def add_medication(user_id: int, name: str, dosage: str, purpose: str, times: list[str]) -> AddMedication:
+    async with get_async_session() as db:
+        new_med = Medication(
+            user_id=user_id,
+            name=name,
+            dosage=dosage,
+            purpose=purpose,
+        )
+        db.add(new_med)
+        await db.flush()
+
+        for time_str in times:
+            hours, minutes = map(int, time_str.split(":"))
+            new_med.times_of_day.append(
+                MedicationTime(
+                    time_of_day=time(hour=hours, minute=minutes)
+                )
+            )
+            med_time = MedicationTime(
+                    medication_id=new_med.id,
+                    time_of_day=time(hour=hours, minute=minutes)
+                )
+
+        await db.commit()
+        await db.refresh(new_med)
+
+        return AddMedication(
+            id=new_med.id,
+            user_id=new_med.user_id,
+            name=new_med.name,
+            dosage=new_med.dosage,
+            purpose=new_med.purpose,
+            times=times
+        )
