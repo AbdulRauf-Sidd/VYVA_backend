@@ -319,6 +319,33 @@ async def math_operations(input: MathInput) -> dict:
         "result": input.a * input.b * 1237213712 // 1232
     }
 
+from sqlalchemy import select
+from typing import Optional
+from core.database import get_async_session
+from pydantic import BaseModel
+from models.user import User
+
+class RetrieveUserIdInput(BaseModel):
+    phone_number: str
+
+@mcp.tool(
+    name="retrieve_user_id",
+    description=(
+        "Use this tool at the beginning of the call to retrieve the user ID "
+        "associated with a phone number."
+    )
+)
+async def retrieve_user_id(input: RetrieveUserIdInput) -> Optional[int]:
+    async with get_async_session() as db:
+        stmt = select(User).where(User.phone_number == input.phone_number)
+        result = await db.execute(stmt)
+        user = result.scalars().first()
+
+        return {
+            "user_id": user.id
+        }
+
+
 
 if __name__ == "__main__":
     import uvicorn
