@@ -1,9 +1,10 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Any
 
 class StandardSuccessResponse(BaseModel):
     success: bool = True
     message: str
+    data: Optional[Any] = None
 
 class SessionCheckResponse(BaseModel):
     success: bool = True
