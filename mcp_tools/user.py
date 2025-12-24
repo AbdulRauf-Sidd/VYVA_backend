@@ -21,4 +21,8 @@ async def retrieve_user_id(input: RetrieveUserIdInput) -> Optional[int]:
         result = await db.execute(stmt)
         user = result.scalars().first()
 
+        return {
+            "user_id": user.id
+        }
+
         return user.id if user else None
