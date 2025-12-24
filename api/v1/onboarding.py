@@ -7,7 +7,7 @@ from sqlalchemy.sql import func
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from core.database import get_db
-from services.email_service import email_service
+# from services.email_service import email_service
 from services.sms_service import sms_service
 import logging
 from schemas.onboarding_user import OnboardingRequestBody

@@ -4,6 +4,7 @@ Vyva Backend - FastAPI Application Entry Point
 A production-ready FastAPI backend for senior care applications.
 """
 
+import asyncio
 from contextlib import asynccontextmanager
 from typing import Dict, Any
 from dotenv import load_dotenv
@@ -32,7 +33,7 @@ from core.database import AsyncSessionLocal, get_db
 # from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from services.elevenlabs_service import make_reminder_call_batch, check_batch_for_missed, make_caretaker_call_batch
 from services.helpers import construct_whatsapp_sms_message, construct_sms_body_from_template_for_reminders
-from services.whatsapp_service import whatsapp
+# from services.whatsapp_service import whatsapp
 from services.email_service import email_service
 from schemas.eleven_labs_batch_calls import ElevenLabsBatchCallCreate
 from repositories.eleven_labs_batch_calls import ElevenLabsBatchCallRepository
@@ -64,13 +65,22 @@ app.mount("/memory", mcp_app)
 
 setup_admin(app) 
 
-# @app.middleware("http")
-# async def middleware(request, call_next):
-#     if request.url.path.startswith("/mcp"):
-#         return await call_next(request)
-#     # REST-only logic
+from services.whatsapp_service import whatsapp_service
 
-# scheduler = AsyncIOScheduler()
+    
+def te():
+    dic = {
+        "link": "https://zamora.vyva.io/verify",
+    }
+
+    loop = asyncio.get_running_loop()
+    loop.create_task(
+        whatsapp_service.send_onboarding_message(
+            to_phone="+923152526525",
+            template_data=dic
+        )
+    )
+# te()
 
 
 async def process_missed_calls(batch_id):
@@ -312,6 +322,7 @@ async def math_operations(input: MathInput) -> dict:
 
 if __name__ == "__main__":
     import uvicorn
+    
     
     uvicorn.run(
         "main:app",
