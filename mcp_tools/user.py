@@ -13,6 +13,7 @@ class RetrieveUserIdInput(BaseModel):
     description=(
         "Use this tool at the beginning of the call to retrieve the user ID "
         "associated with a phone number."
+        'AWLAYS USE AT THE BEGINNING OF THE CALL.'
     )
 )
 async def retrieve_user_id(input: RetrieveUserIdInput) -> Optional[int]:
@@ -20,9 +21,5 @@ async def retrieve_user_id(input: RetrieveUserIdInput) -> Optional[int]:
         stmt = select(User).where(User.phone_number == input.phone_number)
         result = await db.execute(stmt)
         user = result.scalars().first()
-
-        return {
-            "user_id": user.id
-        }
 
         return user.id if user else None
