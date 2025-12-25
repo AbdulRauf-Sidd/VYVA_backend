@@ -158,3 +158,26 @@ async def update_user_medication(
                 if t.time_of_day
             ] if times is not None else None
         )
+        
+class DeleteUserMedication(BaseModel):
+    medication_id: int
+@mcp.tool(
+    name="delete_user_medication",
+    description=(
+        "You will use this tool to delete a medication for a user."
+        "You will call this when the user wants to remove a medication from their list."
+    )
+)
+async def delete_user_medication(medication_id: int) -> DeleteUserMedication:
+    async with get_async_session() as db:
+        stmt = select(Medication).where(Medication.id == medication_id)
+        result = await db.execute(stmt)
+        medication = result.scalars().first()
+
+        if not medication:
+            raise ValueError(f"Medication with ID {medication_id} not found.")
+
+        await db.delete(medication)
+        await db.commit()
+
+        return DeleteUserMedication(medication_id=medication_id)
