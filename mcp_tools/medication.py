@@ -63,6 +63,7 @@ class AddMedication(BaseModel):
 )
 
 async def add_medication(user_id: int, name: str, dosage: str, purpose: str, times: list[str]) -> AddMedication:
+
     async with get_async_session() as db:
         new_med = Medication(
             user_id=user_id,
@@ -70,6 +71,7 @@ async def add_medication(user_id: int, name: str, dosage: str, purpose: str, tim
             dosage=dosage,
             purpose=purpose,
         )
+
         db.add(new_med)
         await db.flush()
 
@@ -80,13 +82,8 @@ async def add_medication(user_id: int, name: str, dosage: str, purpose: str, tim
                     time_of_day=time(hour=hours, minute=minutes)
                 )
             )
-            med_time = MedicationTime(
-                    medication_id=new_med.id,
-                    time_of_day=time(hour=hours, minute=minutes)
-                )
 
         await db.commit()
-        await db.refresh(new_med)
 
         return AddMedication(
             id=new_med.id,

@@ -32,7 +32,7 @@ class Medication(Base):
 
     # Relationships
     user = relationship("User", back_populates="medications")
-    times_of_day = relationship("MedicationTime", back_populates="medication", cascade="all, delete-orphan")
+    times_of_day = relationship("MedicationTime", back_populates="medication", cascade="all, delete-orphan", lazy="selectin")
 
 
 class MedicationTime(Base):
