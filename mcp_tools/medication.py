@@ -54,7 +54,7 @@ class AddMedication(BaseModel):
     purpose: str
     times: list[str]
 @mcp.tool(
-    name="add_medication",
+    name="add_user_medication",
     description=(
         "You will use this tool to add a new medication for a user."
         "You will call this when the user wants to add a new medication."
@@ -62,7 +62,7 @@ class AddMedication(BaseModel):
     )
 )
 
-async def add_medication(user_id: int, name: str, dosage: str, purpose: str, times: list[str]) -> AddMedication:
+async def add_user_medication(user_id: int, name: str, dosage: str, purpose: str, times: list[str]) -> AddMedication:
 
     async with get_async_session() as db:
         new_med = Medication(
