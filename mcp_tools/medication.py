@@ -94,3 +94,67 @@ async def add_medication(user_id: int, name: str, dosage: str, purpose: str, tim
             purpose=new_med.purpose,
             times=times
         )
+        
+class UpdateUserMedication(BaseModel):
+    medication_id: int
+    name: str | None = None
+    dosage: str | None = None
+    purpose: str | None = None
+    times: list[str] | None = None
+    
+@mcp.tool(
+    name="update_user_medication",
+    description=(
+        "You will use this tool to update an existing medication for a user."
+        "You will call this when the user wants to update their medication details."
+        "Times should be in 24-hour format."
+    )
+)
+async def update_user_medication(
+    medication_id: int,
+    name: str | None = None,
+    dosage: str | None = None,
+    purpose: str | None = None,
+    times: list[str] | None = None
+) -> UpdateUserMedication:
+    async with get_async_session() as db:
+        stmt = select(Medication).where(Medication.id == medication_id).options(selectinload(Medication.times_of_day))
+        result = await db.execute(stmt)
+        medication = result.scalars().first()
+
+        if not medication:
+            raise ValueError(f"Medication with ID {medication_id} not found.")
+
+        if name is not None:
+            medication.name = name
+        if dosage is not None:
+            medication.dosage = dosage
+        if purpose is not None:
+            medication.purpose = purpose
+
+        if times is not None:
+            medication.times_of_day.clear()
+            await db.flush()
+
+            for time_str in times:
+                hours, minutes = map(int, time_str.split(":"))
+                db.add(
+                    MedicationTime(
+                        medication=medication,
+                        time_of_day=time(hour=hours, minute=minutes)
+                    )
+                )
+
+        await db.commit()
+
+        return UpdateUserMedication(
+            medication_id=medication.id,
+            name=medication.name,
+            dosage=medication.dosage,
+            purpose=medication.purpose,
+            times=[
+                t.time_of_day.strftime("%H:%M")
+                for t in medication.times_of_day
+                if t.time_of_day
+            ] if times is not None else None
+        )
