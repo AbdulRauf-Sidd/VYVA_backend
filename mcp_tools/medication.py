@@ -77,8 +77,9 @@ async def add_medication(user_id: int, name: str, dosage: str, purpose: str, tim
 
         for time_str in times:
             hours, minutes = map(int, time_str.split(":"))
-            new_med.times_of_day.append(
+            db.add(
                 MedicationTime(
+                    medication=new_med,
                     time_of_day=time(hour=hours, minute=minutes)
                 )
             )
