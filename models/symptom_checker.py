@@ -4,7 +4,7 @@ Symptom Checker Response Model
 Database model for storing symptom analysis responses.
 """
 
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, JSON
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, JSON, ForeignKey
 from sqlalchemy.sql import func
 from core.database import Base
 
@@ -16,6 +16,16 @@ class SymptomCheckerResponse(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     conversation_id = Column(String(64), unique=True, index=True, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    
+    # Call metadata
+    call_duration_secs = Column(Integer, nullable=True)
+    call_timestamp = Column(DateTime(timezone=True), nullable=True)
+    
+    # Vitals and AI summaries
+    vitals_data = Column(JSON, nullable=True)
+    vitals_ai_summary = Column(Text, nullable=True)
+    symptoms_ai_summary = Column(Text, nullable=True)
     
     # Input data
     symptoms = Column(Text, nullable=False)
