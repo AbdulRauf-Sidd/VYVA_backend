@@ -1,7 +1,7 @@
 import csv
 import io
 import re
-from sqlalchemy import Time, select
+from sqlalchemy import select
 from unittest import result
 from fastapi import UploadFile, File, HTTPException
 from core.database import get_db
