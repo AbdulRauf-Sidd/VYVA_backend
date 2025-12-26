@@ -46,19 +46,34 @@ def process_pending_onboarding_users():
                 local_dt = datetime.combine(date.today(), default_time, tzinfo=ZoneInfo(user.timezone))
                 dt_today_utc = local_dt.astimezone(ZoneInfo("UTC"))
 
+            full_address = ""
+
+            if user.address:
+                full_address = user.address
+            if user.city_state_province:
+                full_address += f", {user.city_state_province}"
+            if user.postal_zip_code:
+                full_address += f", {user.postal_zip_code}"
+
+            if not full_address:
+                full_address = "Not Available"
+
             payload = {
-                "user_id": user.id,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "phone_number": user.phone_number,
-                "language": user.language,
-                "user_type": user.preferred_communication_channel,
-                "agent_id": user.organization.onboarding_agent_id
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'phone_number': user.phone_number,
+                'language': user.language,
+                'user_id': user.id,
+                'agent_id': user.organization.onboarding_agent_id,
+                'address': user.address,
+                'user_type': user.preferred_communication_channel,
+                'caregiver_name': user.caregiver_name,
+                'caregiver_phone': user.caregiver_contact_number,
             }
 
             celery_app.send_task(
                 "initiate_onboarding_call",
-                args=[payload],
+                args=[payload,],
                 eta=dt_today_utc
             )
 
