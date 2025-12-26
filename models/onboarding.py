@@ -31,7 +31,7 @@ class OnboardingUser(Base):
     onboarding_call_scheduled = Column(Boolean, default=False)
     onboarding_status = Column(Boolean, default=False)
     onboarded_at = Column(DateTime(timezone=True), nullable=True)
-    attem
+    call_attempts = Column(Integer, default=0)
     called_at = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     organization=relationship("Organization", back_populates="onboarding_users")
