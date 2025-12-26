@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Query
 from pydantic import BaseModel
 from typing import Optional, Dict, Any, List
+from datetime import datetime
 import logging
 import os
 import httpx
@@ -16,6 +17,13 @@ from models.symptom_checker import SymptomCheckerResponse
 from services import whatsapp_service
 from services.email_service import EmailService
 from services.whatsapp_service import WhatsAppService
+from repositories.symptom_checker import SymptomCheckerRepository
+from schemas.symptom_checker import (
+    SymptomCheckerInteractionRead,
+    SymptomCheckerListResponse,
+    CaregiverDashboardResponse,
+    VitalsHistoryResponse
+)
 
 logger = logging.getLogger(__name__)
 
@@ -780,3 +788,309 @@ async def _send_whatsapp_report(phone_number: str, report_content: Dict[str, Any
     except Exception as e:
         logger.error(f"Failed to send WhatsApp message: {str(e)}")
         return "whatsapp_failed"
+
+
+# ============================================================================
+# CAREGIVER DASHBOARD ENDPOINTS
+# ============================================================================
+
+@router.get(
+    "/interactions/user/{user_id}",
+    response_model=SymptomCheckerListResponse,
+    summary="Get all interactions for a user",
+    description="Retrieve all symptom checker interactions for a specific user with pagination"
+)
+async def get_user_interactions(
+    user_id: int,
+    skip: int = Query(0, ge=0, description="Number of records to skip"),
+    limit: int = Query(10, ge=1, le=100, description="Maximum number of records to return"),
+    db: AsyncSession = Depends(get_db)
+) -> SymptomCheckerListResponse:
+    """
+    Get all symptom checker interactions for a specific user.
+    
+    - **user_id**: The ID of the user
+    - **skip**: Number of records to skip (for pagination)
+    - **limit**: Maximum number of records to return (max 100)
+    """
+    try:
+        repo = SymptomCheckerRepository(db)
+        
+        # Get interactions
+        interactions = await repo.get_by_user_id(user_id, skip=skip, limit=limit)
+        
+        # Get total count for pagination
+        total = await repo.count_by_user_id(user_id)
+        total_pages = (total + limit - 1) // limit if limit > 0 else 0
+        current_page = (skip // limit) + 1 if limit > 0 else 1
+        
+        return SymptomCheckerListResponse(
+            items=interactions,
+            total=total,
+            page=current_page,
+            page_size=limit,
+            total_pages=total_pages
+        )
+        
+    except Exception as e:
+        logger.error(f"Error getting user interactions: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve interactions: {str(e)}"
+        )
+
+
+@router.get(
+    "/interactions/caretaker/{caretaker_id}",
+    response_model=SymptomCheckerListResponse,
+    summary="Get interactions for caretaker's users",
+    description="Retrieve all symptom checker interactions for users assigned to a caretaker"
+)
+async def get_caretaker_interactions(
+    caretaker_id: int,
+    skip: int = Query(0, ge=0, description="Number of records to skip"),
+    limit: int = Query(10, ge=1, le=100, description="Maximum number of records to return"),
+    user_id: Optional[int] = Query(None, description="Optional filter by specific user ID"),
+    start_date: Optional[datetime] = Query(None, description="Filter interactions from this date"),
+    end_date: Optional[datetime] = Query(None, description="Filter interactions until this date"),
+    db: AsyncSession = Depends(get_db)
+) -> SymptomCheckerListResponse:
+    """
+    Get all symptom checker interactions for users assigned to a caretaker.
+    
+    - **caretaker_id**: The ID of the caretaker
+    - **skip**: Number of records to skip (for pagination)
+    - **limit**: Maximum number of records to return (max 100)
+    - **user_id**: Optional filter for a specific user
+    - **start_date**: Optional start date filter (ISO format)
+    - **end_date**: Optional end date filter (ISO format)
+    """
+    try:
+        repo = SymptomCheckerRepository(db)
+        
+        # Get interactions
+        interactions = await repo.get_by_caretaker(
+            caretaker_id=caretaker_id,
+            skip=skip,
+            limit=limit,
+            user_id=user_id,
+            start_date=start_date,
+            end_date=end_date
+        )
+        
+        # Get total count for pagination
+        total = await repo.count_by_caretaker(caretaker_id, user_id=user_id)
+        total_pages = (total + limit - 1) // limit if limit > 0 else 0
+        current_page = (skip // limit) + 1 if limit > 0 else 1
+        
+        return SymptomCheckerListResponse(
+            items=interactions,
+            total=total,
+            page=current_page,
+            page_size=limit,
+            total_pages=total_pages
+        )
+        
+    except Exception as e:
+        logger.error(f"Error getting caretaker interactions: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve interactions: {str(e)}"
+        )
+
+
+@router.get(
+    "/interactions/{interaction_id}",
+    response_model=SymptomCheckerInteractionRead,
+    summary="Get a specific interaction",
+    description="Retrieve detailed information about a single symptom checker interaction"
+)
+async def get_interaction(
+    interaction_id: int,
+    db: AsyncSession = Depends(get_db)
+) -> SymptomCheckerInteractionRead:
+    """
+    Get a specific symptom checker interaction by ID.
+    
+    - **interaction_id**: The ID of the interaction
+    """
+    try:
+        repo = SymptomCheckerRepository(db)
+        interaction = await repo.get_by_id(interaction_id)
+        
+        if not interaction:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Interaction with ID {interaction_id} not found"
+            )
+        
+        return interaction
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting interaction: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve interaction: {str(e)}"
+        )
+
+
+@router.get(
+    "/dashboard/caretaker/{caretaker_id}",
+    response_model=CaregiverDashboardResponse,
+    summary="Get aggregated dashboard view for caretaker",
+    description="Get summary statistics and recent interactions for a caretaker's dashboard"
+)
+async def get_caretaker_dashboard(
+    caretaker_id: int,
+    recent_limit: int = Query(5, ge=1, le=20, description="Number of recent interactions to return"),
+    db: AsyncSession = Depends(get_db)
+) -> CaregiverDashboardResponse:
+    """
+    Get aggregated dashboard view for a caretaker.
+    
+    Returns summary statistics including:
+    - Total interactions
+    - Recent interactions
+    - Emergency count
+    - Average vitals (heart rate, respiratory rate)
+    - Last interaction date
+    
+    - **caretaker_id**: The ID of the caretaker
+    - **recent_limit**: Number of recent interactions to include (default: 5)
+    """
+    try:
+        repo = SymptomCheckerRepository(db)
+        
+        # Get total count
+        total_interactions = await repo.count_by_caretaker(caretaker_id)
+        
+        # Get recent interactions
+        recent_interactions = await repo.get_by_caretaker(
+            caretaker_id=caretaker_id,
+            skip=0,
+            limit=recent_limit
+        )
+        
+        # Calculate emergency count
+        emergency_count = sum(1 for interaction in recent_interactions if interaction.is_emergency)
+        
+        # Calculate average vitals from interactions with vitals_data
+        heart_rates = []
+        respiratory_rates = []
+        
+        for interaction in recent_interactions:
+            if interaction.vitals_data:
+                hr = interaction.vitals_data.get("heart_rate", {})
+                rr = interaction.vitals_data.get("respiratory_rate", {})
+                
+                if hr and "value" in hr:
+                    try:
+                        heart_rates.append(float(hr["value"]))
+                    except (ValueError, TypeError):
+                        pass
+                
+                if rr and "value" in rr:
+                    try:
+                        respiratory_rates.append(float(rr["value"]))
+                    except (ValueError, TypeError):
+                        pass
+        
+        average_heart_rate = sum(heart_rates) / len(heart_rates) if heart_rates else None
+        average_respiratory_rate = sum(respiratory_rates) / len(respiratory_rates) if respiratory_rates else None
+        
+        # Get last interaction date
+        last_interaction_date = None
+        if recent_interactions:
+            last_interaction = recent_interactions[0]
+            last_interaction_date = last_interaction.call_timestamp or last_interaction.created_at
+        
+        return CaregiverDashboardResponse(
+            total_interactions=total_interactions,
+            recent_interactions=recent_interactions,
+            emergency_count=emergency_count,
+            average_heart_rate=round(average_heart_rate, 2) if average_heart_rate else None,
+            average_respiratory_rate=round(average_respiratory_rate, 2) if average_respiratory_rate else None,
+            last_interaction_date=last_interaction_date
+        )
+        
+    except Exception as e:
+        logger.error(f"Error getting caretaker dashboard: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve dashboard data: {str(e)}"
+        )
+
+
+@router.get(
+    "/vitals/user/{user_id}",
+    response_model=VitalsHistoryResponse,
+    summary="Get vitals history for a user",
+    description="Retrieve time-series vitals data (heart rate, respiratory rate) for a user"
+)
+async def get_user_vitals_history(
+    user_id: int,
+    start_date: Optional[datetime] = Query(None, description="Filter vitals from this date"),
+    end_date: Optional[datetime] = Query(None, description="Filter vitals until this date"),
+    limit: int = Query(50, ge=1, le=200, description="Maximum number of records to return"),
+    db: AsyncSession = Depends(get_db)
+) -> VitalsHistoryResponse:
+    """
+    Get vitals history for a user.
+    
+    Returns time-series data of vitals measurements including:
+    - Heart rate values with timestamps
+    - Respiratory rate values with timestamps
+    
+    - **user_id**: The ID of the user
+    - **start_date**: Optional start date filter (ISO format)
+    - **end_date**: Optional end date filter (ISO format)
+    - **limit**: Maximum number of records to return (max 200)
+    """
+    try:
+        repo = SymptomCheckerRepository(db)
+        
+        # Get interactions with vitals data
+        if start_date and end_date:
+            interactions = await repo.get_interactions_by_date_range(
+                start_date=start_date,
+                end_date=end_date,
+                user_id=user_id,
+                skip=0,
+                limit=limit
+            )
+        else:
+            interactions = await repo.get_by_user_id(user_id, skip=0, limit=limit)
+        
+        # Extract vitals records
+        vitals_records = []
+        for interaction in interactions:
+            if interaction.vitals_data:
+                record = {
+                    "timestamp": interaction.call_timestamp.isoformat() if interaction.call_timestamp else interaction.created_at.isoformat(),
+                    "interaction_id": interaction.id,
+                    "conversation_id": interaction.conversation_id
+                }
+                
+                # Add heart rate if available
+                if "heart_rate" in interaction.vitals_data:
+                    record["heart_rate"] = interaction.vitals_data["heart_rate"]
+                
+                # Add respiratory rate if available
+                if "respiratory_rate" in interaction.vitals_data:
+                    record["respiratory_rate"] = interaction.vitals_data["respiratory_rate"]
+                
+                vitals_records.append(record)
+        
+        return VitalsHistoryResponse(
+            user_id=user_id,
+            vitals_records=vitals_records
+        )
+        
+    except Exception as e:
+        logger.error(f"Error getting vitals history: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve vitals history: {str(e)}"
+        )

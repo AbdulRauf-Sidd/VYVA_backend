@@ -140,6 +140,11 @@ class Settings(BaseSettings):
         env="ELEVENLABS_EMERGENCY_AGENT_ID"
     )
 
+    ELEVENLABS_SYMPTOM_CHECKER_AGENT_ID: Optional[str] = Field(
+        default=None,
+        env="ELEVENLABS_SYMPTOM_CHECKER_AGENT_ID"
+    )
+
     OPENAI_MODEL: Optional[str] = Field(
         default=None,
         env="OPENAI_MODEL"
