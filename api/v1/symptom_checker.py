@@ -937,6 +937,43 @@ async def get_interaction(
 
 
 @router.get(
+    "/interactions/conversation/{conversation_id}",
+    response_model=SymptomCheckerInteractionRead,
+    summary="Get interaction by conversation ID",
+    description="Retrieve detailed information about a symptom checker interaction by conversation_id"
+)
+async def get_interaction_by_conversation_id(
+    conversation_id: str,
+    db: AsyncSession = Depends(get_db)
+) -> SymptomCheckerInteractionRead:
+    """
+    Get a specific symptom checker interaction by conversation_id.
+    
+    - **conversation_id**: The conversation ID of the interaction
+    """
+    try:
+        repo = SymptomCheckerRepository(db)
+        interaction = await repo.get_by_conversation_id(conversation_id)
+        
+        if not interaction:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Interaction with conversation_id '{conversation_id}' not found"
+            )
+        
+        return interaction
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting interaction by conversation_id: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve interaction: {str(e)}"
+        )
+
+
+@router.get(
     "/dashboard/caretaker/{caretaker_id}",
     response_model=CaregiverDashboardResponse,
     summary="Get aggregated dashboard view for caretaker",
