@@ -23,7 +23,7 @@ from fastapi.exceptions import RequestValidationError
 from core.config import settings
 from core.logging import setup_logging
 from core.database import engine, Base
-from api.v1 import onboarding, users, profiles, health_care, social, brain_coach, medication, fall_detection, emergency, tts, symptom_checker, post_call, ai_assistant, news, tools, organization, authentication
+from api.v1 import onboarding, users, profiles, health_care, social, brain_coach, medication, fall_detection, emergency, tts, symptom_checker, post_call, ai_assistant, news, tools, organization, authentication, twilio
 from api.v1.managemant import ingest_onboarding_users, call_queues
 from api.v1.managemant import ingest_onboarding_users
 # from apscheduler.schedulers.background import BackgroundScheduler
@@ -318,6 +318,7 @@ app.include_router(ai_assistant.router, prefix="/api/v1/ai-assistant", tags=["AI
 app.include_router(news.router, prefix="/api/v1/news", tags=["News"])
 app.include_router(tools.router, prefix="/api/v1/tools", tags=["Tools"])
 app.include_router(emergency.router, prefix="/api/v1/emergency", tags=["Emergency Contacts"])
+app.include_router(twilio.router, prefix="/api/v1/twilio", tags=["Twilio"])
 
 class MathInput(BaseModel):
     a: float
