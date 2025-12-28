@@ -129,6 +129,9 @@ async def onboard_user(
         await db.commit()
 
         onboarding_link = f"https://{record.organization.sub_domain}/vyva.io/verify?token={temp_token.token}"
+
+        print('onboarding_link', onboarding_link)
+
         temmplate_data = {
             "link": onboarding_link
         }
