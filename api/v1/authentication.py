@@ -131,11 +131,12 @@ async def magic_login(
 
 @router.post("/session/", response_model=SessionCheckResponse)
 async def session_auth(
-    request: Request,
+    # request: Request,
+    session_id: str = Cookie(None, alias=settings.SESSION_COOKIE_NAME), 
     db: AsyncSession = Depends(get_db)
 ):
     
-    session_id = request.cookies.get("session_id")
+    # session_id = request.cookies.get("session_id")
     
     if not session_id:
         raise HTTPException(status_code=401, detail="Not authenticated")
