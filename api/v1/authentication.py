@@ -127,6 +127,7 @@ async def session_auth(
     request: Request,
     db: AsyncSession = Depends(get_db)
 ):
+    
     session_id = request.cookies.get("session_id")
     
     if not session_id:

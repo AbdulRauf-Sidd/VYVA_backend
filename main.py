@@ -272,7 +272,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
         f"Method: {request.method} | "
         f"Client: {request.client.host}"
     )
-    logger.exception("Error processing payload")
+    # logger.exception("Error processing payload")
     return JSONResponse(
         status_code=exc.status_code,
         content={
