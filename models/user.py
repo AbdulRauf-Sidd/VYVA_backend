@@ -47,6 +47,8 @@ class User(Base):
     organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=True)
     preferred_consultation_language = Column(SQLEnum(PreferredConsultationLanguageEnum), nullable=True)
     preferred_communication_channel = Column(String(50), nullable=True)
+    onboarding_user_id = Column(Integer, ForeignKey("onboarding_users.id"), nullable=False, unique=True)
+    onboarding_user = relationship("OnboardingUser", backref="user", uselist=False)
 
     #Health and Care
     health_conditions = Column(Text, nullable=True)

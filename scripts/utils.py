@@ -43,3 +43,25 @@ async def get_or_create_caregiver(db: AsyncSession, phone: str, name: str):
     db.add(caregiver)
     await db.flush()
     return caregiver, True
+
+
+async def construct_onboarding_user_payload(user, agent_id) -> dict:
+    if user.address or user.city_state_province or user.postal_zip_code:
+        combined_address = f"{user.address}, {user.city_state_province}, {user.postal_zip_code}"
+    else:
+        combined_address = "not available"
+
+    payload = {
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "phone_number": user.phone_number,
+        "language": user.language,
+        'user_id': user.id,
+        "agent_id": agent_id,
+        "address": combined_address,
+        "user_type": user.preferred_communication_channel,
+        "caregiver_name": user.caregiver_name,
+        "caregiver_contact_number": user.caregiver_contact_number,
+        
+    }
+    return payload
