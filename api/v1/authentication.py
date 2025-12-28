@@ -11,7 +11,7 @@ from fastapi import Body
 from models.authentication import UserTempToken, UserSession
 from datetime import datetime, timedelta, timezone
 from schemas.authentication import PhoneRequest, VerifyOtpRequest
-
+from services.whatsapp_service import whatsapp_service
 
 router = APIRouter()
 
@@ -28,10 +28,14 @@ async def request_otp(request: PhoneRequest, db: AsyncSession = Depends(get_db))
     
     result = (await db.execute(select(User.id).where(User.phone_number == phone)))
     user_id = result.scalar_one()
-
     otp, session_id = await create_otp_session(db, phone, user_id)
+    message = {
+        1: otp
+    }
+    await whatsapp_service.send_otp(phone, message)
     print(otp)
-    await send_otp_via_sms(phone, otp)
+
+    # await send_otp_via_sms(phone, otp)
     
     return {
         'success': True,
