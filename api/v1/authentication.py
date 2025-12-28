@@ -119,7 +119,7 @@ async def magic_login(
         max_age=60 * 60 * 24 * 30 * 12,
     )
 
-    return {"success": True}
+    return {"success": True, "message": "Magic login successful"}
 
 
 @router.post("/session/", response_model=SessionCheckResponse)
