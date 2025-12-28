@@ -70,7 +70,7 @@ async def verify_otp(request: Request, response: Response, body: VerifyOtpReques
     }
 
 
-@router.get("/magic-login/", response_model=StandardSuccessResponse)
+@router.get("/magic-login", response_model=StandardSuccessResponse)
 async def magic_login(
     request: Request,
     response: Response,
