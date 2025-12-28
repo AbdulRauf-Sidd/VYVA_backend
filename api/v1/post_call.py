@@ -372,6 +372,9 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
         try:
             repo = SymptomCheckerRepository(db)
             
+            # Ensure symptoms field is not None (required field)
+            symptoms_text = transcript[:500] if transcript else "Symptom checker call completed"
+            
             # Create interaction data schema
             interaction_data = SymptomCheckerInteractionCreate(
                 user_id=user_id,
@@ -381,7 +384,7 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
                 vitals_data=vitals_data if vitals_data else None,
                 vitals_ai_summary=vitals_ai_summary,
                 symptoms_ai_summary=symptoms_ai_summary,
-                symptoms=transcript[:500] if transcript else None,  # Truncate if too long
+                symptoms=symptoms_text,
                 status="success" if call_successful else "error"
             )
             
@@ -391,7 +394,8 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
             
         except Exception as e:
             logger.error(f"DB insert/update failed: {e}", exc_info=True)
-            return {"status": "error", "reason": "db_insert_failed"}
+            logger.error(f"Error details - conversation_id: {conversation_id}, user_id: {user_id}, symptoms length: {len(transcript) if transcript else 0}")
+            return {"status": "error", "reason": "db_insert_failed", "error_details": str(e)}
 
         return {"status": "received", "conversation_id": conversation_id}
 
