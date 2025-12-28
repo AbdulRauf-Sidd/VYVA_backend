@@ -122,7 +122,7 @@ async def onboard_user(
 
         temp_token = UserTempToken(
             user_id=user.id,
-            expires_at=datetime.now() + timedelta(minutes=15),
+            expires_at=datetime.now() + timedelta(hours=24),
             used=False
         )
         db.add(temp_token)
