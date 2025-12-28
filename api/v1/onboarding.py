@@ -17,6 +17,7 @@ from repositories.medication import MedicationRepository
 from services.medication import MedicationService
 from models.user_check_ins import UserCheckin, ScheduledSession, CheckInType
 from models.authentication import UserTempToken
+from services.whatsapp_service import whatsapp_service
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +35,6 @@ async def onboard_user(
 ):
     try:
         data = payload.model_dump()
-        print('data=====>', data)
         user_id = data["user_id"]
         result = await db.execute(
             select(OnboardingUser)
@@ -128,7 +128,14 @@ async def onboard_user(
         db.add(temp_token)
         await db.commit()
 
-        await sms_service.send_magic_link(user.phone_number, temp_token.token, record.organization.sub_domain)
+        onboarding_link = f"https://{record.organization.sub_domain}/vyva.io/verify?token={temp_token.token}"
+        temmplate_data = {
+            "link": onboarding_link
+        }
+
+        await whatsapp_service.send_onboarding_message(user.phone_number, temmplate_data)
+
+        # await sms_service.send_magic_link(user.phone_number, temp_token.token, record.organization.sub_domain)
 
         return {
             "status": "success",
