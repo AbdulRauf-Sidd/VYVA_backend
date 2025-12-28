@@ -442,12 +442,31 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
         try:
             repo = SymptomCheckerRepository(db)
             
+            # Validate user_id exists if provided
+            validated_user_id = user_id
+            if user_id is not None:
+                from repositories.user import UserRepository
+                from sqlalchemy import select
+                from models.user import User
+                
+                user_check = await db.execute(
+                    select(User.id).where(User.id == user_id)
+                )
+                user_exists = user_check.scalar_one_or_none() is not None
+                
+                if not user_exists:
+                    logger.warning(
+                        f"User ID {user_id} does not exist in database. "
+                        f"Setting user_id to None for conversation_id: {conversation_id}"
+                    )
+                    validated_user_id = None
+            
             # Ensure symptoms field is not None (required field)
             symptoms_text = symptoms if symptoms else "Symptom checker call completed"
             
             # Create interaction data schema
             interaction_data = SymptomCheckerInteractionCreate(
-                user_id=user_id,
+                user_id=validated_user_id,
                 conversation_id=conversation_id,
                 call_duration_secs=call_duration_secs,
                 call_timestamp=call_timestamp,
