@@ -265,85 +265,154 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
         raw_payload = await request.body()
         try:
             payload = json.loads(raw_payload.decode("utf-8"))
+            logger.info(f"Received payload keys: {list(payload.keys())}")
+            logger.info(f"Payload sample: {json.dumps({k: str(v)[:100] if isinstance(v, (dict, list)) else v for k, v in list(payload.items())[:5]}, default=str)}")
         except Exception as e:
             logger.error(f"Invalid JSON payload: {e}, raw: {raw_payload}")
             return {"status": "error", "reason": "invalid_json"}
 
         # --- Extract payload fields safely ---
+        # Check if this is a direct frontend format (has conversation_id) or ElevenLabs webhook format (has type/data)
+        # More robust detection: check for direct format indicators
+        has_conversation_id = "conversation_id" in payload
+        has_user_id = "user_id" in payload
+        has_type = "type" in payload
+        has_data = "data" in payload
+        
+        is_direct_format = has_conversation_id and has_user_id and not (has_type and has_data)
+        
+        logger.info(
+            f"Payload format detection: "
+            f"has_conversation_id={has_conversation_id}, "
+            f"has_user_id={has_user_id}, "
+            f"has_type={has_type}, "
+            f"has_data={has_data}, "
+            f"is_direct_format={is_direct_format}"
+        )
+        
         try:
-            event_type = payload.get("type")
-            data = payload.get("data", {})
-            event_timestamp = payload.get("event_timestamp")
-
-            agent_id = data.get("agent_id")
-            call_status = data.get("status")
-            transcript = data.get("transcript", "")
-            metadata = data.get("metadata", {})
-            analysis = data.get("analysis", {})
-            conversation_initiation_client_data = data.get("conversation_initiation_client_data", {})
-            
-            # Extract user_id from dynamic variables
-            dynamic_variables = conversation_initiation_client_data.get("dynamic_variables", {})
-            user_id = dynamic_variables.get("user_id")
-            
-            # Extract call metadata
-            call_duration_secs = metadata.get("call_duration_secs")
-            termination_reason = metadata.get("termination_reason")
-            
-            # Extract AI summaries
-            transcript_summary = analysis.get("transcript_summary")
-            call_successful = analysis.get("call_successful", False)
-            
-            # Extract vitals from data_collection_results
-            data_collection_results = analysis.get("data_collection_results", {})
-            
-            # Parse vitals data (heart_rate and respiratory_rate)
-            vitals_data = {}
-            vitals_ai_summary = None
-            symptoms_ai_summary = None
-            
-            # Extract heart_rate if available
-            heart_rate_data = data_collection_results.get("heart_rate", {})
-            if heart_rate_data and "value" in heart_rate_data:
-                vitals_data["heart_rate"] = {
-                    "value": heart_rate_data.get("value"),
-                    "unit": heart_rate_data.get("unit", "bpm"),
-                    "confidence": heart_rate_data.get("confidence"),
-                    "timestamp": heart_rate_data.get("timestamp")
-                }
-            
-            # Extract respiratory_rate if available
-            respiratory_rate_data = data_collection_results.get("respiratory_rate", {})
-            if respiratory_rate_data and "value" in respiratory_rate_data:
-                vitals_data["respiratory_rate"] = {
-                    "value": respiratory_rate_data.get("value"),
-                    "unit": respiratory_rate_data.get("unit", "breaths/min"),
-                    "confidence": respiratory_rate_data.get("confidence"),
-                    "timestamp": respiratory_rate_data.get("timestamp")
-                }
-            
-            # Extract AI summaries if available
-            vitals_ai_summary = data_collection_results.get("vitals_summary") or analysis.get("vitals_ai_summary")
-            symptoms_ai_summary = analysis.get("symptoms_ai_summary") or transcript_summary
-            
-            # Generate conversation_id from call_id or use event_timestamp
-            call_id = metadata.get("call_id") or data.get("call_id")
-            conversation_id = call_id if call_id else f"symptom_check_{event_timestamp}"
-            
-            # Parse call_timestamp
-            call_timestamp = None
-            if event_timestamp:
-                try:
-                    # Try parsing ISO format timestamp
-                    call_timestamp = datetime.fromisoformat(event_timestamp.replace('Z', '+00:00'))
-                except (ValueError, AttributeError):
+            if is_direct_format:
+                # Direct frontend format - extract fields directly
+                logger.info("Processing direct frontend format payload")
+                user_id = payload.get("user_id")
+                conversation_id = payload.get("conversation_id")
+                call_duration_secs = payload.get("call_duration_secs")
+                vitals_data = payload.get("vitals_data")
+                vitals_ai_summary = payload.get("vitals_ai_summary")
+                symptoms_ai_summary = payload.get("symptoms_ai_summary")
+                symptoms = payload.get("symptoms")
+                status = payload.get("status", "success")
+                
+                # Parse call_timestamp
+                call_timestamp = None
+                call_timestamp_str = payload.get("call_timestamp")
+                if call_timestamp_str:
                     try:
-                        # Try parsing Unix timestamp
-                        call_timestamp = datetime.fromtimestamp(float(event_timestamp))
-                    except (ValueError, TypeError):
-                        call_timestamp = datetime.utcnow()
+                        # Try parsing ISO format timestamp
+                        call_timestamp = datetime.fromisoformat(call_timestamp_str.replace('Z', '+00:00'))
+                    except (ValueError, AttributeError):
+                        try:
+                            # Try parsing Unix timestamp
+                            call_timestamp = datetime.fromtimestamp(float(call_timestamp_str))
+                        except (ValueError, TypeError):
+                            call_timestamp = datetime.utcnow()
+                else:
+                    call_timestamp = datetime.utcnow()
+                
+                # Set defaults for ElevenLabs-specific fields (not used in direct format)
+                event_type = None
+                agent_id = None
+                call_status = status
+                call_successful = status == "success"
+                
+                # Normalize vitals_data - convert empty dict to None
+                if vitals_data == {}:
+                    vitals_data = None
+                
             else:
-                call_timestamp = datetime.utcnow()
+                # ElevenLabs webhook format - extract from nested structure
+                logger.info("Processing ElevenLabs webhook format payload")
+                event_type = payload.get("type")
+                data = payload.get("data", {})
+                event_timestamp = payload.get("event_timestamp")
+
+                agent_id = data.get("agent_id")
+                call_status = data.get("status")
+                transcript = data.get("transcript", "")
+                metadata = data.get("metadata", {})
+                analysis = data.get("analysis", {})
+                conversation_initiation_client_data = data.get("conversation_initiation_client_data", {})
+                
+                # Extract user_id from dynamic variables
+                dynamic_variables = conversation_initiation_client_data.get("dynamic_variables", {})
+                user_id = dynamic_variables.get("user_id")
+                
+                # Extract call metadata
+                call_duration_secs = metadata.get("call_duration_secs")
+                termination_reason = metadata.get("termination_reason")
+                
+                # Extract AI summaries
+                transcript_summary = analysis.get("transcript_summary")
+                call_successful = analysis.get("call_successful", False)
+                
+                # Extract vitals from data_collection_results
+                data_collection_results = analysis.get("data_collection_results", {})
+                
+                # Parse vitals data (heart_rate and respiratory_rate)
+                vitals_data = {}
+                vitals_ai_summary = None
+                symptoms_ai_summary = None
+                
+                # Extract heart_rate if available
+                heart_rate_data = data_collection_results.get("heart_rate", {})
+                if heart_rate_data and "value" in heart_rate_data:
+                    vitals_data["heart_rate"] = {
+                        "value": heart_rate_data.get("value"),
+                        "unit": heart_rate_data.get("unit", "bpm"),
+                        "confidence": heart_rate_data.get("confidence"),
+                        "timestamp": heart_rate_data.get("timestamp")
+                    }
+                
+                # Extract respiratory_rate if available
+                respiratory_rate_data = data_collection_results.get("respiratory_rate", {})
+                if respiratory_rate_data and "value" in respiratory_rate_data:
+                    vitals_data["respiratory_rate"] = {
+                        "value": respiratory_rate_data.get("value"),
+                        "unit": respiratory_rate_data.get("unit", "breaths/min"),
+                        "confidence": respiratory_rate_data.get("confidence"),
+                        "timestamp": respiratory_rate_data.get("timestamp")
+                    }
+                
+                # Extract AI summaries if available
+                vitals_ai_summary = data_collection_results.get("vitals_summary") or analysis.get("vitals_ai_summary")
+                symptoms_ai_summary = analysis.get("symptoms_ai_summary") or transcript_summary
+                
+                # Normalize vitals_data - convert empty dict to None
+                if vitals_data == {}:
+                    vitals_data = None
+                
+                # Generate conversation_id from call_id or use event_timestamp
+                call_id = metadata.get("call_id") or data.get("call_id")
+                conversation_id = call_id if call_id else f"symptom_check_{event_timestamp}"
+                
+                # Use transcript as symptoms if available
+                symptoms = transcript[:500] if transcript else "Symptom checker call completed"
+                status = "success" if call_successful else "error"
+                
+                # Parse call_timestamp
+                call_timestamp = None
+                if event_timestamp:
+                    try:
+                        # Try parsing ISO format timestamp
+                        call_timestamp = datetime.fromisoformat(event_timestamp.replace('Z', '+00:00'))
+                    except (ValueError, AttributeError):
+                        try:
+                            # Try parsing Unix timestamp
+                            call_timestamp = datetime.fromtimestamp(float(event_timestamp))
+                        except (ValueError, TypeError):
+                            call_timestamp = datetime.utcnow()
+                else:
+                    call_timestamp = datetime.utcnow()
 
         except Exception as e:
             logger.error(f"Error extracting fields: {e}, payload={payload}")
@@ -356,9 +425,10 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
 
         logger.info(
             f"Symptom Checker Webhook Received: "
-            f"Type={event_type}, "
-            f"AgentID={agent_id}, "
-            f"Status={call_status}, "
+            f"Format={'Direct' if is_direct_format else 'ElevenLabs'}, "
+            f"Type={event_type if not is_direct_format else 'N/A'}, "
+            f"AgentID={agent_id if not is_direct_format else 'N/A'}, "
+            f"Status={status}, "
             f"UserID={user_id}, "
             f"ConversationID={conversation_id}, "
             f"Duration={call_duration_secs if call_duration_secs else 'N/A'}, "
@@ -373,7 +443,7 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
             repo = SymptomCheckerRepository(db)
             
             # Ensure symptoms field is not None (required field)
-            symptoms_text = transcript[:500] if transcript else "Symptom checker call completed"
+            symptoms_text = symptoms if symptoms else "Symptom checker call completed"
             
             # Create interaction data schema
             interaction_data = SymptomCheckerInteractionCreate(
@@ -385,7 +455,7 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
                 vitals_ai_summary=vitals_ai_summary,
                 symptoms_ai_summary=symptoms_ai_summary,
                 symptoms=symptoms_text,
-                status="success" if call_successful else "error"
+                status=status
             )
             
             # Repository handles create/update logic
@@ -394,7 +464,8 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
             
         except Exception as e:
             logger.error(f"DB insert/update failed: {e}", exc_info=True)
-            logger.error(f"Error details - conversation_id: {conversation_id}, user_id: {user_id}, symptoms length: {len(transcript) if transcript else 0}")
+            symptoms_len = len(symptoms) if symptoms else 0
+            logger.error(f"Error details - conversation_id: {conversation_id}, user_id: {user_id}, symptoms length: {symptoms_len}")
             return {"status": "error", "reason": "db_insert_failed", "error_details": str(e)}
 
         return {"status": "received", "conversation_id": conversation_id}
