@@ -15,7 +15,7 @@ class SymptomCheckerResponse(Base):
     __tablename__ = "symptom_checker_responses"
     
     id = Column(Integer, primary_key=True, index=True)
-    conversation_id = Column(String(64), unique=True, index=True, nullable=False)
+    conversation_id = Column(String(255), unique=True, index=True, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
     
     # Call metadata
