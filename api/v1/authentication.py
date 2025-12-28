@@ -9,7 +9,7 @@ from models.user import User
 from core.config import settings
 from fastapi import Body
 from models.authentication import UserTempToken, UserSession
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from schemas.authentication import PhoneRequest, VerifyOtpRequest
 
 
@@ -89,7 +89,7 @@ async def magic_login(
     if not token_row:
         raise HTTPException(status_code=400, detail="Invalid token")
 
-    if token_row.expires_at < datetime.utcnow():
+    if token_row.expires_at < datetime.now(timezone.utc):
         raise HTTPException(status_code=401, detail="Token expired")
 
     if token_row.used:
