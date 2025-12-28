@@ -99,24 +99,27 @@ async def magic_login(
     await db.commit()
 
     # Create user session
-    expires_at = datetime.utcnow() + timedelta(days=30)
-    session = UserSession(
-        user_id=token_row.user_id,
-        expires_at=expires_at,
-        ip_address=request.client.host,
-        user_agent=request.headers.get("User-Agent"),
+    # expires_at = datetime.utcnow() + timedelta(days=30)
+    # db.add(session)
+    # await db.commit()
+
+    session_id = await create_user_session(
+        db, 
+        token_row.user_id, 
+        user_agent=request.headers.get("User-Agent"), 
+        ip_address=request.client.host
     )
-    db.add(session)
-    await db.commit()
 
     # Set auth cookie
     response.set_cookie(
         key="session_id",
-        value=session.session_id,
+        value=session_id,
         httponly=True,
         secure=True,
-        samesite="lax",
-        max_age=60 * 60 * 24 * 30 * 12,
+        # secure=False,       # ❌ must be False for localhost
+        # samesite="lax",
+        max_age=settings.SESSION_DURATION,
+        samesite=None
     )
 
     return {"success": True, "message": "Magic login successful"}
