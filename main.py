@@ -72,7 +72,7 @@ from services.whatsapp_service import whatsapp_service
     
 def te():
     dic = {
-        "link": "https://zamora.vyva.io/verify",
+        "link": "https://zamora.vyva.io/verify?token=64832yedhadq7e6e37r83ie7fyi3",
     }
 
     loop = asyncio.get_running_loop()
@@ -82,7 +82,7 @@ def te():
             template_data=dic
         )
     )
-# te()
+te()
 
 
 async def process_missed_calls(batch_id):

@@ -428,8 +428,17 @@ class WhatsAppService:
         template_id: str = settings.TWILIO_WHATSAPP_ONBOARDING_TEMPLATE_SID
     ) -> bool:
         content_variables_json = json.dumps(template_data)
+
+        # Ensure phone number has whatsapp: prefix
+        if not to_phone.startswith("whatsapp:"):
+            to_phone = f"whatsapp:{to_phone}"
+            
+        from_number = self.from_number
+        if not from_number.startswith("whatsapp:"):
+            from_number = f"whatsapp:{from_number}"
+
         message_data = {
-                "From": self.from_number,
+                "From": from_number,
                 "To": to_phone,
                 "ContentSid": template_id,
                 "ContentVariables": content_variables_json
