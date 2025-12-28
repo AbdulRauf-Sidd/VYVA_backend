@@ -72,7 +72,7 @@ from services.whatsapp_service import whatsapp_service
     
 def te():
     dic = {
-        "link": "https://zamora.vyva.io/verify?token=64832yedhadq7e6e37r83ie7fyi3",
+        "link": "https://zamora.vyva.io/verify?token=59242893-ba0f-419e-8264-478018a770a5",
     }
 
     loop = asyncio.get_running_loop()
