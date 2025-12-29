@@ -65,3 +65,26 @@ async def construct_onboarding_user_payload(user, agent_id) -> dict:
         
     }
     return payload
+
+
+def construct_mem0_memory_onboarding(message, message_type):
+    if message_type == "mobility":
+        return [
+            {"role": "system", "content": "Do you have need any assistance moving around, or are you fully independant?"},
+            {"role": "user", "content": message},
+        ]
+    elif message_type == "health_conditions":
+        return [
+            {"role": "system", "content": "Do you have any health conditions we should be aware of?"},
+            {"role": "user", "content": message},
+        ]
+    elif message_type == "preferences":
+        return [
+            {"role": "system", "content": "What is your preferred communication channel?"},
+            {"role": "user", "content": message},
+        ]
+    else:
+        return [
+            {"role": "system", "content": "Do you have any other information you'd like to share?"},
+            {"role": "user", "content": message},
+        ]

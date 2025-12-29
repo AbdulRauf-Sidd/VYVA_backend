@@ -7,6 +7,7 @@ import logging
 from sqlalchemy.orm import selectinload
 from datetime import datetime, date
 from zoneinfo import ZoneInfo
+# from scripts.utils import construct_onboarding_user_payload
 
 logger = logging.getLogger(__name__)
 from services.elevenlabs_service import make_onboarding_call
@@ -20,7 +21,9 @@ def initiate_onboarding_call(payload: dict):
     else:
         onboarding_record = db.query(OnboardingUser).filter(OnboardingUser.id == payload.get("user_id")).first()
         if onboarding_record:
-            onboarding_record.onboarding_call_scheduled = True
+            onboarding_record.onboarding_call_scheduled = False
+            onboarding_record.call_attempts += 1
+            onboarding_record.called_at = datetime.now()
             db.add(onboarding_record)
             db.commit()
 
@@ -32,7 +35,7 @@ def process_pending_onboarding_users():
         pending_users = (
             db.query(OnboardingUser)
             .options(selectinload(OnboardingUser.organization))
-            .filter(OnboardingUser.onboarding_status == False, OnboardingUser.onboarding_call_scheduled == False)
+            .filter(OnboardingUser.onboarding_status == False, OnboardingUser.onboarding_call_scheduled == False, OnboardingUser.call_attempts < 3)
             .all()
         )
 
@@ -65,11 +68,13 @@ def process_pending_onboarding_users():
                 'language': user.language,
                 'user_id': user.id,
                 'agent_id': user.organization.onboarding_agent_id,
-                'address': user.address,
+                'address': full_address,
                 'user_type': user.preferred_communication_channel,
                 'caregiver_name': user.caregiver_name,
                 'caregiver_phone': user.caregiver_contact_number,
             }
+
+            # payload = construct_onboarding_user_payload(user, user.organization.onboarding_agent_id)
 
             celery_app.send_task(
                 "initiate_onboarding_call",

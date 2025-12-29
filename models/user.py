@@ -36,8 +36,8 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     first_name = Column(String(100), nullable=True)
     last_name = Column(String(100), nullable=True)
-    email = Column(String(255), index=True, nullable=True) #TODO make unique true
-    phone_number = Column(String(20), nullable=True)
+    email = Column(String(255), index=True, nullable=True, unique=True) #TODO make unique true
+    phone_number = Column(String(20), nullable=False, unique=True)
     # land_line = Column(String(20), nullable=True)
     age = Column(Integer, nullable=True)
     # living_situation = Column(SQLEnum(LivingSituation), nullable=True)
@@ -70,6 +70,7 @@ class User(Base):
     wants_reminders = Column(Boolean, nullable=True)
     takes_medication = Column(Boolean, nullable=True)
     missed_dose_alerts = Column(Boolean, nullable=True)
+    preferred_reminder_channel = Column(String(50), nullable=True)
     # escalate_to_emergency_contact = Column(Boolean, nullable=True)
 
     #Reminders
