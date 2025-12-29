@@ -38,11 +38,14 @@ class AddMemoryInput(BaseModel):
         "8. Interaction and UX preferences: known friction points, accessibility adjustments, "
         "explicit do’s and don’ts for agent behavior.\n\n"
 
+        "Example of what is useful:\n"
+        "- I prefer to be called 'Grandpa Joe' and like a light-hearted tone.\n"
+        "- I went to the doctor yesterday.\n"
+        "- I visited my daughter stacy today.\n\n"
+
         "DO NOT store:\n"
         "- Task-specific instructions, debugging steps, or one-off plans\n"
         "- Full dates of birth, national IDs, full addresses, payment details, passwords, or codes\n"
-        "- Raw medical records, lab results, or detailed reports (store summaries only)\n"
-        "- Continuous location data, raw audio, or sensor streams\n"
         "- Political opinions, intimate details, or sensitive traits unless explicitly requested\n"
         "- Trivial small talk, jokes, or short-lived emotional statements\n"
         "- Detailed profiles of third parties beyond name, role, and alert relevance\n\n"
@@ -61,5 +64,6 @@ class AddMemoryInput(BaseModel):
     )
 )
 async def add_to_user_memory(input: AddMemoryInput) -> Optional[bool]:
+    print(input.conversation)
     await add_conversation(input.user_id, input.conversation)
     return True
