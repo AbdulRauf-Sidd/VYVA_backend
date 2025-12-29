@@ -44,7 +44,7 @@ from celery.app.control import Inspect
 from celery_app import celery_app
 from mcp_tools.mcp_instance import mcp
 from mem0 import MemoryClient
-from mcp_tools import user, medication as med
+from mcp_tools import user, mem0, medication as med
 
 # Setup logging
 logger = setup_logging()
