@@ -140,8 +140,8 @@ async def onboard_user(
         if preferences:
             mem0_payload += construct_mem0_memory_onboarding(", ".join(preferences), "preferences")
             await add_conversation(user.id, mem0_payload)
+        
         # Send WhatsApp message with onboarding link
-
         onboarding_link = f"https://{record.organization.sub_domain}.vyva.io/verify?token={temp_token.token}"
         temmplate_data = {
             "link": onboarding_link
