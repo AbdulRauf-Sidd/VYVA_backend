@@ -42,6 +42,7 @@ class User(Base):
     age = Column(Integer, nullable=True)
     # living_situation = Column(SQLEnum(LivingSituation), nullable=True)
     admin_profile = relationship("AdminUser", back_populates="user", uselist=False)
+    timezone=Column(String(30), nullable=True)
     date_of_birth = Column(DateTime, nullable=True)
     organization = relationship("Organization", back_populates="users")
     organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=True)

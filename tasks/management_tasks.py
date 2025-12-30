@@ -1,5 +1,6 @@
 from core.database import SessionLocal
 from celery_app import celery_app
+from models import user
 from services.elevenlabs_service import make_onboarding_call
 from models.user import User
 from models.onboarding import OnboardingUser, OnboardingLogs
@@ -7,6 +8,13 @@ import logging
 from sqlalchemy.orm import selectinload
 from datetime import datetime, date
 from zoneinfo import ZoneInfo
+from models.medication import Medication, MedicationTime
+from models.organization import OrganizationAgents, AgentTypeEnum
+# from sqlalchemy.orm import selectinload
+from sqlalchemy import or_
+
+from tasks.utils import schedule_reminder_message
+
 # from scripts.utils import construct_onboarding_user_payload
 
 logger = logging.getLogger(__name__)
@@ -87,6 +95,67 @@ def process_pending_onboarding_users():
             db.commit()
 
         return {"status": "ok", "count": len(pending_users)}
+
+    except Exception as e:
+        db.rollback()
+        raise e
+    finally:
+        db.close()
+
+
+@celery_app.task(name="schedule_calls_for_day")
+def schedule_calls_for_day():
+    db = SessionLocal()
+    try:
+        today = date.today()
+        active_medications = (
+            db.query(Medication)
+            .options(
+                selectinload(Medication.times_of_day),
+                selectinload(Medication.user),
+                selectinload(Medication.user.organization),
+            )
+            .filter(
+                or_(
+                    Medication.start_date == None,
+                    Medication.start_date <= today,
+                ),
+                or_(
+                    Medication.end_date == None,
+                    Medication.end_date >= today,
+                )
+            )
+            .all()
+        )
+
+        for med in active_medications:
+            user = med.user
+            timezone = user.timezone
+            preferred_reminder_channel = user.preferred_reminder_channel
+            agent_id = db.query(OrganizationAgents).filter(OrganizationAgents.agent_type == AgentTypeEnum.MEDICATION_REMINDER).first().agent_id
+            for time in med.times_of_day:
+                med_time = time.time_of_day
+                local_dt = datetime.combine(today, med_time, tzinfo=ZoneInfo(timezone))
+                dt_utc = local_dt.astimezone(ZoneInfo("UTC"))
+
+                payload = {
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'phone_number': user.phone_number,
+                    'language': user.language,
+                    'user_id': user.id,
+                    'medication_name': med.name,
+                    'medication_dosage': med.dosage,
+                    'medication_purpose': med.purpose,
+                    'time_of_day': med_time.strftime("%H:%M"),
+                    "agent_id": agent_id,
+                }
+
+                schedule_reminder_message(payload, dt_utc, preferred_reminder_channel, agent_id)
+        
+        logger.info(f"Scheduled medication reminders for {len(active_medications)} active medications.")
+        
+        ### schedule check in calls. .. to be implemented TODO
 
     except Exception as e:
         db.rollback()
