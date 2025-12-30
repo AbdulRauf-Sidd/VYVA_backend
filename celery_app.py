@@ -22,7 +22,7 @@ celery_app.conf.update(
         },
         "daily-medication-reminder-scheduler": {
             "task": "schedule_calls_for_day",
-            "schedule": crontab(hour=2, minute=39),  
+            "schedule": crontab(hour=2, minute=40),  
         }
     }
 )
