@@ -22,6 +22,12 @@ class Organization(Base):
     onboarding_users = relationship("OnboardingUser", back_populates="organization")
     sub_domain = Column(String(100), nullable=True, unique=True)
     is_active = Column(Boolean, default=True)
+
+    agents = relationship(
+        "OrganizationAgents",
+        back_populates="organization",
+        cascade="all, delete-orphan"
+    )
     
     def __repr__(self):
         return f"<Organization(id={self.id}, name='{self.name}')>"  
