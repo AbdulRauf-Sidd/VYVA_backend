@@ -1,8 +1,8 @@
 from .mcp_instance import mcp
 from datetime import time
 from pydantic import BaseModel
-from models.medication import Medication
-from models.medication import MedicationTime
+from models.medication import Medication, MedicationTime
+from models.user import User
 from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 from core.database import get_async_session
@@ -161,6 +161,7 @@ async def update_user_medication(
         
 class DeleteUserMedication(BaseModel):
     medication_id: int
+
 @mcp.tool(
     name="delete_user_medication",
     description=(
@@ -181,3 +182,31 @@ async def delete_user_medication(medication_id: int) -> DeleteUserMedication:
         await db.commit()
 
         return DeleteUserMedication(medication_id=medication_id)
+    
+
+class UpdateReinderChannel(BaseModel):
+    user_id: int
+    channel: int
+
+@mcp.tool(
+    name="update_reminder_channel",
+    description=(
+        "You will use this tool to update the reminder channel for a medication."
+        "You will call this when the user wants to change how they receive reminders."
+        "options are 1. app. 2. phone. 3. whatsapp"
+    )
+)
+async def update_reminder_channel(channel_input: UpdateReinderChannel) -> bool:
+    async with get_async_session() as db:
+        stmt = select(User).where(User.id == channel_input.user_id)
+        result = await db.execute(stmt)
+        user = result.scalars().first()
+
+        if not user:
+            raise ValueError(f"User with ID {channel_input.user_id} not found.")
+
+        # Update the user's reminder channel
+        user.preferred_reminder_channel = channel_input.channel.lower()
+        await db.commit()
+
+        return True
