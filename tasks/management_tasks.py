@@ -113,7 +113,6 @@ def schedule_calls_for_day():
             .options(
                 selectinload(Medication.times_of_day),
                 selectinload(Medication.user),
-                selectinload(Medication.user.organization),
             )
             .filter(
                 or_(
@@ -132,7 +131,7 @@ def schedule_calls_for_day():
             user = med.user
             timezone = user.timezone
             preferred_reminder_channel = user.preferred_reminder_channel
-            agent_id = db.query(OrganizationAgents).filter(OrganizationAgents.agent_type == AgentTypeEnum.MEDICATION_REMINDER).first().agent_id
+            agent_id = db.query(OrganizationAgents).filter(OrganizationAgents.agent_type == AgentTypeEnum.MEDICATION_REMINDER, OrganizationAgents.organization_id == user.organization_id).first().agent_id
             for time in med.times_of_day:
                 med_time = time.time_of_day
                 local_dt = datetime.combine(today, med_time, tzinfo=ZoneInfo(timezone))
