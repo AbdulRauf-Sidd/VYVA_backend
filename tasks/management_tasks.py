@@ -6,30 +6,25 @@ from models.user import User
 from models.onboarding import OnboardingUser, OnboardingLogs
 import logging
 from sqlalchemy.orm import selectinload
+from datetime import datetime
+from sqlalchemy.orm import Session
 from datetime import datetime, date
 from zoneinfo import ZoneInfo
 from models.medication import Medication, MedicationTime
 from models.organization import OrganizationAgents, AgentTypeEnum
-# from sqlalchemy.orm import selectinload
 from sqlalchemy import or_
 
 from tasks.utils import schedule_reminder_message
 
 # from scripts.utils import construct_onboarding_user_payload
 
-import os
-from dotenv import load_dotenv
 from twilio.rest import Client
+from core.config import settings
 
-load_dotenv()
+twilio_client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 
-TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
-TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
-
-twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-
-def get_call_status_from_twilio(call_sid: str) -> dict:
-    call = twilio_client.calls(call_sid).fetch()
+def get_call_status_from_twilio(callSid: str) -> dict:
+    call = twilio_client.calls(callSid).fetch()
     raw = call.status
 
     mapping = {
@@ -236,53 +231,58 @@ def schedule_calls_for_day():
 @celery_app.task(name="initiate_medication_reminder_call")
 def initiate_medication_reminder_call(payload):
     response = make_medication_reminder_call(payload)
+    
+    payload['callSid'] = response.get('callSid')
+    
+    check_call_status_and_save.apply_async(
+        args=[payload],
+        countdown=60,
+    )
 
-    if response and response.get("call_sid"):
-        check_call_status_and_save.apply_async(
-            args=[{
-                "call_sid": response["call_sid"],
-                "user_id": payload.get("user_id"),
-                "agent_id": payload.get("agent_id"),
-            }],
-            countdown=300,
-        )
-
-@celery_app.task(name="check_call_status_and_save", bind=True, max_retries=10)
+@celery_app.task(name="check_call_status_and_save", bind=True)
 def check_call_status_and_save(self, payload: dict):
-    db = SessionLocal()
-    call_sid = payload["call_sid"]
-
+    logger.info(f"Twilio status for call {payload}: ")
+    db: Session = SessionLocal()
     try:
-        status_data = get_call_status_from_twilio(call_sid)
+        call_sid = payload.get("callSid")
+        user_id = payload.get("user_id")
+        phone_number = payload.get("phone_number")
 
-        if status_data["is_final"]:
-            log = (
-                db.query(OnboardingLogs)
-                .filter(OnboardingLogs.call_sid == call_sid)
-                .first()
+        user = None
+        if user_id:
+            user = db.query(OnboardingUser).filter(OnboardingUser.id == user_id).first()
+        if not user and phone_number:
+            user = db.query(OnboardingUser).filter(OnboardingUser.phone_number == phone_number).first()
+
+        if not user:
+            user = OnboardingUser(
+                id=user_id,
+                first_name=payload.get("first_name"),
+                last_name=payload.get("last_name"),
+                phone_number=phone_number,
+                language=payload.get("language"),
             )
-
-            if log:
-                log.call_status = status_data["status"]
-                log.call_completed = True
-                log.completed_at = datetime.now(ZoneInfo("UTC"))
-
+            db.add(user)
             db.commit()
+            db.refresh(user)
+            logger.info(f"Created new user with ID {user.id} and phone {user.phone_number}")
 
-            return {
-                "status": "completed",
-                "call_status": status_data["status"],
-            }
+        status_data = get_call_status_from_twilio(call_sid)
+        logger.info(f"Call SID: {call_sid}, Status Data: {status_data}")
 
-        raise self.retry(countdown=300)
+        log_entry = OnboardingLogs(
+            call_at=datetime.now(),
+            call_id=call_sid,
+            onboarding_user_id=user.id,
+            summary=f"Call status: {status_data.get('status')}, raw status: {status_data.get('raw_status')}"
+        )
+        db.add(log_entry)
+        db.commit()
+        logger.info(f"Saved onboarding log for user {user.id} and call {call_sid}")
 
-    except self.MaxRetriesExceededError:
-        logger.warning(f"Max retries exceeded for call {call_sid}")
-        return {"status": "abandoned"}
-
-    except Exception:
+    except Exception as e:
         db.rollback()
-        logger.exception("Call status check failed")
+        logger.error(f"Error saving onboarding log or creating user: {e}")
         raise
 
     finally:

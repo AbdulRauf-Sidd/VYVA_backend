@@ -137,4 +137,4 @@ if __name__ == "__main__":
         "phone_number": "+923112042259",
     }
 
-    initiate_medication_reminder_call(payload)
+    initiate_medication_reminder_call.delay(payload)
