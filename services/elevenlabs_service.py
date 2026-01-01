@@ -223,3 +223,50 @@ def make_onboarding_call(payload: dict):
         return response.json
     except Exception as e:
         logger.error(f"Elevenlabs onboarding call failed: {e}")
+
+
+def make_medication_reminder_call(payload: dict):
+    try:
+        id = payload.get("user_id")
+        agent_id = payload.get("agent_id")
+        phone_number = payload.get("phone_number")
+        first_name = payload.get("first_name")
+        last_name = payload.get("last_name")
+        language = payload.get("language")
+        # medication_name = payload.get("medication_name")
+        # medication_dosage = payload.get("medication_dosage")
+        # medication_purpose = payload.get("medication_purpose")
+        # time_of_day = payload.get("time_of_day")
+
+        response = requests.post(
+          "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
+          headers={
+            "xi-api-key": settings.ELEVENLABS_API_KEY
+          },
+          json={
+            "agent_id": agent_id,
+            "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
+            "to_number": phone_number,
+            "conversation_config_override": {
+              "agent": {
+                  "language": language,
+                  "first_message": f"hello {first_name}, this is a reminder to take your medication."
+              }
+            },
+            "conversation_initiation_client_data": {
+              "user_id": str(id),
+              "dynamic_variables": {
+                "user_id": id,
+                "first_name": first_name,
+                "last_name": last_name,
+              }
+            }
+          },
+        )
+
+        logger.info(f"Call response for medication reminder call: {response.json()}")
+        
+        return response.json
+    except Exception as e:
+        logger.error(f"Elevenlabs medication reminder call failed: {e}")
+    

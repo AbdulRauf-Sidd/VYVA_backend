@@ -42,13 +42,14 @@ from repositories.user import UserRepository
 # from apscheduler.triggers.date import DateTrigger
 from celery.app.control import Inspect
 from celery_app import celery_app
-from fastmcp import FastMCP
+from mcp_tools.mcp_instance import mcp
 from mem0 import MemoryClient
+from mcp_tools import user, mem0, medication as med
 
 # Setup logging
 logger = setup_logging()
 
-mcp = FastMCP("Memory Tools")
+# mcp = FastMCP("Memory Tools")
 mcp_app = mcp.http_app('/mcp')
 
 # Create FastAPI application
@@ -71,7 +72,7 @@ from services.whatsapp_service import whatsapp_service
     
 def te():
     dic = {
-        "link": "https://zamora.vyva.io/verify",
+        "link": "https://zamora.vyva.io/verify?token=59242893-ba0f-419e-8264-478018a770a5",
     }
 
     loop = asyncio.get_running_loop()
@@ -82,7 +83,22 @@ def te():
         )
     )
 # te()
-
+from services.mem0 import add_conversation
+messages = [
+    {"role": "user", "content": "I'm planning to watch a movie tonight. Any recommendations?"},
+    {"role": "assistant", "content": "How about thriller movies? They can be quite engaging."},
+    {"role": "user", "content": "I'm not a big fan of thriller movies but I love sci-fi movies."},
+    {"role": "assistant", "content": "Got it! I'll avoid thriller recommendations and suggest sci-fi movies in the future."}
+]
+def q():
+    loop = asyncio.get_running_loop()
+    loop.create_task(
+        add_conversation(
+            user_id=200,
+            conversation=messages
+        )
+    )
+# q()
 
 async def process_missed_calls(batch_id):
     logger.info(f"Proccessing missed calls for batch {batch_id}")
@@ -256,7 +272,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
         f"Method: {request.method} | "
         f"Client: {request.client.host}"
     )
-    logger.exception("Error processing payload")
+    # logger.exception("Error processing payload")
     return JSONResponse(
         status_code=exc.status_code,
         content={
@@ -321,6 +337,33 @@ async def math_operations(input: MathInput) -> dict:
     return {
         "result": input.a * input.b * 1237213712 // 1232
     }
+
+# from sqlalchemy import select
+# from typing import Optional
+# from core.database import get_async_session
+# from pydantic import BaseModel
+# from models.user import User
+
+# class RetrieveUserIdInput(BaseModel):
+#     phone_number: str
+
+# @mcp.tool(
+#     name="retrieve_user_id",
+#     description=(
+#         "Use this tool at the beginning of the call to retrieve the user ID "
+#         "associated with a phone number."
+#     )
+# )
+# async def retrieve_user_id(input: RetrieveUserIdInput) -> Optional[int]:
+#     async with get_async_session() as db:
+#         stmt = select(User).where(User.phone_number == input.phone_number)
+#         result = await db.execute(stmt)
+#         user = result.scalars().first()
+
+#         return {
+#             "user_id": user.id
+#         }
+
 
 
 if __name__ == "__main__":

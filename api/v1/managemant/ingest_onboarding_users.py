@@ -11,12 +11,12 @@ from models.onboarding import OnboardingUser
 from models.organization import Organization
 from scripts.utils import time_to_utc, date_time_to_utc, add_one_day
 from datetime import datetime, date, timezone
-from models.user import User
 from zoneinfo import ZoneInfo
 from tasks.management_tasks import initiate_onboarding_call
 import logging
 from pydantic import BaseModel, Field
 from typing import Optional
+from scripts.utils import construct_onboarding_user_payload
 
 logger = logging.getLogger(__name__)
 
@@ -238,23 +238,7 @@ async def process_valid_data(file_content, organization, db):
             db.add(user)
             await db.commit()
 
-            if address or city_state_province or postal_zip_code:
-                combined_address = f"{address}, {city_state_province}, {postal_zip_code}"
-            else:
-                combined_address = "not available"
-
-            payload = {
-                'first_name': first_name,
-                'last_name': last_name,
-                'phone_number': full_phone,
-                'language': language,
-                'user_id': user.id,
-                'agent_id': agent_id,
-                'address': combined_address,
-                'user_type': preferred_communication_channel,
-                'caregiver_name': care_giver_name,
-                'caregiver_phone': full_caregiver_phone,
-            }
+            payload = await construct_onboarding_user_payload(user, organization.onboarding_agent_id)
 
             task_result = initiate_onboarding_call.apply_async(
                 args=[payload,],
@@ -274,7 +258,7 @@ async def process_valid_data(file_content, organization, db):
         return False, 0
 
 @router.post("/ingest-csv", response_model=StandardSuccessResponse)
-async def ingest_csv(organization: str = 'Red Cross', file: UploadFile = File(...), db=Depends(get_db)):
+async def ingest_csv(organization: str, file: UploadFile = File(...), db=Depends(get_db)):
     organization = organization.strip()
     result = await db.execute(select(Organization).where(Organization.name == organization))
     exists = result.scalar()
@@ -311,7 +295,7 @@ class IngestUserRequest(BaseModel):
     preferred_call_time: Optional[str] = Field(..., min_length=1)
     
 @router.post("/ingest-user", response_model=StandardSuccessResponse)
-async def ingest_csv(payload: IngestUserRequest, organization: str = 'zamora', db=Depends(get_db)):
+async def ingest_csv(payload: IngestUserRequest, organization: str, db=Depends(get_db)):
     
     organization = organization.strip()
     print(payload)
@@ -382,7 +366,6 @@ async def ingest_csv(payload: IngestUserRequest, organization: str = 'zamora', d
                 eta=final_utc_dt
             )
     
-    logger.info(f"Scheduled onboarding call task {task_result.id} for user {payload.telephone_number} at {final_utc_dt} UTC")
     db.add(user)
     await db.commit()
     

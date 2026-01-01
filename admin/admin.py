@@ -1,7 +1,7 @@
 from sqladmin import Admin, ModelView
 from core.database import engine
 from models import User, Medication
-from models.organization import Organization
+from models.organization import Organization, OrganizationAgents
 from models.onboarding import OnboardingUser
 from models.onboarding import OnboardingLogs
 from admin.auth import AdminAuth
@@ -29,6 +29,9 @@ def setup_admin(app):
     class OrganizationAdmin(ModelView, model=Organization):
         column_list = "__all__"
 
+    class OrganizationAgentsAdmin(ModelView, model=OrganizationAgents):
+        column_list = "__all__"
+
     class OnboardingUserAdmin(ModelView, model=OnboardingUser):
         column_list = "__all__"
 
@@ -39,5 +42,6 @@ def setup_admin(app):
     admin.add_view(MedicationAdmin)
     admin.add_view(MedicationTimeAdmin)
     admin.add_view(OrganizationAdmin)
+    admin.add_view(OrganizationAgentsAdmin)
     admin.add_view(OnboardingUserAdmin)
     admin.add_view(OnboardingLogsAdmin)

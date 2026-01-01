@@ -1,4 +1,4 @@
-from main import mcp
+from .mcp_instance import mcp
 from sqlalchemy import select
 from typing import Optional
 from core.database import get_async_session
@@ -12,7 +12,9 @@ class RetrieveUserIdInput(BaseModel):
     name="retrieve_user_id",
     description=(
         "Use this tool at the beginning of the call to retrieve the user ID "
-        "associated with a phone number."
+        "associated with a phone number." \
+        "You will pass the user's phone number as input " \
+        'AWLAYS USE AT THE BEGINNING OF THE CALL.'
     )
 )
 async def retrieve_user_id(input: RetrieveUserIdInput) -> Optional[int]:
@@ -20,5 +22,6 @@ async def retrieve_user_id(input: RetrieveUserIdInput) -> Optional[int]:
         stmt = select(User).where(User.phone_number == input.phone_number)
         result = await db.execute(stmt)
         user = result.scalars().first()
+        print('mcp====>', input.phone_number, user)
 
         return user.id if user else None

@@ -11,12 +11,14 @@ from core.database import get_db
 from services.sms_service import sms_service
 import logging
 from schemas.onboarding_user import OnboardingRequestBody
-from scripts.utils import get_or_create_caregiver
+from scripts.utils import get_or_create_caregiver, construct_mem0_memory_onboarding
 from schemas.medication import BulkMedicationSchema
 from repositories.medication import MedicationRepository
 from services.medication import MedicationService
 from models.user_check_ins import UserCheckin, ScheduledSession, CheckInType
 from models.authentication import UserTempToken
+from services.whatsapp_service import whatsapp_service
+from services.mem0 import add_conversation
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +36,6 @@ async def onboard_user(
 ):
     try:
         data = payload.model_dump()
-        print('data=====>', data)
         user_id = data["user_id"]
         result = await db.execute(
             select(OnboardingUser)
@@ -54,6 +55,7 @@ async def onboard_user(
         brain_coach = data.get("brain_coach", {})
         caretaker_consent = data.get("caretaker_consent", False)
         health_conditions = data.get("health_conditions", [])
+        preferences = data.get("preferences", [])
         mobility = data.get("mobility", [])
         city = record.city_state_province if record.city_state_province else ""
         postal_code = record.postal_zip_code if record.postal_zip_code else ""
@@ -81,6 +83,7 @@ async def onboard_user(
             caretaker_id=caregiver.id if caregiver_phone else None,
             caretaker_consent=caretaker_consent,
             caretaker=caregiver if caregiver_phone else None,
+            preferred_reminder_channel=payload.preferred_reminder_channel
         )
 
         db.add(user)
@@ -122,13 +125,30 @@ async def onboard_user(
 
         temp_token = UserTempToken(
             user_id=user.id,
-            expires_at=datetime.now() + timedelta(minutes=15),
+            expires_at=datetime.now() + timedelta(hours=24),
             used=False
         )
         db.add(temp_token)
         await db.commit()
 
-        await sms_service.send_magic_link(user.phone_number, temp_token.token, record.organization.sub_domain)
+        if mobility:
+            mem0_payload = construct_mem0_memory_onboarding(", ".join(mobility), "mobility")
+            await add_conversation(user.id, mem0_payload)
+        if health_conditions:
+            mem0_payload += construct_mem0_memory_onboarding(", ".join(health_conditions), "health_conditions")
+            await add_conversation(user.id, mem0_payload)
+        if preferences:
+            mem0_payload += construct_mem0_memory_onboarding(", ".join(preferences), "preferences")
+            await add_conversation(user.id, mem0_payload)
+        
+        # Send WhatsApp message with onboarding link
+        onboarding_link = f"https://{record.organization.sub_domain}.vyva.io/verify?token={temp_token.token}"
+        temmplate_data = {
+            "link": onboarding_link
+        }
+
+        await whatsapp_service.send_onboarding_message(user.phone_number, temmplate_data)
+        # await sms_service.send_magic_link(user.phone_number, temp_token.token, record.organization.sub_domain)
 
         return {
             "status": "success",
