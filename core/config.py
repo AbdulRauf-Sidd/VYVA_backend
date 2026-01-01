@@ -146,6 +146,8 @@ class Settings(BaseSettings):
         env="ELEVENLABS_SYMPTOM_CHECKER_AGENT_ID"
     )
 
+    ELEVENLABS_OUTBOUND_CALL_URL: str = "https://api.elevenlabs.io/v1/convai/twilio/outbound-call"
+
     OPENAI_MODEL: Optional[str] = Field(
         default=None,
         env="OPENAI_MODEL"

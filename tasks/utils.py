@@ -11,7 +11,7 @@ def schedule_reminder_message(payload, dt_utc, preferred_reminder_channel):
         )
     elif preferred_reminder_channel == "phone":
         celery_app.send_task(
-            "initiate_medication_call",
+            "initiate_medication_reminder_call",
             args=[payload,],
             eta=dt_utc
         )

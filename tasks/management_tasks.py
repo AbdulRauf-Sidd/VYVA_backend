@@ -1,7 +1,7 @@
 from core.database import SessionLocal
 from celery_app import celery_app
 from models import user
-from services.elevenlabs_service import make_onboarding_call
+from services.elevenlabs_service import make_onboarding_call, make_medication_reminder_call
 from models.user import User
 from models.onboarding import OnboardingUser, OnboardingLogs
 import logging
@@ -127,30 +127,66 @@ def schedule_calls_for_day():
             .all()
         )
 
+        user_reminders = {}
+
         for med in active_medications:
             user = med.user
             timezone = user.timezone
             preferred_reminder_channel = user.preferred_reminder_channel
+            print('org', user.organization_id)
             agent_id = db.query(OrganizationAgents).filter(OrganizationAgents.agent_type == AgentTypeEnum.MEDICATION_REMINDER, OrganizationAgents.organization_id == user.organization_id).first().agent_id
-            for time in med.times_of_day:
-                med_time = time.time_of_day
-                local_dt = datetime.combine(today, med_time, tzinfo=ZoneInfo(timezone))
-                dt_utc = local_dt.astimezone(ZoneInfo("UTC"))
 
-                payload = {
+
+            payload = {
+                "user_info": {
                     'first_name': user.first_name,
                     'last_name': user.last_name,
                     'phone_number': user.phone_number,
                     'language': user.language,
                     'user_id': user.id,
+                    "agent_id": agent_id,
+                    "preferred_reminder_channel": preferred_reminder_channel,
+                },
+                "medication_info": {}
+            }
+            
+            if user.id not in user_reminders:
+                user_reminders[user.id] = payload
+
+
+            for time in med.times_of_day:
+                med_time = time.time_of_day
+                local_dt = datetime.combine(today, med_time, tzinfo=ZoneInfo(timezone))
+                dt_utc = local_dt.astimezone(ZoneInfo("UTC"))
+                dt_utc = dt_utc.replace(second=0, microsecond=0)
+
+
+                med_payload = {
                     'medication_name': med.name,
                     'medication_dosage': med.dosage,
                     'medication_purpose': med.purpose,
                     'time_of_day': med_time.strftime("%H:%M"),
-                    "agent_id": agent_id,
-                }
+                }               
 
-                schedule_reminder_message(payload, dt_utc, preferred_reminder_channel, agent_id)
+                if dt_utc not in user_reminders[user.id]["medication_info"]:
+                    user_reminders[user.id]["medication_info"][dt_utc] = [med_payload]
+                    
+                else:
+                    user_reminders[user.id]["medication_info"][dt_utc].append(med_payload)
+
+                # schedule_reminder_message(payload, dt_utc, preferred_reminder_channel, agent_id)
+
+        for user_id, info in user_reminders.items():
+            preferred_reminder_channel = info['user_info']["preferred_reminder_channel"]
+            for dt_utc, meds in info["medication_info"].items():
+                schedule_reminder_message(
+                    payload={
+                        **user_reminders[user_id]["user_info"],
+                        "medications": meds
+                    },
+                    scheduled_time=dt_utc,
+                    channel=preferred_reminder_channel,
+                )
         
         logger.info(f"Scheduled medication reminders for {len(active_medications)} active medications.")
         
@@ -161,3 +197,7 @@ def schedule_calls_for_day():
         raise e
     finally:
         db.close()
+
+@celery_app.task(name="initiate_medication_reminder_call")
+def initiate_medication_reminder_call(payload):
+    response = make_medication_reminder_call(payload)
