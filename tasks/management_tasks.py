@@ -17,6 +17,42 @@ from tasks.utils import schedule_reminder_message
 
 # from scripts.utils import construct_onboarding_user_payload
 
+import os
+from dotenv import load_dotenv
+from twilio.rest import Client
+
+load_dotenv()
+
+TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+
+twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+
+def get_call_status_from_twilio(call_sid: str) -> dict:
+    call = twilio_client.calls(call_sid).fetch()
+    raw = call.status
+
+    mapping = {
+        "completed": "answered",
+        "busy": "declined",
+        "no-answer": "not_available",
+        "canceled": "declined",
+        "failed": "failed",
+        "queued": "in_progress",
+        "ringing": "in_progress",
+        "in-progress": "in_progress",
+    }
+
+    normalized = mapping.get(raw, "unknown")
+
+    FINAL = {"answered", "declined", "not_available", "failed"}
+
+    return {
+        "raw_status": raw,
+        "status": normalized,
+        "is_final": normalized in FINAL,
+    }
+
 logger = logging.getLogger(__name__)
 
 @celery_app.task(name="initiate_onboarding_call")
@@ -201,20 +237,25 @@ def schedule_calls_for_day():
 def initiate_medication_reminder_call(payload):
     response = make_medication_reminder_call(payload)
 
-@celery_app.task(name="check_call_status_and_save")
-def check_call_status_and_save(payload: dict):
+    if response and response.get("call_sid"):
+        check_call_status_and_save.apply_async(
+            args=[{
+                "call_sid": response["call_sid"],
+                "user_id": payload.get("user_id"),
+                "agent_id": payload.get("agent_id"),
+            }],
+            countdown=300,
+        )
+
+@celery_app.task(name="check_call_status_and_save", bind=True, max_retries=10)
+def check_call_status_and_save(self, payload: dict):
     db = SessionLocal()
-    call_sid = payload.get("call_sid")
+    call_sid = payload["call_sid"]
 
     try:
-        status = make_onboarding_call({
-            "check_status": True,
-            "call_sid": call_sid
-        })
+        status_data = get_call_status_from_twilio(call_sid)
 
-        FINAL_STATUSES = {"answered", "declined", "completed", "failed", "busy"}
-
-        if status and status.get("status") in FINAL_STATUSES:
+        if status_data["is_final"]:
             log = (
                 db.query(OnboardingLogs)
                 .filter(OnboardingLogs.call_sid == call_sid)
@@ -222,25 +263,27 @@ def check_call_status_and_save(payload: dict):
             )
 
             if log:
-                log.call_status = status.get("status")
+                log.call_status = status_data["status"]
                 log.call_completed = True
                 log.completed_at = datetime.now(ZoneInfo("UTC"))
-                db.commit()
 
-            return {"status": "completed"}
+            db.commit()
 
-        initiate_medication_reminder_call.delay(payload)
+            return {
+                "status": "completed",
+                "call_status": status_data["status"],
+            }
 
-        check_call_status_and_save.apply_async(
-            args=[payload],
-            countdown=300,
-        )
+        raise self.retry(countdown=300)
 
-        return {"status": "retrying"}
+    except self.MaxRetriesExceededError:
+        logger.warning(f"Max retries exceeded for call {call_sid}")
+        return {"status": "abandoned"}
 
     except Exception:
         db.rollback()
         logger.exception("Call status check failed")
         raise
+
     finally:
         db.close()
