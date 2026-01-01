@@ -50,3 +50,4 @@ class OnboardingRequestBody(BaseModel):
     address: Optional[str] = None
     mobility: Optional[List[str]] = None
     preferences: Optional[List[str]] = None
+    preferred_reminder_channel: Optional[str] = None

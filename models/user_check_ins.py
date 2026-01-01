@@ -31,8 +31,8 @@ class ScheduledSession(Base):
     __tablename__ = "scheduled_sessions"
     
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    user = relationship("User", back_populates="scheduled_sessions")
+    # user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    # user = relationship("User", back_populates="scheduled_sessions")
     session_type = Column(Enum(CheckInType), nullable=False)
     scheduled_at = Column(DateTime(timezone=True), nullable=False)
     completed_at = Column(DateTime(timezone=True), nullable=True)
