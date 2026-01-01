@@ -1,6 +1,6 @@
 from core.database import SessionLocal
 from celery_app import celery_app
-from services.elevenlabs_service import make_onboarding_call
+from services.elevenlabs_service import make_onboarding_call, make_medication_reminder_call
 from models.user import User
 from models.onboarding import OnboardingUser, OnboardingLogs
 import logging
@@ -9,7 +9,6 @@ from datetime import datetime, date
 from zoneinfo import ZoneInfo
 
 logger = logging.getLogger(__name__)
-from services.elevenlabs_service import make_onboarding_call
 
 @celery_app.task(name="initiate_onboarding_call")
 def initiate_onboarding_call(payload: dict):
@@ -71,5 +70,53 @@ def process_pending_onboarding_users():
     except Exception as e:
         db.rollback()
         raise e
+    finally:
+        db.close()
+
+@celery_app.task(name="initiate_medication_reminder_call")
+def initiate_medication_reminder_call(payload):
+    response = make_medication_reminder_call(payload)
+
+@celery_app.task(name="check_call_status_and_save")
+def check_call_status_and_save(payload: dict):
+    db = SessionLocal()
+    call_sid = payload.get("call_sid")
+
+    try:
+        status = make_onboarding_call({
+            "check_status": True,
+            "call_sid": call_sid
+        })
+
+        FINAL_STATUSES = {"answered", "declined", "completed", "failed", "busy"}
+
+        if status and status.get("status") in FINAL_STATUSES:
+            log = (
+                db.query(OnboardingLogs)
+                .filter(OnboardingLogs.call_sid == call_sid)
+                .first()
+            )
+
+            if log:
+                log.call_status = status.get("status")
+                log.call_completed = True
+                log.completed_at = datetime.now(ZoneInfo("UTC"))
+                db.commit()
+
+            return {"status": "completed"}
+
+        initiate_medication_reminder_call.delay(payload)
+
+        check_call_status_and_save.apply_async(
+            args=[payload],
+            countdown=300,
+        )
+
+        return {"status": "retrying"}
+
+    except Exception:
+        db.rollback()
+        logger.exception("Call status check failed")
+        raise
     finally:
         db.close()
