@@ -44,7 +44,7 @@ Dockerfile
 #Virtual Environment
 vyva_backend_venv
 venv
-vyva_backend_env/
+vyva_backend_env
 
 
 # Django stuff:
