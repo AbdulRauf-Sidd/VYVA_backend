@@ -252,7 +252,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logger.error(
-        f"Server Exception: {exc.detail} | "
+        # f"Server Exception: {exc.detail} | "
         f"Path: {request.url.path} | "
         f"Method: {request.method} | "
         f"Client: {request.client.host}"
@@ -269,7 +269,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
     logger.error(
-        f"HTTP Exception: {exc.detail} | "
+        # f"HTTP Exception: {exc.detail} | "
         f"Path: {request.url.path} | "
         f"Method: {request.method} | "
         f"Client: {request.client.host}"
@@ -278,7 +278,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
         status_code=exc.status_code,
         content={
             "success": False,
-            "message": exc.detail,
+            # "message": exc.detail,
             "detail": str(exc)
         }
     )
