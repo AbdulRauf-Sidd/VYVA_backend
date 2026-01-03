@@ -49,8 +49,8 @@ from fastmcp import FastMCP
 # Setup logging
 logger = setup_logging()
 
-mcp = FastMCP("Memory Tools")
-mcp_app = mcp.http_app()
+# mcp = FastMCP("Memory Tools")
+# mcp_app = mcp.http_app()
 
 
 # @asynccontextmanager
@@ -88,19 +88,19 @@ app = FastAPI(
     title="Vyva Backend API",
     description="A production-ready FastAPI backend for senior care applications",
     version="1.0.0",
-    docs_url="/docs" if settings.DEBUG else None,
+    docs_url="/docs",
     redoc_url="/redoc" if settings.DEBUG else None,
     openapi_url="/openapi.json" if settings.DEBUG else None,
-    lifespan=mcp_app.lifespan
+    # lifespan=mcp_app.lifespan
 )
 
-app.mount("/mcp", mcp_app)
+# app.mount("/mcp", mcp_app)
 
-@app.middleware("http")
-async def middleware(request, call_next):
-    if request.url.path.startswith("/mcp"):
-        return await call_next(request)
-    # REST-only logic
+# @app.middleware("http")
+# async def middleware(request, call_next):
+#     if request.url.path.startswith("/mcp"):
+#         return await call_next(request)
+#     # REST-only logic
 
 scheduler = AsyncIOScheduler()
 
@@ -229,59 +229,59 @@ app.add_middleware(
 )
 
 
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    """Handle validation exceptions."""
-    logger.error(
-        f"Validation Exception: {exc.errors} | "
-        f"Path: {request.url.path} | "
-        f"Method: {request.method} | "
-        f"Client: {request.client.host}"
-    )
-    user_message = exc.errors()[0].get("msg", "Invalid input data")
+# @app.exception_handler(RequestValidationError)
+# async def validation_exception_handler(request: Request, exc: RequestValidationError):
+#     """Handle validation exceptions."""
+#     logger.error(
+#         f"Validation Exception: {exc.errors} | "
+#         f"Path: {request.url.path} | "
+#         f"Method: {request.method} | "
+#         f"Client: {request.client.host}"
+#     )
+#     user_message = exc.errors()[0].get("msg", "Invalid input data")
     
-    return JSONResponse(
-        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content={
-            "success": False,
-            "message": user_message,
-            "detail": exc.errors()  # Full details for debugging
-        }
-    )
+#     return JSONResponse(
+#         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+#         content={
+#             "success": False,
+#             "message": user_message,
+#             "detail": exc.errors()  # Full details for debugging
+#         }
+#     )
 
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    logger.error(
-        # f"Server Exception: {exc.detail} | "
-        f"Path: {request.url.path} | "
-        f"Method: {request.method} | "
-        f"Client: {request.client.host}"
-    )
-    return JSONResponse(
-        status_code=500,
-        content={
-            "success": False,
-            "message": "Internal server error",
-            "detail": str(exc)
-        }
-    )
+# @app.exception_handler(Exception)
+# async def global_exception_handler(request: Request, exc: Exception):
+#     logger.error(
+#         # f"Server Exception: {exc.detail} | "
+#         f"Path: {request.url.path} | "
+#         f"Method: {request.method} | "
+#         f"Client: {request.client.host}"
+#     )
+#     return JSONResponse(
+#         status_code=500,
+#         content={
+#             "success": False,
+#             "message": "Internal server error",
+#             "detail": str(exc)
+#         }
+#     )
 
-@app.exception_handler(HTTPException)
-async def http_exception_handler(request: Request, exc: HTTPException):
-    logger.error(
-        # f"HTTP Exception: {exc.detail} | "
-        f"Path: {request.url.path} | "
-        f"Method: {request.method} | "
-        f"Client: {request.client.host}"
-    )
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={
-            "success": False,
-            # "message": exc.detail,
-            "detail": str(exc)
-        }
-    )
+# @app.exception_handler(HTTPException)
+# async def http_exception_handler(request: Request, exc: HTTPException):
+#     logger.error(
+#         # f"HTTP Exception: {exc.detail} | "
+#         f"Path: {request.url.path} | "
+#         f"Method: {request.method} | "
+#         f"Client: {request.client.host}"
+#     )
+#     return JSONResponse(
+#         status_code=exc.status_code,
+#         content={
+#             "success": False,
+#             "message": "exc.detail",
+#             "detail": str(exc)
+#         }
+#     )
 
 
 @app.get("/admin/celery/tasks/")
@@ -324,14 +324,14 @@ class MathInput(BaseModel):
     a: float
     b: float
 
-@mcp.tool(
-    name="math_operations",
-    description="Performs math operations on two numbers"
-)
-def math_operations(input: MathInput):
-    return {
-        "result": input.a * input.b * 1237213712 // 1232
-    }
+# @mcp.tool(
+#     name="math_operations",
+#     description="Performs math operations on two numbers"
+# )
+# def math_operations(input: MathInput):
+#     return {
+#         "result": input.a * input.b * 1237213712 // 1232
+#     }
 
 
 if __name__ == "__main__":
