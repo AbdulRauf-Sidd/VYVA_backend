@@ -185,6 +185,10 @@ async def read_user_profile(
         )
 
     user = await get_current_user_from_session(session_id, db)
+    agent_mappings = {}
+    organization_agents = user.organization.agents if user.organization else []
+    for agent in organization_agents:
+        agent_mappings[agent.name_slug] = agent.agent_id
 
     if not user:
         raise HTTPException(
@@ -196,5 +200,8 @@ async def read_user_profile(
         "user_id": user.id,
         "first_name": user.first_name,
         "last_name": user.last_name,
+        "phone_number": user.phone_number,
+        "organization_id": user.organization_id,
+        "agent_mappings": agent_mappings
     }
 
