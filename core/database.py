@@ -14,23 +14,22 @@ from contextlib import asynccontextmanager
 
 from core.config import settings
 
-SYNC_DB_URL = settings.database_url.replace("+asyncpg", "")
-
+SYNC_DB_URL = settings.DATABASE_URL.replace("+asyncpg", "")
 engine_sync = create_engine(
     SYNC_DB_URL,
     pool_pre_ping=True,
     pool_size=20,
     max_overflow=10
 )
-
 # Create async engine
 engine = create_async_engine(
-    settings.database_url,
+    settings.PRODUCTION_DATABASE_URL,  # use async URL
     echo=settings.DEBUG,
     pool_size=settings.DATABASE_POOL_SIZE,
     max_overflow=settings.DATABASE_MAX_OVERFLOW,
     pool_pre_ping=True,
     pool_recycle=3600,
+    connect_args={"ssl": True},  # <--- use True if RDS requires SSL
 )
 
 # Create async session factory
@@ -41,7 +40,6 @@ AsyncSessionLocal = async_sessionmaker(
     autocommit=False,
     autoflush=False,
 )
-
 
 
 # Create declarative base
