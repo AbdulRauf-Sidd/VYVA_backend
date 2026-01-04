@@ -295,11 +295,9 @@ class IngestUserRequest(BaseModel):
     preferred_call_time: Optional[str] = Field(..., min_length=1)
     
 @router.post("/ingest-user", response_model=StandardSuccessResponse)
-async def ingest_csv(payload: IngestUserRequest, organization: str, db=Depends(get_db)):
+async def ingest_user(payload: IngestUserRequest, organization: str, db=Depends(get_db)):
     
     organization = organization.strip()
-    print(payload)
-    db = await get_db().__anext__()
     result = await db.execute(select(Organization).where(Organization.name == organization))
     exists = result.scalar()
     
@@ -347,6 +345,14 @@ async def ingest_csv(payload: IngestUserRequest, organization: str, db=Depends(g
             local_dt_next_day = add_one_day(local_dt)
 
             final_utc_dt = local_dt_next_day.astimezone(ZoneInfo("UTC"))
+    else:
+        default_time = datetime.strptime("09:00", "%H:%M").time()
+
+        # Local time 9am tomorrow
+        local_dt = datetime.combine(date.today(), default_time, tzinfo=ZoneInfo(timezone))
+        local_dt_next_day = add_one_day(local_dt)
+        # Convert to UTC
+        final_utc_dt = local_dt_next_day.astimezone(ZoneInfo("UTC"))
 
     user = OnboardingUser(
                 first_name=payload.first_name,
