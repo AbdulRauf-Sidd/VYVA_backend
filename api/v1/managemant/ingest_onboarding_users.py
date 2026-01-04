@@ -372,5 +372,5 @@ async def ingest_csv(payload: IngestUserRequest, organization: str, db=Depends(g
     
     return {
         'success': True,
-        "message": f"Created Onboarding User {payload.first_name} {payload.last_name}.",
+        "message": f"Created Onboarding User.",
     }
