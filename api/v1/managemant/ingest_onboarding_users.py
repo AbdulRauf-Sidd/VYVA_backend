@@ -331,6 +331,7 @@ async def ingest_csv(payload: IngestUserRequest, organization: str, db=Depends(g
         raise HTTPException(status_code=422, detail=f"Invalid language '{payload.language}'. Allowed: {', '.join(VALID_LANGUAGES)}")
     
     utc_dt = None
+    final_utc_dt = None
     if payload.preferred_call_time:
         if re.match(r"^(?:[01]\d|2[0-3]):[0-5]\d$", payload.preferred_call_time):
             converted_time = payload.preferred_call_time
