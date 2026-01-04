@@ -351,7 +351,7 @@ async def ingest_csv(payload: IngestUserRequest, organization: str, db=Depends(g
     user = OnboardingUser(
                 first_name=payload.first_name,
                 last_name=payload.last_name,
-                phone_number=payload.telephone_number,
+                phone_number=full_phone,
                 timezone=payload.time_zone,
                 organization_id=exists.id,
                 language=payload.language.lower(),
@@ -364,7 +364,7 @@ async def ingest_csv(payload: IngestUserRequest, organization: str, db=Depends(g
     
     task_payload = await construct_onboarding_user_payload(user, exists.onboarding_agent_id)
     
-    task_result = initiate_onboarding_call.apply_async(
+    initiate_onboarding_call.apply_async(
                 args=[task_payload,],
                 eta=final_utc_dt
             )
