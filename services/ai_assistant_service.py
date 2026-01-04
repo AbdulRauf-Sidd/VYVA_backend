@@ -45,7 +45,7 @@ DEFAULT_AGENT_INSTRUCTIONS = (
     "to provide accurate and up-to-date information. Always communicate in a considerate and reassuring manner."
 )
 DEFAULT_WORKFLOW_ID = "wf_68eb7f8508dc81909a25f60b95ee0cba0410232f0e072ed7"
-DEFAULT_REASONING_EFFORT = "minimal"
+DEFAULT_REASONING_EFFORT = "low"
 DEFAULT_MODEL = "gpt-5-nano"
 
 
