@@ -266,7 +266,7 @@ def make_medication_reminder_call(payload: dict):
 
         logger.info(f"Call response for medication reminder call: {response.json()}")
         
-        return response.json
+        return response.json()
     except Exception as e:
         logger.error(f"Elevenlabs medication reminder call failed: {e}")
     

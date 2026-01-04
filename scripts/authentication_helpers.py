@@ -1,13 +1,13 @@
 import hashlib
 import random
 from datetime import datetime, timedelta
+from models.organization import Organization
 from services.sms_service import sms_service
 from pytz import utc
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
-from models.organization import Organization
 from models.authentication import UserSession
 from models.user import User
 
@@ -80,7 +80,6 @@ async def get_current_user_from_session(
         )
         .where(User.id == session.user_id)
     )
-
     user = result.scalar_one_or_none()
 
     if not user:
