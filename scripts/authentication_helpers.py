@@ -6,6 +6,8 @@ from pytz import utc
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
+from models.organization import Organization
 from models.authentication import UserSession
 from models.user import User
 
@@ -70,10 +72,16 @@ async def get_current_user_from_session(
     # session.last_seen_at = datetime.utcnow()
     # await db.commit()
 
-    user_result = await db.execute(
-        select(User).where(User.id == session.user_id)
+    result = await db.execute(
+    select(User)
+        .options(
+            selectinload(User.organization)
+            .selectinload(Organization.agents)
+        )
+        .where(User.id == session.user_id)
     )
-    user = user_result.scalar_one_or_none()
+
+    user = result.scalar_one_or_none()
 
     if not user:
         raise HTTPException(
