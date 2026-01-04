@@ -9,9 +9,9 @@ from models.user import User
 from core.config import settings
 from fastapi import Body
 from models.authentication import UserTempToken, UserSession
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from schemas.authentication import PhoneRequest, VerifyOtpRequest
-
+from services.whatsapp_service import whatsapp_service
 
 router = APIRouter()
 
@@ -28,10 +28,14 @@ async def request_otp(request: PhoneRequest, db: AsyncSession = Depends(get_db))
     
     result = (await db.execute(select(User.id).where(User.phone_number == phone)))
     user_id = result.scalar_one()
-
     otp, session_id = await create_otp_session(db, phone, user_id)
+    message = {
+        1: otp
+    }
+    await whatsapp_service.send_otp(phone, message)
     print(otp)
-    await send_otp_via_sms(phone, otp)
+
+    # await send_otp_via_sms(phone, otp)
     
     return {
         'success': True,
@@ -70,7 +74,7 @@ async def verify_otp(request: Request, response: Response, body: VerifyOtpReques
     }
 
 
-@router.post("/magic-login/", response_model=StandardSuccessResponse)
+@router.get("/magic-login", response_model=StandardSuccessResponse)
 async def magic_login(
     request: Request,
     response: Response,
@@ -89,7 +93,7 @@ async def magic_login(
     if not token_row:
         raise HTTPException(status_code=400, detail="Invalid token")
 
-    if token_row.expires_at < datetime.utcnow():
+    if token_row.expires_at < datetime.now(timezone.utc):
         raise HTTPException(status_code=401, detail="Token expired")
 
     if token_row.used:
@@ -99,35 +103,40 @@ async def magic_login(
     await db.commit()
 
     # Create user session
-    expires_at = datetime.utcnow() + timedelta(days=30)
-    session = UserSession(
-        user_id=token_row.user_id,
-        expires_at=expires_at,
-        ip_address=request.client.host,
-        user_agent=request.headers.get("User-Agent"),
+    # expires_at = datetime.utcnow() + timedelta(days=30)
+    # db.add(session)
+    # await db.commit()
+
+    session_id = await create_user_session(
+        db, 
+        token_row.user_id, 
+        user_agent=request.headers.get("User-Agent"), 
+        ip_address=request.client.host
     )
-    db.add(session)
-    await db.commit()
 
     # Set auth cookie
     response.set_cookie(
         key="session_id",
-        value=session.session_id,
+        value=session_id,
         httponly=True,
         secure=True,
-        samesite="lax",
-        max_age=60 * 60 * 24 * 30 * 12,
+        # secure=False,       # ❌ must be False for localhost
+        # samesite="lax",
+        max_age=settings.SESSION_DURATION,
+        samesite=None
     )
 
-    return {"success": True}
+    return {"success": True, "message": "Magic login successful"}
 
 
 @router.post("/session/", response_model=SessionCheckResponse)
 async def session_auth(
-    request: Request,
+    # request: Request,
+    session_id: str = Cookie(None, alias=settings.SESSION_COOKIE_NAME), 
     db: AsyncSession = Depends(get_db)
 ):
-    session_id = request.cookies.get("session_id")
+    
+    # session_id = request.cookies.get("session_id")
     
     if not session_id:
         raise HTTPException(status_code=401, detail="Not authenticated")
@@ -176,6 +185,10 @@ async def read_user_profile(
         )
 
     user = await get_current_user_from_session(session_id, db)
+    agent_mappings = {}
+    organization_agents = user.organization.agents if user.organization else []
+    for agent in organization_agents:
+        agent_mappings[agent.name_slug] = agent.agent_id
 
     if not user:
         raise HTTPException(
@@ -187,5 +200,8 @@ async def read_user_profile(
         "user_id": user.id,
         "first_name": user.first_name,
         "last_name": user.last_name,
+        "phone_number": user.phone_number,
+        "organization_id": user.organization_id,
+        "agent_mappings": agent_mappings
     }
 

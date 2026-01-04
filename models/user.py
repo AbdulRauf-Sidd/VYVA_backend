@@ -36,17 +36,20 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     first_name = Column(String(100), nullable=True)
     last_name = Column(String(100), nullable=True)
-    email = Column(String(255), index=True, nullable=True) #TODO make unique true
-    phone_number = Column(String(20), nullable=True)
+    email = Column(String(255), index=True, nullable=True, unique=True) #TODO make unique true
+    phone_number = Column(String(20), nullable=False, unique=True)
     # land_line = Column(String(20), nullable=True)
     age = Column(Integer, nullable=True)
     # living_situation = Column(SQLEnum(LivingSituation), nullable=True)
     admin_profile = relationship("AdminUser", back_populates="user", uselist=False)
+    timezone=Column(String(30), nullable=True)
     date_of_birth = Column(DateTime, nullable=True)
     organization = relationship("Organization", back_populates="users")
     organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=True)
     preferred_consultation_language = Column(SQLEnum(PreferredConsultationLanguageEnum), nullable=True)
     preferred_communication_channel = Column(String(50), nullable=True)
+    onboarding_user_id = Column(Integer, ForeignKey("onboarding_users.id"), nullable=True, unique=True)
+    onboarding_user = relationship("OnboardingUser", backref="user", uselist=False)
 
     #Health and Care
     health_conditions = Column(Text, nullable=True)
@@ -58,7 +61,7 @@ class User(Base):
     local_event_recommendations = Column(Boolean, nullable=True)
 
     #sessions
-    scheduled_sessions = relationship("ScheduledSession", back_populates="user", cascade="all, delete-orphan")
+    # scheduled_sessions = relationship("ScheduledSession", back_populates="user", cascade="all, delete-orphan")
     user_checkins = relationship("UserCheckin", back_populates="user", cascade="all, delete-orphan")
 
 
@@ -68,6 +71,7 @@ class User(Base):
     wants_reminders = Column(Boolean, nullable=True)
     takes_medication = Column(Boolean, nullable=True)
     missed_dose_alerts = Column(Boolean, nullable=True)
+    preferred_reminder_channel = Column(String(50), nullable=True)
     # escalate_to_emergency_contact = Column(Boolean, nullable=True)
 
     #Reminders

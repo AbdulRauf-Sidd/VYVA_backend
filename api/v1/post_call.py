@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from fastapi import Request
 from hashlib import sha256
 import logging, json, pytz
+from models.organization import Organization
 from repositories.eleven_labs_sessions import ElevenLabsSessionRepository
 from schemas.eleven_labs_session import ElevenLabsSessionCreate
 from tasks.management_tasks import initiate_onboarding_call
@@ -12,6 +13,8 @@ from models.onboarding import OnboardingUser
 from repositories.symptom_checker import SymptomCheckerRepository
 from schemas.symptom_checker import SymptomCheckerInteractionCreate
 from core.config import settings
+from scripts.utils import construct_onboarding_user_payload
+from services.mem0 import add_conversation
 
 
 logger = logging.getLogger(__name__)
@@ -21,7 +24,7 @@ from core.database import get_db
 
 router = APIRouter()
 
-@router.post("/general")
+@router.post("/", status_code=200)
 async def receive_message(request: Request, db: AsyncSession = Depends(get_db)):
 
     try:
@@ -71,12 +74,67 @@ async def receive_message(request: Request, db: AsyncSession = Depends(get_db)):
             data = payload.get("data", {})
             event_timestamp = payload.get("event_timestamp")
 
+            stmt = select(Organization.onboarding_agent_id)
+            result = db.execute(stmt).scalars().all()
+            
             agent_id = data.get("agent_id")
             status = data.get("status")
             transcript = data.get("transcript")
             metadata = data.get("metadata", {})
             analysis = data.get("analysis", {})
             conversation_initiation_client_data = data.get("conversation_initiation_client_data", {})
+
+            if agent_id in result:
+                # Onboarding agent - process differently
+                user_id = conversation_initiation_client_data.get("dynamic_variables").get("user_id")
+                callback_data = analysis.get("data_collection_results", {}).get("callback_time", {})
+                callback_time = None
+
+                result = await db.execute(select(OnboardingUser).where(OnboardingUser.id == user_id))
+                user = result.scalar_one()
+
+                if callback_data and "value" in callback_data:
+                    callback_time = callback_data["value"]  # e.g., "10:07"
+            
+                if callback_time:
+                    try:
+
+                        if user:
+                            user_timezone = user.timezone
+                            tz = pytz.timezone(user_timezone)
+
+                            now = datetime.now(tz)
+
+                            hours, minutes = map(int, callback_time.split(":"))
+                            final_dt = now.replace(hour=hours, minute=minutes, second=0, microsecond=0)
+
+                            if final_dt <= now:
+                                final_dt += timedelta(days=1)
+
+                            final_utc_dt = final_dt.astimezone(pytz.UTC)
+
+                            payload = await construct_onboarding_user_payload(user, agent_id)
+
+                            task_result = initiate_onboarding_call.apply_async(args=[payload,], eta=final_utc_dt)
+                            logger.info(f"Scheduled onboarding call for {final_utc_dt} UTC, task_id={task_result.id}")
+
+                            return {"status": 200}
+                        else:
+                            logger.warning(f"User with ID {user_id} not found, cannot schedule callback.")
+                    except Exception as e:
+                        logger.error(f"Error scheduling callback task: {e}")
+
+                else:
+                    if user.user.id:
+                        user_id = user.user.id #onboarded user id
+                        await add_conversation(
+                            user_id=user_id,
+                            conversation=transcript
+                        )
+                        return {"status": 200}
+                    else:
+                        return {"status": "error", "reason": "onboarded_user_not_found"}
+            
             user_id = conversation_initiation_client_data.get("dynamic_variables", {}).get("user_id")
             
             call_duration = metadata.get("call_duration_secs")
@@ -84,25 +142,30 @@ async def receive_message(request: Request, db: AsyncSession = Depends(get_db)):
 
             call_successful = analysis.get("call_successful")
             transcript_summary = analysis.get("transcript_summary")
+
+            
+
+                
+            
             
 
         except Exception as e:
             logger.error(f"Error extracting fields: {e}, payload={payload}")
             return {"status": "error", "reason": "field_extraction_failed"}
 
-        logger.info(
-            f"Post Call Received: "
-            f"Type={type}, "
-            f"AgentID={agent_id}, "
-            f"Status={status}, "
-            f"EventTimestamp={event_timestamp}, "
-            f"Duration={call_duration if metadata else 'N/A'}, "
-            f"TerminationReason={termination_reason if metadata else 'N/A'}, "
-            f"CallSuccessful={call_successful if analysis else 'N/A'}, "
-            f"TranscriptSummary={transcript_summary if analysis else 'N/A'}, "
-            f"UserID={user_id if conversation_initiation_client_data else 'N/A'}, "
-            f"TranscriptLength={len(transcript) if transcript else 0}"
-        )
+        # logger.info(
+        #     f"Post Call Received: "
+        #     f"Type={type}, "
+        #     f"AgentID={agent_id}, "
+        #     f"Status={status}, "
+        #     f"EventTimestamp={event_timestamp}, "
+        #     f"Duration={call_duration if metadata else 'N/A'}, "
+        #     f"TerminationReason={termination_reason if metadata else 'N/A'}, "
+        #     f"CallSuccessful={call_successful if analysis else 'N/A'}, "
+        #     f"TranscriptSummary={transcript_summary if analysis else 'N/A'}, "
+        #     f"UserID={user_id if conversation_initiation_client_data else 'N/A'}, "
+        #     f"TranscriptLength={len(transcript) if transcript else 0}"
+        # )
 
         # --- Save to DB ---
         try:

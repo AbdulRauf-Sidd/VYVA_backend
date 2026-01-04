@@ -41,6 +41,7 @@ class Settings(BaseSettings):
         "https://4f214c49a3b2.ngrok-free.app",
         "https://onboarding.vyva.io",
         "http://localhost:3000",
+        "https://zamora.vyva.io",
     ]
     
     # CORS
@@ -144,6 +145,8 @@ class Settings(BaseSettings):
         default=None,
         env="ELEVENLABS_SYMPTOM_CHECKER_AGENT_ID"
     )
+
+    ELEVENLABS_OUTBOUND_CALL_URL: str = "https://api.elevenlabs.io/v1/convai/twilio/outbound-call"
 
     OPENAI_MODEL: Optional[str] = Field(
         default=None,

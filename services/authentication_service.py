@@ -50,7 +50,7 @@ async def delete_otp_session(db: AsyncSession, session_id: str):
 
 
 async def create_user_session(db: AsyncSession, user_id: int, user_agent: str = "", ip_address: str = ""):
-    expires_at = datetime.utcnow() + timedelta(minutes=settings.SESSION_DURATION)
+    expires_at = datetime.now() + timedelta(minutes=settings.SESSION_DURATION)
     session = UserSession(user_id=user_id, expires_at=expires_at, user_agent=user_agent, ip_address=ip_address)
     
     db.add(session)

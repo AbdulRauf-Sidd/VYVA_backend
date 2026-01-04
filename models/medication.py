@@ -32,7 +32,7 @@ class Medication(Base):
 
     # Relationships
     user = relationship("User", back_populates="medications")
-    times_of_day = relationship("MedicationTime", back_populates="medication", cascade="all, delete-orphan")
+    times_of_day = relationship("MedicationTime", back_populates="medication", cascade="all, delete-orphan", lazy="selectin")
 
 
 class MedicationTime(Base):
@@ -44,8 +44,8 @@ class MedicationTime(Base):
     medication_id = Column(Integer, ForeignKey("medications.id", ondelete="CASCADE"), nullable=False)
     time_of_day = Column(Time, nullable=True) 
     notes = Column(String(150), nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now())
+    updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
 
     # Relationships
     medication = relationship("Medication", back_populates="times_of_day")
