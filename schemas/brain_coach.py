@@ -68,20 +68,20 @@ class BrainCoachResponseRead(BrainCoachResponseBase):
     model_config = ConfigDict(from_attributes=True)
 
 
-class UserFeedback(BaseModel):
-    email: Optional[str] = None
-    phone_number: Optional[str] = None
-    name: Optional[str] = "N/A"
-    suggestions: Optional[str] = None
-    performance_tier: Optional[str] = None
+# class UserFeedback(BaseModel):
+#     email: Optional[str] = None
+#     phone_number: Optional[str] = None
+#     name: Optional[str] = "N/A"
+#     suggestions: Optional[str] = None
+#     performance_tier: Optional[str] = None
 
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "email": "user@example.com",
-                "phone_number": "+1234567890",
-                "name": "Abdul Rauf Siddiqui",
-                "suggestions": "Focus on improving the quiz interface.",
-                "performance_tier": "On the Rise—Keep Going!"
-            }
-        }
+#     class Config:
+#         json_schema_extra = {
+#             "example": {
+#                 "email": "user@example.com",
+#                 "phone_number": "+1234567890",
+#                 "name": "Abdul Rauf Siddiqui",
+#                 "suggestions": "Focus on improving the quiz interface.",
+#                 "performance_tier": "On the Rise—Keep Going!"
+#             }
+#         }

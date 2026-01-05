@@ -5,7 +5,8 @@ from services.authentication_service import create_otp_session, create_user_sess
 from scripts.authentication_helpers import send_otp_via_sms, is_valid_phone_number, is_expired, get_current_user_from_session
 from schemas.responses import StandardSuccessResponse, SessionSuccessResponse, SessionCheckResponse
 from sqlalchemy import select
-from models.user import User
+from sqlalchemy.orm import selectinload
+from models.user import Caretaker, User
 from core.config import settings
 from fastapi import Body
 from models.authentication import UserTempToken, UserSession
@@ -22,13 +23,24 @@ async def request_otp(request: PhoneRequest, db: AsyncSession = Depends(get_db))
     if not is_valid_phone_number(phone):
         raise HTTPException(status_code=400, detail="Invalid phone number")
 
-    result = await db.execute(select(User).where(User.phone_number == phone))
-    if not result.scalar():
+    user_result = await db.execute(select(User).where(User.phone_number == phone))
+    caretaker_result = await db.execute(select(Caretaker).where(Caretaker.phone_number == phone))
+    user_id = user_result.scalar_one_or_none()
+    caretaker_id = caretaker_result.scalar_one_or_none()
+    if not user_id and not caretaker_id:
         raise HTTPException(status_code=400, detail="No user found with this phone number")
     
-    result = (await db.execute(select(User.id).where(User.phone_number == phone)))
-    user_id = result.scalar_one()
-    otp, session_id = await create_otp_session(db, phone, user_id)
+    if user_id:
+        user_id = user_id.id
+    else:
+        caretaker_id = caretaker_id.id
+
+    print("Creating OTP session for user_id:", user_id, "caretaker_id:", caretaker_id)
+    if user_id is not None:
+        otp, session_id = await create_otp_session(db, phone, user_id, user_type="user")
+    else:
+        otp, session_id = await create_otp_session(db, phone, caretaker_id, user_type="caretaker")
+
     message = {
         1: otp
     }
@@ -46,13 +58,14 @@ async def request_otp(request: PhoneRequest, db: AsyncSession = Depends(get_db))
 
 @router.post("/verify-otp/", response_model=StandardSuccessResponse)
 async def verify_otp(request: Request, response: Response, body: VerifyOtpRequest, db: AsyncSession = Depends(get_db)):
-    user_id, msg = await verify_otp_helper(db, body.session_id, body.otp)
+    user_id, user_type, msg = await verify_otp_helper(db, body.session_id, body.otp)
     if not user_id:
         raise HTTPException(status_code=400, detail=msg)
     
     session_id = await create_user_session(
         db, 
-        user_id, 
+        user_id,
+        user_type=user_type,
         user_agent=request.headers.get("User-Agent"), 
         ip_address=request.client.host
     )
@@ -67,10 +80,28 @@ async def verify_otp(request: Request, response: Response, body: VerifyOtpReques
         max_age=settings.SESSION_DURATION,
         samesite=None
     )
-    
+
+    user = None
+    if user_type == "caretaker":
+        result = await db.execute(
+            select(User)
+            .options(selectinload(User.caretaker))
+            .where(User.caretaker_id == user_id)
+            .order_by(User.id)
+            .limit(1)
+        )
+
+        user = result.scalar_one_or_none()
+
+    print(user_id, user_type)
+
     return {
         "success": True,
-        "message": msg
+        "message": msg,
+        "data": {
+            "user_id": user.id,
+            "name": user.caretaker.full_name,
+        } if user else None
     }
 
 
@@ -106,10 +137,15 @@ async def magic_login(
     # expires_at = datetime.utcnow() + timedelta(days=30)
     # db.add(session)
     # await db.commit()
+    if token_row.user_id:
+        user_id= token_row.user_id
+    else:
+        user_id= token_row.caretaker_id
 
     session_id = await create_user_session(
         db, 
-        token_row.user_id, 
+        user_id, 
+        user_type="user" if token_row.user_id else "caretaker",
         user_agent=request.headers.get("User-Agent"), 
         ip_address=request.client.host
     )
@@ -136,8 +172,6 @@ async def session_auth(
     db: AsyncSession = Depends(get_db)
 ):
     
-    # session_id = request.cookies.get("session_id")
-    
     if not session_id:
         raise HTTPException(status_code=401, detail="Not authenticated")
 
@@ -155,10 +189,6 @@ async def session_auth(
     if session.is_active is False:
         raise HTTPException(status_code=401, detail="Session is inactive")
 
-    # Optional: update last activity timestamp
-    # session.last_seen_at = datetime.utcnow()
-    # await db.commit()
-
     result = await db.execute(
         select(User).where(User.id == session.user_id)
     )
@@ -169,8 +199,7 @@ async def session_auth(
 
     return {
         "success": True,
-        "user_id": user.id,
-        "first_name": user.first_name
+        "user_id": user.id
     }
 
 @router.get("/profile")

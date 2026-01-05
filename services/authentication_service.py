@@ -10,12 +10,16 @@ from datetime import datetime, timedelta
 from core.config import settings
 
 
-async def create_otp_session(db: AsyncSession, contact: str, user_id: int):
+async def create_otp_session(db: AsyncSession, contact: str, user_id: int, user_type: str):
     otp = generate_otp()
     otp_hash = hash_otp(otp)
     expires_at = datetime.now(tz=utc) + timedelta(minutes=settings.OTP_TTL_MINUTES)
 
-    otp_session = OtpSession(contact=contact, otp_hash=otp_hash, expires_at=expires_at, user_id=user_id)
+    if user_type == "user":
+        otp_session = OtpSession(contact=contact, otp_hash=otp_hash, expires_at=expires_at, user_id=user_id)
+    else:
+        otp_session = OtpSession(contact=contact, otp_hash=otp_hash, expires_at=expires_at, caretaker_id=user_id)
+
     db.add(otp_session)
     await db.commit()
     await db.refresh(otp_session)
@@ -27,32 +31,40 @@ async def verify_otp_helper(db: AsyncSession, session_id: str, otp: str):
     otp_session = result.scalar_one_or_none()
 
     if not otp_session or otp_session.verified:
-        return None, "Invalid session ID."
+        return None, None, "Invalid session ID."
     
     if is_expired(otp_session.expires_at):
-        return None, "OTP has expired."
+        return None, None, "OTP has expired."
 
     if otp_session.attempts >= settings.MAX_ATTEMPTS:
-        return None, "Maximum attempts exceeded."
+        return None, None, "Maximum attempts exceeded."
 
     if otp_session.otp_hash == hash_otp(otp):
         otp_session.verified = True
         await db.commit()
-        return otp_session.user_id, "OTP verified successfully."
+        user_id = otp_session.user_id
+        caretaker_id = otp_session.caretaker_id
+        if user_id:
+            return user_id, "user", "OTP verified successfully."
+        elif caretaker_id:
+            return caretaker_id, "caretaker", "OTP verified successfully."
+        return None, None, "User or Caretaker not found."
     else:
         otp_session.attempts += 1
         await db.commit()
-        return None, "Invalid OTP."
-
+        return None, None, "Invalid OTP."
 async def delete_otp_session(db: AsyncSession, session_id: str):
     await db.execute(delete(OtpSession).where(OtpSession.session_id == session_id))
     await db.commit()
 
 
-async def create_user_session(db: AsyncSession, user_id: int, user_agent: str = "", ip_address: str = ""):
+async def create_user_session(db: AsyncSession, user_id: int, user_type: str, user_agent: str = "", ip_address: str = ""):
     expires_at = datetime.now() + timedelta(minutes=settings.SESSION_DURATION)
-    session = UserSession(user_id=user_id, expires_at=expires_at, user_agent=user_agent, ip_address=ip_address)
-    
+    if user_type == "user":
+        session = UserSession(user_id=user_id, expires_at=expires_at, user_agent=user_agent, ip_address=ip_address)
+    else:
+        session = UserSession(caretaker_id=user_id, expires_at=expires_at, user_agent=user_agent, ip_address=ip_address)
+
     db.add(session)
     await db.commit()
     await db.refresh(session)

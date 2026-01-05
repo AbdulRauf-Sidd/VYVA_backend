@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Body
+from fastmcp import settings
 from sqlalchemy.ext.asyncio import AsyncSession
-from models.user import User
+from models.user import User, Caretaker
 from models.onboarding import OnboardingUser
 from datetime import datetime, timedelta
 from sqlalchemy.sql import func
@@ -19,6 +20,7 @@ from models.user_check_ins import UserCheckin, ScheduledSession, CheckInType
 from models.authentication import UserTempToken
 from services.whatsapp_service import whatsapp_service
 from services.mem0 import add_conversation
+from datetime import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -91,7 +93,7 @@ async def onboard_user(
         await db.refresh(user)
 
         record.onboarding_status = True
-        record.onboarded_at = datetime.now()
+        record.onboarded_at = datetime.now(timezone.utc)
         db.add(record)        
 
         wants_brain_coach = brain_coach.get("wants_brain_coach_sessions", False)
@@ -128,6 +130,17 @@ async def onboard_user(
             expires_at=datetime.now() + timedelta(hours=24),
             used=False
         )
+
+        temp_token_caregiver = None
+
+        if caregiver:
+            temp_token_caregiver = UserTempToken(
+                caretaker_id=caregiver.id,
+                expires_at=datetime.now() + timedelta(hours=24),
+                used=False
+            )
+            db.add(temp_token_caregiver)
+
         db.add(temp_token)
         await db.commit()
 
@@ -148,6 +161,15 @@ async def onboard_user(
         }
 
         await whatsapp_service.send_onboarding_message(user.phone_number, temmplate_data)
+        
+        if temp_token_caregiver:
+            caregiver_onboarding_link = f"https://care.{record.organization.sub_domain}.vyva.io/?token={temp_token_caregiver.token}"
+            temmplate_data = {
+                "caregiver_magic_link": caregiver_onboarding_link
+            }
+
+            await whatsapp_service.send_onboarding_message(caregiver.phone_number, temmplate_data, template_id=settings.TWILIO_WHATSAPP_CARETAKER_ONBOARDING_TEMPLATE_SID)
+
         # await sms_service.send_magic_link(user.phone_number, temp_token.token, record.organization.sub_domain)
 
         return {

@@ -72,6 +72,11 @@ class User(Base):
     takes_medication = Column(Boolean, nullable=True)
     missed_dose_alerts = Column(Boolean, nullable=True)
     preferred_reminder_channel = Column(String(50), nullable=True)
+    medication_logs = relationship(
+        "MedicationLog",
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
     # escalate_to_emergency_contact = Column(Boolean, nullable=True)
 
     #Reminders
@@ -176,4 +181,9 @@ class Caretaker(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     assigned_users = relationship("User", back_populates="caretaker")
+
+    @property
+    def full_name(self) -> str:
+        """Get user's full name."""
+        return self.name 
     
