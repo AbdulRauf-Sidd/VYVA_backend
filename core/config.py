@@ -42,6 +42,7 @@ class Settings(BaseSettings):
         "https://onboarding.vyva.io",
         "http://localhost:3000",
         "https://zamora.vyva.io",
+        "https://care.zamora.vyva.io",
     ]
     
     # CORS

@@ -151,6 +151,23 @@ class User(Base):
             return self.last_name
         return self.email 
     
+    @property
+    def full_address(self) -> str:
+        """Return the user's full address as a readable string."""
+        parts = [
+            self.street,
+            self.city,
+            self.postal_code,
+            self.country,
+            self.address
+        ]
+    
+        # Filter out None / empty / whitespace-only values
+        parts = [p.strip() for p in parts if p and p.strip()]
+    
+        return ", ".join(parts) if parts else "No address provided"
+
+    
 
 class AdminUser(Base):
     __tablename__ = "admin_users"

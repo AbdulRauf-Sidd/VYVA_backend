@@ -83,6 +83,7 @@ async def verify_otp(request: Request, response: Response, body: VerifyOtpReques
 
     user = None
     if user_type == "caretaker":
+        print('1')
         result = await db.execute(
             select(User)
             .options(selectinload(User.caretaker))
@@ -90,10 +91,11 @@ async def verify_otp(request: Request, response: Response, body: VerifyOtpReques
             .order_by(User.id)
             .limit(1)
         )
-
+        
         user = result.scalar_one_or_none()
+        print(user)
 
-    print(user_id, user_type, user)
+    print(user_id, user_type, user.full_name)
 
     return {
         "success": True,
@@ -202,6 +204,45 @@ async def session_auth(
         "success": True,
         "user_id": user.id
     }
+
+
+@router.post("/caretaker-session/", response_model=SessionCheckResponse)
+async def caretaker_session_auth(
+    # request: Request,
+    session_id: str = Cookie(None, alias=settings.SESSION_COOKIE_NAME), 
+    db: AsyncSession = Depends(get_db)
+):
+    
+    if not session_id:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    result = await db.execute(
+        select(UserSession).where(UserSession.session_id == session_id)
+    )
+    session = result.scalar_one_or_none()
+
+    if not session:
+        raise HTTPException(status_code=401, detail="Invalid session")
+
+    if is_expired(session.expires_at):
+        raise HTTPException(status_code=401, detail="Session expired")
+    
+    if session.is_active is False:
+        raise HTTPException(status_code=401, detail="Session is inactive")
+
+    result = await db.execute(
+        select(Caretaker).where(Caretaker.id == session.caretaker_id)
+    )
+    caretaker = result.scalar_one_or_none()
+
+    if not caretaker:
+        raise HTTPException(status_code=401, detail="Caretaker not found")
+
+    return {
+        "success": True,
+        "user_id": caretaker.id
+    }
+
 
 @router.get("/profile")
 async def read_user_profile(

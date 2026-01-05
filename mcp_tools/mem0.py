@@ -1,3 +1,4 @@
+from models.medication import Medication
 from .mcp_instance import mcp
 # from sqlalchemy import select
 from typing import List, Optional
@@ -5,6 +6,8 @@ from typing import List, Optional
 from pydantic import BaseModel
 from models.user import User
 from services.mem0 import add_conversation, get_memories
+from core.database import get_async_session
+from sqlalchemy import select
 
 class AddMemoryInput(BaseModel):
     conversation: list[dict]
@@ -88,4 +91,27 @@ class UserMemory(BaseModel):
 async def retrieve_user_memories(
     input: RetrieveMemoryInput
 ) -> UserMemory:
-    return await get_memories(str(input.user_id))
+    memories = await get_memories(str(input.user_id))
+    async with get_async_session() as db:
+        stmt = (
+            select(User)
+            .where(User.user_id == input.user_id)
+        )
+
+        result = await db.execute(stmt)
+        user = result.scalar_one()
+        address = user.full_address
+        full_name = user.full_name
+        email = user.email
+        phone_number = user.phone_number
+        timezone = user.timezone
+
+    return {
+        "full_name": full_name,
+        "email": email,
+        "phone_number": phone_number,
+        "timezone": timezone,
+        "address": address,
+        "memories": memories
+    }
+
