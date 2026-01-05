@@ -58,3 +58,15 @@ class MedicationOut(BaseModel):
 
     class Config:
         from_attributes = True
+        
+class NextDoseOut(BaseModel):
+    medication_name: str
+    time: datetime
+
+
+class MedicationInfoOut(BaseModel):
+    weekly_adherence_percentage: float
+    doses_taken_percentage: float
+    active_medications: List[MedicationOut]
+    next_dose: Optional[NextDoseOut]
+    

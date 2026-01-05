@@ -3,12 +3,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Dict
 import logging
 import time
+from datetime import datetime, timezone, timedelta
+from zoneinfo import ZoneInfo
+from models.user import User
+from models.medication import MedicationStatus
 from core.database import get_db
 from services.medication import MedicationService
 from repositories.user import UserRepository
 from repositories.medication import MedicationRepository
 from schemas.user import UserCreate
-from schemas.responses import MedicationEntry, WeeklyScheduleResponse, MedicationOut
+from schemas.responses import MedicationEntry, WeeklyScheduleResponse, MedicationOut, MedicationInfoOut, NextDoseOut
 from schemas.medication import (
     BulkMedicationRequest,
     MedicationCreate,
@@ -428,4 +432,161 @@ async def get_all_medications_with_times(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to fetch medications"
+        )
+        
+@router.get(
+    "/medication-times/{user_id}",
+    response_model=List[MedicationOut],
+    summary="Get all medications with times for a user"
+)
+async def get_medications_with_times(
+    user_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    start_time = time.time()
+    request_id = f"get_meds_times_{user_id}_{int(start_time * 1000)}"
+    
+    logger.info(f"Request {request_id}: Fetching medications with times for user {user_id}")
+    
+    try:
+        medication_repo = MedicationRepository(db)
+        medication_service = MedicationService(medication_repo)
+        
+        result = await medication_service.get_user_medications(user_id)
+        
+        duration = time.time() - start_time
+        logger.info(
+            f"Request {request_id}: Found {len(result)} medications with times for user {user_id} "
+            f"in {duration:.2f}s"
+        )
+        
+        if not result:
+            logger.info(f"Request {request_id}: No medications found for user {user_id}")
+        
+        return result
+        
+    except ValueError as e:
+        logger.warning(f"Request {request_id}: Invalid user ID {user_id}: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+    except Exception as e:
+        logger.error(
+            f"Request {request_id}: Failed to fetch medications for user {user_id}: {str(e)}",
+            exc_info=True
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch medications"
+        )
+        
+@router.get(
+    "/medication-info/{user_id}",
+    response_model=MedicationInfoOut,
+    summary="Get detailed medication info for a user"
+)
+async def get_detailed_medication_info(
+    user_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    start_time = time.time()
+    request_id = f"get_med_info_{user_id}_{int(start_time * 1000)}"
+
+    logger.info(f"Request {request_id}: Fetching detailed medication info for user {user_id}")
+
+    try:
+        if user_id <= 0:
+            raise ValueError("Invalid user ID")
+
+        medication_repo = MedicationRepository(db)
+        medication_service = MedicationService(medication_repo)
+
+        medications = await medication_service.get_user_medications(user_id)
+
+        now_utc = datetime.now(timezone.utc)
+        today = now_utc.date()
+        week_start = today - timedelta(days=today.weekday())
+        week_end = week_start + timedelta(days=6)
+
+        weekly_logs = []
+        for med in medications:
+            for log in med.logs:
+                if log.created_at:
+                    log_date = log.created_at.date()
+                    if week_start <= log_date <= week_end:
+                        weekly_logs.append(log)
+
+        total_logs = len(weekly_logs)
+        taken_logs = sum(
+            1 for log in weekly_logs if log.status == MedicationStatus.TAKEN
+        )
+
+        adherence_percentage = (
+            round((taken_logs / total_logs) * 100, 2) if total_logs > 0 else 0.0
+        )
+
+        user = await db.get(User, user_id)
+        user_tz = timezone.utc
+        if user and getattr(user, "timezone", None):
+            try:
+                user_tz = ZoneInfo(user.timezone)
+            except Exception:
+                logger.warning(
+                    f"Request {request_id}: Invalid timezone for user {user_id}, falling back to UTC"
+                )
+
+        now_local = now_utc.astimezone(user_tz)
+
+        upcoming_doses = []
+        for med in medications:
+            for t in med.times_of_day:
+                if not t.time_of_day:
+                    continue
+
+                candidate_dt = datetime.combine(
+                    now_local.date(),
+                    t.time_of_day,
+                    tzinfo=user_tz
+                )
+
+                if candidate_dt >= now_local:
+                    upcoming_doses.append((candidate_dt, med.name))
+
+        next_dose = None
+        if upcoming_doses:
+            next_time, med_name = min(upcoming_doses, key=lambda x: x[0])
+            next_dose = NextDoseOut(
+                medication_name=med_name,
+                time=next_time
+            )
+
+        duration = time.time() - start_time
+        logger.info(
+            f"Request {request_id}: Medication info computed for user {user_id} "
+            f"in {duration:.2f}s"
+        )
+
+        return MedicationInfoOut(
+            weekly_adherence_percentage=adherence_percentage,
+            doses_taken_percentage=adherence_percentage,
+            active_medications=medications,
+            next_dose=next_dose
+        )
+
+    except ValueError as e:
+        logger.warning(f"Request {request_id}: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+
+    except Exception as e:
+        logger.error(
+            f"Request {request_id}: Failed to fetch medication info for user {user_id}: {str(e)}",
+            exc_info=True
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch medication info"
         )
