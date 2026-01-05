@@ -1,10 +1,10 @@
 from .mcp_instance import mcp
 # from sqlalchemy import select
-from typing import Optional
+from typing import List, Optional
 # from core.database import get_async_session
 from pydantic import BaseModel
 from models.user import User
-from services.mem0 import add_conversation
+from services.mem0 import add_conversation, get_memories
 
 class AddMemoryInput(BaseModel):
     conversation: list[dict]
@@ -67,3 +67,25 @@ async def add_to_user_memory(input: AddMemoryInput) -> Optional[bool]:
     print(input.conversation)
     await add_conversation(input.user_id, input.conversation)
     return True
+
+
+class RetrieveMemoryInput(BaseModel):
+    user_id: int
+
+class UserMemory(BaseModel):
+    content: dict[str, str]
+
+@mcp.tool(
+    name="retrieve_user_memories",
+    description=(
+        "Retrieve all stored long-term memories about a user.\n\n"
+        "This tool should be called at the START of a conversation so the agent "
+        "can personalize responses using known preferences, routines, context, "
+        "and care-related information.\n\n"
+        "The returned memories are summarized and safe for direct agent consumption."
+    )
+)
+async def retrieve_user_memories(
+    input: RetrieveMemoryInput
+) -> UserMemory:
+    return await get_memories(str(input.user_id))

@@ -29,6 +29,7 @@ class OnboardingUser(Base):
     caregiver_contact_number=Column(String(20), nullable=True)
     preferred_communication_channel=Column(String(20), nullable=True)
     onboarding_call_scheduled = Column(Boolean, default=False)
+    onboarding_call_task_id = Column(String(255), nullable=True)
     onboarding_status = Column(Boolean, default=False)
     onboarded_at = Column(DateTime(timezone=True), nullable=True)
     call_attempts = Column(Integer, default=0)
@@ -50,5 +51,6 @@ class OnboardingLogs(Base):
     call_id = Column(String(255), nullable=True)
     onboarding_user=relationship("OnboardingUser", back_populates="onboarding_logs")
     onboarding_user_id=Column(Integer, ForeignKey("onboarding_users.id"), nullable=True)
+    status=Column(String(50), nullable=True)
     summary = Column(String(1000), nullable=True)
 

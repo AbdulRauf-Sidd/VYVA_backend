@@ -47,6 +47,11 @@ venv
 vyva_backend_env
 
 
+#shell scripts
+merge_develop_to_main.sh
+start_server.sh
+
+
 # Django stuff:
 *.log
 local_settings.py

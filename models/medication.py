@@ -7,7 +7,7 @@ from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Bool
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from sqlalchemy import Time
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 from core.database import Base
@@ -33,6 +33,11 @@ class Medication(Base):
     # Relationships
     user = relationship("User", back_populates="medications")
     times_of_day = relationship("MedicationTime", back_populates="medication", cascade="all, delete-orphan", lazy="selectin")
+    logs = relationship(
+        "MedicationLog",
+        back_populates="medication",
+        cascade="all, delete-orphan"
+    )
 
 
 class MedicationTime(Base):
@@ -44,17 +49,24 @@ class MedicationTime(Base):
     medication_id = Column(Integer, ForeignKey("medications.id", ondelete="CASCADE"), nullable=False)
     time_of_day = Column(Time, nullable=True) 
     notes = Column(String(150), nullable=True)
-    created_at = Column(DateTime, default=datetime.now())
-    updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
     # Relationships
     medication = relationship("Medication", back_populates="times_of_day")
 
+    logs = relationship(
+        "MedicationLog",
+        back_populates="medication_time",
+        cascade="all, delete-orphan"
+    )
+
 
 class MedicationStatus(enum.Enum):
-    taken = "taken"
-    missed = "missed"
-    aa="as_assisted"
+    TAKEN = "taken"
+    MISSED = "missed"
+    UNCONFIRMED = "unconfirmed"
+
 
 
 class MedicationLog(Base):
@@ -84,9 +96,9 @@ class MedicationLog(Base):
     )
 
     notes = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
 
     # Relationships
-    medication = relationship("Medication")
-    medication_time = relationship("MedicationTime")
-    user = relationship("User")
+    medication = relationship("Medication", back_populates="logs")
+    medication_time = relationship("MedicationTime", back_populates="logs")
+    user = relationship("User", back_populates="medication_logs")

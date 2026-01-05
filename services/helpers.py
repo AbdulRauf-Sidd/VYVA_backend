@@ -2,7 +2,7 @@ import random
 import string
 import logging
 from datetime import datetime
-from passlib.context import CryptContext
+# from passlib.context import CryptContext
 
 logger = logging.getLogger(__name__)
 
@@ -15,13 +15,13 @@ def generate_random_string(length=8):
 
 
 # Configure the hashing algorithm
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+# def hash_password(password: str) -> str:
+#     return pwd_context.hash(password)
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+# def verify_password(plain_password: str, hashed_password: str) -> bool:
+#     return pwd_context.verify(plain_password, hashed_password)
 
 
 def construct_whatsapp_sms_message(user):

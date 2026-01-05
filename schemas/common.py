@@ -7,14 +7,14 @@ from typing import Optional, Any, Dict
 from pydantic import BaseModel, Field
 
 
-class BaseSchema(BaseModel):
-    """Base schema with common fields."""
+# class BaseSchema(BaseModel):
+#     """Base schema with common fields."""
     
-    class Config:
-        from_attributes = True
-        json_encoders = {
-            datetime: lambda v: v.isoformat()
-        }
+#     class Config:
+#         from_attributes = True
+#         json_encoders = {
+#             datetime: lambda v: v.isoformat()
+#         }
 
 
 # class PaginationParams(BaseModel):
