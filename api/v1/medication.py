@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List
+from typing import List, Dict
 import logging
 import time
 from core.database import get_db
@@ -8,6 +8,7 @@ from services.medication import MedicationService
 from repositories.user import UserRepository
 from repositories.medication import MedicationRepository
 from schemas.user import UserCreate
+from schemas.responses import MedicationEntry, WeeklyScheduleResponse
 from schemas.medication import (
     BulkMedicationRequest,
     MedicationCreate,
@@ -336,4 +337,48 @@ async def bulk_update_medications(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to update medications"
+        )
+
+@router.get(
+    "/weekly-schedule/{user_id}",
+    response_model=WeeklyScheduleResponse,
+    summary="Get weekly medication schedule for a user"
+)
+async def get_weekly_medication_schedule(
+    user_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    start_time = time.time()
+    request_id = f"weekly_schedule_{user_id}_{int(start_time * 1000)}"
+    
+    logger.info(f"Request {request_id}: Fetching weekly medication schedule for user {user_id}")
+    
+    try:
+        medication_repo = MedicationRepository(db)
+        medication_service = MedicationService(medication_repo)
+        
+        result: Dict[str, List[MedicationEntry]] = await medication_service.get_weekly_medication_schedule(user_id)
+        
+        duration = time.time() - start_time
+        logger.info(
+            f"Request {request_id}: Retrieved weekly medication schedule for user {user_id} "
+            f"in {duration:.2f}s"
+        )
+        
+        return result
+        
+    except ValueError as e:
+        logger.warning(f"Request {request_id}: Invalid user ID {user_id}: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+    except Exception as e:
+        logger.error(
+            f"Request {request_id}: Failed to fetch weekly medication schedule for user {user_id}: {str(e)}",
+            exc_info=True
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch weekly medication schedule"
         )

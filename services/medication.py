@@ -1,6 +1,7 @@
 import logging
-from typing import List, Optional
+from typing import Dict, List, Optional
 from datetime import time, date
+from schemas.responses import MedicationEntry
 from sqlalchemy.orm import Session
 from models.medication import Medication, MedicationTime
 from schemas.medication import MedicationCreate, MedicationInDB, MedicationUpdate, BulkMedicationRequest, MedicationTimeCreate
@@ -178,3 +179,27 @@ class MedicationService:
             return time(hour=hours, minute=minutes)
         except (ValueError, AttributeError):
             raise ValueError(f"Invalid time format: {time_str}. Expected format: 'HH:MM'")
+        
+    async def get_weekly_medication_schedule(self, user_id: int) -> Dict[str, List[MedicationEntry]]:
+        try:
+            medications = await self.get_user_medications(user_id)
+            schedule = { (date.today() + timedelta(days=i)).strftime("%A"): [] for i in range(7) }
+            
+            for med in medications:
+                for med_time in med.times_of_day:
+                    for i in range(7):
+                        day = date.today() + timedelta(days=i)
+                        if (med.start_date <= day and 
+                            (med.end_date is None or med.end_date >= day)):
+                            entry = MedicationEntry(
+                                medication_name=med.name,
+                                time=med_time.time_of_day.strftime("%H:%M"),
+                                log=None  
+                            )
+                            schedule[day.strftime("%A")].append(entry)
+            
+            return schedule
+            
+        except Exception as e:
+            logger.error(f"Error getting weekly medication schedule for user {user_id}: {e}")
+            raise
