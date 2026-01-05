@@ -100,17 +100,18 @@ class Settings(BaseSettings):
     MAILGUN_API_KEY: Optional[str] = Field(default=None, env="MAILGUN_API_KEY")
     
     # SMS Configuration (Twilio)
-    TWILIO_ACCOUNT_SID: Optional[str] = Field(default=None, env="TWILIO_ACCOUNT_SID")
-    TWILIO_AUTH_TOKEN: Optional[str] = Field(default=None, env="TWILIO_AUTH_TOKEN")
-    TWILIO_PHONE_NUMBER: Optional[str] = Field(default=None, env="TWILIO_PHONE_NUMBER")
+    TWILIO_ACCOUNT_SID: str = Field(default=None, env="TWILIO_ACCOUNT_SID")
+    TWILIO_AUTH_TOKEN: str = Field(default=None, env="TWILIO_AUTH_TOKEN")
+    TWILIO_PHONE_NUMBER: str = Field(default=None, env="TWILIO_PHONE_NUMBER")
     
     # WhatsApp Configuration (Twilio)
-    TWILIO_WHATSAPP_FROM_NUMBER: Optional[str] = Field(default=None, env="TWILIO_WHATSAPP_FROM_NUMBER")
-    TWILIO_WHATSAPP_TEMPLATE_SID: Optional[str] = Field(default=None, env="TWILIO_WHATSAPP_TEMPLATE_SID")
-    TWILIO_WHATSAPP_REMINDER_TEMPLATE_SID: Optional[str] = Field(default=None, env="TWILIO_WHATSAPP_REMINDER_TEMPLATE_SID")
-    TWILIO_WHATSAPP_BRAIN_COACH_TEMPLATE_SID: Optional[str] = Field(default=None, env="TWILIO_WHATSAPP_BRAIN_COACH_TEMPLATE_SID")
-    TWILIO_WHATSAPP_ONBOARDING_TEMPLATE_SID: Optional[str] = Field(default=None, env="TWILIO_WHATSAPP_ONBOARDING_TEMPLATE_SID")
-    TWILIO_WHATSAPP_OTP_TEMPLATE_SID: Optional[str] = Field(default=None, env="TWILIO_WHATSAPP_OTP_TEMPLATE_SID")
+    TWILIO_WHATSAPP_FROM_NUMBER: str = Field(default=None, env="TWILIO_WHATSAPP_FROM_NUMBER")
+    TWILIO_WHATSAPP_TEMPLATE_SID: str = Field(default=None, env="TWILIO_WHATSAPP_TEMPLATE_SID")
+    TWILIO_WHATSAPP_REMINDER_TEMPLATE_SID: str = Field(default=None, env="TWILIO_WHATSAPP_REMINDER_TEMPLATE_SID")
+    TWILIO_WHATSAPP_BRAIN_COACH_TEMPLATE_SID: str = Field(default=None, env="TWILIO_WHATSAPP_BRAIN_COACH_TEMPLATE_SID")
+    TWILIO_WHATSAPP_ONBOARDING_TEMPLATE_SID: str = Field(default=None, env="TWILIO_WHATSAPP_ONBOARDING_TEMPLATE_SID")
+    TWILIO_WHATSAPP_CARETAKER_ONBOARDING_TEMPLATE_SID: str = Field(default=None, env="TWILIO_WHATSAPP_CARETAKER_ONBOARDING_TEMPLATE_SID")
+    TWILIO_WHATSAPP_OTP_TEMPLATE_SID: str = Field(default=None, env="TWILIO_WHATSAPP_OTP_TEMPLATE_SID")
 
     
     # ElevenLabs TTS

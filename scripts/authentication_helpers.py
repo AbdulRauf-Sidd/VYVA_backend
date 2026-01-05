@@ -1,13 +1,15 @@
 import hashlib
 import random
 from datetime import datetime, timedelta
+from models.organization import Organization
 from services.sms_service import sms_service
 from pytz import utc
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from models.authentication import UserSession
-from models.user import User
+from models.user import User, Caretaker
 
 def generate_otp(length=4):
     return str(random.randint(10**(length-1), 10**length - 1))
@@ -66,14 +68,15 @@ async def get_current_user_from_session(
             detail="Session is inactive"
         )
 
-    # Optional: Update last activity timestamp (uncomment if needed)
-    # session.last_seen_at = datetime.utcnow()
-    # await db.commit()
-
-    user_result = await db.execute(
-        select(User).where(User.id == session.user_id)
+    result = await db.execute(
+    select(User)
+        .options(
+            selectinload(User.organization)
+            .selectinload(Organization.agents)
+        )
+        .where(User.id == session.user_id)
     )
-    user = user_result.scalar_one_or_none()
+    user = result.scalar_one_or_none()
 
     if not user:
         raise HTTPException(
@@ -82,3 +85,52 @@ async def get_current_user_from_session(
         )
 
     return user
+
+
+async def get_current_caretaker_from_session(
+    session_id: str, 
+    db: AsyncSession 
+) -> User:
+    
+    if not session_id:
+        raise HTTPException(
+            status_code=401, 
+            detail="Not authenticated: Missing session cookie"
+        )
+
+    session_result = await db.execute(
+        select(UserSession).where(UserSession.session_id == session_id)
+    )
+    session = session_result.scalar_one_or_none()
+
+    if not session:
+        raise HTTPException(
+            status_code=401, 
+            detail="Invalid session: Session ID not found"
+        )
+
+    if is_expired(session.expires_at):
+        raise HTTPException(
+            status_code=401, 
+            detail="Session expired"
+        )
+    
+    if session.is_active is False:
+        raise HTTPException(
+            status_code=401, 
+            detail="Session is inactive"
+        )
+
+    result = await db.execute(
+    select(Caretaker)
+        .where(Caretaker.id == session.caretaker_id)
+    )
+    caretaker = result.scalar_one_or_none()
+
+    if not caretaker:
+        raise HTTPException(
+            status_code=401, 
+            detail="Caretaker not found for session ID"
+        )
+
+    return caretaker

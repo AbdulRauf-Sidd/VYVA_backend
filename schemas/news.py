@@ -6,9 +6,9 @@ class NewsRequest(BaseModel):
     q: str  # Direct search query for SerpAPI (required)
     limit: Optional[int] = 3
     
-    class Config:
-        # Allow extra fields that might be sent by the agent
-        extra = "ignore"
+    # class Config:
+    #     # Allow extra fields that might be sent by the agent
+    #     extra = "ignore"
     
     @field_validator('limit', mode='before')
     @classmethod
