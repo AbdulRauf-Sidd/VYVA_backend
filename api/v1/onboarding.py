@@ -247,13 +247,12 @@ async def delete_onboarding_user_by_id(
     db: AsyncSession = Depends(get_db)
 ):
     try:
-        result = await db.execute(
-            select(OnboardingUser).where(OnboardingUser.id == user_id)
-        )
-        record = result.scalar_one_or_none()
+        # Use db.get for safe ORM instance
+        record = await db.get(OnboardingUser, user_id)
         if not record:
-          raise HTTPException(status_code=404, detail="User not found")
+            raise HTTPException(status_code=404, detail="User not found")
 
+        # Revoke Celery task if present
         if record.onboarding_call_task_id:
             try:
                 task = AsyncResult(record.onboarding_call_task_id)
@@ -268,7 +267,9 @@ async def delete_onboarding_user_by_id(
 
         return Response(status_code=204)
 
+    except HTTPException:
+        # Let FastAPI handle it (404)
+        raise
     except Exception as e:
-        logger.exception(f"Error deleting onboarding user: {e}")
+        logger.exception(f"Error deleting onboarding user {user_id}")
         raise HTTPException(status_code=500, detail="Internal server error")
-    
