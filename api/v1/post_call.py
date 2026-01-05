@@ -15,6 +15,7 @@ from schemas.symptom_checker import SymptomCheckerInteractionCreate
 from core.config import settings
 from scripts.utils import construct_onboarding_user_payload
 from services.mem0 import add_conversation
+from models import User
 
 
 logger = logging.getLogger(__name__)
@@ -69,124 +70,103 @@ async def receive_message(request: Request, db: AsyncSession = Depends(get_db)):
         #         return {"status": "error", "reason": "signature_validation_failed"}
 
         # --- Extract payload fields safely ---
-        try:
-            type = payload.get("type")
-            data = payload.get("data", {})
-            event_timestamp = payload.get("event_timestamp")
 
-            stmt = select(Organization.onboarding_agent_id)
-            result = db.execute(stmt).scalars().all()
-            
-            agent_id = data.get("agent_id")
-            status = data.get("status")
-            transcript = data.get("transcript")
-            metadata = data.get("metadata", {})
-            analysis = data.get("analysis", {})
-            conversation_initiation_client_data = data.get("conversation_initiation_client_data", {})
-
-            if agent_id in result:
-                # Onboarding agent - process differently
-                user_id = conversation_initiation_client_data.get("dynamic_variables").get("user_id")
-                callback_data = analysis.get("data_collection_results", {}).get("callback_time", {})
-                callback_time = None
-
-                result = await db.execute(select(OnboardingUser).where(OnboardingUser.id == user_id))
-                user = result.scalar_one()
-
-                if callback_data and "value" in callback_data:
-                    callback_time = callback_data["value"]  # e.g., "10:07"
-            
-                if callback_time:
-                    try:
-
-                        if user:
-                            user_timezone = user.timezone
-                            tz = pytz.timezone(user_timezone)
-
-                            now = datetime.now(tz)
-
-                            hours, minutes = map(int, callback_time.split(":"))
-                            final_dt = now.replace(hour=hours, minute=minutes, second=0, microsecond=0)
-
-                            if final_dt <= now:
-                                final_dt += timedelta(days=1)
-
-                            final_utc_dt = final_dt.astimezone(pytz.UTC)
-
-                            payload = await construct_onboarding_user_payload(user, agent_id)
-
-                            task_result = initiate_onboarding_call.apply_async(args=[payload,], eta=final_utc_dt)
-                            logger.info(f"Scheduled onboarding call for {final_utc_dt} UTC, task_id={task_result.id}")
-
-                            return {"status": 200}
-                        else:
-                            logger.warning(f"User with ID {user_id} not found, cannot schedule callback.")
-                    except Exception as e:
-                        logger.error(f"Error scheduling callback task: {e}")
-
-                else:
-                    if user.user.id:
-                        user_id = user.user.id #onboarded user id
-                        await add_conversation(
-                            user_id=user_id,
-                            conversation=transcript
-                        )
+        type = payload.get("type")
+        data = payload.get("data", {})
+        event_timestamp = payload.get("event_timestamp")
+        stmt = select(Organization.onboarding_agent_id)
+        result = (
+            await db.execute(stmt)
+        ).scalars().all()
+        
+        agent_id = data.get("agent_id")
+        status = data.get("status")
+        transcript = data.get("transcript")
+        metadata = data.get("metadata", {})
+        analysis = data.get("analysis", {})
+        conversation_initiation_client_data = data.get("conversation_initiation_client_data", {})
+        
+        if agent_id in result:
+            # Onboarding agent - process differently
+            user_id = conversation_initiation_client_data.get("dynamic_variables").get("user_id")
+            callback_data = analysis.get("data_collection_results", {}).get("callback_time", {})
+            callback_time = None
+            result = await db.execute(select(OnboardingUser).where(OnboardingUser.id == user_id))
+            user = result.scalar_one()
+            if callback_data and "value" in callback_data:
+                callback_time = callback_data["value"]  # e.g., "10:07"
+        
+            if callback_time:
+                try:
+                    if user:
+                        user_timezone = user.timezone
+                        tz = pytz.timezone(user_timezone)
+                        now = datetime.now(tz)
+                        hours, minutes = map(int, callback_time.split(":"))
+                        final_dt = now.replace(hour=hours, minute=minutes, second=0, microsecond=0)
+                        if final_dt <= now:
+                            final_dt += timedelta(days=1)
+                        final_utc_dt = final_dt.astimezone(pytz.UTC)
+                        payload = await construct_onboarding_user_payload(user, agent_id)
+                        task_result = initiate_onboarding_call.apply_async(args=[payload,], eta=final_utc_dt)
+                        logger.info(f"Scheduled onboarding call for {final_utc_dt} UTC, task_id={task_result.id}")
                         return {"status": 200}
                     else:
-                        return {"status": "error", "reason": "onboarded_user_not_found"}
-            
+                        logger.warning(f"User with ID {user_id} not found, cannot schedule callback.")
+                except Exception as e:
+                    logger.error(f"Error scheduling callback task: {e}")
+            else:
+                if user.user:
+                    user_id = user.user.id #onboarded user id
+                    await add_conversation(
+                        user_id=user_id,
+                        conversation=transcript
+                    )
+                    return {"status": 200}
+                else:
+                    return {"status": "error", "reason": "onboarded_user_not_found"}
+        else:
+            conversation = []
+            for message in transcript:
+                conversation.append({
+                    'role': message['role'],
+                    'content': message['message']
+                })
             user_id = conversation_initiation_client_data.get("dynamic_variables", {}).get("user_id")
-            
+            phone_number = conversation_initiation_client_data.get("dynamic_variables", {}).get("phone_number")
             call_duration = metadata.get("call_duration_secs")
             termination_reason = metadata.get("termination_reason")
-
             call_successful = analysis.get("call_successful")
             transcript_summary = analysis.get("transcript_summary")
-
+            if not user_id:
+                if phone_number:
+                    result = await db.execute(select(User.id).where(User.phone_number == phone_number))
+                    user_id = result.scalar_one()
+            if user_id:
+                await add_conversation(
+                    user_id=user_id,
+                    conversation=conversation
+                )
+        
+            try:
+                session_repo = ElevenLabsSessionRepository(db)
+                session_data = ElevenLabsSessionCreate(
+                    call_successful=call_successful,
+                    user_id=user_id,
+                    agent_id=agent_id,
+                    duration=call_duration,
+                    termination_reason=termination_reason,
+                    summary=transcript_summary,
+                    transcription=transcript,
+                )
+                created_session = await session_repo.create(session_data)
+                logger.info(f"Session saved successfully with ID {created_session.id}")
+            except Exception as e:
+                logger.error(f"DB insert failed: {e}")
+                return {"status": "error", "reason": "db_insert_failed"}
             
-
+        return {"success": True}
                 
-            
-            
-
-        except Exception as e:
-            logger.error(f"Error extracting fields: {e}, payload={payload}")
-            return {"status": "error", "reason": "field_extraction_failed"}
-
-        # logger.info(
-        #     f"Post Call Received: "
-        #     f"Type={type}, "
-        #     f"AgentID={agent_id}, "
-        #     f"Status={status}, "
-        #     f"EventTimestamp={event_timestamp}, "
-        #     f"Duration={call_duration if metadata else 'N/A'}, "
-        #     f"TerminationReason={termination_reason if metadata else 'N/A'}, "
-        #     f"CallSuccessful={call_successful if analysis else 'N/A'}, "
-        #     f"TranscriptSummary={transcript_summary if analysis else 'N/A'}, "
-        #     f"UserID={user_id if conversation_initiation_client_data else 'N/A'}, "
-        #     f"TranscriptLength={len(transcript) if transcript else 0}"
-        # )
-
-        # --- Save to DB ---
-        try:
-            session_repo = ElevenLabsSessionRepository(db)
-            session_data = ElevenLabsSessionCreate(
-                call_successful=call_successful,
-                user_id=user_id,
-                agent_id=agent_id,
-                duration=call_duration,
-                termination_reason=termination_reason,
-                summary=transcript_summary,
-                transcription=transcript,
-            )
-            created_session = await session_repo.create(session_data)
-            logger.info(f"Session saved successfully with ID {created_session.id}")
-        except Exception as e:
-            logger.error(f"DB insert failed: {e}")
-            return {"status": "error", "reason": "db_insert_failed"}
-
-        return {"status": "recieved"}
-
     except Exception as e:
         logger.exception(f"Unexpected error in handle_elevenlabs_post_call: {e}")
         return {"status": "error", "reason": "unexpected_error"}
