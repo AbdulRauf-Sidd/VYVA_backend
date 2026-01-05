@@ -86,6 +86,57 @@ async def get_current_user_from_session(
 
     return user
 
+async def get_current_caretaker_from_session(
+    session_id: str, 
+    db: AsyncSession 
+) -> Caretaker:
+    
+    if not session_id:
+        raise HTTPException(
+            status_code=401, 
+            detail="Not authenticated: Missing session cookie"
+        )
+
+    session_result = await db.execute(
+        select(UserSession).where(UserSession.session_id == session_id)
+    )
+    session = session_result.scalar_one_or_none()
+
+    if not session:
+        raise HTTPException(
+            status_code=401, 
+            detail="Invalid session: Session ID not found"
+        )
+
+    if is_expired(session.expires_at):
+        raise HTTPException(
+            status_code=401, 
+            detail="Session expired"
+        )
+    
+    if session.is_active is False:
+        raise HTTPException(
+            status_code=401, 
+            detail="Session is inactive"
+        )
+
+    result = await db.execute(
+    select(Caretaker)
+        .options(
+            selectinload(Caretaker.assigned_users)
+        )
+        .where(Caretaker.id == session.caretaker_id)
+    )
+    caretaker = result.scalar_one_or_none()
+
+    if not caretaker:
+        raise HTTPException(
+            status_code=401, 
+            detail="Caretaker not found for session ID"
+        )
+
+    return caretaker
+
 
 async def get_current_caretaker_from_session(
     session_id: str, 
@@ -123,6 +174,9 @@ async def get_current_caretaker_from_session(
 
     result = await db.execute(
     select(Caretaker)
+        .options(
+            selectinload(Caretaker.assigned_users)
+        )
         .where(Caretaker.id == session.caretaker_id)
     )
     caretaker = result.scalar_one_or_none()
