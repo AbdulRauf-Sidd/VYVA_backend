@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Body
+from fastapi import APIRouter, Depends, HTTPException, status, Body, Response
 from fastmcp import settings
 from sqlalchemy.ext.asyncio import AsyncSession
 from models.user import User, Caretaker
@@ -21,6 +21,9 @@ from models.authentication import UserTempToken
 from services.whatsapp_service import whatsapp_service
 from services.mem0 import add_conversation
 from datetime import timezone
+from typing import Optional
+from celery.result import AsyncResult
+
 
 logger = logging.getLogger(__name__)
 
@@ -180,4 +183,92 @@ async def onboard_user(
     except Exception as e:
         logger.error(f"Error processing payload: {e}")
         raise HTTPException(status_code=400, detail="Invalid payload")
+
+    
+@router.get(
+    "/onboarding-users",
+    status_code=status.HTTP_200_OK,
+    summary="Get all onboarding users",
+    description="Retrieve a list of all onboarding users"
+)
+async def get_onboarding_users(
+    db: AsyncSession = Depends(get_db), 
+    organization_id: int = None, 
+    limit: int = 5, 
+    offset: int = 0, 
+    status: Optional[str] = None, 
+    language: Optional[str] = None, 
+    caretaker: Optional[bool] = None, 
+    q: Optional[str] = None
+):
+    try:
+        query = select(OnboardingUser)
+
+        if organization_id:
+            query = query.where(OnboardingUser.organization_id == organization_id)
+        if status:
+            if status.lower() == "completed":
+                query = query.where(OnboardingUser.onboarding_status == True)
+            elif status.lower() == "pending":
+                query = query.where((OnboardingUser.onboarding_status == False) & (OnboardingUser.call_attempts < 3))
+            elif status.lower() == "failed":
+                query = query.where((OnboardingUser.onboarding_status == False) & (OnboardingUser.call_attempts >= 3))
+        if language:
+            query = query.where(func.lower(OnboardingUser.language) == language.lower())
+        if caretaker == True:
+            query = query.where((OnboardingUser.caregiver_name.isnot(None)) & (OnboardingUser.caregiver_contact_number.isnot(None)))
+        elif caretaker == False:
+            query = query.where(OnboardingUser.caregiver_name.is_(None))
+        if q:
+            search = f"%{q}%"
+            query = query.where(
+                OnboardingUser.first_name.ilike(search) |
+                OnboardingUser.last_name.ilike(search)
+            )
+
+        query = query.limit(limit).offset(offset)
+
+        result = await db.execute(query)
+        records = result.scalars().all()
+        return records
+    except Exception as e:
+        logger.error(f"Error retrieving onboarding users: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+       
+
+@router.delete(
+    "/onboarding-users/{user_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete onboarding user by ID",
+    description="Delete an onboarding user by their ID and revoke any scheduled tasks"
+)
+async def delete_onboarding_user_by_id(
+    user_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    try:
+        result = await db.execute(
+            select(OnboardingUser).where(OnboardingUser.id == user_id)
+        )
+        record = result.scalar_one_or_none()
+        if not record:
+          raise HTTPException(status_code=404, detail="User not found")
+
+        if record.onboarding_call_task_id:
+            try:
+                task = AsyncResult(record.onboarding_call_task_id)
+                task.revoke(terminate=True)
+                logger.info(f"Revoked Celery task {record.onboarding_call_task_id}")
+            except Exception as task_e:
+                logger.warning(f"Failed to revoke Celery task {record.onboarding_call_task_id}: {task_e}")
+
+        # Delete the user
+        await db.delete(record)
+        await db.commit()
+
+        return Response(status_code=204)
+
+    except Exception as e:
+        logger.exception(f"Error deleting onboarding user: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
     
