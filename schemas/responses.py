@@ -1,7 +1,8 @@
 from pydantic import RootModel, BaseModel
 from typing import Optional, Any, Dict, List
 from datetime import datetime
-
+from datetime import time
+from pydantic import field_validator
 class StandardSuccessResponse(BaseModel):
     success: bool = True
     message: str
@@ -32,3 +33,28 @@ class MedicationEntry(BaseModel):
     log: Optional[LogEntry] = None
 class WeeklyScheduleResponse(RootModel):
     root: dict[str, list[MedicationEntry]]
+    
+class MedicationTimeOut(BaseModel):
+    id: int
+    time_of_day: Optional[time]
+    notes: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+class MedicationOut(BaseModel):
+    id: int
+    name: str
+    dosage: str
+    purpose: str
+    side_effects: Optional[str]
+    notes: Optional[str]
+    times_of_day: List[MedicationTimeOut]
+
+    @field_validator("purpose", mode="before")
+    def default_purpose(cls, v):
+        return v or "N/A"
+
+    class Config:
+        from_attributes = True
