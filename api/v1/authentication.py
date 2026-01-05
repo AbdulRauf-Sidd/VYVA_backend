@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Response, Cookie
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db
 from services.authentication_service import create_otp_session, create_user_session, verify_otp_helper
-from scripts.authentication_helpers import send_otp_via_sms, is_valid_phone_number, is_expired, get_current_user_from_session
+from scripts.authentication_helpers import get_current_caretaker_from_session, send_otp_via_sms, is_valid_phone_number, is_expired, get_current_user_from_session
 from schemas.responses import StandardSuccessResponse, SessionSuccessResponse, SessionCheckResponse
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
@@ -93,7 +93,7 @@ async def verify_otp(request: Request, response: Response, body: VerifyOtpReques
 
         user = result.scalar_one_or_none()
 
-    print(user_id, user_type)
+    print(user_id, user_type, user)
 
     return {
         "success": True,
@@ -234,3 +234,23 @@ async def read_user_profile(
         "agent_mappings": agent_mappings
     }
 
+@router.get("/caretaker-profile")
+async def read_caretaker_profile(
+    session_id: str = Cookie(None, alias=settings.SESSION_COOKIE_NAME), 
+    db: AsyncSession = Depends(get_db) 
+):
+    if not session_id:
+        raise HTTPException(
+            status_code=401, 
+            detail="Not authenticated: Missing session cookie"
+        )
+
+    caretaker = await get_current_caretaker_from_session(session_id, db)
+    first_assigned_user = caretaker.assigned_users[0] if caretaker.assigned_users else None
+    return {
+        "caretaker_id": caretaker.id,
+        "name": caretaker.full_name,
+        "email": caretaker.email,
+        "phone_number": caretaker.phone_number,
+        "user_id": first_assigned_user.id if first_assigned_user else None
+    }

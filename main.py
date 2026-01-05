@@ -23,7 +23,7 @@ from fastapi.exceptions import RequestValidationError
 from core.config import settings
 from core.logging import setup_logging
 from core.database import engine, Base
-from api.v1 import onboarding, users, profiles, health_care, social, brain_coach, medication, fall_detection, emergency, tts, symptom_checker, post_call, ai_assistant, news, tools, organization, authentication, twilio
+from api.v1 import onboarding, users, social, brain_coach, medication, fall_detection, tts, symptom_checker, post_call, ai_assistant, news, tools, organization, authentication, twilio
 from api.v1.managemant import ingest_onboarding_users, call_queues
 from api.v1.managemant import ingest_onboarding_users
 # from apscheduler.schedulers.background import BackgroundScheduler
@@ -65,39 +65,39 @@ app = FastAPI(
 
 app.mount("/memory", mcp_app)
 
-setup_admin(app) 
+# setup_admin(app) 
 
 from services.whatsapp_service import whatsapp_service
 
     
-def te():
-    dic = {
-        "link": "https://zamora.vyva.io/verify?token=59242893-ba0f-419e-8264-478018a770a5",
-    }
+# def te():
+#     dic = {
+#         "link": "https://zamora.vyva.io/verify?token=59242893-ba0f-419e-8264-478018a770a5",
+#     }
 
-    loop = asyncio.get_running_loop()
-    loop.create_task(
-        whatsapp_service.send_onboarding_message(
-            to_phone="+923152526525",
-            template_data=dic
-        )
-    )
+#     loop = asyncio.get_running_loop()
+#     loop.create_task(
+#         whatsapp_service.send_onboarding_message(
+#             to_phone="+923152526525",
+#             template_data=dic
+#         )
+#     )
 # te()
-from services.mem0 import add_conversation
-messages = [
-    {"role": "user", "content": "I'm planning to watch a movie tonight. Any recommendations?"},
-    {"role": "assistant", "content": "How about thriller movies? They can be quite engaging."},
-    {"role": "user", "content": "I'm not a big fan of thriller movies but I love sci-fi movies."},
-    {"role": "assistant", "content": "Got it! I'll avoid thriller recommendations and suggest sci-fi movies in the future."}
-]
-def q():
-    loop = asyncio.get_running_loop()
-    loop.create_task(
-        add_conversation(
-            user_id=200,
-            conversation=messages
-        )
-    )
+# from services.mem0 import add_conversation
+# messages = [
+#     {"role": "user", "content": "I'm planning to watch a movie tonight. Any recommendations?"},
+#     {"role": "assistant", "content": "How about thriller movies? They can be quite engaging."},
+#     {"role": "user", "content": "I'm not a big fan of thriller movies but I love sci-fi movies."},
+#     {"role": "assistant", "content": "Got it! I'll avoid thriller recommendations and suggest sci-fi movies in the future."}
+# ]
+# def q():
+#     loop = asyncio.get_running_loop()
+#     loop.create_task(
+#         add_conversation(
+#             user_id=200,
+#             conversation=messages
+#         )
+    # )
 # q()
 
 async def process_missed_calls(batch_id):
@@ -228,39 +228,17 @@ app.include_router(authentication.router, prefix="/api/v1/auth", tags=["Authenti
 app.include_router(organization.router, prefix="/api/v1/organizations", tags=["Organizations"])
 app.include_router(ingest_onboarding_users.router, prefix="/api/v1/admin", tags=["Management"])
 app.include_router(call_queues.router, prefix="/api/v1/admin", tags=["Management"])
-app.include_router(profiles.router, prefix="/api/v1/profiles", tags=["Profiles"])
-app.include_router(health_care.router, prefix="/api/v1/health-care", tags=["Health & Care"])
 app.include_router(social.router, prefix="/api/v1/social", tags=["Social"])
 app.include_router(brain_coach.router, prefix="/api/v1/brain-coach", tags=["Brain Coach"])
 app.include_router(medication.router, prefix="/api/v1/medications", tags=["Medications"])
 app.include_router(fall_detection.router, prefix="/api/v1/fall-detection", tags=["Fall Detection"])
-app.include_router(emergency.router, prefix="/api/v1/emergency", tags=["Emergency Contacts"])
 app.include_router(tts.router, prefix="/api/v1/tts", tags=["Text-to-Speech"])
 app.include_router(symptom_checker.router, prefix="/api/v1/symptoms", tags=["Symptoms Checker"])
 app.include_router(post_call.router, prefix="/api/v1/post-call", tags=["Post Call"])
 app.include_router(ai_assistant.router, prefix="/api/v1/ai-assistant", tags=["AI Assistant"])
 app.include_router(news.router, prefix="/api/v1/news", tags=["News"])
 app.include_router(tools.router, prefix="/api/v1/tools", tags=["Tools"])
-app.include_router(emergency.router, prefix="/api/v1/emergency", tags=["Emergency Contacts"])
 app.include_router(twilio.router, prefix="/api/v1/twilio", tags=["Twilio"])
-
-class MathInput(BaseModel):
-    a: float
-    b: float
-
-@mcp.tool(
-    name="math_operations",
-    description=(
-        "Use this tool when the user asks for any calculation, "
-        "numeric result, multiplication, formula evaluation, "
-        "or when accuracy with large numbers is required. "
-        "Do NOT calculate manually."
-    )
-)
-async def math_operations(input: MathInput) -> dict:
-    return {
-        "result": input.a * input.b * 1237213712 // 1232
-    }
 
 if __name__ == "__main__":
     import uvicorn
