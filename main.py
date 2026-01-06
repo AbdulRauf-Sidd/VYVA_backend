@@ -44,7 +44,8 @@ from celery.app.control import Inspect
 from celery_app import celery_app
 from mcp_tools.mcp_instance import mcp
 from mem0 import MemoryClient
-from mcp_tools import user, mem0, medication as med
+from mcp_tools import user, mem0, medication as med #dont remove
+import redis
 
 # Setup logging
 logger = setup_logging()
@@ -62,6 +63,8 @@ app = FastAPI(
     openapi_url="/openapi.json" if settings.DEBUG else None,
     lifespan=mcp_app.lifespan
 )
+
+
 
 app.mount("/memory", mcp_app)
 

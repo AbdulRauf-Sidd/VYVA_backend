@@ -14,7 +14,7 @@ from models.medication import Medication, MedicationTime
 from models.organization import OrganizationAgents, AgentTypeEnum
 from sqlalchemy import or_
 
-from tasks.utils import schedule_reminder_message
+from tasks.utils import schedule_celery_task_for_call_status_check, schedule_reminder_message
 
 # from scripts.utils import construct_onboarding_user_payload
 
@@ -24,46 +24,63 @@ from core.config import settings
 twilio_client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 
 def get_call_status_from_twilio(callSid: str) -> dict:
-    call = twilio_client.calls(callSid).fetch()
-    raw = call.status
+    try:
+        call = twilio_client.calls(callSid).fetch()
+        raw = call.status
 
-    mapping = {
-        "completed": "answered",
-        "busy": "declined",
-        "no-answer": "not_available",
-        "canceled": "declined",
-        "failed": "failed",
-        "queued": "in_progress",
-        "ringing": "in_progress",
-        "in-progress": "in_progress",
-    }
+        mapping = {
+            "completed": "answered",
+            "busy": "declined",
+            "no-answer": "no_answer",
+            "canceled": "declined",
+            "failed": "failed",
+            "queued": "in_progress",
+            "ringing": "in_progress",
+            "in-progress": "in_progress",
+        }
 
-    normalized = mapping.get(raw, "unknown")
+        normalized = mapping.get(raw, "unknown")
 
-    FINAL = {"answered", "declined", "not_available", "failed"}
+        FINAL = {"answered", "declined", "no_answer", "failed"}
 
-    return {
-        "raw_status": raw,
-        "status": normalized,
-        "is_final": normalized in FINAL,
-    }
+        return {
+            "raw_status": raw,
+            "status": normalized,
+            "is_final": normalized in FINAL,
+        }
+    except Exception as e:
+        logging.error(f"Error fetching call status from Twilio for Call SID {callSid}: {e}")
+        return {}
 
 logger = logging.getLogger(__name__)
 
 @celery_app.task(name="initiate_onboarding_call")
 def initiate_onboarding_call(payload: dict):
-    db = SessionLocal()
-    response = make_onboarding_call(payload)
-    if not response:
-        logger.error(f"Failed to initiate onboarding call for payload: {payload}")
-    else:
-        onboarding_record = db.query(OnboardingUser).filter(OnboardingUser.id == payload.get("user_id")).first()
-        if onboarding_record:
-            onboarding_record.onboarding_call_scheduled = False
-            onboarding_record.call_attempts += 1
-            onboarding_record.called_at = datetime.now()
-            db.add(onboarding_record)
-            db.commit()
+    try:
+        db = SessionLocal()
+        response = make_onboarding_call(payload)
+        if not response:
+            logger.error(f"Failed to initiate onboarding call for payload: {payload}")
+        else:
+            onboarding_record = db.query(OnboardingUser).filter(OnboardingUser.id == payload.get("user_id")).first()
+            if onboarding_record:
+                onboarding_record.onboarding_call_scheduled = False
+                onboarding_record.call_attempts += 1
+                onboarding_record.called_at = datetime.now()
+                onboarding_log = OnboardingLogs(
+                    call_at=datetime.now(),
+                    call_id=response.get('callSid'),
+                    onboarding_user_id=onboarding_record.id,
+                    status="in_progress",
+                )
+                db.add(onboarding_record)
+                db.add(onboarding_log)
+                db.commit()
+                schedule_celery_task_for_call_status_check()
+    except Exception as e:
+        logger.error(f"Error initiating onboarding call: {e}")
+    finally:
+        db.close()
 
     
 @celery_app.task(name="process_pending_onboarding_users")
@@ -124,11 +141,11 @@ def process_pending_onboarding_users():
             db.add(user)
             db.commit()
 
-        return {"status": "ok", "count": len(pending_users)}
+        return {"status": 200, "count": len(pending_users)}
 
     except Exception as e:
         db.rollback()
-        raise e
+        logger.error(f"Error processing pending onboarding users: {e}")
     finally:
         db.close()
 
@@ -163,7 +180,6 @@ def schedule_calls_for_day():
             user = med.user
             timezone = user.timezone
             preferred_reminder_channel = user.preferred_reminder_channel
-            print('org', user.organization_id)
             agent_id = db.query(OrganizationAgents).filter(OrganizationAgents.agent_type == AgentTypeEnum.MEDICATION_REMINDER, OrganizationAgents.organization_id == user.organization_id).first().agent_id
 
 
@@ -224,7 +240,7 @@ def schedule_calls_for_day():
 
     except Exception as e:
         db.rollback()
-        raise e
+        logger.error(f"Error scheduling calls for day: {e}")
     finally:
         db.close()
 
@@ -284,6 +300,46 @@ def check_call_status_and_save(self, payload: dict):
         db.rollback()
         logger.error(f"Error saving onboarding log or creating user: {e}")
         raise
+
+    finally:
+        db.close()
+
+
+
+@celery_app.task(name="check_onboarding_call_status")
+def check_onboarding_call_status():
+    db = SessionLocal()
+    try:
+        pending_logs = (
+            db.query(OnboardingLogs)
+            .filter(
+                OnboardingLogs.summary.ilike("%in_progress%"),
+                or_(
+                    OnboardingLogs.status.is_(None),
+                    OnboardingLogs.status == "in_progress",
+                ),
+            )
+            .all()
+        )
+        updated = False
+        for log in pending_logs:
+            call_sid = log.call_id
+            
+            status_data = get_call_status_from_twilio(call_sid)
+            status = status_data.get("status", None)
+
+            if status:
+                log.status = status
+                updated = True
+
+                db.add(log)
+
+        if updated:
+            db.commit()
+                
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Error checking onboarding call status: {e}")
 
     finally:
         db.close()

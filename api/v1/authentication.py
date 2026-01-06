@@ -83,7 +83,6 @@ async def verify_otp(request: Request, response: Response, body: VerifyOtpReques
 
     user = None
     if user_type == "caretaker":
-        print('1')
         result = await db.execute(
             select(User)
             .options(selectinload(User.caretaker))
@@ -93,9 +92,6 @@ async def verify_otp(request: Request, response: Response, body: VerifyOtpReques
         )
         
         user = result.scalar_one_or_none()
-        print(user)
-
-    print(user_id, user_type, user.full_name)
 
     return {
         "success": True,
