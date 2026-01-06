@@ -177,7 +177,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
     )
 
 
-@app.get("/admin/celery/tasks/")
+@app.get("/celery/tasks/")
 async def list_tasks():
     inspector = Inspect(app=celery_app)
 
