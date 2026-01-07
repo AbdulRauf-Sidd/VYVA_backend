@@ -65,7 +65,7 @@ app = FastAPI(
 
 app.mount("/memory", mcp_app)
 
-# setup_admin(app) 
+setup_admin(app) 
 
 from services.whatsapp_service import whatsapp_service
 

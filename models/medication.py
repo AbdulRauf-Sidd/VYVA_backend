@@ -49,8 +49,8 @@ class MedicationTime(Base):
     medication_id = Column(Integer, ForeignKey("medications.id", ondelete="CASCADE"), nullable=False)
     time_of_day = Column(Time, nullable=True) 
     notes = Column(String(150), nullable=True)
-    created_at = Column(DateTime, default=datetime.now(timezone.utc))
-    updated_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=datetime.now())
+    updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
 
     # Relationships
     medication = relationship("Medication", back_populates="times_of_day")
@@ -60,6 +60,9 @@ class MedicationTime(Base):
         back_populates="medication_time",
         cascade="all, delete-orphan"
     )
+    
+    def __repr__(self):
+        return f"<MedicationTime(id={self.id}, medication_id={self.medication_id}, time_of_day={self.time_of_day})>"
 
 
 class MedicationStatus(enum.Enum):

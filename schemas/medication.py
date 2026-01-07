@@ -45,6 +45,7 @@ class MedicationUpdate(BaseModel):
 class MedicationInDB(MedicationBase):
     id: int
     user_id: int
+    times_of_day: List[str] = [] 
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

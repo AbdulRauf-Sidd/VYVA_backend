@@ -1,12 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from typing import List, Dict
 import logging
 import time
+from collections import defaultdict
 from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 from models.user import User
-from models.medication import MedicationStatus
+from models.medication import MedicationStatus, Medication
+from sqlalchemy.orm import selectinload
 from core.database import get_db
 from services.medication import MedicationService
 from repositories.user import UserRepository
@@ -358,25 +361,44 @@ async def get_weekly_medication_schedule(
     logger.info(f"Request {request_id}: Fetching weekly medication schedule for user {user_id}")
     
     try:
-        medication_repo = MedicationRepository(db)
-        medication_service = MedicationService(medication_repo)
-        
-        result: Dict[str, List[MedicationEntry]] = await medication_service.get_weekly_medication_schedule(user_id)
-        
+        # Fetch medications with their times
+        result = await db.execute(
+            select(Medication)
+            .where(Medication.user_id == user_id)
+            .options(selectinload(Medication.times_of_day))
+        )
+        medications = result.scalars().all()
+
+        weekly_schedule = defaultdict(list)
+
+        for med in medications:
+            for time_entry in med.times_of_day:
+                if time_entry.time_of_day:
+                    day_name = time_entry.time_of_day.strftime("%A")  # e.g., "Monday"
+                    time_str = time_entry.time_of_day.strftime("%H:%M")
+                else:
+                    day_name = "Unscheduled"
+                    time_str = None
+
+                weekly_schedule[day_name].append({
+                    "medication_name": med.name,  # <--- must match Pydantic field
+                    "dosage": med.dosage,
+                    "time": time_str or "",        # optional string
+                    "notes": time_entry.notes
+                })
+
+        # Ensure all days exist
+        for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Unscheduled"]:
+            weekly_schedule.setdefault(day, [])
+
         duration = time.time() - start_time
         logger.info(
             f"Request {request_id}: Retrieved weekly medication schedule for user {user_id} "
             f"in {duration:.2f}s"
         )
+
+        return dict(weekly_schedule)
         
-        return result
-        
-    except ValueError as e:
-        logger.warning(f"Request {request_id}: Invalid user ID {user_id}: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
     except Exception as e:
         logger.error(
             f"Request {request_id}: Failed to fetch weekly medication schedule for user {user_id}: {str(e)}",

@@ -295,7 +295,7 @@ class IngestUserRequest(BaseModel):
     preferred_call_time: Optional[str] = Field(..., min_length=1)
     
 @router.post("/ingest-user", response_model=StandardSuccessResponse)
-async def ingest_csv(payload: IngestUserRequest, organization: str, db=Depends(get_db)):
+async def ingest_user(payload: IngestUserRequest, organization: str, db=Depends(get_db)):
     
     organization = organization.strip()
     print(payload)
@@ -350,7 +350,7 @@ async def ingest_csv(payload: IngestUserRequest, organization: str, db=Depends(g
     user = OnboardingUser(
                 first_name=payload.first_name,
                 last_name=payload.last_name,
-                phone_number=payload.telephone_number,
+                phone_number=full_phone.replace(" ", "").replace("-", ""),
                 timezone=payload.time_zone,
                 organization_id=exists.id,
                 language=payload.language.lower(),
