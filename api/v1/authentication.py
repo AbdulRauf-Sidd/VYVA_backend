@@ -78,7 +78,7 @@ async def verify_otp(request: Request, response: Response, body: VerifyOtpReques
         # secure=False,       # ❌ must be False for localhost
         # samesite="lax",
         max_age=settings.SESSION_DURATION,
-        samesite=None
+        samesite="None"
     )
 
     user = None
@@ -157,7 +157,7 @@ async def magic_login(
         # secure=False,       # ❌ must be False for localhost
         # samesite="lax",
         max_age=settings.SESSION_DURATION,
-        samesite=None
+        samesite="None"
     )
 
     return {"success": True, "message": "Magic login successful"}
