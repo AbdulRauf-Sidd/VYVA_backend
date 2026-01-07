@@ -204,3 +204,6 @@ class Caretaker(Base):
         """Get user's full name."""
         return self.name 
     
+
+    def __repr__(self):
+        return f"<Caretaker(id={self.id}, name='{self.name}')>"
