@@ -53,18 +53,31 @@ logger = logging.getLogger(__name__)
 @celery_app.task(name="initiate_onboarding_call")
 def initiate_onboarding_call(payload: dict):
     db = SessionLocal()
-    response = make_onboarding_call(payload)
-    if not response:
-        logger.error(f"Failed to initiate onboarding call for payload: {payload}")
-    else:
-        onboarding_record = db.query(OnboardingUser).filter(OnboardingUser.id == payload.get("user_id")).first()
+    try:
+        response = make_onboarding_call(**payload)
+
+        if not response:
+            logger.error(f"Failed to initiate onboarding call for payload: {payload}")
+            return
+
+        onboarding_record = (
+            db.query(OnboardingUser)
+            .filter(OnboardingUser.id == payload.get("user_id"))
+            .first()
+        )
+
         if onboarding_record:
             onboarding_record.onboarding_call_scheduled = False
             onboarding_record.call_attempts += 1
-            onboarding_record.called_at = datetime.now()
-            db.add(onboarding_record)
+            onboarding_record.called_at = datetime.utcnow()
             db.commit()
 
+    except Exception as e:
+        db.rollback()
+        logger.exception("Celery onboarding task failed")
+        raise
+    finally:
+        db.close()
     
 @celery_app.task(name="process_pending_onboarding_users")
 def process_pending_onboarding_users():
