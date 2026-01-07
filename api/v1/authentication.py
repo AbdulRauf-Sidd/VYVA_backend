@@ -76,7 +76,7 @@ async def verify_otp(request: Request, response: Response, body: VerifyOtpReques
         httponly=True,
         secure=True,
         # secure=False,       # ❌ must be False for localhost
-        samesite="None",
+        # samesite="lax",
         max_age=settings.SESSION_DURATION,
         samesite="None"
     )
@@ -155,7 +155,7 @@ async def magic_login(
         httponly=True,
         secure=True,
         # secure=False,       # ❌ must be False for localhost
-        samesite="None",
+        # samesite="lax",
         max_age=settings.SESSION_DURATION,
         samesite="None"
     )
