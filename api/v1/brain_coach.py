@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Path
+from fastapi import APIRouter, Depends, HTTPException, status, Path, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from typing import List
 from core.database import get_db
-from schemas.brain_coach import BrainCoachQuestionRead, BrainCoachQuestionCreate, BrainCoachResponseRead, BrainCoachResponseCreate
-from repositories.brain_coach import BrainCoachQuestionRepository, BrainCoachQuestionCreate, BrainCoachResponseRepository
+from schemas.brain_coach import BrainCoachQuestionRead, BrainCoachQuestionCreate, BrainCoachResponseRead, BrainCoachResponseCreate, BrainCoachStatsRead
+from repositories.brain_coach import BrainCoachQuestionRepository, BrainCoachQuestionCreate, BrainCoachResponseRepository, BrainCoachResponseCreate
 import logging
 from models.brain_coach import BrainCoachResponses
 from models.user import User
@@ -310,7 +310,66 @@ async def create_response(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
         )
+        
+@router.get("/brain-coach-info/{user_id}", response_model=BrainCoachStatsRead)
+async def get_brain_coach_info(
+    user_id: int = Path(..., description="The ID of the user"),
+    days: int = Query(7, ge=1),
+    db: AsyncSession = Depends(get_db)
+):
+    try:
+        repo = BrainCoachResponseRepository(db)
+        stats = await repo.get_brain_coach_info(user_id, days)
+        return stats
 
+    except Exception as e:
+        logger.exception(f"Unexpected error retrieving brain coach info: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
+        
+@router.get("/cognitive-trend/{user_id}")
+async def get_cognitive_trend(
+    user_id: int = Path(..., description="The ID of the user"),
+    days: int = Query(30, ge=1, le=90),
+    db: AsyncSession = Depends(get_db)
+):
+    repo = BrainCoachResponseRepository(db)
+    rows = await repo.get_cognitive_trend(user_id, days)
+
+    if not rows:
+        return {
+            "trend": [],
+            "average": 0,
+            "best_day": None,
+            "improvement": 0
+        }
+
+    # format for recharts
+    trend = [
+        {
+            "date": r.date.strftime("%b %d"),
+            "score": round(float(r.avg_score), 2)
+        }
+        for r in rows
+    ]
+
+    scores = [float(r.avg_score) for r in rows]
+
+    average = round(sum(scores) / len(scores), 2)
+
+    best = max(rows, key=lambda r: r.avg_score)
+
+    improvement = round(((scores[-1] - scores[0]) / scores[0]) * 100, 2)
+
+    return {
+        "trend": trend,
+        "average": average,
+        "best_day": best.date.strftime("%b %d"),
+        "best_score": round(float(best.avg_score), 2),
+        "improvement": improvement
+    }
 # @router.get("/user-responses/{user_id}", response_model=List[BrainCoachResponseRead])
 # async def get_user_responses(
 #     user_id: int,

@@ -4,6 +4,8 @@ from typing import Optional, List
 from core.database import get_db
 from schemas.brain_coach import  BrainCoachResponseRead, BrainCoachQuestionCreate, BrainCoachQuestionRead, BrainCoachQuestionReadWithLanguage, QuestionTranslationBase, QuestionTranslationRead, BrainCoachResponseCreate
 from models.brain_coach import BrainCoachQuestions, BrainCoachResponses, BrainCoachQuestions, QuestionTranslations
+from datetime import datetime, timedelta
+from sqlalchemy.sql import func, distinct
 
 logger = logging.getLogger(__name__)
 
@@ -340,3 +342,91 @@ class BrainCoachResponseRepository:
         responses = result.scalars().all()
         
         return [BrainCoachResponseRead.model_validate(response) for response in responses]
+    
+    async def get_brain_coach_info(self, user_id: int, days: int):
+        now = datetime.utcnow()
+        begin_date = now - timedelta(days=days)
+
+        base_filter = (
+            (BrainCoachResponses.user_id == user_id) &
+            (BrainCoachResponses.created >= begin_date)
+        )
+
+        # -----------------------------
+        # Total questions
+        # -----------------------------
+        total_questions_query = select(func.count()).where(base_filter)
+        total_questions = await self.db_session.scalar(total_questions_query) or 0
+
+        # -----------------------------
+        # Total sessions
+        # -----------------------------
+        total_sessions_query = select(func.count(distinct(BrainCoachResponses.session_id))).where(base_filter)
+        total_sessions = await self.db_session.scalar(total_sessions_query) or 0
+
+        # -----------------------------
+        # Average session score
+        # -----------------------------
+        session_totals_subq = (
+            select(
+                BrainCoachResponses.session_id,
+                func.sum(BrainCoachResponses.score).label("session_score")
+            )
+            .where(base_filter)
+            .group_by(BrainCoachResponses.session_id)
+            .subquery()
+        )
+
+        avg_score_query = select(func.avg(session_totals_subq.c.session_score))
+        average_session_score = await self.db_session.scalar(avg_score_query) or 0.0
+
+        # -----------------------------
+        # Streak
+        # -----------------------------
+        days_query = (
+            select(func.date(BrainCoachResponses.created))
+            .where(BrainCoachResponses.user_id == user_id)
+            .group_by(func.date(BrainCoachResponses.created))
+            .order_by(func.date(BrainCoachResponses.created).desc())
+        )
+
+        result = await self.db_session.execute(days_query)
+        active_days = [row[0] for row in result.fetchall()]
+
+        streak = 0
+        today = now.date()
+
+        for day in active_days:
+            if day == today - timedelta(days=streak):
+                streak += 1
+            else:
+                break
+
+        return {
+            "average_session_score": round(average_session_score, 2),
+            "total_sessions": total_sessions,
+            "total_questions": total_questions,
+            "streak": streak
+        }
+        
+    async def get_cognitive_trend(self, user_id: int, days: int):
+        """Returns daily average cognitive score trend"""
+
+        since = datetime.utcnow() - timedelta(days=days)
+
+        query = (
+            select(
+                func.date(BrainCoachResponses.created).label("date"),
+                func.avg(BrainCoachResponses.score).label("avg_score"),
+                func.count(BrainCoachResponses.id).label("sessions"),
+            )
+            .where(
+                BrainCoachResponses.user_id == user_id,
+                BrainCoachResponses.created >= since
+            )
+            .group_by(func.date(BrainCoachResponses.created))
+            .order_by(func.date(BrainCoachResponses.created))
+        )
+
+        result = await self.db_session.execute(query)
+        return result.all()

@@ -42,7 +42,7 @@ class Settings(BaseSettings):
         "https://onboarding.vyva.io",
         "http://localhost:3000",
         "https://zamora.vyva.io",
-        "https://026138e2ac0d.ngrok-free.app",
+        "https://3627ab087f2f.ngrok-free.app",
     ]
     
     # CORS

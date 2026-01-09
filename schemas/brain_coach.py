@@ -67,7 +67,12 @@ class BrainCoachResponseRead(BrainCoachResponseBase):
 
     model_config = ConfigDict(from_attributes=True)
 
-
+class BrainCoachStatsRead(BaseModel):
+    average_session_score: float
+    total_sessions: int
+    total_questions: int
+    streak: int
+    
 # class UserFeedback(BaseModel):
 #     email: Optional[str] = None
 #     phone_number: Optional[str] = None
