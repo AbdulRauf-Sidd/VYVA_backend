@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from typing import List
 from core.database import get_db
-from schemas.brain_coach import BrainCoachQuestionRead, BrainCoachQuestionCreate, BrainCoachResponseRead, BrainCoachResponseCreate, BrainCoachStatsRead
+from schemas.brain_coach import BrainCoachQuestionRead, BrainCoachQuestionCreate, BrainCoachResponseRead, BrainCoachResponseCreate, BrainCoachStatsRead, DailySessionActivityResponse
 from repositories.brain_coach import BrainCoachQuestionRepository, BrainCoachQuestionCreate, BrainCoachResponseRepository, BrainCoachResponseCreate
 import logging
 from models.brain_coach import BrainCoachResponses
@@ -370,6 +370,37 @@ async def get_cognitive_trend(
         "best_score": round(float(best.avg_score), 2),
         "improvement": improvement
     }
+    
+@router.get(
+    "/daily-session-activity/{user_id}",
+    response_model=DailySessionActivityResponse
+)
+async def daily_session_activity(
+    user_id: int = Path(..., description="User ID"),
+    days: int = Query(7, ge=1),
+    db: AsyncSession = Depends(get_db)
+):
+    """Return daily session counts for a user over the past 'days' days"""
+    try:
+        repo = BrainCoachResponseRepository(db)
+        trend = await repo.get_daily_session_activity(user_id, days)
+
+        if not trend:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="No session activity found for the user in the given time frame"
+            )
+
+        return {"trend": trend}
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception(f"Unexpected error fetching daily session activity: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
 # @router.get("/user-responses/{user_id}", response_model=List[BrainCoachResponseRead])
 # async def get_user_responses(
 #     user_id: int,

@@ -72,6 +72,13 @@ class BrainCoachStatsRead(BaseModel):
     total_sessions: int
     total_questions: int
     streak: int
+
+class DailySessionActivity(BaseModel):
+    date: str
+    sessions: int
+
+class DailySessionActivityResponse(BaseModel):
+    trend: List[DailySessionActivity]
     
 # class UserFeedback(BaseModel):
 #     email: Optional[str] = None

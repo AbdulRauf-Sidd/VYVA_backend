@@ -2,7 +2,7 @@ import logging
 from sqlalchemy import select, and_
 from typing import Optional, List
 from core.database import get_db
-from schemas.brain_coach import  BrainCoachResponseRead, BrainCoachQuestionCreate, BrainCoachQuestionRead, BrainCoachQuestionReadWithLanguage, QuestionTranslationBase, QuestionTranslationRead, BrainCoachResponseCreate
+from schemas.brain_coach import  BrainCoachResponseRead, BrainCoachQuestionCreate, BrainCoachQuestionRead, BrainCoachQuestionReadWithLanguage, QuestionTranslationBase, QuestionTranslationRead, BrainCoachResponseCreate, DailySessionActivity
 from models.brain_coach import BrainCoachQuestions, BrainCoachResponses, BrainCoachQuestions, QuestionTranslations
 from datetime import datetime, timedelta
 from sqlalchemy.sql import func, distinct
@@ -430,3 +430,27 @@ class BrainCoachResponseRepository:
 
         result = await self.db_session.execute(query)
         return result.all()
+    
+    async def get_daily_session_activity(self, user_id: int, days: int) -> List[DailySessionActivity]:
+        """
+        Returns a list of {date, sessions} for the past 'days' days
+        """
+        from datetime import datetime, timedelta
+
+        start_date = datetime.utcnow() - timedelta(days=days)
+
+        query = (
+            select(
+                func.date(BrainCoachResponses.created).label("date"),
+                func.count(BrainCoachResponses.id).label("sessions")
+            )
+            .where(BrainCoachResponses.user_id == user_id)
+            .where(BrainCoachResponses.created >= start_date)
+            .group_by(func.date(BrainCoachResponses.created))
+            .order_by(func.date(BrainCoachResponses.created))
+        )
+
+        result = await self.db_session.execute(query)
+        data = result.all()
+
+        return [DailySessionActivity(date=str(row.date), sessions=row.sessions) for row in data]
