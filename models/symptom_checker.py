@@ -7,6 +7,7 @@ Database model for storing symptom analysis responses.
 from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, JSON, ForeignKey
 from sqlalchemy.sql import func
 from core.database import Base
+from sqlalchemy.orm import relationship
 
 
 class SymptomCheckerResponse(Base):
@@ -17,6 +18,7 @@ class SymptomCheckerResponse(Base):
     id = Column(Integer, primary_key=True, index=True)
     conversation_id = Column(String(255), unique=True, index=True, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    user = relationship("User", back_populates="symptom_checker_responses")
     
     # Call metadata
     call_duration_secs = Column(Integer, nullable=True)
