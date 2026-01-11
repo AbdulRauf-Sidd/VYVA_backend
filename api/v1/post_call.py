@@ -340,7 +340,9 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
                 user_id = payload.get("user_id")
                 conversation_id = payload.get("conversation_id")
                 call_duration_secs = payload.get("call_duration_secs")
-                vitals_data = payload.get("vitals_data")
+                heart_rate = payload.get("heart_rate")
+                respiratory_rate = payload.get("respiratory_rate")
+                vitals_data = payload.get("vitals_data") or {}
                 vitals_ai_summary = payload.get("vitals_ai_summary")
                 symptoms_ai_summary = payload.get("symptoms_ai_summary")
                 symptoms = payload.get("symptoms")
@@ -368,9 +370,24 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
                 call_status = status
                 call_successful = status == "success"
                 
+                # Build vitals_data if only scalar vitals are provided
+                if heart_rate is not None:
+                    vitals_data["heart_rate"] = {
+                        "value": heart_rate,
+                        "unit": "bpm"
+                    }
+                if respiratory_rate is not None:
+                    vitals_data["respiratory_rate"] = {
+                        "value": respiratory_rate,
+                        "unit": "breaths/min"
+                    }
+
                 # Normalize vitals_data - convert empty dict to None
                 if vitals_data == {}:
                     vitals_data = None
+
+                heart_rate_value = str(heart_rate) if heart_rate is not None else None
+                respiratory_rate_value = str(respiratory_rate) if respiratory_rate is not None else None
                 
             else:
                 # ElevenLabs webhook format - extract from nested structure
@@ -403,12 +420,15 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
                 
                 # Parse vitals data (heart_rate and respiratory_rate)
                 vitals_data = {}
+                heart_rate_value = None
+                respiratory_rate_value = None
                 vitals_ai_summary = None
                 symptoms_ai_summary = None
                 
                 # Extract heart_rate if available
                 heart_rate_data = data_collection_results.get("heart_rate", {})
                 if heart_rate_data and "value" in heart_rate_data:
+                    heart_rate_value = heart_rate_data.get("value")
                     vitals_data["heart_rate"] = {
                         "value": heart_rate_data.get("value"),
                         "unit": heart_rate_data.get("unit", "bpm"),
@@ -419,6 +439,7 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
                 # Extract respiratory_rate if available
                 respiratory_rate_data = data_collection_results.get("respiratory_rate", {})
                 if respiratory_rate_data and "value" in respiratory_rate_data:
+                    respiratory_rate_value = respiratory_rate_data.get("value")
                     vitals_data["respiratory_rate"] = {
                         "value": respiratory_rate_data.get("value"),
                         "unit": respiratory_rate_data.get("unit", "breaths/min"),
@@ -498,6 +519,8 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
                 vitals_ai_summary=vitals_ai_summary,
                 symptoms_ai_summary=symptoms_ai_summary,
                 symptoms=symptoms_text,
+                heart_rate=heart_rate_value,
+                respiratory_rate=respiratory_rate_value,
                 status=status
             )
             

@@ -52,6 +52,8 @@ class SymptomCheckerInteractionCreate(BaseModel):
     vitals_ai_summary: Optional[str] = Field(None, description="AI-generated summary of vitals")
     symptoms_ai_summary: Optional[str] = Field(None, description="AI-generated summary of symptoms")
     symptoms: Optional[str] = Field(None, description="Symptoms description or transcript")
+    heart_rate: Optional[str] = Field(None, description="Heart rate captured during call")
+    respiratory_rate: Optional[str] = Field(None, description="Respiratory rate captured during call")
     status: Optional[str] = Field("success", description="Status of the interaction")
     
     model_config = {
@@ -66,7 +68,9 @@ class SymptomCheckerInteractionCreate(BaseModel):
                     "respiratory_rate": {"value": 16, "unit": "breaths/min"}
                 },
                 "vitals_ai_summary": "Heart rate and respiratory rate are within normal ranges.",
-                "symptoms_ai_summary": "Patient reports mild headache and fatigue."
+                "symptoms_ai_summary": "Patient reports mild headache and fatigue.",
+                "heart_rate": "72",
+                "respiratory_rate": "16"
             }
         }
     }
@@ -85,6 +89,8 @@ class SymptomCheckerInteractionRead(BaseModel):
     symptoms_ai_summary: Optional[str] = None
     
     # Existing fields from SymptomCheckerResponse model
+    heart_rate: Optional[str] = None
+    respiratory_rate: Optional[str] = None
     symptoms: Optional[str] = None
     full_name: Optional[str] = None
     language: Optional[str] = None
@@ -109,6 +115,8 @@ class SymptomCheckerInteractionRead(BaseModel):
                 },
                 "vitals_ai_summary": "Heart rate and respiratory rate are within normal ranges.",
                 "symptoms_ai_summary": "Patient reports mild headache and fatigue.",
+                "heart_rate": "72",
+                "respiratory_rate": "16",
                 "symptoms": "Headache, fatigue",
                 "full_name": "John Doe",
                 "language": "en",
