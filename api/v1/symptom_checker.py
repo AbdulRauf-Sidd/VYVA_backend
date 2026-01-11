@@ -11,6 +11,7 @@ import random
 import string
 import unicodedata
 import asyncio
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db
 from models.symptom_checker import SymptomCheckerResponse
@@ -469,29 +470,55 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
 
         # Check for API errors
         if api_result.get("error"):
-            # Save error response to database
-            error_response = SymptomCheckerResponse(
-                conversation_id=conversation_id,
-                symptoms=payload.symptoms,
-                full_name=payload.full_name,
-                language=payload.language,
-                model_type=payload.model_type,
-                followup_count=payload.followup_count,
-                # Enhanced symptom data
-                heart_rate=payload.heart_rate,
-                severity_scale=payload.severity_scale,
-                duration=payload.duration,
-                respiratory_rate=payload.respiratory_rate,
-                additional_notes=payload.additional_notes,
-                # Response data
-                email="",
-                summary="",
-                breakdown={},
-                severity="unknown",
-                is_emergency=False,
-                status="error"
+            # Save or update error response to database (upsert by conversation_id)
+            result = await db.execute(
+                select(SymptomCheckerResponse).where(
+                    SymptomCheckerResponse.conversation_id == conversation_id
+                )
             )
-            db.add(error_response)
+            existing_record = result.scalar_one_or_none()
+
+            if existing_record:
+                existing_record.symptoms = payload.symptoms
+                existing_record.full_name = payload.full_name
+                existing_record.language = payload.language
+                existing_record.model_type = payload.model_type
+                existing_record.followup_count = payload.followup_count
+                existing_record.heart_rate = payload.heart_rate
+                existing_record.severity_scale = payload.severity_scale
+                existing_record.duration = payload.duration
+                existing_record.respiratory_rate = payload.respiratory_rate
+                existing_record.additional_notes = payload.additional_notes
+                existing_record.email = ""
+                existing_record.summary = ""
+                existing_record.breakdown = {}
+                existing_record.severity = "unknown"
+                existing_record.is_emergency = False
+                existing_record.status = "error"
+            else:
+                error_response = SymptomCheckerResponse(
+                    conversation_id=conversation_id,
+                    symptoms=payload.symptoms,
+                    full_name=payload.full_name,
+                    language=payload.language,
+                    model_type=payload.model_type,
+                    followup_count=payload.followup_count,
+                    # Enhanced symptom data
+                    heart_rate=payload.heart_rate,
+                    severity_scale=payload.severity_scale,
+                    duration=payload.duration,
+                    respiratory_rate=payload.respiratory_rate,
+                    additional_notes=payload.additional_notes,
+                    # Response data
+                    email="",
+                    summary="",
+                    breakdown={},
+                    severity="unknown",
+                    is_emergency=False,
+                    status="error"
+                )
+                db.add(error_response)
+
             await db.commit()
 
             return {
@@ -511,30 +538,55 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
         # Create clean summary without HTML tags, references, or numbering
         summary = _create_clean_summary(email)
 
-        # Save complete response to database
-        response_record = SymptomCheckerResponse(
-            conversation_id=conversation_id,
-            symptoms=payload.symptoms,
-            full_name=payload.full_name,
-            language=payload.language,
-            model_type=payload.model_type,
-            followup_count=payload.followup_count,
-            # Enhanced symptom data
-            heart_rate=payload.heart_rate,
-            severity_scale=payload.severity_scale,
-            duration=payload.duration,
-            respiratory_rate=payload.respiratory_rate,
-            additional_notes=payload.additional_notes,
-            # Response data
-            email=email,
-            summary=summary,
-            breakdown=breakdown,
-            severity="grave" if is_emergency else "leve",
-            is_emergency=is_emergency,
-            status="success"
+        # Save complete response to database (upsert by conversation_id)
+        result = await db.execute(
+            select(SymptomCheckerResponse).where(
+                SymptomCheckerResponse.conversation_id == conversation_id
+            )
         )
+        existing_record = result.scalar_one_or_none()
 
-        db.add(response_record)
+        if existing_record:
+            existing_record.symptoms = payload.symptoms
+            existing_record.full_name = payload.full_name
+            existing_record.language = payload.language
+            existing_record.model_type = payload.model_type
+            existing_record.followup_count = payload.followup_count
+            existing_record.heart_rate = payload.heart_rate
+            existing_record.severity_scale = payload.severity_scale
+            existing_record.duration = payload.duration
+            existing_record.respiratory_rate = payload.respiratory_rate
+            existing_record.additional_notes = payload.additional_notes
+            existing_record.email = email
+            existing_record.summary = summary
+            existing_record.breakdown = breakdown
+            existing_record.severity = "grave" if is_emergency else "leve"
+            existing_record.is_emergency = is_emergency
+            existing_record.status = "success"
+        else:
+            response_record = SymptomCheckerResponse(
+                conversation_id=conversation_id,
+                symptoms=payload.symptoms,
+                full_name=payload.full_name,
+                language=payload.language,
+                model_type=payload.model_type,
+                followup_count=payload.followup_count,
+                # Enhanced symptom data
+                heart_rate=payload.heart_rate,
+                severity_scale=payload.severity_scale,
+                duration=payload.duration,
+                respiratory_rate=payload.respiratory_rate,
+                additional_notes=payload.additional_notes,
+                # Response data
+                email=email,
+                summary=summary,
+                breakdown=breakdown,
+                severity="grave" if is_emergency else "leve",
+                is_emergency=is_emergency,
+                status="success"
+            )
+            db.add(response_record)
+
         await db.commit()
 
         logger.info(
@@ -552,28 +604,55 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
 
         # Try to save error to database
         try:
-            error_response = SymptomCheckerResponse(
-                conversation_id=conversation_id,
-                symptoms=payload.symptoms,
-                full_name=payload.full_name,
-                language=payload.language,
-                model_type=payload.model_type,
-                followup_count=payload.followup_count,
-                # Enhanced symptom data
-                heart_rate=payload.heart_rate,
-                severity_scale=payload.severity_scale,
-                duration=payload.duration,
-                respiratory_rate=payload.respiratory_rate,
-                additional_notes=payload.additional_notes,
-                # Response data
-                email="",
-                summary="",
-                breakdown={},
-                severity="unknown",
-                is_emergency=False,
-                status="error"
+            await db.rollback()
+            result = await db.execute(
+                select(SymptomCheckerResponse).where(
+                    SymptomCheckerResponse.conversation_id == conversation_id
+                )
             )
-            db.add(error_response)
+            existing_record = result.scalar_one_or_none()
+
+            if existing_record:
+                existing_record.symptoms = payload.symptoms
+                existing_record.full_name = payload.full_name
+                existing_record.language = payload.language
+                existing_record.model_type = payload.model_type
+                existing_record.followup_count = payload.followup_count
+                existing_record.heart_rate = payload.heart_rate
+                existing_record.severity_scale = payload.severity_scale
+                existing_record.duration = payload.duration
+                existing_record.respiratory_rate = payload.respiratory_rate
+                existing_record.additional_notes = payload.additional_notes
+                existing_record.email = ""
+                existing_record.summary = ""
+                existing_record.breakdown = {}
+                existing_record.severity = "unknown"
+                existing_record.is_emergency = False
+                existing_record.status = "error"
+            else:
+                error_response = SymptomCheckerResponse(
+                    conversation_id=conversation_id,
+                    symptoms=payload.symptoms,
+                    full_name=payload.full_name,
+                    language=payload.language,
+                    model_type=payload.model_type,
+                    followup_count=payload.followup_count,
+                    # Enhanced symptom data
+                    heart_rate=payload.heart_rate,
+                    severity_scale=payload.severity_scale,
+                    duration=payload.duration,
+                    respiratory_rate=payload.respiratory_rate,
+                    additional_notes=payload.additional_notes,
+                    # Response data
+                    email="",
+                    summary="",
+                    breakdown={},
+                    severity="unknown",
+                    is_emergency=False,
+                    status="error"
+                )
+                db.add(error_response)
+
             await db.commit()
         except Exception as db_error:
             logger.error(f"Failed to save error to database: {str(db_error)}")
