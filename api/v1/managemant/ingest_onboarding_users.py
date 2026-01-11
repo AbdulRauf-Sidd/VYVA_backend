@@ -3,7 +3,7 @@ import io
 import re
 from sqlalchemy import select
 from unittest import result
-from fastapi import UploadFile, File, HTTPException
+from fastapi import Form, UploadFile, File, HTTPException
 from core.database import get_db
 from fastapi import APIRouter, Depends
 from schemas.responses import StandardSuccessResponse
@@ -258,7 +258,7 @@ async def process_valid_data(file_content, organization, db):
         return False, 0
 
 @router.post("/ingest-csv", response_model=StandardSuccessResponse)
-async def ingest_csv(organization: str, file: UploadFile = File(...), db=Depends(get_db)):
+async def ingest_csv(organization: str = Form(...), file: UploadFile = File(...), db=Depends(get_db)):
     organization = organization.strip()
     result = await db.execute(select(Organization).where(Organization.name == organization))
     exists = result.scalar()
@@ -298,8 +298,6 @@ class IngestUserRequest(BaseModel):
 async def ingest_user(payload: IngestUserRequest, organization: str, db=Depends(get_db)):
     
     organization = organization.strip()
-    print(payload)
-    db = await get_db().__anext__()
     result = await db.execute(select(Organization).where(Organization.name == organization))
     exists = result.scalar()
     
@@ -331,6 +329,7 @@ async def ingest_user(payload: IngestUserRequest, organization: str, db=Depends(
         raise HTTPException(status_code=422, detail=f"Invalid language '{payload.language}'. Allowed: {', '.join(VALID_LANGUAGES)}")
     
     utc_dt = None
+    final_utc_dt = None
     if payload.preferred_call_time:
         if re.match(r"^(?:[01]\d|2[0-3]):[0-5]\d$", payload.preferred_call_time):
             converted_time = payload.preferred_call_time
@@ -346,6 +345,14 @@ async def ingest_user(payload: IngestUserRequest, organization: str, db=Depends(
             local_dt_next_day = add_one_day(local_dt)
 
             final_utc_dt = local_dt_next_day.astimezone(ZoneInfo("UTC"))
+    else:
+        default_time = datetime.strptime("09:00", "%H:%M").time()
+
+        # Local time 9am tomorrow
+        local_dt = datetime.combine(date.today(), default_time, tzinfo=ZoneInfo(timezone))
+        local_dt_next_day = add_one_day(local_dt)
+        # Convert to UTC
+        final_utc_dt = local_dt_next_day.astimezone(ZoneInfo("UTC"))
 
     user = OnboardingUser(
                 first_name=payload.first_name,
@@ -359,6 +366,13 @@ async def ingest_user(payload: IngestUserRequest, organization: str, db=Depends(
                 city_state_province=payload.city_state_province,
                 postal_zip_code=payload.postal_zip_code,
                 preferred_time=final_utc_dt,
+            )
+    
+    task_payload = await construct_onboarding_user_payload(user, exists.onboarding_agent_id)
+    
+    task = initiate_onboarding_call.apply_async(
+                args=[task_payload,],
+                eta=final_utc_dt
             )
     
     db.add(user)

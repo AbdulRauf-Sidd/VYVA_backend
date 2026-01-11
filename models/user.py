@@ -78,6 +78,7 @@ class User(Base):
         cascade="all, delete-orphan"
     )
     # escalate_to_emergency_contact = Column(Boolean, nullable=True)
+    symptom_checker_responses = relationship("SymptomCheckerResponse", back_populates="user", cascade="all, delete-orphan")
 
     #Reminders
     # preferred_channel = Column(String(50), nullable=True)
@@ -151,6 +152,23 @@ class User(Base):
             return self.last_name
         return self.email 
     
+    @property
+    def full_address(self) -> str:
+        """Return the user's full address as a readable string."""
+        parts = [
+            self.street,
+            self.city,
+            self.postal_code,
+            self.country,
+            self.address
+        ]
+    
+        # Filter out None / empty / whitespace-only values
+        parts = [p.strip() for p in parts if p and p.strip()]
+    
+        return ", ".join(parts) if parts else "No address provided"
+
+    
 
 class AdminUser(Base):
     __tablename__ = "admin_users"
@@ -187,3 +205,6 @@ class Caretaker(Base):
         """Get user's full name."""
         return self.name 
     
+
+    def __repr__(self):
+        return f"<Caretaker(id={self.id}, name='{self.name}')>"

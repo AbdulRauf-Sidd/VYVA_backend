@@ -44,7 +44,8 @@ from celery.app.control import Inspect
 from celery_app import celery_app
 from mcp_tools.mcp_instance import mcp
 from mem0 import MemoryClient
-from mcp_tools import user, mem0, medication as med
+from mcp_tools import user, mem0, medication as med #dont remove
+import redis
 
 # Setup logging
 logger = setup_logging()
@@ -63,42 +64,11 @@ app = FastAPI(
     lifespan=mcp_app.lifespan
 )
 
+
+
 app.mount("/memory", mcp_app)
 
 setup_admin(app) 
-
-from services.whatsapp_service import whatsapp_service
-
-    
-# def te():
-#     dic = {
-#         "link": "https://zamora.vyva.io/verify?token=59242893-ba0f-419e-8264-478018a770a5",
-#     }
-
-#     loop = asyncio.get_running_loop()
-#     loop.create_task(
-#         whatsapp_service.send_onboarding_message(
-#             to_phone="+923152526525",
-#             template_data=dic
-#         )
-#     )
-# te()
-# from services.mem0 import add_conversation
-# messages = [
-#     {"role": "user", "content": "I'm planning to watch a movie tonight. Any recommendations?"},
-#     {"role": "assistant", "content": "How about thriller movies? They can be quite engaging."},
-#     {"role": "user", "content": "I'm not a big fan of thriller movies but I love sci-fi movies."},
-#     {"role": "assistant", "content": "Got it! I'll avoid thriller recommendations and suggest sci-fi movies in the future."}
-# ]
-# def q():
-#     loop = asyncio.get_running_loop()
-#     loop.create_task(
-#         add_conversation(
-#             user_id=200,
-#             conversation=messages
-#         )
-    # )
-# q()
 
 async def process_missed_calls(batch_id):
     logger.info(f"Proccessing missed calls for batch {batch_id}")
@@ -207,7 +177,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
     )
 
 
-@app.get("/admin/celery/tasks/")
+@app.get("/celery/tasks/")
 async def list_tasks():
     inspector = Inspect(app=celery_app)
 

@@ -43,6 +43,7 @@ class Settings(BaseSettings):
         "http://localhost:3000",
         "https://zamora.vyva.io",
         "https://3627ab087f2f.ngrok-free.app",
+        "https://care.zamora.vyva.io",
     ]
     
     # CORS

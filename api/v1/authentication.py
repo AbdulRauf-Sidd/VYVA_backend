@@ -78,7 +78,7 @@ async def verify_otp(request: Request, response: Response, body: VerifyOtpReques
         # secure=False,       # ❌ must be False for localhost
         # samesite="lax",
         max_age=settings.SESSION_DURATION,
-        samesite=None
+        samesite="None"
     )
 
     user = None
@@ -90,10 +90,8 @@ async def verify_otp(request: Request, response: Response, body: VerifyOtpReques
             .order_by(User.id)
             .limit(1)
         )
-
+        
         user = result.scalar_one_or_none()
-
-    print(user_id, user_type, user)
 
     return {
         "success": True,
@@ -159,7 +157,7 @@ async def magic_login(
         # secure=False,       # ❌ must be False for localhost
         # samesite="lax",
         max_age=settings.SESSION_DURATION,
-        samesite=None
+        samesite="None"
     )
 
     return {"success": True, "message": "Magic login successful"}
@@ -167,6 +165,45 @@ async def magic_login(
 
 @router.post("/session/", response_model=SessionCheckResponse)
 async def session_auth(
+    # request: Request,
+    session_id: str = Cookie(None, alias=settings.SESSION_COOKIE_NAME), 
+    db: AsyncSession = Depends(get_db)
+):
+    
+    if not session_id:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    result = await db.execute(
+        select(UserSession).where(UserSession.session_id == session_id)
+    )
+    session = result.scalar_one_or_none()
+    print(session.user_id, session.caretaker_id)
+
+    if not session:
+        raise HTTPException(status_code=401, detail="Invalid session")
+
+    if is_expired(session.expires_at):
+        raise HTTPException(status_code=401, detail="Session expired")
+    
+    if session.is_active is False:
+        raise HTTPException(status_code=401, detail="Session is inactive")
+
+    result = await db.execute(
+        select(User).where(User.id == session.user_id)
+    )
+    user = result.scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+
+    return {
+        "success": True,
+        "user_id": user.id
+    }
+
+
+@router.post("/caretaker-session/", response_model=SessionCheckResponse)
+async def caretaker_session_auth(
     # request: Request,
     session_id: str = Cookie(None, alias=settings.SESSION_COOKIE_NAME), 
     db: AsyncSession = Depends(get_db)
@@ -190,17 +227,18 @@ async def session_auth(
         raise HTTPException(status_code=401, detail="Session is inactive")
 
     result = await db.execute(
-        select(User).where(User.id == session.user_id)
+        select(Caretaker).where(Caretaker.id == session.caretaker_id)
     )
-    user = result.scalar_one_or_none()
+    caretaker = result.scalar_one_or_none()
 
-    if not user:
-        raise HTTPException(status_code=401, detail="User not found")
+    if not caretaker:
+        raise HTTPException(status_code=401, detail="Caretaker not found")
 
     return {
         "success": True,
-        "user_id": user.id
+        "user_id": caretaker.id
     }
+
 
 @router.get("/profile")
 async def read_user_profile(

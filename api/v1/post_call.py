@@ -128,9 +128,15 @@ async def receive_message(request: Request, db: AsyncSession = Depends(get_db)):
         else:
             conversation = []
             for message in transcript:
+                role = message['role']
+                content = message['message']
+                if not content:
+                    continue
+                if role == 'agent':
+                    role = 'assistant'
                 conversation.append({
-                    'role': message['role'],
-                    'content': message['message']
+                    'role': role,
+                    'content': content
                 })
             user_id = conversation_initiation_client_data.get("dynamic_variables", {}).get("user_id")
             phone_number = conversation_initiation_client_data.get("dynamic_variables", {}).get("phone_number")
@@ -138,10 +144,10 @@ async def receive_message(request: Request, db: AsyncSession = Depends(get_db)):
             termination_reason = metadata.get("termination_reason")
             call_successful = analysis.get("call_successful")
             transcript_summary = analysis.get("transcript_summary")
-            if not user_id:
-                if phone_number:
-                    result = await db.execute(select(User.id).where(User.phone_number == phone_number))
-                    user_id = result.scalar_one()
+            if phone_number:
+                result = await db.execute(select(User.id).where(User.phone_number == phone_number))
+                user_id = result.scalar_one()
+
             if user_id:
                 await add_conversation(
                     user_id=user_id,

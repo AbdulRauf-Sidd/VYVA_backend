@@ -4,6 +4,7 @@ from models import User, Medication
 from models.organization import Organization, OrganizationAgents
 from models.onboarding import OnboardingUser
 from models.onboarding import OnboardingLogs
+from models.symptom_checker import SymptomCheckerResponse
 from admin.auth import AdminAuth
 from core.config import settings
 from models.medication import MedicationTime
@@ -42,6 +43,9 @@ def setup_admin(app):
     class OnboardingLogsAdmin(ModelView, model=OnboardingLogs):
         column_list = "__all__"
 
+    class SymptomCheckerResponseAdmin(ModelView, model=SymptomCheckerResponse):
+        column_list = "__all__"
+
     admin.add_view(UserAdmin)
     admin.add_view(CaretakerAdmin)
     admin.add_view(MedicationAdmin)
@@ -50,3 +54,4 @@ def setup_admin(app):
     admin.add_view(OrganizationAgentsAdmin)
     admin.add_view(OnboardingUserAdmin)
     admin.add_view(OnboardingLogsAdmin)
+    admin.add_view(SymptomCheckerResponseAdmin)
