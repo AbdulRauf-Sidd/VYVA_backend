@@ -9,6 +9,7 @@ from admin.auth import AdminAuth
 from core.config import settings
 from models.medication import MedicationTime
 from models.user import Caretaker
+from models.brain_coach import BrainCoachQuestions, BrainCoachResponses, QuestionTranslations
 
 def setup_admin(app):
     admin = Admin(
@@ -46,6 +47,20 @@ def setup_admin(app):
     class SymptomCheckerResponseAdmin(ModelView, model=SymptomCheckerResponse):
         column_list = "__all__"
 
+    class SymptomCheckerResponseAdmin(ModelView, model=SymptomCheckerResponse):
+        column_list = "__all__"
+
+    class BrainCoachQuestionsAdmin(ModelView, model=BrainCoachQuestions):
+        column_list = "__all__"
+
+    class QuestionTranslationsAdmin(ModelView, model=QuestionTranslations):
+        column_list = "__all__"
+
+    class BrainCoachResponsesAdmin(ModelView, model=BrainCoachResponses):
+        column_list = "__all__"
+
+    
+
     admin.add_view(UserAdmin)
     admin.add_view(CaretakerAdmin)
     admin.add_view(MedicationAdmin)
@@ -55,3 +70,6 @@ def setup_admin(app):
     admin.add_view(OnboardingUserAdmin)
     admin.add_view(OnboardingLogsAdmin)
     admin.add_view(SymptomCheckerResponseAdmin)
+    admin.add_view(BrainCoachQuestionsAdmin)
+    admin.add_view(QuestionTranslationsAdmin)
+    admin.add_view(BrainCoachResponsesAdmin)
