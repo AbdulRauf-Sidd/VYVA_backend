@@ -93,21 +93,13 @@ async def send_questions_to_api(questions_file: str, api_url: str, auth_token: s
 
 async def main():
     # Configuration
-    QUESTIONS_FILE = "merged_questions.json"  # Your merged JSON file
-    API_URL = "http://localhost:8000/api/v1/brain-coach/questions"  # Replace with your actual API URL
-    # AUTH_TOKEN = "your-auth-token-here"  # Replace with your actual auth token if needed
-    
-    # Choose which method to use:
-    
-    # Option 1: Async with validation (recommended)
-    # successful, failed = await send_questions_with_validation(QUESTIONS_FILE, API_URL, AUTH_TOKEN)
+    # QUESTIONS_FILE = "merged_questions.json" 
+    QUESTIONS_FILE = "trivia_questions.json"
+    API_URL = "http://localhost:8000/api/v1/brain-coach/questions" 
     
     # Option 2: Async without validation
     successful, failed = await send_questions_to_api(QUESTIONS_FILE, API_URL, None)
     
-    # Option 3: Synchronous (if you prefer)
-    # successful, failed = send_questions_sync(QUESTIONS_FILE, API_URL, AUTH_TOKEN)
-
 if __name__ == "__main__":
     # Run the async main function
     asyncio.run(main())

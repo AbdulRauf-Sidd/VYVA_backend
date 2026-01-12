@@ -46,7 +46,8 @@ class BrainCoachQuestionRepository:
             base_question = BrainCoachQuestions(
                 session=question_data.session,
                 tier=question_data.tier,
-                max_score=question_data.max_score
+                max_score=question_data.max_score,
+                category=question_data.category
             )
             self.db_session.add(base_question)
             await self.db_session.flush()
@@ -119,6 +120,7 @@ class BrainCoachQuestionRepository:
                 session=question.session,
                 tier=question.tier,
                 max_score=question.max_score,
+                category=question.category,
                 translations=translation_schemas
             )
 
