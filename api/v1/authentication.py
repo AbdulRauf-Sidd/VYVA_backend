@@ -35,7 +35,7 @@ async def request_otp(request: PhoneRequest, db: AsyncSession = Depends(get_db))
     else:
         caretaker_id = caretaker_id.id
 
-    print("Creating OTP session for user_id:", user_id, "caretaker_id:", caretaker_id)
+    # print("Creating OTP session for user_id:", user_id, "caretaker_id:", caretaker_id)
     if user_id is not None:
         otp, session_id = await create_otp_session(db, phone, user_id, user_type="user")
     else:
