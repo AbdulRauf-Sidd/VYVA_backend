@@ -30,6 +30,27 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
+_OPTIONAL_USER_FIELDS = [
+    "full_name",
+    "language",
+    "model_type",
+    "followup_count",
+    "heart_rate",
+    "severity_scale",
+    "duration",
+    "respiratory_rate",
+    "additional_notes",
+]
+
+
+def _apply_optional_payload_fields(record, payload_data: dict, fields=_OPTIONAL_USER_FIELDS):
+    """
+    Update only the fields that were explicitly provided in the payload.
+    """
+    for field in fields:
+        if field in payload_data:
+            setattr(record, field, payload_data[field])
+
 
 class SymptomCheckRequest(BaseModel):
     symptoms: str
@@ -452,6 +473,7 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
 
     # Use the conversation_id provided by the frontend
     conversation_id = payload.conversation_id
+    payload_data = payload.model_dump(exclude_unset=True)
 
     try:
         # Formulate comprehensive search query
@@ -480,15 +502,7 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
 
             if existing_record:
                 existing_record.symptoms = payload.symptoms
-                existing_record.full_name = payload.full_name
-                existing_record.language = payload.language
-                existing_record.model_type = payload.model_type
-                existing_record.followup_count = payload.followup_count
-                existing_record.heart_rate = payload.heart_rate
-                existing_record.severity_scale = payload.severity_scale
-                existing_record.duration = payload.duration
-                existing_record.respiratory_rate = payload.respiratory_rate
-                existing_record.additional_notes = payload.additional_notes
+                _apply_optional_payload_fields(existing_record, payload_data)
                 existing_record.email = ""
                 existing_record.summary = ""
                 existing_record.breakdown = {}
@@ -548,15 +562,7 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
 
         if existing_record:
             existing_record.symptoms = payload.symptoms
-            existing_record.full_name = payload.full_name
-            existing_record.language = payload.language
-            existing_record.model_type = payload.model_type
-            existing_record.followup_count = payload.followup_count
-            existing_record.heart_rate = payload.heart_rate
-            existing_record.severity_scale = payload.severity_scale
-            existing_record.duration = payload.duration
-            existing_record.respiratory_rate = payload.respiratory_rate
-            existing_record.additional_notes = payload.additional_notes
+            _apply_optional_payload_fields(existing_record, payload_data)
             existing_record.email = email
             existing_record.summary = summary
             existing_record.breakdown = breakdown
@@ -564,27 +570,20 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
             existing_record.is_emergency = is_emergency
             existing_record.status = "success"
         else:
-            response_record = SymptomCheckerResponse(
-                conversation_id=conversation_id,
-                symptoms=payload.symptoms,
-                full_name=payload.full_name,
-                language=payload.language,
-                model_type=payload.model_type,
-                followup_count=payload.followup_count,
-                # Enhanced symptom data
-                heart_rate=payload.heart_rate,
-                severity_scale=payload.severity_scale,
-                duration=payload.duration,
-                respiratory_rate=payload.respiratory_rate,
-                additional_notes=payload.additional_notes,
-                # Response data
-                email=email,
-                summary=summary,
-                breakdown=breakdown,
-                severity="grave" if is_emergency else "leve",
-                is_emergency=is_emergency,
-                status="success"
-            )
+            base_data = {
+                "conversation_id": conversation_id,
+                "symptoms": payload.symptoms,
+                "email": email,
+                "summary": summary,
+                "breakdown": breakdown,
+                "severity": "grave" if is_emergency else "leve",
+                "is_emergency": is_emergency,
+                "status": "success",
+            }
+            for field in _OPTIONAL_USER_FIELDS:
+                if field in payload_data:
+                    base_data[field] = payload_data[field]
+            response_record = SymptomCheckerResponse(**base_data)
             db.add(response_record)
 
         await db.commit()
@@ -614,15 +613,7 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
 
             if existing_record:
                 existing_record.symptoms = payload.symptoms
-                existing_record.full_name = payload.full_name
-                existing_record.language = payload.language
-                existing_record.model_type = payload.model_type
-                existing_record.followup_count = payload.followup_count
-                existing_record.heart_rate = payload.heart_rate
-                existing_record.severity_scale = payload.severity_scale
-                existing_record.duration = payload.duration
-                existing_record.respiratory_rate = payload.respiratory_rate
-                existing_record.additional_notes = payload.additional_notes
+                _apply_optional_payload_fields(existing_record, payload_data)
                 existing_record.email = ""
                 existing_record.summary = ""
                 existing_record.breakdown = {}
@@ -630,27 +621,20 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
                 existing_record.is_emergency = False
                 existing_record.status = "error"
             else:
-                error_response = SymptomCheckerResponse(
-                    conversation_id=conversation_id,
-                    symptoms=payload.symptoms,
-                    full_name=payload.full_name,
-                    language=payload.language,
-                    model_type=payload.model_type,
-                    followup_count=payload.followup_count,
-                    # Enhanced symptom data
-                    heart_rate=payload.heart_rate,
-                    severity_scale=payload.severity_scale,
-                    duration=payload.duration,
-                    respiratory_rate=payload.respiratory_rate,
-                    additional_notes=payload.additional_notes,
-                    # Response data
-                    email="",
-                    summary="",
-                    breakdown={},
-                    severity="unknown",
-                    is_emergency=False,
-                    status="error"
-                )
+                base_data = {
+                    "conversation_id": conversation_id,
+                    "symptoms": payload.symptoms,
+                    "email": "",
+                    "summary": "",
+                    "breakdown": {},
+                    "severity": "unknown",
+                    "is_emergency": False,
+                    "status": "error",
+                }
+                for field in _OPTIONAL_USER_FIELDS:
+                    if field in payload_data:
+                        base_data[field] = payload_data[field]
+                error_response = SymptomCheckerResponse(**base_data)
                 db.add(error_response)
 
             await db.commit()
