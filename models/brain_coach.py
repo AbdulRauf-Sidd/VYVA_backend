@@ -15,6 +15,7 @@ class BrainCoachQuestions(Base):
     session = Column(Integer, nullable=False)
     tier = Column(Integer, nullable=False)
     max_score = Column(Integer, nullable=True, default=1)
+    category = Column(String(100), nullable=True)
 
 class QuestionTranslations(Base):
     __tablename__ = "question_translations"

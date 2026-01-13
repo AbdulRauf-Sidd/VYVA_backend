@@ -15,6 +15,7 @@ class BrainCoachQuestionBase(BaseModel):
     session: int
     tier: int
     max_score: Optional[int] = 1
+    category: Optional[str]
 
 # Create schemas
 class QuestionTranslationCreate(QuestionTranslationBase):
@@ -55,6 +56,7 @@ class BrainCoachResponseBase(BaseModel):
     question_id: int
     user_answer: str
     score: int
+    category: str
 
 
 class BrainCoachResponseCreate(BrainCoachResponseBase):
