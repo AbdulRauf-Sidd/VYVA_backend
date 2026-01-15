@@ -25,10 +25,100 @@ from schemas.symptom_checker import (
     CaregiverDashboardResponse,
     VitalsHistoryResponse
 )
+from core.config import settings
+from json import loads as json_loads
+from json import JSONDecodeError
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+_OPTIONAL_USER_FIELDS = [
+    "full_name",
+    "language",
+    "model_type",
+    "followup_count",
+    "heart_rate",
+    "severity_scale",
+    "duration",
+    "respiratory_rate",
+    "additional_notes",
+]
+
+
+def _apply_optional_payload_fields(record, payload_data: dict, fields=_OPTIONAL_USER_FIELDS):
+    """
+    Update only the fields that were explicitly provided in the payload.
+    """
+    for field in fields:
+        if field in payload_data:
+            setattr(record, field, payload_data[field])
+
+
+async def _extract_ai_summaries(summary_text: str) -> Dict[str, Optional[str]]:
+    """
+    Use OpenAI to extract vitals_ai_summary and symptoms_ai_summary from text.
+    Returns dict with keys 'vitals_ai_summary' and 'symptoms_ai_summary' when successful.
+    """
+    result: Dict[str, Optional[str]] = {
+        "vitals_ai_summary": None,
+        "symptoms_ai_summary": None,
+    }
+
+    if not summary_text:
+        return result
+
+    if not settings.OPENAI_API_KEY:
+        logger.info("OPENAI_API_KEY not configured; skipping AI summary extraction.")
+        return result
+
+    try:
+        from openai import AsyncOpenAI  # type: ignore
+    except ImportError:
+        logger.warning("OpenAI SDK not installed; skipping AI summary extraction.")
+        return result
+
+    client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+    model_name = settings.OPENAI_MODEL or "gpt-4o-mini"
+    prompt = (
+        "You will receive a short medical call summary. Extract two concise, user-friendly sentences:\n"
+        "1) vitals_ai_summary: what the vitals indicate (heart rate, respiratory rate, other vitals if present). "
+        "If no vitals are mentioned, respond with null.\n"
+        "2) symptoms_ai_summary: what symptoms or issues the patient reports and key findings. "
+        "If insufficient info, respond with null.\n\n"
+        "Return a JSON object with exactly these keys: "
+        '{"vitals_ai_summary": "... or null", "symptoms_ai_summary": "... or null"}.\n'
+        "Keep each summary under 200 characters. Do not fabricate data."
+    )
+
+    # Trim overly long text to reduce tokens
+    text = summary_text.strip()
+    if len(text) > 4000:
+        text = text[:4000]
+
+    try:
+        completion = await client.chat.completions.create(
+            model=model_name,
+            messages=[
+                {"role": "system", "content": prompt},
+                {"role": "user", "content": text},
+            ],
+            response_format={"type": "json_object"},
+            max_tokens=200,
+            temperature=0.2,
+        )
+        content = completion.choices[0].message.content if completion and completion.choices else None
+        if content:
+            try:
+                parsed = json_loads(content)
+                result["vitals_ai_summary"] = parsed.get("vitals_ai_summary")
+                result["symptoms_ai_summary"] = parsed.get("symptoms_ai_summary")
+            except (JSONDecodeError, AttributeError) as parse_err:
+                logger.warning("Failed to parse AI summaries JSON: %s", parse_err)
+    except Exception as exc:
+        logger.warning("AI summary extraction failed: %s", exc)
+
+    return result
 
 
 class SymptomCheckRequest(BaseModel):
@@ -452,6 +542,7 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
 
     # Use the conversation_id provided by the frontend
     conversation_id = payload.conversation_id
+    payload_data = payload.model_dump(exclude_unset=True)
 
     try:
         # Formulate comprehensive search query
@@ -480,15 +571,7 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
 
             if existing_record:
                 existing_record.symptoms = payload.symptoms
-                existing_record.full_name = payload.full_name
-                existing_record.language = payload.language
-                existing_record.model_type = payload.model_type
-                existing_record.followup_count = payload.followup_count
-                existing_record.heart_rate = payload.heart_rate
-                existing_record.severity_scale = payload.severity_scale
-                existing_record.duration = payload.duration
-                existing_record.respiratory_rate = payload.respiratory_rate
-                existing_record.additional_notes = payload.additional_notes
+                _apply_optional_payload_fields(existing_record, payload_data)
                 existing_record.email = ""
                 existing_record.summary = ""
                 existing_record.breakdown = {}
@@ -538,6 +621,11 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
         # Create clean summary without HTML tags, references, or numbering
         summary = _create_clean_summary(email)
 
+        # Extract AI summaries (vitals/symptoms) from summary text using OpenAI
+        ai_summaries = await _extract_ai_summaries(summary)
+        vitals_ai_summary = ai_summaries.get("vitals_ai_summary")
+        symptoms_ai_summary = ai_summaries.get("symptoms_ai_summary")
+
         # Save complete response to database (upsert by conversation_id)
         result = await db.execute(
             select(SymptomCheckerResponse).where(
@@ -548,43 +636,36 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
 
         if existing_record:
             existing_record.symptoms = payload.symptoms
-            existing_record.full_name = payload.full_name
-            existing_record.language = payload.language
-            existing_record.model_type = payload.model_type
-            existing_record.followup_count = payload.followup_count
-            existing_record.heart_rate = payload.heart_rate
-            existing_record.severity_scale = payload.severity_scale
-            existing_record.duration = payload.duration
-            existing_record.respiratory_rate = payload.respiratory_rate
-            existing_record.additional_notes = payload.additional_notes
+            _apply_optional_payload_fields(existing_record, payload_data)
             existing_record.email = email
             existing_record.summary = summary
             existing_record.breakdown = breakdown
+            if vitals_ai_summary is not None:
+                existing_record.vitals_ai_summary = vitals_ai_summary
+            if symptoms_ai_summary is not None:
+                existing_record.symptoms_ai_summary = symptoms_ai_summary
             existing_record.severity = "grave" if is_emergency else "leve"
             existing_record.is_emergency = is_emergency
             existing_record.status = "success"
         else:
-            response_record = SymptomCheckerResponse(
-                conversation_id=conversation_id,
-                symptoms=payload.symptoms,
-                full_name=payload.full_name,
-                language=payload.language,
-                model_type=payload.model_type,
-                followup_count=payload.followup_count,
-                # Enhanced symptom data
-                heart_rate=payload.heart_rate,
-                severity_scale=payload.severity_scale,
-                duration=payload.duration,
-                respiratory_rate=payload.respiratory_rate,
-                additional_notes=payload.additional_notes,
-                # Response data
-                email=email,
-                summary=summary,
-                breakdown=breakdown,
-                severity="grave" if is_emergency else "leve",
-                is_emergency=is_emergency,
-                status="success"
-            )
+            base_data = {
+                "conversation_id": conversation_id,
+                "symptoms": payload.symptoms,
+                "email": email,
+                "summary": summary,
+                "breakdown": breakdown,
+                "severity": "grave" if is_emergency else "leve",
+                "is_emergency": is_emergency,
+                "status": "success",
+            }
+            for field in _OPTIONAL_USER_FIELDS:
+                if field in payload_data:
+                    base_data[field] = payload_data[field]
+            if vitals_ai_summary is not None:
+                base_data["vitals_ai_summary"] = vitals_ai_summary
+            if symptoms_ai_summary is not None:
+                base_data["symptoms_ai_summary"] = symptoms_ai_summary
+            response_record = SymptomCheckerResponse(**base_data)
             db.add(response_record)
 
         await db.commit()
@@ -614,43 +695,36 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
 
             if existing_record:
                 existing_record.symptoms = payload.symptoms
-                existing_record.full_name = payload.full_name
-                existing_record.language = payload.language
-                existing_record.model_type = payload.model_type
-                existing_record.followup_count = payload.followup_count
-                existing_record.heart_rate = payload.heart_rate
-                existing_record.severity_scale = payload.severity_scale
-                existing_record.duration = payload.duration
-                existing_record.respiratory_rate = payload.respiratory_rate
-                existing_record.additional_notes = payload.additional_notes
+                _apply_optional_payload_fields(existing_record, payload_data)
                 existing_record.email = ""
                 existing_record.summary = ""
                 existing_record.breakdown = {}
+                if "vitals_ai_summary" in payload_data:
+                    existing_record.vitals_ai_summary = payload_data["vitals_ai_summary"]
+                if "symptoms_ai_summary" in payload_data:
+                    existing_record.symptoms_ai_summary = payload_data["symptoms_ai_summary"]
                 existing_record.severity = "unknown"
                 existing_record.is_emergency = False
                 existing_record.status = "error"
             else:
-                error_response = SymptomCheckerResponse(
-                    conversation_id=conversation_id,
-                    symptoms=payload.symptoms,
-                    full_name=payload.full_name,
-                    language=payload.language,
-                    model_type=payload.model_type,
-                    followup_count=payload.followup_count,
-                    # Enhanced symptom data
-                    heart_rate=payload.heart_rate,
-                    severity_scale=payload.severity_scale,
-                    duration=payload.duration,
-                    respiratory_rate=payload.respiratory_rate,
-                    additional_notes=payload.additional_notes,
-                    # Response data
-                    email="",
-                    summary="",
-                    breakdown={},
-                    severity="unknown",
-                    is_emergency=False,
-                    status="error"
-                )
+                base_data = {
+                    "conversation_id": conversation_id,
+                    "symptoms": payload.symptoms,
+                    "email": "",
+                    "summary": "",
+                    "breakdown": {},
+                    "severity": "unknown",
+                    "is_emergency": False,
+                    "status": "error",
+                }
+                for field in _OPTIONAL_USER_FIELDS:
+                    if field in payload_data:
+                        base_data[field] = payload_data[field]
+                if "vitals_ai_summary" in payload_data:
+                    base_data["vitals_ai_summary"] = payload_data["vitals_ai_summary"]
+                if "symptoms_ai_summary" in payload_data:
+                    base_data["symptoms_ai_summary"] = payload_data["symptoms_ai_summary"]
+                error_response = SymptomCheckerResponse(**base_data)
                 db.add(error_response)
 
             await db.commit()
