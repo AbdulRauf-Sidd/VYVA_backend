@@ -205,11 +205,11 @@ async def send_brain_coach_report(
 
         result = await db.execute(query)
         questions = result.all()
-        for question in questions:
+        for question, translation in questions:
             report_content.append({
-                "question_text": question.question_text,
-                "question_type": question.question_type,
-                "theme": question.theme,
+                "question_text": translation.question_text,
+                "question_type": translation.question_type,
+                "theme": translation.theme,
                 'score': response.score,
                 "max_score": question.max_score,
                 'tier': question.tier,
