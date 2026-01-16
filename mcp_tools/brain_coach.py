@@ -37,6 +37,8 @@ class RetrieveQuestionsOutput(BaseModel):
         "You will use this tool to retrieve the questions for a brain coach session."
         "You will call this tool when You're about to start the brain coach session."
         'You will pass the language the user is speaking in full form. if the user is speaking in english, you will pass english (all lower case)'
+        "the question type will always be enum. if the user wants cognitive excersices then question_type will be cognitive_assessment."
+        "if the user wants trivia then question_type will be trivia"
     )
 )
 async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestionsOutput:
