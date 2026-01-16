@@ -69,25 +69,23 @@ async def construct_whatsapp_brain_coach_message(first_name, report_content, sug
     return content
 
 
-async def construct_email_brain_coach_message(responses, repo):
-    report_content = []
-    for response in responses:
-        question = await repo.get_question_translation(response.question_id, 'es')
-        if question:
-            report_content.append({
-                "question_text": question.question_text,
-                "question_type": question.question_type,
-                "theme": question.theme,
-                'score': response.score,
-                "max_score": question.max_score,
-                'tier': question.tier,
-                'session': question.session,
-            })
-        else:
-            logger.warning(f"Question ID {response.question_id} not found for response ID {response.id}")
-
-    logger.info(f'Constructed {len(report_content)} responses for email content')
-    return report_content
+# async def construct_email_brain_coach_message(responses, repo):
+#     report_content = []
+#     for response in responses:
+#         question = await repo.get_question_translation(response.question_id, 'es')
+#         if question:
+#             report_content.append({
+#                 "question_text": question.question_text,
+#                 "question_type": question.question_type,
+#                 "theme": question.theme,
+#                 'score': response.score,
+#                 "max_score": question.max_score,
+#                 'tier': question.tier,
+#                 'session': question.session,
+#             })
+#         else:
+            
+#     return report_content
 
 
 def construct_phone_call_message(user, medication):

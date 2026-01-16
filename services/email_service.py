@@ -403,7 +403,7 @@ class EmailService:
         """
 
         body = body_en
-        if language == 'es':
+        if language.lower() == 'spanish':
             body = body_es
 
         html = f"""
