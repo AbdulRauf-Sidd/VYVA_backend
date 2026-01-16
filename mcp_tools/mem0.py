@@ -95,7 +95,7 @@ async def retrieve_user_memories(
     async with get_async_session() as db:
         stmt = (
             select(User)
-            .where(User.user_id == input.user_id)
+            .where(User.id == input.user_id)
         )
 
         result = await db.execute(stmt)
