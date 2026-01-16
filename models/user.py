@@ -18,6 +18,10 @@ class PreferredConsultationLanguageEnum(str, PyEnum):
     GERMAN = "German"
     FRENCH = "French"
 
+class PreferredReportsChannelEnum(str, PyEnum):
+    WHATSAPP = "whatsapp"
+    EMAIL = "email"
+    
 
 class BrainCoachComplexityEnum(str, PyEnum):
     EASY = "Easy"
@@ -39,6 +43,7 @@ class User(Base):
     email = Column(String(255), index=True, nullable=True, unique=True) #TODO make unique true
     phone_number = Column(String(20), nullable=False, unique=True)
     # land_line = Column(String(20), nullable=True)
+    is_primary_landline = Column(Boolean, nullable=True, default=False)
     age = Column(Integer, nullable=True)
     # living_situation = Column(SQLEnum(LivingSituation), nullable=True)
     admin_profile = relationship("AdminUser", back_populates="user", uselist=False)
@@ -50,6 +55,7 @@ class User(Base):
     preferred_communication_channel = Column(String(50), nullable=True)
     onboarding_user_id = Column(Integer, ForeignKey("onboarding_users.id"), nullable=True, unique=True)
     onboarding_user = relationship("OnboardingUser", backref="user", uselist=False)
+    secondary_phone = Column(String(20), nullable=True, unique=True)
 
     #Health and Care
     health_conditions = Column(Text, nullable=True)
@@ -84,7 +90,7 @@ class User(Base):
     # preferred_channel = Column(String(50), nullable=True)
     whatsapp_reports = Column(Boolean, nullable=True, default=False)
     email_reports = Column(Boolean, nullable=True, default=False)
-    preferred_communication_channel = Column(String(50), nullable=True)
+    preferred_reports_channel = Column(String(20), default='whatsapp', nullable=True)
 
     
     #Care taker
