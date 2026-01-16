@@ -36,6 +36,7 @@ class RetrieveQuestionsOutput(BaseModel):
     description=(
         "You will use this tool to retrieve the questions for a brain coach session."
         "You will call this tool when You're about to start the brain coach session."
+        'You will pass the language the user is speaking in full form. if the user is speaking in english, you will pass english (all lower case)'
     )
 )
 async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestionsOutput:
