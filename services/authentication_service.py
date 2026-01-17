@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete, update
 from models.user import User
 from scripts.authentication_helpers import generate_otp, hash_otp, is_expired, get_current_user_from_session
-from models.authentication import OtpSession, UserSession
+from models.authentication import OtpSession, UserSession, CaretakerOtpSession, CaretakerSession
 from datetime import datetime, timedelta
 from core.config import settings
 
@@ -18,41 +18,49 @@ async def create_otp_session(db: AsyncSession, contact: str, user_id: int, user_
     if user_type == "user":
         otp_session = OtpSession(contact=contact, otp_hash=otp_hash, expires_at=expires_at, user_id=user_id)
     else:
-        otp_session = OtpSession(contact=contact, otp_hash=otp_hash, expires_at=expires_at, caretaker_id=user_id)
+        otp_session = CaretakerOtpSession(contact=contact, otp_hash=otp_hash, expires_at=expires_at, caretaker_id=user_id)
 
     db.add(otp_session)
     await db.commit()
     await db.refresh(otp_session)
-
+    
     return otp, otp_session.session_id
 
-async def verify_otp_helper(db: AsyncSession, session_id: str, otp: str):
-    result = await db.execute(select(OtpSession).where(OtpSession.session_id == session_id))
+async def verify_otp_helper(db: AsyncSession, session_id: str, otp: str, user_type: str):
+    if user_type == 'user':
+        result = await db.execute(select(OtpSession).where(OtpSession.session_id == session_id))
+    else:
+        result = await db.execute(select(CaretakerOtpSession).where(CaretakerOtpSession.session_id == session_id))
+    
     otp_session = result.scalar_one_or_none()
 
     if not otp_session or otp_session.verified:
-        return None, None, "Invalid session ID."
+        return None, "Invalid session ID."
     
     if is_expired(otp_session.expires_at):
-        return None, None, "OTP has expired."
+        return None, "OTP has expired."
 
     if otp_session.attempts >= settings.MAX_ATTEMPTS:
-        return None, None, "Maximum attempts exceeded."
+        return None, "Maximum attempts exceeded."
 
     if otp_session.otp_hash == hash_otp(otp):
         otp_session.verified = True
         await db.commit()
-        user_id = otp_session.user_id
-        caretaker_id = otp_session.caretaker_id
-        if user_id:
-            return user_id, "user", "OTP verified successfully."
-        elif caretaker_id:
-            return caretaker_id, "caretaker", "OTP verified successfully."
-        return None, None, "User or Caretaker not found."
+        id = None
+        if user_type == 'user':
+            id = otp_session.user_id
+        else:
+            id = otp_session.caretaker_id
+        
+        if id:
+            return id, "OTP Verified Successfuly"
+
+        return None, "User not found."
     else:
         otp_session.attempts += 1
         await db.commit()
-        return None, None, "Invalid OTP."
+        return None, "Invalid OTP."
+    
 async def delete_otp_session(db: AsyncSession, session_id: str):
     await db.execute(delete(OtpSession).where(OtpSession.session_id == session_id))
     await db.commit()
@@ -63,7 +71,7 @@ async def create_user_session(db: AsyncSession, user_id: int, user_type: str, us
     if user_type == "user":
         session = UserSession(user_id=user_id, expires_at=expires_at, user_agent=user_agent, ip_address=ip_address)
     else:
-        session = UserSession(caretaker_id=user_id, expires_at=expires_at, user_agent=user_agent, ip_address=ip_address)
+        session = CaretakerSession(caretaker_id=user_id, expires_at=expires_at, user_agent=user_agent, ip_address=ip_address)
 
     db.add(session)
     await db.commit()

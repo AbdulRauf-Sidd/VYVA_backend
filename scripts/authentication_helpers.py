@@ -8,8 +8,9 @@ from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
-from models.authentication import UserSession
+from models.authentication import UserSession, CaretakerSession
 from models.user import User, Caretaker
+from core.config import settings
 
 def generate_otp(length=4):
     return str(random.randint(10**(length-1), 10**length - 1))
@@ -150,7 +151,7 @@ async def get_current_caretaker_from_session(
         )
 
     session_result = await db.execute(
-        select(UserSession).where(UserSession.session_id == session_id)
+        select(CaretakerSession).where(CaretakerSession.session_id == session_id)
     )
     session = session_result.scalar_one_or_none()
 
@@ -188,3 +189,15 @@ async def get_current_caretaker_from_session(
         )
 
     return caretaker
+
+
+def set_cookie(response, session_id):
+    environment = settings.ENV
+    response.set_cookie(
+        key="session_id",
+        value=session_id,
+        httponly=True,
+        secure=True if environment == "production" else False,  # True in production, False in development
+        samesite="None" if environment == "production" else "Lax",
+        max_age=settings.SESSION_DURATION,
+    )
