@@ -457,9 +457,12 @@ class WhatsAppService:
     async def send_otp(
         self,
         to_phone: str,
-        template_data: Dict[str, Any],
+        otp: str,
         template_id: str = settings.TWILIO_WHATSAPP_OTP_TEMPLATE_SID
     ) -> bool:
+        template_data = {
+            1: otp
+        }
         content_variables_json = json.dumps(template_data)
 
         # Ensure phone number has whatsapp: prefix

@@ -206,6 +206,14 @@ class Caretaker(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     assigned_users = relationship("User", back_populates="caretaker")
 
+    wants_medication_alerts = Column(Boolean, default = True)
+    wants_fall_alerts = Column(Boolean, default=False)
+
+    device_token = Column(String(150), nullable=True)
+    expiration = Column(String(50), nullable=True)
+    p256dh = Column(String(100), nullable=True)
+    auth = Column(String(100), nullable=True)
+
     @property
     def full_name(self) -> str:
         """Get user's full name."""
@@ -213,4 +221,7 @@ class Caretaker(Base):
     
 
     def __repr__(self):
-        return f"<Caretaker(id={self.id}, name='{self.name}')>"
+        # Use getattr with default to avoid triggering lazy loads
+        obj_id = getattr(self, 'id', 'detached')
+        name = getattr(self, 'name', 'unknown')
+        return f"<Caretaker(id={obj_id}, name='{name}')>"

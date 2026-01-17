@@ -2,14 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Response, Cookie
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db
 from services.authentication_service import create_otp_session, create_user_session, verify_otp_helper
-from scripts.authentication_helpers import get_current_caretaker_from_session, send_otp_via_sms, is_valid_phone_number, is_expired, get_current_user_from_session
+from scripts.authentication_helpers import get_current_caretaker_from_session, send_otp_via_sms, is_valid_phone_number, is_expired, get_current_user_from_session, set_cookie
 from schemas.responses import StandardSuccessResponse, SessionSuccessResponse, SessionCheckResponse
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from models.user import Caretaker, User
 from core.config import settings
 from fastapi import Body
-from models.authentication import UserTempToken, UserSession
+from models.authentication import UserTempToken, UserSession, CaretakerSession
 from datetime import datetime, timedelta, timezone
 from schemas.authentication import PhoneRequest, VerifyOtpRequest
 from services.whatsapp_service import whatsapp_service
@@ -24,30 +24,34 @@ async def request_otp(request: PhoneRequest, db: AsyncSession = Depends(get_db))
         raise HTTPException(status_code=400, detail="Invalid phone number")
 
     user_result = await db.execute(select(User).where(User.phone_number == phone))
-    caretaker_result = await db.execute(select(Caretaker).where(Caretaker.phone_number == phone))
     user_id = user_result.scalar_one_or_none()
-    caretaker_id = caretaker_result.scalar_one_or_none()
-    if not user_id and not caretaker_id:
+    if not user_id:
         raise HTTPException(status_code=400, detail="No user found with this phone number")
     
-    if user_id:
-        user_id = user_id.id
-    else:
-        caretaker_id = caretaker_id.id
-
-    # print("Creating OTP session for user_id:", user_id, "caretaker_id:", caretaker_id)
-    if user_id is not None:
-        otp, session_id = await create_otp_session(db, phone, user_id, user_type="user")
-    else:
-        otp, session_id = await create_otp_session(db, phone, caretaker_id, user_type="caretaker")
-
-    message = {
-        1: otp
+    user_id = user_id.id
+    otp, session_id = await create_otp_session(db, phone, user_id, user_type="user")
+    
+    await whatsapp_service.send_otp(phone, otp)
+    
+    return {
+        'success': True,
+        "message": "OTP has been sent to your phone",
+        "session_id": session_id
     }
-    await whatsapp_service.send_otp(phone, message)
-    print(otp)
 
-    # await send_otp_via_sms(phone, otp)
+@router.post("/caretaker-request-otp/", response_model=SessionSuccessResponse)
+async def caretaker_request_otp(request: PhoneRequest, db: AsyncSession = Depends(get_db)):
+    phone = request.phone
+    if not is_valid_phone_number(phone):
+        raise HTTPException(status_code=400, detail="Invalid phone number")
+    
+    caretaker_result = await db.execute(select(Caretaker).where(Caretaker.phone_number == phone))
+    caretaker_id = caretaker_result.scalar_one_or_none()
+    if not caretaker_id:
+        raise HTTPException(status_code=400, detail="No Caretaker found with this phone number")
+    otp, session_id = await create_otp_session(db, phone, caretaker_id.id, user_type="caretaker")
+    
+    await whatsapp_service.send_otp(phone, otp)
     
     return {
         'success': True,
@@ -58,40 +62,74 @@ async def request_otp(request: PhoneRequest, db: AsyncSession = Depends(get_db))
 
 @router.post("/verify-otp/", response_model=StandardSuccessResponse)
 async def verify_otp(request: Request, response: Response, body: VerifyOtpRequest, db: AsyncSession = Depends(get_db)):
-    user_id, user_type, msg = await verify_otp_helper(db, body.session_id, body.otp)
-    if not user_id:
+    id, msg = await verify_otp_helper(db, body.session_id, body.otp, 'user')
+    if not id:
         raise HTTPException(status_code=400, detail=msg)
     
     session_id = await create_user_session(
         db, 
-        user_id,
-        user_type=user_type,
+        id,
+        user_type='user',
         user_agent=request.headers.get("User-Agent"), 
         ip_address=request.client.host
     )
 
-    response.set_cookie(
-        key="session_id",
-        value=session_id,
-        httponly=True,
-        secure=True,
-        # secure=False,       # ❌ must be False for localhost
-        # samesite="lax",
-        max_age=settings.SESSION_DURATION,
-        samesite="None"
+    set_cookie(response, session_id)
+
+    # response.set_cookie(
+    #     key="session_id",
+    #     value=session_id,
+    #     httponly=True,
+    #     secure=True,
+    #     # secure=False,       # ❌ must be False for localhost
+    #     # samesite="lax",
+    #     max_age=settings.SESSION_DURATION,
+    #     samesite="None"
+    # )
+
+    return {
+        "success": True,
+        "message": msg
+    }
+
+
+@router.post("/caretaker-verify-otp/", response_model=StandardSuccessResponse)
+async def caretaker_verify_otp(request: Request, response: Response, body: VerifyOtpRequest, db: AsyncSession = Depends(get_db)):
+    id, msg = await verify_otp_helper(db, body.session_id, body.otp, 'caretaker')
+    if not id:
+        raise HTTPException(status_code=400, detail=msg)
+    
+    session_id = await create_user_session(
+        db, 
+        id,
+        user_type='caretaker',
+        user_agent=request.headers.get("User-Agent"), 
+        ip_address=request.client.host
     )
 
+    set_cookie(response, session_id)
+
+    # response.set_cookie(
+    #     key="session_id",
+    #     value=session_id,
+    #     httponly=True,
+    #     secure=True,
+    #     # secure=False,       # ❌ must be False for localhost
+    #     # samesite="lax",
+    #     max_age=settings.SESSION_DURATION,
+    #     samesite="None"
+    # )
+
     user = None
-    if user_type == "caretaker":
-        result = await db.execute(
-            select(User)
-            .options(selectinload(User.caretaker))
-            .where(User.caretaker_id == user_id)
-            .order_by(User.id)
-            .limit(1)
-        )
+    result = await db.execute(
+        select(User)
+        .options(selectinload(User.caretaker))
+        .where(User.caretaker_id == id)
+        .order_by(User.id)
+        .limit(1)
+    )
         
-        user = result.scalar_one_or_none()
+    user = result.scalar_one_or_none()
 
     return {
         "success": True,
@@ -149,16 +187,17 @@ async def magic_login(
     )
 
     # Set auth cookie
-    response.set_cookie(
-        key="session_id",
-        value=session_id,
-        httponly=True,
-        secure=True,
-        # secure=False,       # ❌ must be False for localhost
-        # samesite="lax",
-        max_age=settings.SESSION_DURATION,
-        samesite="None"
-    )
+    set_cookie(response, session_id)
+    # response.set_cookie(
+    #     key="session_id",
+    #     value=session_id,
+    #     httponly=True,
+    #     secure=True,
+    #     # secure=False,       # ❌ must be False for localhost
+    #     # samesite="lax",
+    #     max_age=settings.SESSION_DURATION,
+    #     samesite="None"
+    # )
 
     return {"success": True, "message": "Magic login successful"}
 
@@ -213,7 +252,7 @@ async def caretaker_session_auth(
         raise HTTPException(status_code=401, detail="Not authenticated")
 
     result = await db.execute(
-        select(UserSession).where(UserSession.session_id == session_id)
+        select(CaretakerSession).where(CaretakerSession.session_id == session_id)
     )
     session = result.scalar_one_or_none()
 
