@@ -105,15 +105,25 @@ class MedicationRepository:
             raise
 
     async def get_by_user_id(self, user_id: int) -> List[MedicationInDB]:
-        """Get all medications for a user including times"""
+        """Get all medications for a user including times as strings"""
         try:
             result = await self.db_session.execute(
                 select(Medication).where(Medication.user_id == user_id)
             )
             medications = result.scalars().all()
-            
-            return [MedicationInDB.model_validate(med) for med in medications]
-            
+    
+            response = []
+            for med in medications:
+                med_dict = med.__dict__.copy()
+                # Convert times_of_day to strings
+                med_dict['times_of_day'] = [
+                    t.time_of_day.strftime("%H:%M:%S") if hasattr(t.time_of_day, "strftime") else str(t.time_of_day)
+                    for t in med.times_of_day
+                ]
+                response.append(MedicationInDB.model_validate(med_dict))
+    
+            return response
+    
         except Exception as e:
             logger.error(f"Error fetching medications for user {user_id}: {e}")
             raise
