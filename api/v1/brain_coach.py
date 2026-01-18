@@ -169,46 +169,25 @@ async def get_question_by_id(
 
 @router.get("/questions")
 async def get_questions_by_filters(
-    # user_id: str,
     session: Optional[int] = None,
     tier: Optional[int] = None,
     question_type: Optional[str] = None,
     language: str = "en",
     db: AsyncSession = Depends(get_db)
 ):
-    """Get questions with filters and specific language"""
     try:
-        # Validate query parameters
         if session is not None and session <= 0:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Session must be a positive integer if provided"
-            )
-        
+            raise HTTPException(status_code=400, detail="Session must be a positive integer")
         if tier is not None and tier <= 0:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Tier must be a positive integer if provided"
-            )
-        
+            raise HTTPException(status_code=400, detail="Tier must be a positive integer")
         if question_type is not None and not question_type.strip():
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Question type cannot be empty if provided"
-            )
-        
+            raise HTTPException(status_code=400, detail="Question type cannot be empty")
         if not language.strip():
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Language cannot be empty"
-            )
-        
-       
-        random_number = random.randint(1, 14)
-        
+            raise HTTPException(status_code=400, detail="Language cannot be empty")
+
         repo = BrainCoachQuestionRepository(db)
         questions = await repo.get_questions_by_filters(
-            session=random_number,
+            session=session,
             tier=tier,
             question_type=question_type,
             language=language
@@ -216,56 +195,22 @@ async def get_questions_by_filters(
 
         if not questions:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
+                status_code=404,
                 detail="No questions found for the given criteria"
             )
 
-        random_string = str(uuid.uuid4()).replace("-", "")[:15]
+        session_id = str(uuid.uuid4()).replace("-", "")[:15]
 
-        empty_user_data = User(
-            email=None,  # Email can be set later
-            first_name=None,
-            last_name=None,
-            # All other fields will use their default None values
-        )
-        
-        db.add(empty_user_data)
-        await db.commit()
-        await db.refresh(empty_user_data)
-        # repo = UserRepository(db)
-        # user = await repo.create_user(empty_user_data)
-
-        
-        return {"user_id": empty_user_data.id, "questions": questions}
-        
-        # return questions
+        return {"session_id": session_id, "questions": questions}
 
     except HTTPException:
-        # Re-raise HTTP exceptions
         raise
-        
-    except ValueError as e:
-        # Handle validation errors
-        logger.warning(f"Validation error filtering questions: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
-        
-    except SQLAlchemyError as e:
-        # Handle database errors
-        logger.error(f"Database error filtering questions: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Database error occurred while filtering questions"
-        )
-        
+
     except Exception as e:
-        # Handle any other unexpected errors
-        logger.exception(f"Unexpected error filtering questions: {str(e)}")
+        logger.exception(f"Unexpected error fetching brain coach questions: {str(e)}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error occurred while filtering questions"
+            status_code=500,
+            detail="Internal server error while fetching questions"
         )
 
 from typing import Annotated
@@ -284,8 +229,10 @@ async def create_response(
         repo = BrainCoachResponseRepository(db)
         # response_data.user_id = user_id  # Ensure the user_id from path is used
         new_response = BrainCoachResponses(
+            session_id = response_data.session_id,
             user_id = user_id,
             question_id = response_data.question_id,
+            # category = response_data.category,
             user_answer = response_data.user_answer,
             score = response_data.score
         )

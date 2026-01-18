@@ -63,9 +63,13 @@ class BrainCoachResponseCreate(BrainCoachResponseBase):
     pass
 
 
-class BrainCoachResponseRead(BrainCoachResponseBase):
+class BrainCoachResponseRead(BaseModel):
     id: int
     created: datetime
+    session_id: str
+    question_id: int
+    user_answer: str
+    score: int
 
     model_config = ConfigDict(from_attributes=True)
 

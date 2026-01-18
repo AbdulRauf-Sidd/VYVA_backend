@@ -7,7 +7,7 @@ from models.onboarding import OnboardingLogs
 from models.symptom_checker import SymptomCheckerResponse
 from admin.auth import AdminAuth
 from core.config import settings
-from models.medication import MedicationTime
+from models.medication import MedicationTime, MedicationLog
 from models.user import Caretaker
 from models.brain_coach import BrainCoachQuestions, BrainCoachResponses, QuestionTranslations
 
@@ -58,8 +58,9 @@ def setup_admin(app):
 
     class BrainCoachResponsesAdmin(ModelView, model=BrainCoachResponses):
         column_list = "__all__"
-
     
+    class MedicationLogAdmin(ModelView, model=MedicationLog):
+        column_list = "__all__"
 
     admin.add_view(UserAdmin)
     admin.add_view(CaretakerAdmin)
@@ -73,3 +74,4 @@ def setup_admin(app):
     admin.add_view(BrainCoachQuestionsAdmin)
     admin.add_view(QuestionTranslationsAdmin)
     admin.add_view(BrainCoachResponsesAdmin)
+    admin.add_view(MedicationLogAdmin)
