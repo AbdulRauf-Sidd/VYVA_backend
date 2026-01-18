@@ -2,7 +2,12 @@ from datetime import datetime, date, time, timedelta
 from zoneinfo import ZoneInfo
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from models.user import Caretaker
+from models.user import Caretaker, User
+from core.database import SessionLocal
+from sqlalchemy.orm import selectinload
+import logging
+
+logger = logging.getLogger(__name__)
 
 TZ_MAP = {
     "cet": "Europe/Berlin",
@@ -88,3 +93,38 @@ def construct_mem0_memory_onboarding(message, message_type):
             {"role": "system", "content": "Do you have any other information you'd like to share?"},
             {"role": "user", "content": message},
         ]
+    
+
+def notify_caretaker_on_missed_meds(user_id):
+    db = SessionLocal()
+    try:
+        user = (
+            db.query(User)
+            .options(selectinload(User.caretaker))
+            .filter(User.id == user_id)
+            .first()
+        )
+
+        if not user:
+            logger.warning(f"User not found: {user_id}")
+            return False
+
+        caretaker = user.caretaker
+        if not caretaker:
+            logger.info(f"No caretaker assigned for user {user_id}")
+            return False
+
+        # You now have caretaker prefetched
+        caretaker_phone = caretaker.phone_number
+        caretaker_name = caretaker.name
+
+
+
+        # TODO: send notification
+        return True
+
+    except Exception:
+        logger.exception("Failed to notify caretaker on missed meds")
+        return False
+    finally:
+        db.close()

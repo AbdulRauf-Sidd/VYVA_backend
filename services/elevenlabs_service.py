@@ -231,12 +231,9 @@ def make_medication_reminder_call(payload: dict):
         agent_id = payload.get("agent_id")
         phone_number = payload.get("phone_number")
         first_name = payload.get("first_name")
-        last_name = payload.get("last_name")
+        # last_name = payload.get("last_name")
         language = payload.get("language")
-        # medication_name = payload.get("medication_name")
-        # medication_dosage = payload.get("medication_dosage")
-        # medication_purpose = payload.get("medication_purpose")
-        # time_of_day = payload.get("time_of_day")
+        medications = payload.get("medications")
 
         response = requests.post(
           "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
@@ -258,7 +255,8 @@ def make_medication_reminder_call(payload: dict):
               "dynamic_variables": {
                 "user_id": id,
                 "first_name": first_name,
-                "last_name": last_name,
+                "medications": str(medications),
+                "phone_number": phone_number
               }
             }
           },
@@ -269,4 +267,5 @@ def make_medication_reminder_call(payload: dict):
         return response.json()
     except Exception as e:
         logger.error(f"Elevenlabs medication reminder call failed: {e}")
+        return None
     

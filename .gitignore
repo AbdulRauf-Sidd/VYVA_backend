@@ -114,3 +114,4 @@ gunicorn.conf.py
 
 alembic/versions/*
 
+celerybeat*

@@ -39,6 +39,8 @@ class Medication(Base):
         cascade="all, delete-orphan"
     )
 
+    def __repr__(self):
+        return f"<Medication(id={self.id}, name={self.name}>"
 
 class MedicationTime(Base):
     """Medication time model for tracking when medications should be taken."""

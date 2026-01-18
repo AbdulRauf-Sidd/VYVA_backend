@@ -329,5 +329,6 @@ async def read_caretaker_profile(
         "name": caretaker.full_name,
         "email": caretaker.email,
         "phone_number": caretaker.phone_number,
-        "user_id": first_assigned_user.id if first_assigned_user else None
+        "user_id": first_assigned_user.id if first_assigned_user else None,
+        "senior_name": first_assigned_user.full_name if first_assigned_user else "User"
     }
