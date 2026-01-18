@@ -5,7 +5,8 @@ from typing import List, Dict
 import logging
 import time
 from collections import defaultdict
-from datetime import datetime, timezone, timedelta
+from datetime import date, datetime, timezone, timedelta
+import time
 from zoneinfo import ZoneInfo
 from models.user import User
 from models.medication import MedicationStatus, Medication
@@ -348,18 +349,18 @@ async def bulk_update_medications(
 
 @router.get(
     "/weekly-schedule/{user_id}",
-    response_model=WeeklyScheduleResponse,
-    summary="Get weekly medication schedule for a user"
+    response_model=dict,  # Or your WeeklyScheduleResponse Pydantic model
+    summary="Get weekly medication schedule for a user (current week)"
 )
 async def get_weekly_medication_schedule(
     user_id: int,
     db: AsyncSession = Depends(get_db)
 ):
-    start_time = time.time()
-    request_id = f"weekly_schedule_{user_id}_{int(start_time * 1000)}"
-    
+    start_time = datetime.now()
+    request_id = f"weekly_schedule_{user_id}_{int(start_time.timestamp() * 1000)}"
+
     logger.info(f"Request {request_id}: Fetching weekly medication schedule for user {user_id}")
-    
+
     try:
         # Fetch medications with their times
         result = await db.execute(
@@ -371,34 +372,59 @@ async def get_weekly_medication_schedule(
 
         weekly_schedule = defaultdict(list)
 
+        # Determine current week range (Monday → Sunday)
+        today = date.today()
+        monday = today - timedelta(days=today.weekday())
+        sunday = monday + timedelta(days=6)
+        weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+        # Map dates to weekday names
+        date_to_weekday = {monday + timedelta(days=i): weekdays[i] for i in range(7)}
+
         for med in medications:
-            for time_entry in med.times_of_day:
-                if time_entry.time_of_day:
-                    day_name = time_entry.time_of_day.strftime("%A")  # e.g., "Monday"
+            med_start = med.start_date or today
+            med_end = med.end_date or today
+
+            # Only consider dates in the current week
+            week_start = max(med_start, monday)
+            week_end = min(med_end, sunday)
+
+            current_date = week_start
+            while current_date <= week_end:
+                day_name = date_to_weekday[current_date]
+
+                # Track seen times to avoid duplicates per day
+                seen_times = set()
+
+                for time_entry in med.times_of_day:
+                    if not time_entry.time_of_day:
+                        continue
                     time_str = time_entry.time_of_day.strftime("%H:%M")
-                else:
-                    day_name = "Unscheduled"
-                    time_str = None
+                    if time_str in seen_times:
+                        continue  # skip duplicates
+                    seen_times.add(time_str)
 
-                weekly_schedule[day_name].append({
-                    "medication_name": med.name,  # <--- must match Pydantic field
-                    "dosage": med.dosage,
-                    "time": time_str or "",        # optional string
-                    "notes": time_entry.notes
-                })
+                    weekly_schedule[day_name].append({
+                        "medication_name": med.name,
+                        "dosage": med.dosage,
+                        "time": time_str,
+                        "notes": time_entry.notes
+                    })
 
-        # Ensure all days exist
-        for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Unscheduled"]:
+                current_date += timedelta(days=1)
+
+        # Ensure all weekdays exist
+        for day in weekdays:
             weekly_schedule.setdefault(day, [])
 
-        duration = time.time() - start_time
+        duration = (datetime.now() - start_time).total_seconds()
         logger.info(
             f"Request {request_id}: Retrieved weekly medication schedule for user {user_id} "
             f"in {duration:.2f}s"
         )
 
         return dict(weekly_schedule)
-        
+
     except Exception as e:
         logger.error(
             f"Request {request_id}: Failed to fetch weekly medication schedule for user {user_id}: {str(e)}",
