@@ -348,7 +348,6 @@ async def bulk_update_medications(
 
 @router.get(
     "/weekly-schedule/{user_id}",
-    response_model=dict,  # Or your WeeklyScheduleResponse Pydantic model
     summary="Get weekly medication schedule for a user (current week)"
 )
 async def get_weekly_medication_schedule(
@@ -361,7 +360,6 @@ async def get_weekly_medication_schedule(
     logger.info(f"Request {request_id}: Fetching weekly medication schedule for user {user_id}")
 
     try:
-        # Fetch medications with their times
         result = await db.execute(
             select(Medication)
             .where(Medication.user_id == user_id)
@@ -371,20 +369,17 @@ async def get_weekly_medication_schedule(
 
         weekly_schedule = defaultdict(list)
 
-        # Determine current week range (Monday → Sunday)
         today = date.today()
         monday = today - timedelta(days=today.weekday())
         sunday = monday + timedelta(days=6)
         weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
-        # Map dates to weekday names
         date_to_weekday = {monday + timedelta(days=i): weekdays[i] for i in range(7)}
 
         for med in medications:
             med_start = med.start_date or today
             med_end = med.end_date or today
 
-            # Only consider dates in the current week
             week_start = max(med_start, monday)
             week_end = min(med_end, sunday)
 
@@ -392,7 +387,6 @@ async def get_weekly_medication_schedule(
             while current_date <= week_end:
                 day_name = date_to_weekday[current_date]
 
-                # Track seen times to avoid duplicates per day
                 seen_times = set()
 
                 for time_entry in med.times_of_day:
@@ -400,7 +394,7 @@ async def get_weekly_medication_schedule(
                         continue
                     time_str = time_entry.time_of_day.strftime("%H:%M")
                     if time_str in seen_times:
-                        continue  # skip duplicates
+                        continue 
                     seen_times.add(time_str)
 
                     weekly_schedule[day_name].append({
@@ -412,7 +406,6 @@ async def get_weekly_medication_schedule(
 
                 current_date += timedelta(days=1)
 
-        # Ensure all weekdays exist
         for day in weekdays:
             weekly_schedule.setdefault(day, [])
 
@@ -451,7 +444,6 @@ async def get_all_medications_with_times(
         if user_id <= 0:
             raise ValueError("Invalid user ID")
 
-        # Query with selectinload
         stmt = (
             select(Medication)
             .where(Medication.user_id == user_id)
@@ -460,7 +452,6 @@ async def get_all_medications_with_times(
         result = await db.execute(stmt)
         medications = result.scalars().all()
 
-        # Adapter: map ORM → MedicationOut with all required fields
         response: List[MedicationOut] = []
 
         for med in medications:
@@ -527,7 +518,6 @@ async def get_medications_with_times(
         if not user_id or user_id <= 0:
             raise ValueError("Invalid user ID")
 
-        # --- Query directly instead of service ---
         query = (
             select(Medication)
             .options(selectinload(Medication.times_of_day))
@@ -535,9 +525,6 @@ async def get_medications_with_times(
         )
         result = await db.execute(query)
         medications = result.scalars().all()
-        # ---------------------------------------
-
-        # Transform times_of_day for Pydantic
         transformed = []
         for med in medications:
             transformed.append({

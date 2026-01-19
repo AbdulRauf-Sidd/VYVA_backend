@@ -337,21 +337,12 @@ class BrainCoachResponseRepository:
             (BrainCoachResponses.created >= begin_date)
         )
 
-        # -----------------------------
-        # Total questions
-        # -----------------------------
         total_questions_query = select(func.count()).where(base_filter)
         total_questions = await self.db_session.scalar(total_questions_query) or 0
 
-        # -----------------------------
-        # Total sessions
-        # -----------------------------
         total_sessions_query = select(func.count(distinct(BrainCoachResponses.session_id))).where(base_filter)
         total_sessions = await self.db_session.scalar(total_sessions_query) or 0
 
-        # -----------------------------
-        # Average session score
-        # -----------------------------
         session_totals_subq = (
             select(
                 BrainCoachResponses.session_id,
@@ -365,9 +356,6 @@ class BrainCoachResponseRepository:
         avg_score_query = select(func.avg(session_totals_subq.c.session_score))
         average_session_score = await self.db_session.scalar(avg_score_query) or 0.0
 
-        # -----------------------------
-        # Streak
-        # -----------------------------
         days_query = (
             select(func.date(BrainCoachResponses.created))
             .where(BrainCoachResponses.user_id == user_id)
@@ -396,10 +384,9 @@ class BrainCoachResponseRepository:
         
     async def get_cognitive_trend(self, user_id: int, days: int):
         """Returns daily average cognitive score trend (average per session per day)"""
-    
+
         since = datetime.utcnow() - timedelta(days=days)
-    
-        # Step 1: calculate total score per session per day
+
         session_totals_subq = (
             select(
                 BrainCoachResponses.session_id,
@@ -413,8 +400,7 @@ class BrainCoachResponseRepository:
             .group_by(BrainCoachResponses.session_id, func.date(BrainCoachResponses.created))
             .subquery()
         )
-    
-        # Step 2: calculate daily average of session scores
+
         daily_avg_query = (
             select(
                 session_totals_subq.c.date,
@@ -424,7 +410,7 @@ class BrainCoachResponseRepository:
             .group_by(session_totals_subq.c.date)
             .order_by(session_totals_subq.c.date)
         )
-    
+
         result = await self.db_session.execute(daily_avg_query)
         return result.all()
     
@@ -460,22 +446,22 @@ class BrainCoachResponseRepository:
         offset: int
     ):
         query = text("""
-            SELECT
-    r.session_id,
-    DATE(MIN(r.created)) AS session_date,
-    MIN(r.created) AS start_time,
-    COUNT(*) AS total_questions,
-    SUM(CASE WHEN r.score >= 1 THEN 1 ELSE 0 END) AS correct_answers,
-    ROUND(AVG(r.score) * 10, 1) AS avg_score,
-    MAX(qt.question_type) AS activity_type
-FROM brain_coach_responses r
-JOIN question_translations qt ON qt.question_id = r.question_id AND qt.language = 'en'
-WHERE r.user_id = :user_id
-  AND r.created >= NOW() - INTERVAL ':days days'
-GROUP BY r.session_id
-ORDER BY start_time DESC
-LIMIT :limit OFFSET :offset
-        """)
+                    SELECT
+            r.session_id,
+            DATE(MIN(r.created)) AS session_date,
+            MIN(r.created) AS start_time,
+            COUNT(*) AS total_questions,
+            SUM(CASE WHEN r.score >= 1 THEN 1 ELSE 0 END) AS correct_answers,
+            ROUND(AVG(r.score) * 10, 1) AS avg_score,
+            MAX(qt.question_type) AS activity_type
+        FROM brain_coach_responses r
+        JOIN question_translations qt ON qt.question_id = r.question_id AND qt.language = 'en'
+        WHERE r.user_id = :user_id
+          AND r.created >= NOW() - INTERVAL ':days days'
+        GROUP BY r.session_id
+        ORDER BY start_time DESC
+        LIMIT :limit OFFSET :offset
+                """)
 
         count_query = text("""
             SELECT COUNT(DISTINCT session_id)

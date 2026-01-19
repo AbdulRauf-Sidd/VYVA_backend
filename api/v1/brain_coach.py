@@ -213,10 +213,6 @@ async def get_questions_by_filters(
             detail="Internal server error while fetching questions"
         )
 
-from typing import Annotated
-
-
-
 @router.post("/user-responses/{user_id}", response_model=BrainCoachResponseRead, status_code=status.HTTP_201_CREATED)
 async def create_response(
     response_data: BrainCoachResponseCreate,
@@ -227,12 +223,10 @@ async def create_response(
     try:
         logger.info(f"Creating response for user_id: {user_id} with data: {response_data}")
         repo = BrainCoachResponseRepository(db)
-        # response_data.user_id = user_id  # Ensure the user_id from path is used
         new_response = BrainCoachResponses(
             session_id = response_data.session_id,
             user_id = user_id,
             question_id = response_data.question_id,
-            # category = response_data.category,
             user_answer = response_data.user_answer,
             score = response_data.score
         )
@@ -294,27 +288,23 @@ async def get_cognitive_trend(
             "improvement": 0
         }
 
-    # Step 1: prepare trend for chart (scale 0-10)
     trend = [
         {
             "date": r.date.strftime("%b %d"),
-            "score": float(r.avg_score) * 10,  # scale to 0-10
+            "score": float(r.avg_score) * 10,  
             "sessions": r.sessions
         }
         for r in rows
     ]
 
-    # Step 2: calculate overall average weighted by sessions
     all_scores = []
     for r in rows:
         all_scores.extend([float(r.avg_score)] * r.sessions)
     average = round(sum(all_scores) / len(all_scores) * 10, 2) if all_scores else 0
 
-    # Step 3: best day
     best = max(rows, key=lambda r: r.avg_score)
     best_score = float(best.avg_score) * 10
 
-    # Step 4: improvement (% change from first to last day)
     first_score = float(rows[0].avg_score) if rows else 0
     last_score = float(rows[-1].avg_score) if rows else 0
     improvement = round(((last_score - first_score) / first_score) * 100, 2) if first_score != 0 else 0
@@ -372,7 +362,6 @@ async def get_session_history(
     try:
         start_date = datetime.utcnow() - timedelta(days=days)
 
-        # Get all responses for this user in the last `days`
         stmt = select(BrainCoachResponses).where(
             BrainCoachResponses.user_id == user_id,
             BrainCoachResponses.created >= start_date
@@ -384,7 +373,6 @@ async def get_session_history(
         if not responses:
             return {"sessions": [], "total": 0}
 
-        # Group responses by session_id
         sessions_dict = {}
         for r in responses:
             if r.session_id not in sessions_dict:
@@ -395,19 +383,18 @@ async def get_session_history(
                     "score": 0,
                     "duration": "0 min",
                     "accuracy": "0%",
-                    "mood": "neutral"  # default, can enhance later
+                    "mood": "neutral" 
                 }
 
             sessions_dict[r.session_id]["Questions"] += 1
             sessions_dict[r.session_id]["score"] += r.score
 
-        # Format sessions for frontend
         sessions = []
         for s in sessions_dict.values():
             total_questions = s["Questions"]
-            s["score"] = round((s["score"] / total_questions) * 10 * 1, 2)  # convert to 0–100%
-            s["accuracy"] = f"{round((s['score'] / 100) * 100)}%"  # simple placeholder
-            s["duration"] = f"{total_questions * 1} min"  # 1 min per question, adjust as needed
+            s["score"] = round((s["score"] / total_questions) * 10 * 1, 2) 
+            s["accuracy"] = f"{round((s['score'] / 100) * 100)}%"  
+            s["duration"] = f"{total_questions * 1} min" 
             sessions.append(s)
 
         # Sort by date descending
