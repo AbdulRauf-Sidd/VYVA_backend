@@ -1,9 +1,10 @@
+from sqlalchemy import select, func
 from fastapi import APIRouter, Depends, HTTPException, status, Path, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from typing import List
 from core.database import get_db
-from schemas.brain_coach import BrainCoachQuestionRead, BrainCoachQuestionCreate, BrainCoachResponseRead, BrainCoachResponseCreate, BrainCoachStatsRead, DailySessionActivityResponse
+from schemas.brain_coach import BrainCoachQuestionRead, BrainCoachQuestionCreate, BrainCoachResponseRead, BrainCoachResponseCreate, BrainCoachStatsRead, DailySessionActivityResponse, SessionHistoryResponse, SessionHistoryItem
 from repositories.brain_coach import BrainCoachQuestionRepository, BrainCoachQuestionCreate, BrainCoachResponseRepository, BrainCoachResponseCreate
 import logging
 from models.brain_coach import BrainCoachResponses
@@ -14,8 +15,7 @@ from schemas.user import UserCreate, UserUpdate
 from typing import Optional
 # from services.whatsapp_service import whatsapp
 from services.email_service import EmailService
-import random
-
+from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
@@ -347,6 +347,72 @@ async def daily_session_activity(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
         )
+        
+@router.get("/session-history/{user_id}")
+async def get_session_history(
+    user_id: int = Path(..., description="The ID of the user"),
+    days: int = Query(7, ge=1, le=90),
+    limit: int = Query(10, ge=1, le=50),
+    offset: int = Query(0, ge=0),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Return session history in the format expected by the frontend.
+    """
+    try:
+        start_date = datetime.utcnow() - timedelta(days=days)
+
+        # Get all responses for this user in the last `days`
+        stmt = select(BrainCoachResponses).where(
+            BrainCoachResponses.user_id == user_id,
+            BrainCoachResponses.created >= start_date
+        ).order_by(BrainCoachResponses.created.asc())
+
+        result = await db.execute(stmt)
+        responses = result.scalars().all()
+
+        if not responses:
+            return {"sessions": [], "total": 0}
+
+        # Group responses by session_id
+        sessions_dict = {}
+        for r in responses:
+            if r.session_id not in sessions_dict:
+                sessions_dict[r.session_id] = {
+                    "session_id": r.session_id,
+                    "date": r.created.strftime("%b %d, %Y"),
+                    "Questions": 0,
+                    "score": 0,
+                    "duration": "0 min",
+                    "accuracy": "0%",
+                    "mood": "neutral"  # default, can enhance later
+                }
+
+            sessions_dict[r.session_id]["Questions"] += 1
+            sessions_dict[r.session_id]["score"] += r.score
+
+        # Format sessions for frontend
+        sessions = []
+        for s in sessions_dict.values():
+            total_questions = s["Questions"]
+            s["score"] = round((s["score"] / total_questions) * 10 * 1, 2)  # convert to 0–100%
+            s["accuracy"] = f"{round((s['score'] / 100) * 100)}%"  # simple placeholder
+            s["duration"] = f"{total_questions * 1} min"  # 1 min per question, adjust as needed
+            sessions.append(s)
+
+        # Sort by date descending
+        sessions.sort(key=lambda x: datetime.strptime(x["date"], "%b %d, %Y"), reverse=True)
+
+        return {"sessions": sessions[offset:offset+limit], "total": len(sessions)}
+
+    except Exception as e:
+        logger.exception(f"Failed to fetch session history: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Internal server error"
+        )
+        
+        
 # @router.get("/user-responses/{user_id}", response_model=List[BrainCoachResponseRead])
 # async def get_user_responses(
 #     user_id: int,

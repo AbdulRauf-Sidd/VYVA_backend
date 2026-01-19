@@ -1,5 +1,5 @@
 import logging
-from sqlalchemy import select, and_
+from sqlalchemy import select, and_, text
 from typing import Optional, List
 from core.database import get_db
 from schemas.brain_coach import  BrainCoachResponseRead, BrainCoachQuestionCreate, BrainCoachQuestionRead, BrainCoachQuestionReadWithLanguage, QuestionTranslationBase, QuestionTranslationRead, BrainCoachResponseCreate, DailySessionActivity
@@ -439,3 +439,56 @@ class BrainCoachResponseRepository:
         data = result.all()
 
         return [DailySessionActivity(date=str(row.date), sessions=row.sessions) for row in data]
+    
+    async def get_session_history(
+        self,
+        user_id: int,
+        days: int,
+        limit: int,
+        offset: int
+    ):
+        query = text("""
+            SELECT
+    r.session_id,
+    DATE(MIN(r.created)) AS session_date,
+    MIN(r.created) AS start_time,
+    COUNT(*) AS total_questions,
+    SUM(CASE WHEN r.score >= 1 THEN 1 ELSE 0 END) AS correct_answers,
+    ROUND(AVG(r.score) * 10, 1) AS avg_score,
+    MAX(qt.question_type) AS activity_type
+FROM brain_coach_responses r
+JOIN question_translations qt ON qt.question_id = r.question_id AND qt.language = 'en'
+WHERE r.user_id = :user_id
+  AND r.created >= NOW() - INTERVAL ':days days'
+GROUP BY r.session_id
+ORDER BY start_time DESC
+LIMIT :limit OFFSET :offset
+        """)
+
+        count_query = text("""
+            SELECT COUNT(DISTINCT session_id)
+            FROM brain_coach_responses
+            WHERE user_id = :user_id
+              AND created >= NOW() - INTERVAL ':days days'
+        """)
+
+        rows = (
+    await self.db_session.execute(
+        query,
+        {
+            "user_id": user_id,
+            "days": days,
+            "limit": limit,
+            "offset": offset,
+        },
+    )
+).fetchall()
+
+        total = (
+            await self.db_session.execute(
+                count_query,
+                {"user_id": user_id, "days": days},
+            )
+        ).scalar()
+
+        return rows, total

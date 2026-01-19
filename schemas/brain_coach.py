@@ -85,7 +85,22 @@ class DailySessionActivity(BaseModel):
 
 class DailySessionActivityResponse(BaseModel):
     trend: List[DailySessionActivity]
-    
+
+class SessionHistoryItem(BaseModel):
+    session_id: str
+    date: str
+    start_time: str
+    activity_type: str
+    duration_minutes: int
+    score: float
+    correct_answers: int
+    total_questions: int
+    notes: str | None = None
+
+
+class SessionHistoryResponse(BaseModel):
+    sessions: List[SessionHistoryItem]
+    total: int
 # class UserFeedback(BaseModel):
 #     email: Optional[str] = None
 #     phone_number: Optional[str] = None
