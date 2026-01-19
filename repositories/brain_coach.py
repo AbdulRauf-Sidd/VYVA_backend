@@ -395,25 +395,37 @@ class BrainCoachResponseRepository:
         }
         
     async def get_cognitive_trend(self, user_id: int, days: int):
-        """Returns daily average cognitive score trend"""
-
+        """Returns daily average cognitive score trend (average per session per day)"""
+    
         since = datetime.utcnow() - timedelta(days=days)
-
-        query = (
+    
+        # Step 1: calculate total score per session per day
+        session_totals_subq = (
             select(
-                func.date(BrainCoachResponses.created).label("date"),
-                func.avg(BrainCoachResponses.score).label("avg_score"),
-                func.count(BrainCoachResponses.id).label("sessions"),
+                BrainCoachResponses.session_id,
+                func.sum(BrainCoachResponses.score).label("session_score"),
+                func.date(BrainCoachResponses.created).label("date")
             )
             .where(
                 BrainCoachResponses.user_id == user_id,
                 BrainCoachResponses.created >= since
             )
-            .group_by(func.date(BrainCoachResponses.created))
-            .order_by(func.date(BrainCoachResponses.created))
+            .group_by(BrainCoachResponses.session_id, func.date(BrainCoachResponses.created))
+            .subquery()
         )
-
-        result = await self.db_session.execute(query)
+    
+        # Step 2: calculate daily average of session scores
+        daily_avg_query = (
+            select(
+                session_totals_subq.c.date,
+                func.avg(session_totals_subq.c.session_score).label("avg_score"),
+                func.count(session_totals_subq.c.session_id).label("sessions")
+            )
+            .group_by(session_totals_subq.c.date)
+            .order_by(session_totals_subq.c.date)
+        )
+    
+        result = await self.db_session.execute(daily_avg_query)
         return result.all()
     
     async def get_daily_session_activity(self, user_id: int, days: int) -> List[DailySessionActivity]:

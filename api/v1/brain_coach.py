@@ -283,37 +283,47 @@ async def get_cognitive_trend(
 ):
     repo = BrainCoachResponseRepository(db)
     rows = await repo.get_cognitive_trend(user_id, days)
+    print("Rows:", rows)
 
     if not rows:
         return {
             "trend": [],
             "average": 0,
             "best_day": None,
+            "best_score": 0,
             "improvement": 0
         }
 
-    # format for recharts
+    # Step 1: prepare trend for chart (scale 0-10)
     trend = [
         {
             "date": r.date.strftime("%b %d"),
-            "score": round(float(r.avg_score), 2)
+            "score": float(r.avg_score) * 10,  # scale to 0-10
+            "sessions": r.sessions
         }
         for r in rows
     ]
 
-    scores = [float(r.avg_score) for r in rows]
+    # Step 2: calculate overall average weighted by sessions
+    all_scores = []
+    for r in rows:
+        all_scores.extend([float(r.avg_score)] * r.sessions)
+    average = round(sum(all_scores) / len(all_scores) * 10, 2) if all_scores else 0
 
-    average = round(sum(scores) / len(scores), 2)
-
+    # Step 3: best day
     best = max(rows, key=lambda r: r.avg_score)
+    best_score = float(best.avg_score) * 10
 
-    improvement = round(((scores[-1] - scores[0]) / scores[0]) * 100, 2)
+    # Step 4: improvement (% change from first to last day)
+    first_score = float(rows[0].avg_score) if rows else 0
+    last_score = float(rows[-1].avg_score) if rows else 0
+    improvement = round(((last_score - first_score) / first_score) * 100, 2) if first_score != 0 else 0
 
     return {
         "trend": trend,
         "average": average,
         "best_day": best.date.strftime("%b %d"),
-        "best_score": round(float(best.avg_score), 2),
+        "best_score": best_score,
         "improvement": improvement
     }
     
