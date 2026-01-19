@@ -111,7 +111,6 @@ class MedicationRepository:
                 select(Medication).where(Medication.user_id == user_id)
             )
             medications = result.scalars().all()
-
             response = []
             for med in medications:
                 med_dict = med.__dict__.copy()

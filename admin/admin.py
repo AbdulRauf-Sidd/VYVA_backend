@@ -62,8 +62,6 @@ def setup_admin(app):
     class MedicationLogAdmin(ModelView, model=MedicationLog):
         column_list = "__all__"
 
-    
-
     admin.add_view(UserAdmin)
     admin.add_view(CaretakerAdmin)
     admin.add_view(MedicationAdmin)

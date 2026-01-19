@@ -362,7 +362,6 @@ async def get_weekly_medication_schedule(
     logger.info(f"Request {request_id}: Fetching weekly medication schedule for user {user_id}")
 
     try:
-        # Fetch medications with their times
         result = await db.execute(
             select(Medication)
             .where(Medication.user_id == user_id)
@@ -452,7 +451,6 @@ async def get_all_medications_with_times(
         if user_id <= 0:
             raise ValueError("Invalid user ID")
 
-        # Query with selectinload
         stmt = (
             select(Medication)
             .where(Medication.user_id == user_id)
@@ -461,7 +459,6 @@ async def get_all_medications_with_times(
         result = await db.execute(stmt)
         medications = result.scalars().all()
 
-        # Adapter: map ORM → MedicationOut with all required fields
         response: List[MedicationOut] = []
 
         for med in medications:
@@ -528,7 +525,6 @@ async def get_medications_with_times(
         if not user_id or user_id <= 0:
             raise ValueError("Invalid user ID")
 
-        # --- Query directly instead of service ---
         query = (
             select(Medication)
             .options(selectinload(Medication.times_of_day))
@@ -536,9 +532,6 @@ async def get_medications_with_times(
         )
         result = await db.execute(query)
         medications = result.scalars().all()
-        # ---------------------------------------
-
-        # Transform times_of_day for Pydantic
         transformed = []
         for med in medications:
             transformed.append({
