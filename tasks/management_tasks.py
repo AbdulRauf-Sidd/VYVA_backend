@@ -10,16 +10,19 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 from datetime import datetime, date
 from zoneinfo import ZoneInfo
-from models.medication import Medication, MedicationTime
+from models.medication import Medication, MedicationTime, MedicationStatus
 from models.organization import OrganizationAgents, AgentTypeEnum
-from sqlalchemy import or_
+from sqlalchemy import or_, select
+from models.eleven_labs_sessions import ElevenLabsSessions
 
-from tasks.utils import schedule_celery_task_for_call_status_check, schedule_reminder_message
+from tasks.utils import schedule_celery_task_for_call_status_check, schedule_reminder_message, update_medication_status
 
 # from scripts.utils import construct_onboarding_user_payload
 
 from twilio.rest import Client
 from core.config import settings
+
+logger = logging.getLogger(__name__)
 
 twilio_client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 
@@ -49,10 +52,8 @@ def get_call_status_from_twilio(callSid: str) -> dict:
             "is_final": normalized in FINAL,
         }
     except Exception as e:
-        logging.error(f"Error fetching call status from Twilio for Call SID {callSid}: {e}")
+        logger.error(f"Error fetching call status from Twilio for Call SID {callSid}: {e}")
         return {}
-
-logger = logging.getLogger(__name__)
 
 @celery_app.task(name="initiate_onboarding_call")
 def initiate_onboarding_call(payload: dict):
@@ -188,7 +189,7 @@ def schedule_calls_for_day():
                     'first_name': user.first_name,
                     'last_name': user.last_name,
                     'phone_number': user.phone_number,
-                    'language': user.language,
+                    'language': user.preferred_consultation_language,
                     'user_id': user.id,
                     "agent_id": agent_id,
                     "preferred_reminder_channel": preferred_reminder_channel,
@@ -208,10 +209,12 @@ def schedule_calls_for_day():
 
 
                 med_payload = {
+                    'medication_id': med.id,
                     'medication_name': med.name,
                     'medication_dosage': med.dosage,
                     'medication_purpose': med.purpose,
                     'time_of_day': med_time.strftime("%H:%M"),
+                    'time_id': time.id
                 }               
 
                 if dt_utc not in user_reminders[user.id]["medication_info"]:
@@ -230,8 +233,8 @@ def schedule_calls_for_day():
                         **user_reminders[user_id]["user_info"],
                         "medications": meds
                     },
-                    scheduled_time=dt_utc,
-                    channel=preferred_reminder_channel,
+                    dt_utc=dt_utc,
+                    preferred_reminder_channel=preferred_reminder_channel,
                 )
         
         logger.info(f"Scheduled medication reminders for {len(active_medications)} active medications.")
@@ -240,20 +243,66 @@ def schedule_calls_for_day():
 
     except Exception as e:
         db.rollback()
-        logger.error(f"Error scheduling calls for day: {e}")
+        logger.exception(f"Error scheduling calls for day: {e}")
     finally:
         db.close()
 
 @celery_app.task(name="initiate_medication_reminder_call")
 def initiate_medication_reminder_call(payload):
     response = make_medication_reminder_call(payload)
-    
-    payload['callSid'] = response.get('callSid')
-    
-    check_call_status_and_save.apply_async(
-        args=[payload],
-        countdown=60,
-    )
+    if response:
+        call_sid = response.get('callSid')
+        db: Session = SessionLocal()
+        try:
+            session_record = ElevenLabsSessions(
+                user_id=payload.get('user_id'),                 # make sure this exists
+                agent_id=payload.get("agent_id"),
+                call_sid=call_sid,
+                status="ringing"
+            )
+
+            db.add(session_record)
+            db.commit()
+            # db.refresh(session_record)
+            schedule_celery_task_for_call_status_check(payload)
+        
+        except Exception as e:
+            logger.error(f"error creating eleven labs session record: {e}")
+
+        finally:
+            db.close()
+
+@celery_app.task(name="update_call_status", bind=True)
+def update_call_status(self, payload=None):
+    db: Session = SessionLocal()
+    try:
+        excluded_statuses = ["answered", "declined", "no_answer", "failed"]
+        query = (
+            select(ElevenLabsSessions)
+            .where(
+                ElevenLabsSessions.call_sid.isnot(None),
+                ElevenLabsSessions.status.notin_(excluded_statuses)
+            )
+        )
+
+        result = db.execute(query)
+        sessions = result.scalars().all()
+
+        for session in sessions:
+            status = get_call_status_from_twilio(session.call_sid)
+            if status in excluded_statuses: #call completed
+                if status in ["declined", "no_answer", "failed"]:
+                    # Mark medication as unconfirmed
+                    if payload:
+                        update_medication_status(payload, MedicationStatus.UNCONFIRMED)
+                    
+                    session.status = status
+        db.commit()
+    except Exception as e:
+        logger.error(f"error updating call status: {e}")
+    finally:
+        db.close()
+
 
 @celery_app.task(name="check_call_status_and_save", bind=True)
 def check_call_status_and_save(self, payload: dict):

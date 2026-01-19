@@ -22,7 +22,7 @@ celery_app.conf.update(
         },
         "daily-medication-reminder-scheduler": {
             "task": "schedule_calls_for_day",
-            "schedule": crontab(hour=2, minute=41),  
+            "schedule": crontab(hour=21, minute=9),  
         }
     }
 )
@@ -31,14 +31,3 @@ celery_app.conf.update(
 celery_app.conf.task_annotations = {
     "*": {"max_retries": 3, "default_retry_delay": 5}
 }
-
-# celery_app.conf.beat_schedule = {
-#     "daily-process-pending-onboarding-users": {
-#         "task": "process_pending_onboarding_users",
-#         "schedule": crontab(hour=0, minute=0),  # runs daily at 12 AM
-#     },
-#     "daily-medication-reminder-scheduler": {
-#         "task": "schedule_calls_for_day",
-#         "schedule": crontab(hour=1, minute=43),  
-#     }
-# }

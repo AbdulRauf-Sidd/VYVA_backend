@@ -1,11 +1,13 @@
 from .mcp_instance import mcp
 from datetime import time
 from pydantic import BaseModel
-from models.medication import Medication, MedicationTime
+from models.medication import Medication, MedicationTime, MedicationLog, MedicationStatus
 from models.user import User
 from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 from core.database import get_async_session
+from datetime import datetime, timezone
+from scripts.utils import notify_caretaker_on_missed_meds
 
 class RetrieveMedicationInput(BaseModel):
     user_id: int
@@ -186,7 +188,7 @@ async def delete_user_medication(medication_id: int) -> DeleteUserMedication:
 
 class UpdateReinderChannel(BaseModel):
     user_id: int
-    channel: int
+    channel: str
 
 @mcp.tool(
     name="update_reminder_channel",
@@ -210,3 +212,64 @@ async def update_reminder_channel(channel_input: UpdateReinderChannel) -> bool:
         await db.commit()
 
         return True
+    
+
+class MedicationLogInput(BaseModel):
+    user_id: int
+    med_logs: list[dict]
+
+@mcp.tool(
+    name="medication_log",
+    description=(
+        "You will use this tool to update the user's medication log."
+        "You will call this tool when you're reminding user about their medication and asking if they've taken it or not"
+        "Once You've gone through all medications and noted which meds they've taken and which they've not, call this tool." \
+        "Example input format:" \
+        "{user_id: 4"
+        "["
+        "{"
+        "'medication_id': 3, time_id: 5, taken: True}, ...]}"
+    )
+)
+async def update_reminder_channel(input: MedicationLogInput) -> bool:
+    async with get_async_session() as db:
+        if not input.user_id:
+            raise ValueError(f"User with ID {input.user_id} not found.")
+        
+        if not input.med_logs:
+            raise ValueError(f"Med Logs not found.")
+        
+        update_caretaker = False
+        
+        for med in input.med_logs:
+            med_taken = med['taken']
+            if not med_taken:
+                update_caretaker = True
+
+            log = MedicationLog(
+                medication_id = med['medication_id'],
+                medication_time_id = med['time_id'],
+                user_id = input.user_id,
+                taken_at=datetime.now(timezone.utc) if med_taken else None,
+                status=MedicationStatus.TAKEN if med_taken else MedicationStatus.MISSED
+            )
+            db.add(log)
+
+        await db.commit()
+
+        if update_caretaker:
+            message = "encourage user to take medications"
+            updated = notify_caretaker_on_missed_meds(input.user_id)
+            if updated:
+                message = "Caretaker alerted, and " + message
+            return {
+                "success": True,
+                "message": message
+            }
+        else:
+            return {
+                "success": True,
+                "message": "Congratulate User on taker medications."
+            }
+    
+

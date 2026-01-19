@@ -11,6 +11,8 @@ class ElevenLabsSessions(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     agent_id = Column(String(80), nullable=True)
     duration = Column(Integer, nullable=True)
+    status = Column(String(20), nullable=True)
+    call_sid = Column(String(100), nullable=True)
     termination_reason = Column(String(40), nullable=True)
     summary = Column(Text, nullable=True)
     transcription = Column(JSON, nullable=True)
