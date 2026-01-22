@@ -275,36 +275,69 @@ async def get_cognitive_trend(
     days: int = Query(30, ge=1, le=90),
     db: AsyncSession = Depends(get_db)
 ):
-    repo = BrainCoachResponseRepository(db)
-    rows = await repo.get_cognitive_trend(user_id, days)
-    print("Rows:", rows)
+    since = datetime.utcnow() - timedelta(days=days)
+
+    # Aggregate per day
+    session_totals_subq = (
+        select(
+            BrainCoachResponses.session_id,
+            func.sum(BrainCoachResponses.score).label("session_score"),
+            func.date(BrainCoachResponses.created).label("date")
+        )
+        .where(
+            BrainCoachResponses.user_id == user_id,
+            BrainCoachResponses.created >= since
+        )
+        .group_by(BrainCoachResponses.session_id, func.date(BrainCoachResponses.created))
+        .subquery()
+    )
+
+    daily_avg_query = (
+        select(
+            session_totals_subq.c.date,
+            func.avg(session_totals_subq.c.session_score).label("avg_score"),
+            func.count(session_totals_subq.c.session_id).label("sessions")
+        )
+        .group_by(session_totals_subq.c.date)
+        .order_by(session_totals_subq.c.date)
+    )
+
+    result = await db.execute(daily_avg_query)
+    rows = result.all()
 
     if not rows:
         return {
             "trend": [],
             "average": 0,
             "best_day": None,
+            "best_day_display": None,
             "best_score": 0,
             "improvement": 0
         }
 
     trend = [
         {
-            "date": r.date.strftime("%b %d"),
+            "date": r.date.strftime("%Y-%m-%d"),      # ISO for frontend mapping
+            "display_date": r.date.strftime("%b %d"), # optional for UI
             "score": float(r.avg_score) * 10,  
             "sessions": r.sessions
         }
         for r in rows
     ]
 
+    # Compute average
     all_scores = []
     for r in rows:
         all_scores.extend([float(r.avg_score)] * r.sessions)
     average = round(sum(all_scores) / len(all_scores) * 10, 2) if all_scores else 0
 
+    # Best day and score
     best = max(rows, key=lambda r: r.avg_score)
     best_score = float(best.avg_score) * 10
+    best_day = best.date.strftime("%Y-%m-%d")
+    best_day_display = best.date.strftime("%b %d")
 
+    # Improvement from first to last day
     first_score = float(rows[0].avg_score) if rows else 0
     last_score = float(rows[-1].avg_score) if rows else 0
     improvement = round(((last_score - first_score) / first_score) * 100, 2) if first_score != 0 else 0
@@ -312,7 +345,8 @@ async def get_cognitive_trend(
     return {
         "trend": trend,
         "average": average,
-        "best_day": best.date.strftime("%b %d"),
+        "best_day": best_day,
+        "best_day_display": best_day_display,
         "best_score": best_score,
         "improvement": improvement
     }
