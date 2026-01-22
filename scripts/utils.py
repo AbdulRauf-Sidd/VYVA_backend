@@ -95,7 +95,7 @@ def construct_mem0_memory_onboarding(message, message_type):
         ]
     
 
-def notify_caretaker_on_missed_meds(user_id):
+def notify_caretaker_on_missed_meds(user_id: int):
     db = SessionLocal()
     try:
         user = (
