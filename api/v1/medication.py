@@ -5,10 +5,11 @@ from typing import List, Dict
 import logging
 import time
 from collections import defaultdict
-from datetime import datetime, timezone, timedelta
+from datetime import date, datetime, timezone, timedelta
+import time
 from zoneinfo import ZoneInfo
 from models.user import User
-from models.medication import MedicationStatus, Medication
+from models.medication import MedicationStatus, Medication, MedicationLog
 from sqlalchemy.orm import selectinload
 from core.database import get_db
 from services.medication import MedicationService
@@ -348,20 +349,20 @@ async def bulk_update_medications(
 
 @router.get(
     "/weekly-schedule/{user_id}",
-    response_model=WeeklyScheduleResponse,
-    summary="Get weekly medication schedule for a user"
+    response_model=dict,
+    summary="Get weekly medication schedule for a user (current week)"
 )
 async def get_weekly_medication_schedule(
     user_id: int,
     db: AsyncSession = Depends(get_db)
 ):
-    start_time = time.time()
-    request_id = f"weekly_schedule_{user_id}_{int(start_time * 1000)}"
-    
+    start_time = datetime.now()
+    request_id = f"weekly_schedule_{user_id}_{int(start_time.timestamp() * 1000)}"
+
     logger.info(f"Request {request_id}: Fetching weekly medication schedule for user {user_id}")
-    
+
     try:
-        # Fetch medications with their times
+        # -------------------- FETCH MEDICATIONS --------------------
         result = await db.execute(
             select(Medication)
             .where(Medication.user_id == user_id)
@@ -369,36 +370,109 @@ async def get_weekly_medication_schedule(
         )
         medications = result.scalars().all()
 
+        # -------------------- WEEK RANGE --------------------
+        today = date.today()
+        monday = today - timedelta(days=today.weekday())
+        sunday = monday + timedelta(days=6)
+        weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+        date_to_weekday = {monday + timedelta(days=i): weekdays[i] for i in range(7)}
+
+        # -------------------- FETCH LOGS (NEW) --------------------
+        logs_result = await db.execute(
+            select(MedicationLog)
+            .where(
+                MedicationLog.user_id == user_id,
+                MedicationLog.created_at >= datetime.combine(monday, datetime.min.time()),
+                MedicationLog.created_at <= datetime.combine(sunday, datetime.max.time()),
+            )
+        )
+        logs = logs_result.scalars().all()
+
+        # -------------------- LOG LOOKUP MAP (NEW) --------------------
+        log_map = {}
+        for log in logs:
+            log_date = log.created_at.date()
+            log_map[
+                (log.medication_id, log.medication_time_id, log_date)
+            ] = log.status.value
+
         weekly_schedule = defaultdict(list)
-
+        now = datetime.now()
+        
+        total_scheduled = 0
+        total_taken = 0
+        
+        # -------------------- BUILD SCHEDULE --------------------
         for med in medications:
-            for time_entry in med.times_of_day:
-                if time_entry.time_of_day:
-                    day_name = time_entry.time_of_day.strftime("%A")  # e.g., "Monday"
+            med_start = med.start_date or today
+            med_end = med.end_date or today
+
+            week_start = max(med_start, monday)
+            week_end = min(med_end, sunday)
+
+            current_date = week_start
+            while current_date <= week_end:
+                day_name = date_to_weekday[current_date]
+                seen_times = set()
+
+                for time_entry in med.times_of_day:
+                    if not time_entry.time_of_day:
+                        continue
+
                     time_str = time_entry.time_of_day.strftime("%H:%M")
-                else:
-                    day_name = "Unscheduled"
-                    time_str = None
+                    if time_str in seen_times:
+                        continue
+                    seen_times.add(time_str)
 
-                weekly_schedule[day_name].append({
-                    "medication_name": med.name,  # <--- must match Pydantic field
-                    "dosage": med.dosage,
-                    "time": time_str or "",        # optional string
-                    "notes": time_entry.notes
-                })
+                    # -------------------- STATUS LOGIC (NEW) --------------------
+                    scheduled_datetime = datetime.combine(
+                        current_date,
+                        time_entry.time_of_day
+                    )
 
-        # Ensure all days exist
-        for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Unscheduled"]:
+                    log_key = (med.id, time_entry.id, current_date)
+
+                    if log_key in log_map:
+                        status_value = log_map[log_key]
+                    elif scheduled_datetime < now:
+                        status_value = MedicationStatus.MISSED.value
+                    else:
+                        status_value = MedicationStatus.UNCONFIRMED.value
+                        
+                    total_scheduled += 1
+
+                    if status_value == MedicationStatus.TAKEN.value:
+                        total_taken += 1
+
+                    weekly_schedule[day_name].append({
+                        "medication_name": med.name,
+                        "dosage": med.dosage,
+                        "time": time_str,
+                        "notes": time_entry.notes,
+                        "status": status_value  # ✅ NEW
+                    })
+
+                current_date += timedelta(days=1)
+
+        # -------------------- ENSURE ALL DAYS --------------------
+        for day in weekdays:
             weekly_schedule.setdefault(day, [])
 
-        duration = time.time() - start_time
+        duration = (datetime.now() - start_time).total_seconds()
         logger.info(
             f"Request {request_id}: Retrieved weekly medication schedule for user {user_id} "
             f"in {duration:.2f}s"
         )
 
-        return dict(weekly_schedule)
-        
+        return {
+            "summary": {
+                "total_medicines_this_week": total_scheduled,
+                "total_taken_this_week": total_taken
+            },
+            "schedule": dict(weekly_schedule)
+        }
+
     except Exception as e:
         logger.error(
             f"Request {request_id}: Failed to fetch weekly medication schedule for user {user_id}: {str(e)}",
@@ -408,6 +482,7 @@ async def get_weekly_medication_schedule(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to fetch weekly medication schedule"
         )
+
         
 @router.get(
     "/medications/{user_id}",
@@ -426,7 +501,6 @@ async def get_all_medications_with_times(
         if user_id <= 0:
             raise ValueError("Invalid user ID")
 
-        # Query with selectinload
         stmt = (
             select(Medication)
             .where(Medication.user_id == user_id)
@@ -435,7 +509,6 @@ async def get_all_medications_with_times(
         result = await db.execute(stmt)
         medications = result.scalars().all()
 
-        # Adapter: map ORM → MedicationOut with all required fields
         response: List[MedicationOut] = []
 
         for med in medications:
@@ -502,7 +575,6 @@ async def get_medications_with_times(
         if not user_id or user_id <= 0:
             raise ValueError("Invalid user ID")
 
-        # --- Query directly instead of service ---
         query = (
             select(Medication)
             .options(selectinload(Medication.times_of_day))
@@ -510,9 +582,6 @@ async def get_medications_with_times(
         )
         result = await db.execute(query)
         medications = result.scalars().all()
-        # ---------------------------------------
-
-        # Transform times_of_day for Pydantic
         transformed = []
         for med in medications:
             transformed.append({
