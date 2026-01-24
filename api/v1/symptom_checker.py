@@ -15,6 +15,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db
 from models.symptom_checker import SymptomCheckerResponse
+from models.user import User
 from services import whatsapp_service
 from services.email_service import EmailService
 from services.whatsapp_service import WhatsAppService
@@ -142,10 +143,11 @@ class SymptomCheckRequest(BaseModel):
 
 
 class SendReportRequest(BaseModel):
-    action: str  # "email" or "whatsapp"
+    user_id: int  # Required - to fetch preferred communication channel
     conversation_id: str  # Required - to identify the specific report
-    recipient_email: Optional[str] = None
-    phone_number: Optional[str] = None
+    action: Optional[str] = None  # Deprecated: use preferred_communication_channel
+    recipient_email: Optional[str] = None  # Deprecated: use user's email
+    phone_number: Optional[str] = None  # Deprecated: use user's phone_number
     include_articles: Optional[bool] = True
     custom_message: Optional[str] = None
 
@@ -737,7 +739,7 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
 @router.post("/send-report", status_code=status.HTTP_200_OK)
 async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get_db)) -> Dict[str, Any]:
     """
-    Send a medical report via email or WhatsApp using the latest saved analysis.
+    Send a medical report via the user's preferred communication channel.
     The record is automatically deleted after successful sending.
     """
     logger.info("=== SEND REPORT ENDPOINT CALLED ===")
@@ -745,8 +747,6 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
 
     try:
         # Get the specific analysis record by conversation_id
-        from sqlalchemy import select
-
         result = await db.execute(
             select(SymptomCheckerResponse)
             .where(SymptomCheckerResponse.conversation_id == payload.conversation_id)
@@ -759,23 +759,43 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
                 detail=f"No analysis found for conversation_id: {payload.conversation_id}. Please run symptom analysis first."
             )
 
-        # Validate action and required fields
-        if payload.action not in ["email", "whatsapp"]:
+        # Get user and preferred communication channel
+        user_result = await db.execute(
+            select(User).where(User.id == payload.user_id)
+        )
+        user = user_result.scalar_one_or_none()
+        if not user:
             raise HTTPException(
-                status_code=400,
-                detail="Invalid action. Must be 'email' or 'whatsapp'."
+                status_code=404,
+                detail=f"User not found for user_id: {payload.user_id}"
             )
 
-        if payload.action == "email" and not payload.recipient_email:
+        if response_record.user_id and response_record.user_id != user.id:
             raise HTTPException(
                 status_code=400,
-                detail="Email address is required when action is 'email'."
+                detail="User does not match the requested report."
             )
 
-        if payload.action == "whatsapp" and not payload.phone_number:
+        preferred_channel = (user.preferred_communication_channel or "").strip().lower()
+        if preferred_channel not in ["email", "whatsapp"]:
             raise HTTPException(
                 status_code=400,
-                detail="Phone number is required when action is 'whatsapp'."
+                detail="Invalid preferred_communication_channel. Must be 'email' or 'whatsapp'."
+            )
+
+        recipient_email = (user.email or "").strip()
+        phone_number = (user.phone_number or "").strip()
+
+        if preferred_channel == "email" and not recipient_email:
+            raise HTTPException(
+                status_code=400,
+                detail="User email is required to send report via email."
+            )
+
+        if preferred_channel == "whatsapp" and not phone_number:
+            raise HTTPException(
+                status_code=400,
+                detail="User phone_number is required to send report via WhatsApp."
             )
 
         # Prepare report content
@@ -784,15 +804,15 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
         # Send report based on action
         send_result = None
 
-        if payload.action == "email":
+        if preferred_channel == "email":
             send_result = await _send_email_report(
-                recipient_email=payload.recipient_email,
+                recipient_email=recipient_email,
                 report_content=report_content,
                 patient_name=response_record.full_name or " "
             )
-        elif payload.action == "whatsapp":
+        elif preferred_channel == "whatsapp":
             send_result = await _send_whatsapp_report(
-                phone_number=payload.phone_number,
+                phone_number=phone_number,
                 report_content=report_content,
                 patient_name=response_record.full_name or " "
             )
@@ -807,7 +827,7 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
         return {
             "message": "Report sent successfully",
             "conversation_id": response_record.conversation_id,
-            "action": payload.action,
+            "action": preferred_channel,
             "status": send_result,
             "success": True
         }
@@ -832,8 +852,7 @@ def _prepare_report_content(response_record: SymptomCheckerResponse, payload: Se
         "is_emergency": response_record.is_emergency,
         "created_at": response_record.created_at.isoformat() if response_record.created_at else None,
         "conversation_id": response_record.conversation_id,
-        # Using full_name as user_id for now
-        "user_id": response_record.full_name or "Unknown",
+        "user_id": response_record.user_id or payload.user_id,
         "custom_message": payload.custom_message,
         # Additional fields for email template
         "duration": response_record.duration or "Not specified",
