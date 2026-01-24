@@ -1,9 +1,10 @@
+from sqlalchemy import select, func
 from fastapi import APIRouter, Depends, HTTPException, status, Path, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from typing import List
 from core.database import get_db
-from schemas.brain_coach import BrainCoachQuestionRead, BrainCoachQuestionCreate, BrainCoachResponseRead, BrainCoachResponseCreate, BrainCoachStatsRead, DailySessionActivityResponse
+from schemas.brain_coach import BrainCoachQuestionRead, BrainCoachQuestionCreate, BrainCoachResponseRead, BrainCoachResponseCreate, BrainCoachStatsRead, DailySessionActivityResponse, SessionHistoryResponse, SessionHistoryItem
 from repositories.brain_coach import BrainCoachQuestionRepository, BrainCoachQuestionCreate, BrainCoachResponseRepository, BrainCoachResponseCreate
 import logging
 from models.brain_coach import BrainCoachResponses
@@ -14,8 +15,7 @@ from schemas.user import UserCreate, UserUpdate
 from typing import Optional
 # from services.whatsapp_service import whatsapp
 from services.email_service import EmailService
-import random
-
+from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
@@ -169,46 +169,25 @@ async def get_question_by_id(
 
 @router.get("/questions")
 async def get_questions_by_filters(
-    # user_id: str,
     session: Optional[int] = None,
     tier: Optional[int] = None,
     question_type: Optional[str] = None,
     language: str = "en",
     db: AsyncSession = Depends(get_db)
 ):
-    """Get questions with filters and specific language"""
     try:
-        # Validate query parameters
         if session is not None and session <= 0:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Session must be a positive integer if provided"
-            )
-        
+            raise HTTPException(status_code=400, detail="Session must be a positive integer")
         if tier is not None and tier <= 0:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Tier must be a positive integer if provided"
-            )
-        
+            raise HTTPException(status_code=400, detail="Tier must be a positive integer")
         if question_type is not None and not question_type.strip():
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Question type cannot be empty if provided"
-            )
-        
+            raise HTTPException(status_code=400, detail="Question type cannot be empty")
         if not language.strip():
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Language cannot be empty"
-            )
-        
-       
-        random_number = random.randint(1, 14)
-        
+            raise HTTPException(status_code=400, detail="Language cannot be empty")
+
         repo = BrainCoachQuestionRepository(db)
         questions = await repo.get_questions_by_filters(
-            session=random_number,
+            session=session,
             tier=tier,
             question_type=question_type,
             language=language
@@ -216,61 +195,23 @@ async def get_questions_by_filters(
 
         if not questions:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
+                status_code=404,
                 detail="No questions found for the given criteria"
             )
 
-        random_string = str(uuid.uuid4()).replace("-", "")[:15]
+        session_id = str(uuid.uuid4()).replace("-", "")[:15]
 
-        empty_user_data = User(
-            email=None,  # Email can be set later
-            first_name=None,
-            last_name=None,
-            # All other fields will use their default None values
-        )
-        
-        db.add(empty_user_data)
-        await db.commit()
-        await db.refresh(empty_user_data)
-        # repo = UserRepository(db)
-        # user = await repo.create_user(empty_user_data)
-
-        
-        return {"user_id": empty_user_data.id, "questions": questions}
-        
-        # return questions
+        return {"session_id": session_id, "questions": questions}
 
     except HTTPException:
-        # Re-raise HTTP exceptions
         raise
-        
-    except ValueError as e:
-        # Handle validation errors
-        logger.warning(f"Validation error filtering questions: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
-        
-    except SQLAlchemyError as e:
-        # Handle database errors
-        logger.error(f"Database error filtering questions: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Database error occurred while filtering questions"
-        )
-        
+
     except Exception as e:
-        # Handle any other unexpected errors
-        logger.exception(f"Unexpected error filtering questions: {str(e)}")
+        logger.exception(f"Unexpected error fetching brain coach questions: {str(e)}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error occurred while filtering questions"
+            status_code=500,
+            detail="Internal server error while fetching questions"
         )
-
-from typing import Annotated
-
-
 
 @router.post("/user-responses/{user_id}", response_model=BrainCoachResponseRead, status_code=status.HTTP_201_CREATED)
 async def create_response(
@@ -282,8 +223,8 @@ async def create_response(
     try:
         logger.info(f"Creating response for user_id: {user_id} with data: {response_data}")
         repo = BrainCoachResponseRepository(db)
-        # response_data.user_id = user_id  # Ensure the user_id from path is used
         new_response = BrainCoachResponses(
+            session_id = response_data.session_id,
             user_id = user_id,
             question_id = response_data.question_id,
             user_answer = response_data.user_answer,
@@ -336,38 +277,44 @@ async def get_cognitive_trend(
 ):
     repo = BrainCoachResponseRepository(db)
     rows = await repo.get_cognitive_trend(user_id, days)
+    print("Rows:", rows)
 
     if not rows:
         return {
             "trend": [],
             "average": 0,
             "best_day": None,
+            "best_score": 0,
             "improvement": 0
         }
 
-    # format for recharts
     trend = [
         {
             "date": r.date.strftime("%b %d"),
-            "score": round(float(r.avg_score), 2)
+            "score": float(r.avg_score) * 10,  
+            "sessions": r.sessions
         }
         for r in rows
     ]
 
-    scores = [float(r.avg_score) for r in rows]
-
-    average = round(sum(scores) / len(scores), 2)
+    all_scores = []
+    for r in rows:
+        all_scores.extend([float(r.avg_score)] * r.sessions)
+    average = round(sum(all_scores) / len(all_scores) * 10, 2) if all_scores else 0
 
     best = max(rows, key=lambda r: r.avg_score)
+    best_score = float(best.avg_score) * 10
 
-    improvement = round(((scores[-1] - scores[0]) / scores[0]) * 100, 2)
+    first_score = float(rows[0].avg_score) if rows else 0
+    last_score = float(rows[-1].avg_score) if rows else 0
+    improvement = round(((last_score - first_score) / first_score) * 100, 2) if first_score != 0 else 0
 
     return {
         "trend": trend,
         "average": average,
         "best_day": best.date.strftime("%b %d"),
-        "best_score": round(float(best.avg_score), 2),
-        "improvement": 100
+        "best_score": best_score,
+        "improvement": improvement
     }
     
 @router.get(
@@ -400,6 +347,69 @@ async def daily_session_activity(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
         )
+        
+@router.get("/session-history/{user_id}")
+async def get_session_history(
+    user_id: int = Path(..., description="The ID of the user"),
+    days: int = Query(7, ge=1, le=90),
+    limit: int = Query(10, ge=1, le=50),
+    offset: int = Query(0, ge=0),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Return session history in the format expected by the frontend.
+    """
+    try:
+        start_date = datetime.utcnow() - timedelta(days=days)
+
+        stmt = select(BrainCoachResponses).where(
+            BrainCoachResponses.user_id == user_id,
+            BrainCoachResponses.created >= start_date
+        ).order_by(BrainCoachResponses.created.asc())
+
+        result = await db.execute(stmt)
+        responses = result.scalars().all()
+
+        if not responses:
+            return {"sessions": [], "total": 0}
+
+        sessions_dict = {}
+        for r in responses:
+            if r.session_id not in sessions_dict:
+                sessions_dict[r.session_id] = {
+                    "session_id": r.session_id,
+                    "date": r.created.strftime("%b %d, %Y"),
+                    "Questions": 0,
+                    "score": 0,
+                    "duration": "0 min",
+                    "accuracy": "0%",
+                    "mood": "neutral" 
+                }
+
+            sessions_dict[r.session_id]["Questions"] += 1
+            sessions_dict[r.session_id]["score"] += r.score
+
+        sessions = []
+        for s in sessions_dict.values():
+            total_questions = s["Questions"]
+            s["score"] = round((s["score"] / total_questions) * 10 * 1, 2) 
+            s["accuracy"] = f"{round((s['score'] / 100) * 100)}%"  
+            s["duration"] = f"{total_questions * 1} min" 
+            sessions.append(s)
+
+        # Sort by date descending
+        sessions.sort(key=lambda x: datetime.strptime(x["date"], "%b %d, %Y"), reverse=True)
+
+        return {"sessions": sessions[offset:offset+limit], "total": len(sessions)}
+
+    except Exception as e:
+        logger.exception(f"Failed to fetch session history: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Internal server error"
+        )
+        
+        
 # @router.get("/user-responses/{user_id}", response_model=List[BrainCoachResponseRead])
 # async def get_user_responses(
 #     user_id: int,

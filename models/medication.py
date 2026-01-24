@@ -8,7 +8,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from sqlalchemy import Time
 from datetime import datetime, timezone
-
+from sqlalchemy.dialects.postgresql import ENUM as PGEnum
 
 from core.database import Base
 
@@ -73,7 +73,6 @@ class MedicationStatus(enum.Enum):
     UNCONFIRMED = "unconfirmed"
 
 
-
 class MedicationLog(Base):
     __tablename__ = "medication_logs"
 
@@ -96,14 +95,18 @@ class MedicationLog(Base):
     taken_at = Column(DateTime, nullable=True)
 
     status = Column(
-        SQLEnum(MedicationStatus),
+        PGEnum(
+            MedicationStatus,
+            name="medicationstatus",
+            values_callable=lambda enum_cls: [e.value for e in enum_cls],
+            create_type=False
+        ),
         nullable=False
     )
 
     notes = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
-    # Relationships
     medication = relationship("Medication", back_populates="logs")
     medication_time = relationship("MedicationTime", back_populates="logs")
     user = relationship("User", back_populates="medication_logs")

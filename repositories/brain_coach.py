@@ -1,5 +1,5 @@
 import logging
-from sqlalchemy import select, and_
+from sqlalchemy import select, and_, text
 from typing import Optional, List
 from core.database import get_db
 from schemas.brain_coach import  BrainCoachResponseRead, BrainCoachQuestionCreate, BrainCoachQuestionRead, BrainCoachQuestionReadWithLanguage, QuestionTranslationBase, QuestionTranslationRead, BrainCoachResponseCreate, DailySessionActivity
@@ -136,96 +136,79 @@ class BrainCoachQuestionRepository:
             raise Exception(f"Unexpected error occurred while retrieving question: {str(e)}")
 
     async def get_questions_by_filters(
-        self,
-        session: Optional[int] = None,
-        tier: Optional[int] = None,
-        question_type: Optional[str] = None,
-        language: str = "en"
-    ) -> List[BrainCoachQuestionReadWithLanguage]:
-        """Get questions with filters and specific language"""
-        try:
-            # Validate input parameters
-            if session is not None and (not isinstance(session, int) or session <= 0):
-                raise ValueError("Session must be a positive integer if provided")
+            self,
+            session: Optional[int] = None,
+            tier: Optional[int] = None,
+            question_type: Optional[str] = None,
+            language: Optional[str] = None
+        ) -> List[BrainCoachQuestionReadWithLanguage]:
+            """
+            Get questions with filters and optional language.
+            Language and question_type are case-insensitive.
+            Returns all questions if no filters provided.
+            """
+            try:
+                query = select(BrainCoachQuestions, QuestionTranslations).join(
+                    QuestionTranslations, BrainCoachQuestions.id == QuestionTranslations.question_id
+                )
 
-            if tier is not None and (not isinstance(tier, int) or tier <= 0):
-                raise ValueError("Tier must be a positive integer if provided")
+                # Filters
+                if session is not None:
+                    query = query.where(BrainCoachQuestions.session == session)
 
-            if question_type is not None and not isinstance(question_type, str):
-                raise ValueError("Question type must be a string if provided")
+                if tier is not None:
+                    query = query.where(BrainCoachQuestions.tier == tier)
 
-            if not isinstance(language, str) or not language.strip():
-                raise ValueError("Language must be a non-empty string")
-
-            if len(language) > 20:
-                raise ValueError("Language code too long")
-
-            # Validate language against known codes (optional but recommended)
-            valid_languages = {"en", "es", "fr", "de", "it", "pt", "ru", "zh", "ja", "ko"}
-            if language not in valid_languages:
-                logger.warning(f"Uncommon language code requested: {language}")
-
-            # Build query
-            query = (
-                select(BrainCoachQuestions, QuestionTranslations)
-                .join(QuestionTranslations, BrainCoachQuestions.id == QuestionTranslations.question_id)
-                .where(QuestionTranslations.language == language)
-            )
-
-            if session is not None:
-                query = query.where(BrainCoachQuestions.session == session)
-
-            if tier is not None:
-                query = query.where(BrainCoachQuestions.tier == tier)
-
-            if question_type is not None:
-                if not question_type.strip():
-                    raise ValueError("Question type cannot be empty if provided")
-                query = query.where(QuestionTranslations.question_type == question_type)
-
-            query = query.order_by(BrainCoachQuestions.id)
-
-            # Execute query
-            result = await self.db_session.execute(query)
-            results = result.all()
-
-            if not results:
-                logger.info(f"No questions found for filters: session={session}, tier={tier}, question_type={question_type}, language={language}")
-                return []
-
-            # Process results
-            questions = []
-            for question, translation in results:
-                try:
-                    question_data = BrainCoachQuestionReadWithLanguage(
-                        id=question.id,
-                        session=question.session,
-                        tier=question.tier,
-                        max_score=question.max_score,
-                        question_text=translation.question_text,
-                        expected_answer=translation.expected_answer,
-                        scoring_logic=translation.scoring_logic,
-                        question_type=translation.question_type,
-                        theme=translation.theme,
-                        language=translation.language
+                if language:
+                    # Case-insensitive match, trim spaces
+                    query = query.where(
+                        func.lower(func.trim(QuestionTranslations.language)) == language.lower().strip()
                     )
-                    questions.append(question_data)
-                except Exception as e:
-                    logger.error(f"Failed to process question {question.id} with translation {translation.id}: {str(e)}")
-                    # Continue processing other questions instead of failing completely
-                    continue
-                
-            logger.debug(f"Found {len(questions)} questions for filters: session={session}, tier={tier}, question_type={question_type}, language={language}")
-            return questions
 
-        except ValueError as e:
-            logger.warning(f"Validation error in get_questions_by_filters: {str(e)}")
-            raise ValueError(str(e))
+                if question_type:
+                    # Case-insensitive match, trim spaces
+                    query = query.where(
+                        func.lower(func.trim(QuestionTranslations.question_type)) == question_type.lower().strip()
+                    )
 
+                query = query.order_by(BrainCoachQuestions.id)
 
-        except Exception as e:
-            logger.exception(f"Unexpected error in get_questions_by_filters: {str(e)}")
-            raise Exception(f"Unexpected error occurred while filtering questions: {str(e)}")
+                # Execute
+                result = await self.db_session.execute(query)
+                rows = result.all()
+
+                if not rows:
+                    logger.info(f"No questions found for filters: session={session}, tier={tier}, "
+                                f"question_type={question_type}, language={language}")
+                    return []
+
+                # Process results
+                questions = []
+                for question, translation in rows:
+                    questions.append(
+                        BrainCoachQuestionReadWithLanguage(
+                            id=question.id,
+                            session=question.session,
+                            tier=question.tier,
+                            max_score=question.max_score,
+                            category=question.category,
+                            question_text=translation.question_text,
+                            expected_answer=translation.expected_answer,
+                            scoring_logic=translation.scoring_logic,
+                            question_type=translation.question_type,
+                            theme=translation.theme,
+                            language=translation.language
+                        )
+                    )
+
+                logger.debug(f"Found {len(questions)} questions for filters: "
+                             f"session={session}, tier={tier}, question_type={question_type}, language={language}")
+
+                return questions
+
+            except Exception as e:
+                logger.exception(f"Unexpected error in get_questions_by_filters: {str(e)}")
+                raise
 
             
     async def get_question_translation(
@@ -354,21 +337,12 @@ class BrainCoachResponseRepository:
             (BrainCoachResponses.created >= begin_date)
         )
 
-        # -----------------------------
-        # Total questions
-        # -----------------------------
         total_questions_query = select(func.count()).where(base_filter)
         total_questions = await self.db_session.scalar(total_questions_query) or 0
 
-        # -----------------------------
-        # Total sessions
-        # -----------------------------
         total_sessions_query = select(func.count(distinct(BrainCoachResponses.session_id))).where(base_filter)
         total_sessions = await self.db_session.scalar(total_sessions_query) or 0
 
-        # -----------------------------
-        # Average session score
-        # -----------------------------
         session_totals_subq = (
             select(
                 BrainCoachResponses.session_id,
@@ -382,9 +356,6 @@ class BrainCoachResponseRepository:
         avg_score_query = select(func.avg(session_totals_subq.c.session_score))
         average_session_score = await self.db_session.scalar(avg_score_query) or 0.0
 
-        # -----------------------------
-        # Streak
-        # -----------------------------
         days_query = (
             select(func.date(BrainCoachResponses.created))
             .where(BrainCoachResponses.user_id == user_id)
@@ -412,25 +383,35 @@ class BrainCoachResponseRepository:
         }
         
     async def get_cognitive_trend(self, user_id: int, days: int):
-        """Returns daily average cognitive score trend"""
+        """Returns daily average cognitive score trend (average per session per day)"""
 
         since = datetime.utcnow() - timedelta(days=days)
 
-        query = (
+        session_totals_subq = (
             select(
-                func.date(BrainCoachResponses.created).label("date"),
-                func.avg(BrainCoachResponses.score).label("avg_score"),
-                func.count(BrainCoachResponses.id).label("sessions"),
+                BrainCoachResponses.session_id,
+                func.sum(BrainCoachResponses.score).label("session_score"),
+                func.date(BrainCoachResponses.created).label("date")
             )
             .where(
                 BrainCoachResponses.user_id == user_id,
                 BrainCoachResponses.created >= since
             )
-            .group_by(func.date(BrainCoachResponses.created))
-            .order_by(func.date(BrainCoachResponses.created))
+            .group_by(BrainCoachResponses.session_id, func.date(BrainCoachResponses.created))
+            .subquery()
         )
 
-        result = await self.db_session.execute(query)
+        daily_avg_query = (
+            select(
+                session_totals_subq.c.date,
+                func.avg(session_totals_subq.c.session_score).label("avg_score"),
+                func.count(session_totals_subq.c.session_id).label("sessions")
+            )
+            .group_by(session_totals_subq.c.date)
+            .order_by(session_totals_subq.c.date)
+        )
+
+        result = await self.db_session.execute(daily_avg_query)
         return result.all()
     
     async def get_daily_session_activity(self, user_id: int, days: int) -> List[DailySessionActivity]:
@@ -456,3 +437,56 @@ class BrainCoachResponseRepository:
         data = result.all()
 
         return [DailySessionActivity(date=str(row.date), sessions=row.sessions) for row in data]
+    
+    async def get_session_history(
+        self,
+        user_id: int,
+        days: int,
+        limit: int,
+        offset: int
+    ):
+        query = text("""
+                    SELECT
+            r.session_id,
+            DATE(MIN(r.created)) AS session_date,
+            MIN(r.created) AS start_time,
+            COUNT(*) AS total_questions,
+            SUM(CASE WHEN r.score >= 1 THEN 1 ELSE 0 END) AS correct_answers,
+            ROUND(AVG(r.score) * 10, 1) AS avg_score,
+            MAX(qt.question_type) AS activity_type
+        FROM brain_coach_responses r
+        JOIN question_translations qt ON qt.question_id = r.question_id AND qt.language = 'en'
+        WHERE r.user_id = :user_id
+          AND r.created >= NOW() - INTERVAL ':days days'
+        GROUP BY r.session_id
+        ORDER BY start_time DESC
+        LIMIT :limit OFFSET :offset
+                """)
+
+        count_query = text("""
+            SELECT COUNT(DISTINCT session_id)
+            FROM brain_coach_responses
+            WHERE user_id = :user_id
+              AND created >= NOW() - INTERVAL ':days days'
+        """)
+
+        rows = (
+    await self.db_session.execute(
+        query,
+        {
+            "user_id": user_id,
+            "days": days,
+            "limit": limit,
+            "offset": offset,
+        },
+    )
+).fetchall()
+
+        total = (
+            await self.db_session.execute(
+                count_query,
+                {"user_id": user_id, "days": days},
+            )
+        ).scalar()
+
+        return rows, total
