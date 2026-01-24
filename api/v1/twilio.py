@@ -13,6 +13,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from core.database import get_db
+from scripts.medication_utils import update_med_logs
 
 
 logger = logging.getLogger(__name__)
@@ -37,7 +38,7 @@ async def receive_incoming_message(request: Request, db: AsyncSession = Depends(
             return PlainTextResponse("Ignored")
         
         action, reminder_id = button_payload.split(":")
-        med_log_ids = reminder_id.split(",")
+        med_log_ids = [int(x.strip()) for x in reminder_id.split(",")]
         medication_taken = (action == "Yes")
         
         whatsapp_number = form.get("From")            # whatsapp:+92300...
