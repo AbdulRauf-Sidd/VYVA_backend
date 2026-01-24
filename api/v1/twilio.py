@@ -7,6 +7,13 @@ Handles incoming messages from Twilio webhooks.
 from fastapi import APIRouter, Request
 import logging
 import json
+from fastapi.responses import PlainTextResponse
+from models.user import User
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from core.database import get_db
+
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +21,7 @@ router = APIRouter()
 
 
 @router.post("/incoming-message")
-async def receive_incoming_message(request: Request):
+async def receive_incoming_message(request: Request, db: AsyncSession = Depends(get_db)):
     """
     Webhook endpoint for Twilio incoming messages.
     Receives POST requests from Twilio when a message is received.
@@ -23,51 +30,29 @@ async def receive_incoming_message(request: Request):
     so we need to handle it as form data.
     """
     try:
-        # Parse form data (Twilio sends form-encoded data)
-        # Note: This reads the body, so we can't read it again separately
-        form_data = await request.form()
+        form = await request.form()
         
-        # Convert form data to dictionary for easier handling
-        message_data = {}
-        for key, value in form_data.items():
-            message_data[key] = value
+        button_payload = form.get("ButtonPayload")
+        if not button_payload:
+            return PlainTextResponse("Ignored")
         
-        # Print the received data to console
-        print("=" * 80)
-        print("TWILIO WEBHOOK - INCOMING MESSAGE RECEIVED")
-        print("=" * 80)
-        print(f"Form Data: {json.dumps(dict(message_data), indent=2, default=str)}")
-        print("=" * 80)
+        action, reminder_id = button_payload.split(":")
+        med_log_ids = reminder_id.split(",")
+        medication_taken = (action == "Yes")
         
-        # Log the received data
-        logger.info(
-            "Twilio incoming message webhook received",
-            message_data=dict(message_data)
+        whatsapp_number = form.get("From")            # whatsapp:+92300...
+        phone_number = whatsapp_number.replace("whatsapp:", "")
+        user_result = await db.execute(
+            select(User.id).where(User.phone_number == phone_number)
         )
-        
-        # Log individual fields that are commonly present in Twilio webhooks
-        if 'MessageSid' in message_data:
-            logger.info(f"Message SID: {message_data['MessageSid']}")
-        if 'From' in message_data:
-            logger.info(f"From: {message_data['From']}")
-        if 'To' in message_data:
-            logger.info(f"To: {message_data['To']}")
-        if 'Body' in message_data:
-            logger.info(f"Message Body: {message_data['Body']}")
-        if 'AccountSid' in message_data:
-            logger.info(f"Account SID: {message_data['AccountSid']}")
-        
-        # Return TwiML response (Twilio expects a response)
-        # For now, we'll return a simple acknowledgment
-        # You can customize this later to send automated responses
-        return {
-            "status": "received",
-            "message": "Webhook processed successfully"
-        }
-        
+        user_id = user_result.scalar_one_or_none()
+
+        update_med_logs(user_id, medication_taken, med_log_ids)
+
+        return PlainTextResponse("OK")
+                
     except Exception as e:
         logger.exception(f"Error processing Twilio webhook: {e}")
-        print(f"ERROR processing Twilio webhook: {e}")
         return {
             "status": "error",
             "message": str(e)

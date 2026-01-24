@@ -7,6 +7,7 @@ from sqlalchemy import event
 from slugify import slugify
 from enum import Enum as PyEnum
 
+
 from core.database import Base
 
 class Organization(Base):
@@ -62,3 +63,32 @@ class OrganizationAgents(Base):
 def before_insert(mapper, connection, target):
     if target.name and not target.name_slug:
         target.name_slug = slugify(target.name)
+
+
+class TemplateTypeEnum(str, PyEnum):
+    MEDICATION_REMINDER = "medication_reminder"
+    MAGIC_LINK = "magic_link"
+    CARETAKER_MAGIC_LINK = "caretaker_magic_link"
+    SYMPTOM_CHECKER = "symptom_checker"
+    FALL_DETECTION = "fall_detection"
+
+class LanguageEnum(str, PyEnum):
+    ENGLISH = "english"
+    SPANISH = "spanish"
+    GERMAN = "german"
+    FRENCH = "french"
+
+class TwilioWhatsappTemplates(Base):
+    __tablename__ = "twilio_whatsapp_templates"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+    language = Column(SQLEnum(LanguageEnum), nullable=False)
+    template_type = Column(SQLEnum(TemplateTypeEnum), nullable=False)
+    template_id = Column(String(100), nullable=False)
+    organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=True)
+    is_active = Column(Boolean, default=True)
+
+
+    def __repr__(self):
+        return f"<TwilioWhatsappTemplates(id={self.id}, name='{self.name}')>"

@@ -13,10 +13,10 @@ from core.database import Base
 
 
 class PreferredConsultationLanguageEnum(str, PyEnum):
-    ENGLISH = "English"
-    SPANISH = "Spanish"
-    GERMAN = "German"
-    FRENCH = "French"
+    ENGLISH = "english"
+    SPANISH = "spanish"
+    GERMAN = "german"
+    FRENCH = "french"
 
 class PreferredReportsChannelEnum(str, PyEnum):
     WHATSAPP = "whatsapp"
@@ -200,13 +200,16 @@ class Caretaker(Base):
     email = Column(String(255), unique=True, nullable=True)
     phone_number = Column(String(20), nullable=True, unique=True)
     is_active = Column(Boolean, default=True)
+    language = Column(SQLEnum(PreferredConsultationLanguageEnum), default=PreferredConsultationLanguageEnum.ENGLISH, server_default="english")
     # username = Column(String(100), unique=True, nullable=False)
     # password_hash = Column(String(255), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     assigned_users = relationship("User", back_populates="caretaker")
 
+
     wants_medication_alerts = Column(Boolean, default = True)
+    preferred_notification_channel = Column(String(50), default='whatsapp', server_default="whatsapp") 
     wants_fall_alerts = Column(Boolean, default=False)
 
     device_token = Column(String(150), nullable=True)

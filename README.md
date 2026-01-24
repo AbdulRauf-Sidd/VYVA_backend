@@ -120,6 +120,11 @@ vyva_backend/
    uvicorn main:app --reload --host 0.0.0.0 --port 8000
    ```
 
+5. **Enum Values In PSQL:**
+   ```psql
+   ALTER TYPE medicationstatus ADD VALUE 'UNCONFIRMED';
+   ```
+
 ```
 
 ## 🌐 Exposing for Mobile Testing

@@ -490,4 +490,39 @@ class WhatsAppService:
             response.raise_for_status()
             return True
         
+    async def send_message(
+        self,
+        to_phone: str,
+        template_data: dict,
+        template_id: str
+    ) -> bool:
+        
+        content_variables_json = json.dumps(template_data)
+
+        # Ensure phone number has whatsapp: prefix
+        if not to_phone.startswith("whatsapp:"):
+            to_phone = f"whatsapp:{to_phone}"
+            
+        from_number = self.from_number
+        if not from_number.startswith("whatsapp:"):
+            from_number = f"whatsapp:{from_number}"
+
+        message_data = {
+                "From": from_number,
+                "To": to_phone,
+                "ContentSid": template_id,
+                "ContentVariables": content_variables_json
+            }
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                self.base_url,
+                auth=(self.account_sid, self.auth_token),
+                data=message_data,
+                headers={"Content-Type": "application/x-www-form-urlencoded"},
+                timeout=30.0
+            )
+            print(response)
+            response.raise_for_status()
+            return response
+        
 whatsapp_service = WhatsAppService()

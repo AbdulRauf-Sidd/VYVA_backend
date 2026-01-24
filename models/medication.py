@@ -71,6 +71,7 @@ class MedicationStatus(enum.Enum):
     TAKEN = "taken"
     MISSED = "missed"
     UNCONFIRMED = "unconfirmed"
+    unconfirmed = 'temp'
 
 
 
