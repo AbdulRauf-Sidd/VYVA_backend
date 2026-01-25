@@ -65,8 +65,8 @@ def setup_admin(app):
     class BrainCoachResponsesAdmin(ModelView, model=BrainCoachResponses):
         column_list = "__all__"
         
-    class MedicationLogAdmin(ModelView, model=MedicationLog):
-        column_list = "__all__"
+    # class MedicationLogAdmin(ModelView, model=MedicationLog):
+    #     column_list = "__all__"
 
     admin.add_view(UserAdmin)
     admin.add_view(CaretakerAdmin)
@@ -82,4 +82,4 @@ def setup_admin(app):
     admin.add_view(BrainCoachQuestionsAdmin)
     admin.add_view(QuestionTranslationsAdmin)
     admin.add_view(BrainCoachResponsesAdmin)
-    admin.add_view(MedicationLogAdmin)
+    # admin.add_view(MedicationLogAdmin)
