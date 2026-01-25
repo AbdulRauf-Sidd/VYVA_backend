@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field
 
 
 class FindPlacesRequest(BaseModel):
+    user_id: int = Field(..., description="User id to resolve preferred channel")
     query: str = Field(..., description="What to find, e.g., 'family doctor', '24-hour pharmacy'")
     location_text: Optional[str] = Field(None, description="City/area/ZIP if provided by the user")
     latitude: Optional[float] = Field(None, description="User latitude if available")
