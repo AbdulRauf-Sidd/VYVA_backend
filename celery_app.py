@@ -6,7 +6,7 @@ celery_app = Celery(
     settings.APP_NAME,
     broker=settings.CELERY_BROKER_URL,
     backend=settings.CELERY_RESULT_BACKEND,
-    include=["tasks.management_tasks"],  # import your tasks here
+    include=["tasks.management_tasks", "tasks.medication_tasks"],  # import your tasks here
 )
 
 celery_app.conf.update(
@@ -22,7 +22,7 @@ celery_app.conf.update(
         },
         "daily-medication-reminder-scheduler": {
             "task": "schedule_calls_for_day",
-            "schedule": crontab(hour=21, minute=9),  
+            "schedule": crontab(hour=3, minute=36),  
         }
     }
 )

@@ -1,7 +1,7 @@
 from sqladmin import Admin, ModelView
 from core.database import engine
 from models import User, Medication
-from models.organization import Organization, OrganizationAgents
+from models.organization import Organization, OrganizationAgents, TwilioWhatsappTemplates
 from models.onboarding import OnboardingUser
 from models.onboarding import OnboardingLogs
 from models.symptom_checker import SymptomCheckerResponse
@@ -26,10 +26,16 @@ def setup_admin(app):
     class CaretakerAdmin(ModelView, model=Caretaker):
         column_list = [Caretaker.id, Caretaker.name, Caretaker.phone_number]
 
+    class TwilioWhatsappTemplatesAdmin(ModelView, model=TwilioWhatsappTemplates):
+        column_list = "__all__"
+
     class MedicationAdmin(ModelView, model=Medication):
         column_list = "__all__"
 
     class MedicationTimeAdmin(ModelView, model=MedicationTime):
+        column_list = "__all__" 
+
+    class MedicationLogAdmin(ModelView, model=MedicationLog):
         column_list = "__all__" 
 
     class OrganizationAdmin(ModelView, model=Organization):
@@ -59,13 +65,15 @@ def setup_admin(app):
     class BrainCoachResponsesAdmin(ModelView, model=BrainCoachResponses):
         column_list = "__all__"
         
-    class MedicationLogAdmin(ModelView, model=MedicationLog):
-        column_list = "__all__"
+    # class MedicationLogAdmin(ModelView, model=MedicationLog):
+    #     column_list = "__all__"
 
     admin.add_view(UserAdmin)
     admin.add_view(CaretakerAdmin)
+    admin.add_view(TwilioWhatsappTemplatesAdmin)
     admin.add_view(MedicationAdmin)
     admin.add_view(MedicationTimeAdmin)
+    admin.add_view(MedicationLogAdmin)
     admin.add_view(OrganizationAdmin)
     admin.add_view(OrganizationAgentsAdmin)
     admin.add_view(OnboardingUserAdmin)
@@ -74,4 +82,4 @@ def setup_admin(app):
     admin.add_view(BrainCoachQuestionsAdmin)
     admin.add_view(QuestionTranslationsAdmin)
     admin.add_view(BrainCoachResponsesAdmin)
-    admin.add_view(MedicationLogAdmin)
+    # admin.add_view(MedicationLogAdmin)

@@ -13,10 +13,10 @@ from core.database import Base
 
 
 class PreferredConsultationLanguageEnum(str, PyEnum):
-    ENGLISH = "English"
-    SPANISH = "Spanish"
-    GERMAN = "German"
-    FRENCH = "French"
+    ENGLISH = "english"
+    SPANISH = "spanish"
+    GERMAN = "german"
+    FRENCH = "french"
 
 class PreferredReportsChannelEnum(str, PyEnum):
     WHATSAPP = "whatsapp"
@@ -45,13 +45,12 @@ class User(Base):
     # land_line = Column(String(20), nullable=True)
     is_primary_landline = Column(Boolean, nullable=True, default=False)
     age = Column(Integer, nullable=True)
-    # living_situation = Column(SQLEnum(LivingSituation), nullable=True)
     admin_profile = relationship("AdminUser", back_populates="user", uselist=False)
     timezone=Column(String(30), nullable=True)
     date_of_birth = Column(DateTime, nullable=True)
     organization = relationship("Organization", back_populates="users")
     organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=True)
-    preferred_consultation_language = Column(SQLEnum(PreferredConsultationLanguageEnum), nullable=True)
+    preferred_consultation_language = Column(String(30), nullable=True)
     preferred_communication_channel = Column(String(50), nullable=True)
     onboarding_user_id = Column(Integer, ForeignKey("onboarding_users.id"), nullable=True, unique=True)
     onboarding_user = relationship("OnboardingUser", backref="user", uselist=False)
@@ -120,7 +119,7 @@ class User(Base):
     address = Column(Text, nullable=True)
 
     #Brain Coach
-    brain_coach_complexity = Column(SQLEnum(BrainCoachComplexityEnum), nullable=True)  
+    brain_coach_complexity = Column(String(50), nullable=True)  
     
     #Nutrition Services
     nutrition_services_activation = Column(Boolean, nullable=True)
@@ -200,13 +199,16 @@ class Caretaker(Base):
     email = Column(String(255), unique=True, nullable=True)
     phone_number = Column(String(20), nullable=True, unique=True)
     is_active = Column(Boolean, default=True)
+    language = Column(String(30), default='english', server_default="english")
     # username = Column(String(100), unique=True, nullable=False)
     # password_hash = Column(String(255), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     assigned_users = relationship("User", back_populates="caretaker")
 
+
     wants_medication_alerts = Column(Boolean, default = True)
+    preferred_notification_channel = Column(String(50), default='whatsapp', server_default="whatsapp") 
     wants_fall_alerts = Column(Boolean, default=False)
 
     device_token = Column(String(150), nullable=True)

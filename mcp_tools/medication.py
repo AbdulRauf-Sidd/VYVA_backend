@@ -7,7 +7,8 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 from core.database import get_async_session
 from datetime import datetime, timezone
-from scripts.utils import notify_caretaker_on_missed_meds
+# from scripts.utils import notify_caretaker_on_missed_meds
+from tasks.medication_tasks import notify_caregiver_on_missed_medication_task
 
 class RetrieveMedicationInput(BaseModel):
     user_id: int
@@ -216,32 +217,39 @@ async def update_reminder_channel(channel_input: UpdateReinderChannel) -> bool:
 
 class MedicationLogInput(BaseModel):
     user_id: int
-    med_logs: list[dict]
+    medication_logs: list[dict]
 
 @mcp.tool(
     name="medication_log",
     description=(
-        "You will use this tool to update the user's medication log."
-        "You will call this tool when you're reminding user about their medication and asking if they've taken it or not"
-        "Once You've gone through all medications and noted which meds they've taken and which they've not, call this tool." \
-        "Example input format:" \
-        "{user_id: 4"
-        "["
-        "{"
-        "'medication_id': 3, time_id: 5, taken: True}, ...]}"
+        "Use this tool to update the user's medication log. "
+        "Call this tool after reminding the user about their medications "
+        "and confirming which ones have been taken. "
+        "Once all medications have been checked, submit the results using this tool.\n\n"
+        "Example input format:\n"
+        "{\n"
+        "  user_id: 4,\n"
+        "  medication_logs: [\n"
+        "    {\n"
+        "      medication_id: 3,\n"
+        "      time_id: 5,\n"
+        "      taken: true\n"
+        "    }\n"
+        "  ]\n"
+        "}"
     )
 )
-async def update_reminder_channel(input: MedicationLogInput) -> bool:
+async def update_medication_log(input: MedicationLogInput) -> bool:
     async with get_async_session() as db:
         if not input.user_id:
             raise ValueError(f"User with ID {input.user_id} not found.")
         
-        if not input.med_logs:
+        if not input.medication_logs:
             raise ValueError(f"Med Logs not found.")
         
         update_caretaker = False
         
-        for med in input.med_logs:
+        for med in input.medication_logs:
             med_taken = med['taken']
             if not med_taken:
                 update_caretaker = True
@@ -258,10 +266,8 @@ async def update_reminder_channel(input: MedicationLogInput) -> bool:
         await db.commit()
 
         if update_caretaker:
-            message = "encourage user to take medications"
-            updated = notify_caretaker_on_missed_meds(input.user_id)
-            if updated:
-                message = "Caretaker alerted, and " + message
+            message = "Caretaker alerted, and encourage user to take medications"
+            notify_caregiver_on_missed_medication_task.apply_async(input.user_id)
             return {
                 "success": True,
                 "message": message
