@@ -740,7 +740,6 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
 async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get_db)) -> Dict[str, Any]:
     """
     Send a medical report via the user's preferred communication channel.
-    The record is automatically deleted after successful sending.
     """
     logger.info("=== SEND REPORT ENDPOINT CALLED ===")
     logger.info(f"Received payload: {payload.model_dump()}")
@@ -803,6 +802,7 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
 
         # Send report based on action
         send_result = None
+        caregiver_results = {"email": None, "whatsapp": None}
 
         if preferred_channel == "email":
             send_result = await _send_email_report(
@@ -817,18 +817,49 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
                 patient_name=response_record.full_name or " "
             )
 
-        # Delete the record after successful sending
-        await db.delete(response_record)
-        await db.commit()
+        # Send report to caregiver/caretaker if available
+        caretaker = user.caretaker
+        if caretaker:
+            caretaker_email = (caretaker.email or "").strip()
+            caretaker_phone = (caretaker.phone_number or "").strip()
+
+            if caretaker_email:
+                caregiver_results["email"] = await _send_email_report(
+                    recipient_email=caretaker_email,
+                    report_content=report_content,
+                    patient_name=response_record.full_name or " "
+                )
+
+            if caretaker_phone:
+                caregiver_results["whatsapp"] = await _send_whatsapp_report(
+                    phone_number=caretaker_phone,
+                    report_content=report_content,
+                    patient_name=response_record.full_name or " "
+                )
+
+        # Send report to doctor if symptoms are severe
+        is_severe = (response_record.severity or "").strip().lower() == "severe"
+        # if is_severe:
+        #     doctor_email = ""  # TODO: Provide doctor email from client
+        #     if doctor_email:
+        #         doctor_result = await _send_email_report(
+        #             recipient_email=doctor_email,
+        #             report_content=report_content,
+        #             patient_name=response_record.full_name or " "
+        #         )
+        #     else:
+        #         doctor_result = "doctor_email_missing"
 
         logger.info(
-            f"Report sent successfully and record deleted for conversation_id: {response_record.conversation_id}")
+            f"Report sent successfully for conversation_id: {response_record.conversation_id}")
 
         return {
             "message": "Report sent successfully",
             "conversation_id": response_record.conversation_id,
             "action": preferred_channel,
             "status": send_result,
+            "caregiver_status": caregiver_results,
+            "doctor_status": "pending" if is_severe else "not_applicable",
             "success": True
         }
 
