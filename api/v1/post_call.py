@@ -11,6 +11,11 @@ from schemas.eleven_labs_session import ElevenLabsSessionCreate
 from tasks.management_tasks import initiate_onboarding_call
 from models.onboarding import OnboardingUser
 from repositories.symptom_checker import SymptomCheckerRepository
+from api.v1.symptom_checker import (
+    _build_ai_summary_source,
+    _derive_fallback_summaries,
+    _extract_ai_summaries,
+)
 from schemas.symptom_checker import SymptomCheckerInteractionCreate
 from core.config import settings
 from scripts.utils import construct_onboarding_user_payload
@@ -394,6 +399,7 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
 
                 heart_rate_value = str(heart_rate) if heart_rate is not None else None
                 respiratory_rate_value = str(respiratory_rate) if respiratory_rate is not None else None
+                summary_source_text = symptoms
                 
             else:
                 # ElevenLabs webhook format - extract from nested structure
@@ -469,6 +475,8 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
                 symptoms = transcript[:500] if transcript else "Symptom checker call completed"
                 status = "success" if call_successful else "error"
                 
+                summary_source_text = transcript_summary or symptoms
+
                 # Parse call_timestamp
                 call_timestamp = None
                 if event_timestamp:
@@ -507,6 +515,31 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
             f"VitalsAISummary={bool(vitals_ai_summary)}, "
             f"SymptomsAISummary={bool(symptoms_ai_summary)}"
         )
+
+        # --- Backfill AI summaries if missing ---
+        if not vitals_ai_summary or not symptoms_ai_summary:
+            ai_summary_source = _build_ai_summary_source(
+                summary_text=summary_source_text,
+                symptoms=symptoms,
+                additional_notes=None,
+                vitals_data=vitals_data,
+                heart_rate=heart_rate_value,
+                respiratory_rate=respiratory_rate_value,
+            )
+            fallback_summaries = _derive_fallback_summaries(
+                symptoms=symptoms,
+                vitals_data=vitals_data,
+                heart_rate=heart_rate_value,
+                respiratory_rate=respiratory_rate_value,
+            )
+            ai_summaries = await _extract_ai_summaries(
+                ai_summary_source,
+                fallback=fallback_summaries
+            )
+            if not vitals_ai_summary:
+                vitals_ai_summary = ai_summaries.get("vitals_ai_summary")
+            if not symptoms_ai_summary:
+                symptoms_ai_summary = ai_summaries.get("symptoms_ai_summary")
 
         # --- Save to SymptomCheckerResponse table using repository ---
         try:

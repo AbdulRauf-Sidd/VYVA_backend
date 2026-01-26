@@ -247,6 +247,18 @@ The API documentation is automatically generated and available at:
 - **ReDoc**: `/redoc`
 - **OpenAPI JSON**: `/openapi.json`
 
+## ✅ Symptom AI Summaries Verification
+
+Use these steps to verify the symptom checker AI summaries are being generated:
+
+1. Ensure `OPENAI_API_KEY` is set in the environment.
+2. Call `POST /api/v1/symptoms/analyze-symptoms` with a sample payload.
+3. Fetch `GET /api/v1/symptoms/interactions/user/{user_id}` or
+   `GET /api/v1/symptoms/interactions/user/{user_id}/latest` and verify
+   `vitals_ai_summary` and `symptoms_ai_summary` are populated.
+4. Use `POST /api/v1/symptoms/backfill-ai-summaries?dry_run=true` to preview
+   how many records would be updated.
+
 ## 🤝 Contributing
 
 1. Fork the repository
