@@ -11,7 +11,7 @@ import random
 import string
 import unicodedata
 import asyncio
-from sqlalchemy import select
+from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db
 from models.symptom_checker import SymptomCheckerResponse
@@ -56,7 +56,87 @@ def _apply_optional_payload_fields(record, payload_data: dict, fields=_OPTIONAL_
             setattr(record, field, payload_data[field])
 
 
-async def _extract_ai_summaries(summary_text: str) -> Dict[str, Optional[str]]:
+def _normalize_ai_summary_value(value: Optional[str]) -> Optional[str]:
+    if value is None:
+        return None
+    if isinstance(value, str):
+        trimmed = value.strip()
+        if not trimmed or trimmed.lower() == "null":
+            return None
+        if len(trimmed) > 200:
+            return trimmed[:200]
+        return trimmed
+    return None
+
+
+def _build_ai_summary_source(
+    summary_text: Optional[str],
+    symptoms: Optional[str],
+    additional_notes: Optional[str],
+    vitals_data: Optional[Dict[str, Any]],
+    heart_rate: Optional[str],
+    respiratory_rate: Optional[str],
+) -> str:
+    parts: List[str] = []
+    if summary_text:
+        parts.append(f"Summary: {summary_text}")
+    if symptoms:
+        parts.append(f"Symptoms: {symptoms}")
+    if additional_notes:
+        parts.append(f"Additional notes: {additional_notes}")
+    vitals_parts: List[str] = []
+    if heart_rate:
+        vitals_parts.append(f"heart_rate={heart_rate} bpm")
+    if respiratory_rate:
+        vitals_parts.append(f"respiratory_rate={respiratory_rate} breaths/min")
+    if vitals_data:
+        vitals_parts.append(f"vitals_data={json.dumps(vitals_data, ensure_ascii=True)}")
+    if vitals_parts:
+        parts.append(f"Vitals: {', '.join(vitals_parts)}")
+    return "\n".join(parts)
+
+
+def _derive_fallback_summaries(
+    symptoms: Optional[str],
+    vitals_data: Optional[Dict[str, Any]],
+    heart_rate: Optional[str],
+    respiratory_rate: Optional[str],
+) -> Dict[str, Optional[str]]:
+    vitals_summary: Optional[str] = None
+    symptoms_summary: Optional[str] = None
+
+    vitals_bits: List[str] = []
+    if heart_rate:
+        vitals_bits.append(f"Heart rate: {heart_rate} bpm")
+    if respiratory_rate:
+        vitals_bits.append(f"Respiratory rate: {respiratory_rate} breaths/min")
+    if not vitals_bits and vitals_data:
+        heart = vitals_data.get("heart_rate") if isinstance(vitals_data, dict) else None
+        resp = vitals_data.get("respiratory_rate") if isinstance(vitals_data, dict) else None
+        if isinstance(heart, dict) and "value" in heart:
+            vitals_bits.append(f"Heart rate: {heart.get('value')} {heart.get('unit', 'bpm')}")
+        if isinstance(resp, dict) and "value" in resp:
+            vitals_bits.append(
+                f"Respiratory rate: {resp.get('value')} {resp.get('unit', 'breaths/min')}"
+            )
+    if vitals_bits:
+        vitals_summary = ". ".join(vitals_bits)
+
+    if symptoms:
+        symptoms_summary = symptoms.strip()
+        if len(symptoms_summary) > 200:
+            symptoms_summary = symptoms_summary[:200]
+
+    return {
+        "vitals_ai_summary": vitals_summary,
+        "symptoms_ai_summary": symptoms_summary,
+    }
+
+
+async def _extract_ai_summaries(
+    summary_text: str,
+    fallback: Optional[Dict[str, Optional[str]]] = None
+) -> Dict[str, Optional[str]]:
     """
     Use OpenAI to extract vitals_ai_summary and symptoms_ai_summary from text.
     Returns dict with keys 'vitals_ai_summary' and 'symptoms_ai_summary' when successful.
@@ -65,6 +145,8 @@ async def _extract_ai_summaries(summary_text: str) -> Dict[str, Optional[str]]:
         "vitals_ai_summary": None,
         "symptoms_ai_summary": None,
     }
+    if fallback:
+        result.update(fallback)
 
     if not summary_text:
         return result
@@ -112,8 +194,12 @@ async def _extract_ai_summaries(summary_text: str) -> Dict[str, Optional[str]]:
         if content:
             try:
                 parsed = json_loads(content)
-                result["vitals_ai_summary"] = parsed.get("vitals_ai_summary")
-                result["symptoms_ai_summary"] = parsed.get("symptoms_ai_summary")
+                result["vitals_ai_summary"] = _normalize_ai_summary_value(
+                    parsed.get("vitals_ai_summary")
+                )
+                result["symptoms_ai_summary"] = _normalize_ai_summary_value(
+                    parsed.get("symptoms_ai_summary")
+                )
             except (JSONDecodeError, AttributeError) as parse_err:
                 logger.warning("Failed to parse AI summaries JSON: %s", parse_err)
     except Exception as exc:
@@ -624,7 +710,21 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
         summary = _create_clean_summary(email)
 
         # Extract AI summaries (vitals/symptoms) from summary text using OpenAI
-        ai_summaries = await _extract_ai_summaries(summary)
+        ai_summary_source = _build_ai_summary_source(
+            summary_text=summary,
+            symptoms=payload.symptoms,
+            additional_notes=payload.additional_notes,
+            vitals_data=None,
+            heart_rate=payload.heart_rate,
+            respiratory_rate=payload.respiratory_rate,
+        )
+        fallback_summaries = _derive_fallback_summaries(
+            symptoms=payload.symptoms,
+            vitals_data=None,
+            heart_rate=payload.heart_rate,
+            respiratory_rate=payload.respiratory_rate,
+        )
+        ai_summaries = await _extract_ai_summaries(ai_summary_source, fallback=fallback_summaries)
         vitals_ai_summary = ai_summaries.get("vitals_ai_summary")
         symptoms_ai_summary = ai_summaries.get("symptoms_ai_summary")
 
@@ -993,6 +1093,90 @@ async def _send_whatsapp_report(phone_number: str, report_content: Dict[str, Any
         return "whatsapp_failed"
 
 
+@router.post(
+    "/backfill-ai-summaries",
+    summary="Backfill AI summaries for symptom records",
+    description="Generate missing vitals_ai_summary and symptoms_ai_summary for existing records"
+)
+async def backfill_ai_summaries(
+    limit: int = Query(50, ge=1, le=500, description="Maximum number of records to process"),
+    start_date: Optional[datetime] = Query(None, description="Filter records from this date"),
+    end_date: Optional[datetime] = Query(None, description="Filter records until this date"),
+    dry_run: bool = Query(False, description="If true, do not persist changes"),
+    db: AsyncSession = Depends(get_db)
+) -> Dict[str, Any]:
+    try:
+        query = select(SymptomCheckerResponse).where(
+            or_(
+                SymptomCheckerResponse.vitals_ai_summary.is_(None),
+                SymptomCheckerResponse.symptoms_ai_summary.is_(None)
+            )
+        )
+
+        if start_date:
+            query = query.where(SymptomCheckerResponse.created_at >= start_date)
+        if end_date:
+            query = query.where(SymptomCheckerResponse.created_at <= end_date)
+
+        query = query.order_by(SymptomCheckerResponse.created_at.desc()).limit(limit)
+        result = await db.execute(query)
+        records = result.scalars().all()
+
+        updated = 0
+        processed = 0
+
+        for record in records:
+            processed += 1
+            ai_summary_source = _build_ai_summary_source(
+                summary_text=record.summary,
+                symptoms=record.symptoms,
+                additional_notes=record.additional_notes,
+                vitals_data=record.vitals_data,
+                heart_rate=record.heart_rate,
+                respiratory_rate=record.respiratory_rate,
+            )
+            fallback_summaries = _derive_fallback_summaries(
+                symptoms=record.symptoms,
+                vitals_data=record.vitals_data,
+                heart_rate=record.heart_rate,
+                respiratory_rate=record.respiratory_rate,
+            )
+            ai_summaries = await _extract_ai_summaries(
+                ai_summary_source,
+                fallback=fallback_summaries
+            )
+
+            vitals_ai_summary = ai_summaries.get("vitals_ai_summary")
+            symptoms_ai_summary = ai_summaries.get("symptoms_ai_summary")
+
+            if not dry_run:
+                changed = False
+                if record.vitals_ai_summary is None and vitals_ai_summary is not None:
+                    record.vitals_ai_summary = vitals_ai_summary
+                    changed = True
+                if record.symptoms_ai_summary is None and symptoms_ai_summary is not None:
+                    record.symptoms_ai_summary = symptoms_ai_summary
+                    changed = True
+                if changed:
+                    updated += 1
+
+        if not dry_run:
+            await db.commit()
+
+        return {
+            "processed": processed,
+            "updated": updated,
+            "dry_run": dry_run
+        }
+
+    except Exception as e:
+        logger.error(f"Backfill failed: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Backfill failed: {str(e)}"
+        )
+
+
 # ============================================================================
 # CAREGIVER DASHBOARD ENDPOINTS
 # ============================================================================
@@ -1040,6 +1224,36 @@ async def get_user_interactions(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to retrieve interactions: {str(e)}"
+        )
+
+
+@router.get(
+    "/interactions/user/{user_id}/latest",
+    response_model=SymptomCheckerInteractionRead,
+    summary="Get latest interaction for a user",
+    description="Retrieve the most recent symptom checker interaction for a specific user"
+)
+async def get_latest_user_interaction(
+    user_id: int,
+    db: AsyncSession = Depends(get_db)
+) -> SymptomCheckerInteractionRead:
+    try:
+        repo = SymptomCheckerRepository(db)
+        interactions = await repo.get_recent_interactions(limit=1, user_id=user_id)
+        if not interactions:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"No interactions found for user_id {user_id}"
+            )
+        return interactions[0]
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting latest user interaction: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve latest interaction: {str(e)}"
         )
 
 

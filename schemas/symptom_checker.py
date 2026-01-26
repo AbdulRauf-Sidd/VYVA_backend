@@ -92,6 +92,10 @@ class SymptomCheckerInteractionRead(BaseModel):
     heart_rate: Optional[str] = None
     respiratory_rate: Optional[str] = None
     symptoms: Optional[str] = None
+    summary: Optional[str] = None
+    additional_notes: Optional[str] = None
+    severity_scale: Optional[str] = None
+    duration: Optional[str] = None
     full_name: Optional[str] = None
     language: Optional[str] = None
     severity: Optional[str] = None
