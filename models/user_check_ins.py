@@ -17,7 +17,7 @@ class UserCheckin(Base):
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     user = relationship("User", back_populates="user_checkins")
     scheduled_sessions = relationship("ScheduledSession", back_populates="user_checkin", cascade="all, delete-orphan", passive_deletes=True)
-    check_in_type = Column(Enum(CheckInType), nullable=False) # brain coach, check up call. 
+    check_in_type = Column(String(20), nullable=False) # brain coach, check up call. 
     check_in_frequency_days = Column(Integer, nullable=False)
     check_in_time = Column(Time, nullable=True)
     is_active = Column(Boolean, default=True)
