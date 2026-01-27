@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Body, Response
-from fastmcp import settings
+from core.config import settings
 from sqlalchemy.ext.asyncio import AsyncSession
 from models.user import User, Caretaker
 from models.onboarding import OnboardingUser
@@ -183,6 +183,7 @@ async def onboard_user(
             "received": payload.model_dump()
         }
     except Exception as e:
+        db.rollback()
         logger.error(f"Error processing payload: {e}")
         raise HTTPException(status_code=400, detail="Invalid payload")
 

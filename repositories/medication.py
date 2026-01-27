@@ -50,7 +50,7 @@ class MedicationRepository:
             logger.error(f"Error creating medication: {e}")
             raise
 
-    async def create_bulk(self, medications_data: List[MedicationCreate]) -> List[MedicationInDB]:
+    async def create_bulk(self, medications_data: List[MedicationCreate]) -> bool:
         """Create multiple medications with times"""
         try:
             created_medications = []
@@ -81,7 +81,7 @@ class MedicationRepository:
             for medication in created_medications:
                 await self.db_session.refresh(medication)
             
-            return [MedicationInDB.model_validate(med) for med in created_medications]
+            return True
             
         except Exception as e:
             await self.db_session.rollback()

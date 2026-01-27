@@ -29,7 +29,7 @@ class MedicationService:
             logger.error(f"Unexpected error creating medication: {e}")
             raise
 
-    async def create_medications_bulk(self, medications_data: List[MedicationCreate]) -> List[MedicationInDB]:
+    async def create_medications_bulk(self, medications_data: List[MedicationCreate]) -> bool:
         """Create multiple medications with validation"""
         try:
             if not medications_data:
@@ -109,7 +109,7 @@ class MedicationService:
             logger.error(f"Unexpected error updating medication {medication_id}: {e}")
             raise
 
-    async def process_bulk_medication_request(self, request_data: BulkMedicationRequest) -> List[MedicationInDB]:
+    async def process_bulk_medication_request(self, request_data: BulkMedicationRequest) -> bool:
         """Process bulk medication request from API input"""
         try:
             # Convert input format to MedicationCreate objects
