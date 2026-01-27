@@ -9,7 +9,7 @@ from sqlalchemy.orm import selectinload
 from models.user import Caretaker, User
 from core.config import settings
 from fastapi import Body
-from models.authentication import UserTempToken, UserSession, CaretakerSession
+from models.authentication import CaretakerTempToken, UserTempToken, UserSession, CaretakerSession
 from datetime import datetime, timedelta, timezone
 from schemas.authentication import PhoneRequest, VerifyOtpRequest
 from services.whatsapp_service import whatsapp_service
@@ -76,17 +76,6 @@ async def verify_otp(request: Request, response: Response, body: VerifyOtpReques
 
     set_cookie(response, session_id)
 
-    # response.set_cookie(
-    #     key="session_id",
-    #     value=session_id,
-    #     httponly=True,
-    #     secure=True,
-    #     # secure=False,       # ❌ must be False for localhost
-    #     # samesite="lax",
-    #     max_age=settings.SESSION_DURATION,
-    #     samesite="None"
-    # )
-
     return {
         "success": True,
         "message": msg
@@ -108,17 +97,6 @@ async def caretaker_verify_otp(request: Request, response: Response, body: Verif
     )
 
     set_cookie(response, session_id)
-
-    # response.set_cookie(
-    #     key="session_id",
-    #     value=session_id,
-    #     httponly=True,
-    #     secure=True,
-    #     # secure=False,       # ❌ must be False for localhost
-    #     # samesite="lax",
-    #     max_age=settings.SESSION_DURATION,
-    #     samesite="None"
-    # )
 
     user = None
     result = await db.execute(
@@ -169,42 +147,71 @@ async def magic_login(
     token_row.used = True
     await db.commit()
 
-    # Create user session
-    # expires_at = datetime.utcnow() + timedelta(days=30)
-    # db.add(session)
-    # await db.commit()
-    if token_row.user_id:
-        user_id= token_row.user_id
-    else:
-        user_id= token_row.caretaker_id
+    user_id= token_row.user_id
 
     session_id = await create_user_session(
         db, 
         user_id, 
-        user_type="user" if token_row.user_id else "caretaker",
+        user_type="user",
         user_agent=request.headers.get("User-Agent"), 
         ip_address=request.client.host
     )
 
-    # Set auth cookie
     set_cookie(response, session_id)
-    # response.set_cookie(
-    #     key="session_id",
-    #     value=session_id,
-    #     httponly=True,
-    #     secure=True,
-    #     # secure=False,       # ❌ must be False for localhost
-    #     # samesite="lax",
-    #     max_age=settings.SESSION_DURATION,
-    #     samesite="None"
-    # )
+
+    return {"success": True, "message": "Magic login successful"}
+
+@router.post("/magic-login-caretaker/", response_model=StandardSuccessResponse)
+async def magic_login_caretaker(
+    request: Request,
+    response: Response,
+    db: AsyncSession = Depends(get_db)
+):
+
+    data = await request.json()
+    token = data.get("token")
+    phone = data.get("phone")
+
+    if not token:
+        raise HTTPException(status_code=400, detail="Token missing")
+    if not phone:
+        raise HTTPException(status_code=400, detail="Phone missing")
+    
+    result = await db.execute(
+        select(CaretakerTempToken).where(CaretakerTempToken.token == token)
+    )
+    token_row = result.scalar_one_or_none()
+
+    if not token_row:
+        raise HTTPException(status_code=400, detail="Invalid token")
+
+    if token_row.expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=401, detail="Token expired")
+
+    if token_row.used:
+        raise HTTPException(status_code=401, detail="Token already used")
+
+    token_row.used = True
+    await db.commit()
+
+    user_id= token_row.caretaker_id
+
+
+    session_id = await create_user_session(
+        db, 
+        user_id, 
+        user_type="caretaker",
+        user_agent=request.headers.get("User-Agent"), 
+        ip_address=request.client.host
+    )
+
+    set_cookie(response, session_id)
 
     return {"success": True, "message": "Magic login successful"}
 
 
 @router.post("/session/", response_model=SessionCheckResponse)
 async def session_auth(
-    # request: Request,
     session_id: str = Cookie(None, alias=settings.SESSION_COOKIE_NAME), 
     db: AsyncSession = Depends(get_db)
 ):
@@ -247,7 +254,7 @@ async def caretaker_session_auth(
     session_id: str = Cookie(None, alias=settings.SESSION_COOKIE_NAME), 
     db: AsyncSession = Depends(get_db)
 ):
-    
+    print('session:sdsdsd', session_id)
     if not session_id:
         raise HTTPException(status_code=401, detail="Not authenticated")
 

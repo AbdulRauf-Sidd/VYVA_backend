@@ -18,7 +18,7 @@ class OnboardingUser(Base):
     first_name = Column(String(100), nullable=True)
     last_name = Column(String(100), nullable=True)
     email = Column(String(255), nullable=True, unique=False) 
-    phone_number = Column(String(20), index=True, nullable=False, unique=False)
+    phone_number = Column(String(20), index=True, nullable=False, unique=True)
     address=Column(String(255), nullable=True)
     language=Column(String(50), nullable=True)
     preferred_time=Column(Time, nullable=True)
@@ -36,8 +36,8 @@ class OnboardingUser(Base):
     called_at = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     organization=relationship("Organization", back_populates="onboarding_users")
-    organization_id=Column(Integer, ForeignKey("organizations.id"), nullable=True)
-    onboarding_logs=relationship("OnboardingLogs", back_populates="onboarding_user")
+    organization_id=Column(Integer, ForeignKey("organizations.id", ondelete="CASCADE"), nullable=True)
+    onboarding_logs=relationship("OnboardingLogs", back_populates="onboarding_user", cascade="all, delete-orphan", passive_deletes=True)
 
 
 class OnboardingLogs(Base):
@@ -50,7 +50,7 @@ class OnboardingLogs(Base):
     call_at = Column(DateTime(timezone=True), nullable=True)
     call_id = Column(String(255), nullable=True)
     onboarding_user=relationship("OnboardingUser", back_populates="onboarding_logs")
-    onboarding_user_id=Column(Integer, ForeignKey("onboarding_users.id"), nullable=True)
+    onboarding_user_id=Column(Integer, ForeignKey("onboarding_users.id", ondelete="CASCADE"), nullable=True)
     status=Column(String(50), nullable=True)
     summary = Column(String(1000), nullable=True)
 

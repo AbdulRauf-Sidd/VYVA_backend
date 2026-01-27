@@ -436,13 +436,13 @@ async def get_weekly_medication_schedule(
                     if log_key in log_map:
                         status_value = log_map[log_key]
                     elif scheduled_datetime < now:
-                        status_value = MedicationStatus.MISSED.value
+                        status_value = MedicationStatus.missed.value
                     else:
-                        status_value = MedicationStatus.UNCONFIRMED.value
+                        status_value = MedicationStatus.unconfirmed.value
                         
                     total_scheduled += 1
 
-                    if status_value == MedicationStatus.TAKEN.value:
+                    if status_value == MedicationStatus.taken.value:
                         total_taken += 1
 
                     weekly_schedule[day_name].append({
@@ -665,7 +665,7 @@ async def get_detailed_medication_info(
 
         total_logs = len(weekly_logs)
         taken_logs = sum(
-            1 for log in weekly_logs if log.status == MedicationStatus.TAKEN
+            1 for log in weekly_logs if log.status == MedicationStatus.taken.value
         )
 
         adherence_percentage = (

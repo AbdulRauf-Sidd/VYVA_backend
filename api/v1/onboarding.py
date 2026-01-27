@@ -17,7 +17,7 @@ from schemas.medication import BulkMedicationSchema
 from repositories.medication import MedicationRepository
 from services.medication import MedicationService
 from models.user_check_ins import UserCheckin, ScheduledSession, CheckInType
-from models.authentication import UserTempToken
+from models.authentication import CaretakerTempToken, UserTempToken
 from services.whatsapp_service import whatsapp_service
 from services.mem0 import add_conversation
 from datetime import timezone
@@ -62,6 +62,7 @@ async def onboard_user(
         health_conditions = data.get("health_conditions", [])
         preferences = data.get("preferences", [])
         mobility = data.get("mobility", [])
+        preferred_reports_channel = data.get("preferred_reports_channel", None)
         city = record.city_state_province if record.city_state_province else ""
         postal_code = record.postal_zip_code if record.postal_zip_code else ""
         address = record.address if record.address else address
@@ -88,7 +89,8 @@ async def onboard_user(
             caretaker_id=caregiver.id if caregiver_phone else None,
             caretaker_consent=caretaker_consent,
             caretaker=caregiver if caregiver_phone else None,
-            preferred_reminder_channel=payload.preferred_reminder_channel
+            preferred_reminder_channel=payload.preferred_reminder_channel,
+            preferred_reports_channel=payload.preferred_reports_channel
         )
 
         db.add(user)
@@ -137,7 +139,7 @@ async def onboard_user(
         temp_token_caregiver = None
 
         if caregiver:
-            temp_token_caregiver = UserTempToken(
+            temp_token_caregiver = CaretakerTempToken(
                 caretaker_id=caregiver.id,
                 expires_at=datetime.now() + timedelta(hours=24),
                 used=False
@@ -166,7 +168,7 @@ async def onboard_user(
         await whatsapp_service.send_onboarding_message(user.phone_number, temmplate_data)
         
         if temp_token_caregiver:
-            caregiver_onboarding_link = f"https://care.{record.organization.sub_domain}.vyva.io/?token={temp_token_caregiver.token}"
+            caregiver_onboarding_link = f"https://care-{record.organization.sub_domain}.vyva.io/?token={temp_token_caregiver.token}"
             temmplate_data = {
                 "caregiver_magic_link": caregiver_onboarding_link
             }

@@ -19,15 +19,16 @@ class Organization(Base):
     timezone = Column(String(20), nullable=False, default="UTC")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     onboarding_agent_id = Column(String(100), nullable=False)
-    users = relationship("User", back_populates="organization")
-    onboarding_users = relationship("OnboardingUser", back_populates="organization")
+    users = relationship("User", cascade="all, delete-orphan", passive_deletes=True, back_populates="organization")
+    onboarding_users = relationship("OnboardingUser", cascade="all, delete-orphan", passive_deletes=True, back_populates="organization")
     sub_domain = Column(String(100), nullable=True, unique=True)
     is_active = Column(Boolean, default=True)
 
     agents = relationship(
         "OrganizationAgents",
         back_populates="organization",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
+        passive_deletes=True
     )
     
     def __repr__(self):
@@ -50,7 +51,7 @@ class OrganizationAgents(Base):
     agent_id = Column(String(255), nullable=False)
     agent_type = Column(String(30), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False)
+    organization_id = Column(Integer, ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False)
     organization = relationship("Organization", back_populates="agents")
     name_slug = Column(String(100), nullable=False)
     is_active = Column(Boolean, default=True)
@@ -66,17 +67,11 @@ def before_insert(mapper, connection, target):
 
 
 class TemplateTypeEnum(str, PyEnum):
-    MEDICATION_REMINDER = "medication_reminder"
-    MAGIC_LINK = "magic_link"
-    CARETAKER_MAGIC_LINK = "caretaker_magic_link"
-    SYMPTOM_CHECKER = "symptom_checker"
-    FALL_DETECTION = "fall_detection"
-
-class LanguageEnum(str, PyEnum):
-    ENGLISH = "english"
-    SPANISH = "spanish"
-    GERMAN = "german"
-    FRENCH = "french"
+    medication_reminder = "medication_reminder"
+    magic_link = "magic_link"
+    caretaker_magic_link = "caretaker_magic_link"
+    symptom_checker = "symptom_checker"
+    fall_detection = "fall_detection"
 
 class TwilioWhatsappTemplates(Base):
     __tablename__ = "twilio_whatsapp_templates"
@@ -86,7 +81,7 @@ class TwilioWhatsappTemplates(Base):
     language = Column(String(30), nullable=False)
     template_type = Column(String(30), nullable=False)
     template_id = Column(String(100), nullable=False)
-    organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=True)
+    organization_id = Column(Integer, ForeignKey("organizations.id", ondelete="CASCADE"), nullable=True)
     is_active = Column(Boolean, default=True)
 
 

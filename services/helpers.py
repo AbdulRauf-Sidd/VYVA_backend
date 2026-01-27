@@ -91,9 +91,19 @@ async def construct_whatsapp_brain_coach_message(first_name, report_content, sug
 def construct_phone_call_message(user, medication):
     pass
 
-def construct_initial_agent_message_for_reminders(user, medication):
-    return f'Hello {user['first_name']}!, this is VYVA. How are you doing?'
+MEDICATION_REMINDER_MESSAGE_MAP = {
+    'en': "hello {first_name}, this is a reminder to take your medication.",
+    'es': "hola {first_name}, este es un recordatorio para tomar su medicamento."
+}
+
+def construct_initial_agent_message_for_reminders(first_name, iso_language='en'):
+    return MEDICATION_REMINDER_MESSAGE_MAP.get(iso_language).format(first_name=first_name)
     # pass
 
-def constuct_initial_agent_message_for_onboarding(first_name):
-    return f"Hello {first_name}, How are you doing?"
+ONBOARDING_MESSAGE_MAP = {
+    'en': "Hello {first_name}, welcome to VYVA!",
+    'es': "Hola {first_name}, ¡bienvenido a VYVA!"
+}
+
+def constuct_initial_agent_message_for_onboarding(first_name, iso_language='en'):
+    return ONBOARDING_MESSAGE_MAP.get(iso_language).format(first_name=first_name)

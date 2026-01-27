@@ -1,6 +1,7 @@
 from sqladmin import Admin, ModelView
 from core.database import engine
 from models import User, Medication
+from models.authentication import CaretakerSession, CaretakerTempToken
 from models.organization import Organization, OrganizationAgents, TwilioWhatsappTemplates
 from models.onboarding import OnboardingUser
 from models.onboarding import OnboardingLogs
@@ -64,6 +65,12 @@ def setup_admin(app):
 
     class BrainCoachResponsesAdmin(ModelView, model=BrainCoachResponses):
         column_list = "__all__"
+
+    class CareTakerTempTokenAdmin(ModelView, model=CaretakerTempToken):
+        column_list = "__all__"
+
+    class CaretakerSessionAdmin(ModelView, model=CaretakerSession):
+        column_list = "__all__"
         
     # class MedicationLogAdmin(ModelView, model=MedicationLog):
     #     column_list = "__all__"
@@ -82,4 +89,5 @@ def setup_admin(app):
     admin.add_view(BrainCoachQuestionsAdmin)
     admin.add_view(QuestionTranslationsAdmin)
     admin.add_view(BrainCoachResponsesAdmin)
-    # admin.add_view(MedicationLogAdmin)
+    admin.add_view(CareTakerTempTokenAdmin)
+    admin.add_view(CaretakerSessionAdmin)

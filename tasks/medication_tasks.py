@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime, date
 from zoneinfo import ZoneInfo
 from models.medication import Medication, MedicationTime, MedicationStatus, MedicationLog
-from models.organization import AgentTypeEnum, TwilioWhatsappTemplates, LanguageEnum, TemplateTypeEnum
+from models.organization import AgentTypeEnum, TwilioWhatsappTemplates, TemplateTypeEnum
 from sqlalchemy import or_, select
 from models.eleven_labs_sessions import ElevenLabsSessions
 from scripts.medication_utils import notify_caretaker_on_missed_meds, construct_medication_string_for_whatsapp
@@ -45,7 +45,7 @@ def send_whatsapp_medication_reminder(payload):
                 db.query(TwilioWhatsappTemplates)
                 .filter(
                     TwilioWhatsappTemplates.language == language,
-                    TwilioWhatsappTemplates.template_type == TemplateTypeEnum.MEDICATION_REMINDER.value,
+                    TwilioWhatsappTemplates.template_type == TemplateTypeEnum.medication_reminder.value,
                     TwilioWhatsappTemplates.is_active.is_(True),
                 )
                 .first()
@@ -61,7 +61,7 @@ def send_whatsapp_medication_reminder(payload):
                     medication_id = medication['medication_id'],
                     medication_time_id = medication['time_id'],
                     user_id = user_id,
-                    status = MedicationStatus.UNCONFIRMED.value
+                    status = MedicationStatus.unconfirmed.value
                 )
                 db.add(med_log)
                 db.flush()  # assigns ID without committing
