@@ -168,7 +168,7 @@ async def onboard_user(
         await whatsapp_service.send_onboarding_message(user.phone_number, temmplate_data)
         
         if temp_token_caregiver:
-            caregiver_onboarding_link = f"https://care-{record.organization.sub_domain}.vyva.io/?token={temp_token_caregiver.token}"
+            caregiver_onboarding_link = f"https://care-{record.organization.sub_domain}.vyva.io/senior-verification?token={temp_token_caregiver.token}"
             temmplate_data = {
                 "caregiver_magic_link": caregiver_onboarding_link
             }
