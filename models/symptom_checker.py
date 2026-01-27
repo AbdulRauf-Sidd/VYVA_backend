@@ -17,7 +17,7 @@ class SymptomCheckerResponse(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     conversation_id = Column(String(255), unique=True, index=True, nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True)
     user = relationship("User", back_populates="symptom_checker_responses")
     
     # Call metadata

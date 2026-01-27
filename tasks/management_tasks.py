@@ -60,24 +60,23 @@ def initiate_onboarding_call(payload: dict):
     try:
         db = SessionLocal()
         response = make_onboarding_call(payload)
+        onboarding_record = db.query(OnboardingUser).filter(OnboardingUser.id == payload.get("user_id")).first()
+        onboarding_record.onboarding_call_scheduled = False
+        onboarding_record.call_attempts += 1
+        onboarding_record.called_at = datetime.now()
         if not response:
             logger.error(f"Failed to initiate onboarding call for payload: {payload}")
-        else:
-            onboarding_record = db.query(OnboardingUser).filter(OnboardingUser.id == payload.get("user_id")).first()
-            if onboarding_record:
-                onboarding_record.onboarding_call_scheduled = False
-                onboarding_record.call_attempts += 1
-                onboarding_record.called_at = datetime.now()
-                onboarding_log = OnboardingLogs(
-                    call_at=datetime.now(),
-                    call_id=response.get('callSid'),
-                    onboarding_user_id=onboarding_record.id,
-                    status="in_progress",
-                )
-                db.add(onboarding_record)
-                db.add(onboarding_log)
-                db.commit()
-                schedule_celery_task_for_call_status_check()
+
+        onboarding_log = OnboardingLogs(
+            call_at=datetime.now(),
+            call_id=response.get('callSid'),
+            onboarding_user_id=onboarding_record.id,
+            status="in_progress",
+        )
+        db.add(onboarding_record)
+        db.add(onboarding_log)
+        db.commit()
+        schedule_celery_task_for_call_status_check()
     except Exception as e:
         logger.error(f"Error initiating onboarding call: {e}")
     finally:
@@ -294,7 +293,7 @@ def update_call_status(self, payload=None):
                 if status in ["declined", "no_answer", "failed"]:
                     # Mark medication as unconfirmed
                     if payload:
-                        update_medication_status(payload, MedicationStatus.UNCONFIRMED)
+                        update_medication_status(payload, MedicationStatus.unconfirmed.value)
                     
                     session.status = status
         db.commit()
@@ -362,11 +361,10 @@ def check_onboarding_call_status():
         pending_logs = (
             db.query(OnboardingLogs)
             .filter(
-                OnboardingLogs.summary.ilike("%in_progress%"),
                 or_(
                     OnboardingLogs.status.is_(None),
                     OnboardingLogs.status == "in_progress",
-                ),
+                )
             )
             .all()
         )

@@ -259,7 +259,7 @@ async def update_medication_log(input: MedicationLogInput) -> bool:
                 medication_time_id = med['time_id'],
                 user_id = input.user_id,
                 taken_at=datetime.now(timezone.utc) if med_taken else None,
-                status=MedicationStatus.TAKEN if med_taken else MedicationStatus.MISSED
+                status=MedicationStatus.taken.value if med_taken else MedicationStatus.missed.value
             )
             db.add(log)
 

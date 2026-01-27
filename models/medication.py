@@ -19,7 +19,7 @@ class Medication(Base):
     
     id = Column(Integer, primary_key=True, index=True)
 
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     
     # Medication Information
     name = Column(String(255), nullable=False)
@@ -32,11 +32,12 @@ class Medication(Base):
 
     # Relationships
     user = relationship("User", back_populates="medications")
-    times_of_day = relationship("MedicationTime", back_populates="medication", cascade="all, delete-orphan", lazy="selectin")
+    times_of_day = relationship("MedicationTime", back_populates="medication", cascade="all, delete-orphan", passive_deletes=True, lazy="selectin")
     logs = relationship(
         "MedicationLog",
         back_populates="medication",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
+        passive_deletes=True
     )
 
     def __repr__(self):
@@ -60,7 +61,8 @@ class MedicationTime(Base):
     logs = relationship(
         "MedicationLog",
         back_populates="medication_time",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
+        passive_deletes=True
     )
     
     def __repr__(self):
@@ -79,7 +81,7 @@ class MedicationLog(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
 
     medication_id = Column(
         Integer,
@@ -95,15 +97,7 @@ class MedicationLog(Base):
 
     taken_at = Column(DateTime, nullable=True)
 
-    status = Column(
-        PGEnum(
-            MedicationStatus,
-            name="medicationstatus",
-            values_callable=lambda enum_cls: [e.value for e in enum_cls],
-            create_type=False
-        ),
-        nullable=False
-    )
+    status = Column(String(50), nullable=False)
 
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

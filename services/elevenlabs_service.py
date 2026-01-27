@@ -2,7 +2,8 @@ from elevenlabs import ElevenLabs, OutboundCallRecipient, ConversationConfigOver
 from core.config import settings
 from models.onboarding import OnboardingUser
 import requests
-from services.helpers import constuct_initial_agent_message_for_onboarding
+from services.helpers import construct_initial_agent_message_for_reminders, constuct_initial_agent_message_for_onboarding
+from scripts.utils import LANGUAGE_MAP
 
 client = ElevenLabs(
     api_key=settings.ELEVENLABS_API_KEY,
@@ -183,12 +184,13 @@ def make_onboarding_call(payload: dict):
         phone_number = payload.get("phone_number")
         user_type = payload.get("user_type")
         language = payload.get("language")
+        iso_language = LANGUAGE_MAP.get(language.lower(), "en")
         first_name = payload.get("first_name")
         last_name = payload.get("last_name")
         address = payload.get("address")
         caregiver_name = payload.get("caregiver_name")
         caregiver_phone = payload.get("caregiver_phone")
-        initial_message = constuct_initial_agent_message_for_onboarding(first_name)
+        initial_message = constuct_initial_agent_message_for_onboarding(first_name, iso_language)
         response = requests.post(
           "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
           headers={
@@ -198,13 +200,13 @@ def make_onboarding_call(payload: dict):
             "agent_id": agent_id,
             "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
             "to_number": phone_number,
-            "conversation_config_override": {
-              "agent": {
-                  "language": language,
-                  "first_message": initial_message
-              }
-            },
             "conversation_initiation_client_data": {
+              "conversation_config_override": {
+                "agent": {
+                    "language": iso_language,
+                    "first_message": initial_message
+                }
+              },
               "dynamic_variables": {
                 "user_id": id,
                 "first_name": first_name,
@@ -220,7 +222,7 @@ def make_onboarding_call(payload: dict):
 
         logger.info(f"Call response for onboarding call: {response.json()}")
         
-        return response.json
+        return response.json()
     except Exception as e:
         logger.error(f"Elevenlabs onboarding call failed: {e}")
 
@@ -233,7 +235,9 @@ def make_medication_reminder_call(payload: dict):
         first_name = payload.get("first_name")
         # last_name = payload.get("last_name")
         language = payload.get("language")
+        iso_language = LANGUAGE_MAP.get(language.lower(), "en")
         medications = payload.get("medications")
+        first_message = construct_initial_agent_message_for_reminders(first_name, iso_language)
 
         response = requests.post(
           "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
@@ -244,13 +248,13 @@ def make_medication_reminder_call(payload: dict):
             "agent_id": agent_id,
             "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
             "to_number": phone_number,
-            "conversation_config_override": {
-              "agent": {
-                  "language": language,
-                  "first_message": f"hello {first_name}, this is a reminder to take your medication."
-              }
-            },
             "conversation_initiation_client_data": {
+              "conversation_config_override": {
+                "agent": {
+                    "language": iso_language,
+                    "first_message": first_message
+                }
+              },
               "user_id": str(id),
               "dynamic_variables": {
                 "user_id": id,

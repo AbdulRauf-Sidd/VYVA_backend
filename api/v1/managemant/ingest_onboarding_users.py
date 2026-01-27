@@ -6,6 +6,7 @@ from unittest import result
 from fastapi import Form, UploadFile, File, HTTPException
 from core.database import get_db
 from fastapi import APIRouter, Depends
+from models.user import User
 from schemas.responses import StandardSuccessResponse
 from models.onboarding import OnboardingUser
 from models.organization import Organization
@@ -131,6 +132,22 @@ async def validate_csv(file_content: str, db):
         if not phone_pattern.match(full_phone.replace(" ", "").replace("-", "")):
             errors.append(f"Row {i}: Invalid phone number format '{full_phone}'. Must be in E.164 format.")
 
+        db_result = await db.execute(
+            select(OnboardingUser).where(OnboardingUser.phone_number == full_phone)
+        )
+        existing_user = db_result.scalar_one_or_none()
+        if existing_user:
+            raise HTTPException(status_code=400, detail=f"User with phone number '{full_phone}' already exists.")
+
+        db_result = await db.execute(
+            select(User).where(User.phone_number == full_phone)
+        )
+
+        existing_user = db_result.scalar_one_or_none()
+
+        if existing_user:
+            raise HTTPException(status_code=400, detail=f"User with phone number '{full_phone}' already exists.")
+
         timezone = row_norm.get("time zone", "")
         if timezone not in VALID_TIMEZONES:
             errors.append(f"Row {i}: Invalid time zone '{timezone}'. Must be IANA format.")
@@ -236,7 +253,8 @@ async def process_valid_data(file_content, organization, db):
             )
 
             db.add(user)
-            await db.commit()
+            # await db.commit()
+            await db.flush()
 
             payload = await construct_onboarding_user_payload(user, organization.onboarding_agent_id)
 
@@ -244,6 +262,10 @@ async def process_valid_data(file_content, organization, db):
                 args=[payload,],
                 eta=final_utc_dt
             )
+
+            user.onboarding_call_task_id = task_result.id
+            user.onboarding_call_scheduled = True
+
 
             logger.info(f"Scheduled onboarding call task {task_result.id} for user {phone_number} at {final_utc_dt} UTC")
             new_users.append(user)
@@ -257,7 +279,7 @@ async def process_valid_data(file_content, organization, db):
         logger.error(f"Error processing onboarding users: {e}")
         return False, 0
 
-@router.post("/ingest-csv", response_model=StandardSuccessResponse)
+@router.post("/ingest-csv/", response_model=StandardSuccessResponse)
 async def ingest_csv(organization: str = Form(...), file: UploadFile = File(...), db=Depends(get_db)):
     organization = organization.strip()
     result = await db.execute(select(Organization).where(Organization.name == organization))
@@ -310,6 +332,22 @@ async def ingest_user(payload: IngestUserRequest, organization: str, db=Depends(
     if not phone_pattern.match(full_phone.replace(" ", "").replace("-", "")):
         raise HTTPException(status_code=422, detail=f"Invalid phone number format '{full_phone}'. Must be in E.164 format.")
     
+    db_result = await db.execute(
+        select(OnboardingUser).where(OnboardingUser.phone_number == full_phone)
+    )
+    existing_user = db_result.scalar_one_or_none()
+    if existing_user:
+        raise HTTPException(status_code=400, detail=f"User with phone number '{full_phone}' already exists.")
+    
+    db_result = await db.execute(
+        select(User).where(User.phone_number == full_phone)
+    )
+
+    existing_user = db_result.scalar_one_or_none()
+
+    if existing_user:
+        raise HTTPException(status_code=400, detail=f"User with phone number '{full_phone}' already exists.")
+
     if payload.time_zone not in VALID_TIMEZONES:
         raise HTTPException(status_code=422, detail=f"Invalid time zone '{payload.time_zone}'. Must be IANA format.")  
     
@@ -367,6 +405,8 @@ async def ingest_user(payload: IngestUserRequest, organization: str, db=Depends(
                 postal_zip_code=payload.postal_zip_code,
                 preferred_time=final_utc_dt,
             )
+    db.add(user)
+    await db.flush()
     
     task_payload = await construct_onboarding_user_payload(user, exists.onboarding_agent_id)
     
@@ -375,13 +415,11 @@ async def ingest_user(payload: IngestUserRequest, organization: str, db=Depends(
                 eta=final_utc_dt
             )
     
-    db.add(user)
-    await db.commit()
+    user.onboarding_call_scheduled = True
+    user.onboarding_call_task_id = task.id
     
-    task_result = initiate_onboarding_call.apply_async(
-        args=[payload.model_dump(mode="json")],
-        eta=final_utc_dt
-)
+    await db.commit()
+    logger.info(f"Scheduled onboarding call task {task.id} for user {full_phone} at {final_utc_dt} UTC")
         
     return {
         'success': True,

@@ -21,9 +21,9 @@ def update_med_logs(user_id: int, medication_taken: bool, med_log_ids: list[int]
     db = SessionLocal()
     try:
         status = (
-            MedicationStatus.TAKEN.value
+            MedicationStatus.taken.value
             if medication_taken
-            else MedicationStatus.MISSED.value
+            else MedicationStatus.missed.value
         )
 
         values = {
@@ -74,7 +74,7 @@ def notify_caretaker_on_missed_meds(user_id: int):
             template = (
                 db.query(TwilioWhatsappTemplates)
                 .filter(
-                    TwilioWhatsappTemplates.template_type == TemplateTypeEnum.MEDICATION_REMINDER,
+                    TwilioWhatsappTemplates.template_type == TemplateTypeEnum.medication_reminder.value,
                     TwilioWhatsappTemplates.language == caretaker.language,
                 )
                 .first()
