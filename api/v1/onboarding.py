@@ -62,7 +62,6 @@ async def onboard_user(
         health_conditions = data.get("health_conditions", [])
         preferences = data.get("preferences", [])
         mobility = data.get("mobility", [])
-        preferred_reports_channel = data.get("preferred_reports_channel", None)
         city = record.city_state_province if record.city_state_province else ""
         postal_code = record.postal_zip_code if record.postal_zip_code else ""
         address = record.address if record.address else address
@@ -175,15 +174,13 @@ async def onboard_user(
 
             await whatsapp_service.send_onboarding_message(caregiver.phone_number, temmplate_data, template_id=settings.TWILIO_WHATSAPP_CARETAKER_ONBOARDING_TEMPLATE_SID)
 
-        # await sms_service.send_magic_link(user.phone_number, temp_token.token, record.organization.sub_domain)
-
         return {
             "status": "success",
             "message": "Payload processed",
             "received": payload.model_dump()
         }
     except Exception as e:
-        db.rollback()
+        await db.rollback()
         logger.error(f"Error processing payload: {e}")
         raise HTTPException(status_code=400, detail="Invalid payload")
 
