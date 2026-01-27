@@ -106,7 +106,7 @@ async def onboard_user(
         if wants_brain_coach:
             check_in = UserCheckin(
                 user_id=user.id,
-                check_in_type=CheckInType.brain_coach,
+                check_in_type=CheckInType.brain_coach.value,
                 check_in_frequency_days=frequency_in_days if frequency_in_days else 7,
             )
             db.add(check_in)
@@ -116,7 +116,7 @@ async def onboard_user(
         if wants_daily_check_ins:
             check_in = UserCheckin(
                 user_id=user.id,
-                check_in_type=CheckInType.check_up_call,
+                check_in_type=CheckInType.check_up_call.value,
                 check_in_frequency_days=check_in_frequency if check_in_frequency else 7,
             )
             db.add(check_in)

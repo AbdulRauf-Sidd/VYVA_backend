@@ -94,6 +94,13 @@ def process_pending_onboarding_users():
             .all()
         )
 
+        pending_users = (
+            db.query(OnboardingUser)
+            .options(selectinload(OnboardingUser.organization))
+            .filter(OnboardingUser.id == 44)
+            .all()
+        )
+
         for user in pending_users:
 
             preferred_time = user.preferred_time
