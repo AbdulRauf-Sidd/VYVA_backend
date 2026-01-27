@@ -132,7 +132,7 @@ async def onboard_user(
 
         temp_token = UserTempToken(
             user_id=user.id,
-            expires_at=datetime.now() + timedelta(hours=24),
+            expires_at=datetime.now() + timedelta(hours=96),
             used=False
         )
 
@@ -141,7 +141,7 @@ async def onboard_user(
         if caregiver:
             temp_token_caregiver = CaretakerTempToken(
                 caretaker_id=caregiver.id,
-                expires_at=datetime.now() + timedelta(hours=24),
+                expires_at=datetime.now() + timedelta(hours=96),
                 used=False
             )
             db.add(temp_token_caregiver)
