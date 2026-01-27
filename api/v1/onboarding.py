@@ -148,8 +148,10 @@ async def onboard_user(
         db.add(temp_token)
         await db.commit()
 
+        mem0_payload = ""
+
         if mobility:
-            mem0_payload = construct_mem0_memory_onboarding(", ".join(mobility), "mobility")
+            mem0_payload += construct_mem0_memory_onboarding(", ".join(mobility), "mobility")
             await add_conversation(user.id, mem0_payload)
         if health_conditions:
             mem0_payload += construct_mem0_memory_onboarding(", ".join(health_conditions), "health_conditions")
