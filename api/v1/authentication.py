@@ -2,13 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Response, Cookie
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db
 from services.authentication_service import create_otp_session, create_user_session, verify_otp_helper
-from scripts.authentication_helpers import get_current_caretaker_from_session, send_otp_via_sms, is_valid_phone_number, is_expired, get_current_user_from_session, set_cookie
+from scripts.authentication_helpers import get_current_caretaker_from_session, is_valid_phone_number, is_expired, get_current_user_from_session, set_cookie
 from schemas.responses import StandardSuccessResponse, SessionSuccessResponse, SessionCheckResponse
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.orm import selectinload
 from models.user import Caretaker, User
 from core.config import settings
-from fastapi import Body
 from models.authentication import CaretakerTempToken, UserTempToken, UserSession, CaretakerSession
 from datetime import datetime, timedelta, timezone
 from schemas.authentication import PhoneRequest, VerifyOtpRequest
@@ -338,4 +337,41 @@ async def read_caretaker_profile(
         "phone_number": caretaker.phone_number,
         "user_id": first_assigned_user.id if first_assigned_user else None,
         "senior_name": first_assigned_user.full_name if first_assigned_user else "User"
+    }
+
+@router.post("/logout", response_model=StandardSuccessResponse)
+async def logout(
+    request: Request,
+    response: Response,
+    db: AsyncSession = Depends(get_db)
+):
+    session_id = request.cookies.get(settings.SESSION_COOKIE_NAME)
+
+    if not session_id:
+        return {
+            "success": True,
+            "message": "Logged out successfully"
+        }
+
+    await db.execute(
+        delete(UserSession).where(UserSession.session_id == session_id)
+    )
+
+    await db.execute(
+        delete(CaretakerSession).where(CaretakerSession.session_id == session_id)
+    )
+
+    await db.commit()
+
+    response.delete_cookie(
+        key=settings.SESSION_COOKIE_NAME,
+        path="/",
+        httponly=True,
+        secure=True,
+        samesite="lax"
+    )
+
+    return {
+        "success": True,
+        "message": "Logged out successfully"
     }
