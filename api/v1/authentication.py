@@ -222,8 +222,7 @@ async def session_auth(
         select(UserSession).where(UserSession.session_id == session_id)
     )
     session = result.scalar_one_or_none()
-    print(session.user_id, session.caretaker_id)
-
+    
     if not session:
         raise HTTPException(status_code=401, detail="Invalid session")
 
