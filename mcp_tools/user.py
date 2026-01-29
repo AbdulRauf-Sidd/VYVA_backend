@@ -5,23 +5,35 @@ from core.database import get_async_session
 from pydantic import BaseModel
 from models.user import User
 
-class RetrieveUserIdInput(BaseModel):
+class RetrieveUserProfileInput(BaseModel):
     phone_number: str
 
 @mcp.tool(
-    name="retrieve_user_id",
+    name="retrieve_user_profile",
     description=(
-        "Use this tool at the beginning of the call to retrieve the user ID "
+        "Use this tool at the beginning of the call to retrieve the user's profile "
         "associated with a phone number." \
         "You will pass the user's phone number as input " \
+        "You will get the user's ID, full name, email, phone number, timezone, and address as output. " \
+        "Use the information to personalize the conversation."
         'AWLAYS USE AT THE BEGINNING OF THE CALL.'
     )
 )
-async def retrieve_user_id(input: RetrieveUserIdInput) -> Optional[int]:
+async def retrieve_user_profile(input: RetrieveUserProfileInput) -> Optional[dict]:
     async with get_async_session() as db:
         stmt = select(User).where(User.phone_number == input.phone_number)
         result = await db.execute(stmt)
         user = result.scalars().first()
         print('mcp====>', input.phone_number, user)
 
-        return user.id if user else None
+        if user:
+            return {
+                "id": user.id,
+                "full_name": user.full_name,
+                "email": user.email,
+                "phone_number": user.phone_number,
+                "timezone": user.timezone,
+                "address": user.full_address,
+                "preferred_reports_channel": user.preferred_reports_channel,
+            }
+        return None

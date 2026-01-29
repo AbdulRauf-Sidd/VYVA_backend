@@ -8,75 +8,80 @@ from models.user import User
 from services.mem0 import add_conversation, get_memories
 from core.database import get_async_session
 from sqlalchemy import select
+import asyncio
+from asyncio import TimeoutError
+import logging
 
-class AddMemoryInput(BaseModel):
-    conversation: list[dict]
-    user_id: int
+logger = logging.getLogger(__name__)
 
-@mcp.tool(
-    name="add_to_user_memory",
-    description=(
-        "Add a summarized, long-term memory about the user for future conversations.\n\n"
+# class AddMemoryInput(BaseModel):
+#     conversation: list[dict]
+#     user_id: int
 
-        "ONLY use this tool when the conversation contains stable, reusable information "
-        "about the user that will meaningfully improve future interactions. Stored memories "
-        "should be concise summaries, not raw transcripts.\n\n"
+# @mcp.tool(
+#     name="add_to_user_memory",
+#     description=(
+#         "Add a summarized, long-term memory about the user for future conversations.\n\n"
 
-        "APPROPRIATE memories include:\n"
-        "1. User identity and context: preferred name or nickname, language, time zone, "
-        "approximate age group, living situation, or preferred communication channel.\n"
-        "2. Routine and schedule: typical sleep/wake times, preferred reminder times, "
-        "recurring habits or weekly activities.\n"
-        "3. Conversation and companionship preferences: topics the user enjoys or avoids, "
-        "preferred tone (humorous vs serious), verbosity, or interaction style.\n"
-        "4. Cognitive and emotional profile: general mood trends, coping strategies that work "
-        "well, preferred games or difficulty levels.\n"
-        "5. Health and safety context (only summarized, day-to-day relevance): ongoing "
-        "conditions, medication schedules, reminder preferences, or escalation rules—only "
-        "when explicitly relevant and enabled.\n"
-        "6. Care network: names and roles of close family, caregivers, or emergency contacts, "
-        "plus notification preferences.\n"
-        "7. Trusted services and logistics: preferred pharmacies, clinics, transport providers, "
-        "or frequently visited locations for reminders or bookings.\n"
-        "8. Interaction and UX preferences: known friction points, accessibility adjustments, "
-        "explicit do’s and don’ts for agent behavior.\n\n"
+#         "ONLY use this tool when the conversation contains stable, reusable information "
+#         "about the user that will meaningfully improve future interactions. Stored memories "
+#         "should be concise summaries, not raw transcripts.\n\n"
 
-        "Example of what is useful:\n"
-        "- I prefer to be called 'Grandpa Joe' and like a light-hearted tone.\n"
-        "- I went to the doctor yesterday.\n"
-        "- I visited my daughter stacy today.\n\n"
+#         "APPROPRIATE memories include:\n"
+#         "1. User identity and context: preferred name or nickname, language, time zone, "
+#         "approximate age group, living situation, or preferred communication channel.\n"
+#         "2. Routine and schedule: typical sleep/wake times, preferred reminder times, "
+#         "recurring habits or weekly activities.\n"
+#         "3. Conversation and companionship preferences: topics the user enjoys or avoids, "
+#         "preferred tone (humorous vs serious), verbosity, or interaction style.\n"
+#         "4. Cognitive and emotional profile: general mood trends, coping strategies that work "
+#         "well, preferred games or difficulty levels.\n"
+#         "5. Health and safety context (only summarized, day-to-day relevance): ongoing "
+#         "conditions, medication schedules, reminder preferences, or escalation rules—only "
+#         "when explicitly relevant and enabled.\n"
+#         "6. Care network: names and roles of close family, caregivers, or emergency contacts, "
+#         "plus notification preferences.\n"
+#         "7. Trusted services and logistics: preferred pharmacies, clinics, transport providers, "
+#         "or frequently visited locations for reminders or bookings.\n"
+#         "8. Interaction and UX preferences: known friction points, accessibility adjustments, "
+#         "explicit do’s and don’ts for agent behavior.\n\n"
 
-        "DO NOT store:\n"
-        "- Task-specific instructions, debugging steps, or one-off plans\n"
-        "- Full dates of birth, national IDs, full addresses, payment details, passwords, or codes\n"
-        "- Political opinions, intimate details, or sensitive traits unless explicitly requested\n"
-        "- Trivial small talk, jokes, or short-lived emotional statements\n"
-        "- Detailed profiles of third parties beyond name, role, and alert relevance\n\n"
+#         "Example of what is useful:\n"
+#         "- I prefer to be called 'Grandpa Joe' and like a light-hearted tone.\n"
+#         "- I went to the doctor yesterday.\n"
+#         "- I visited my daughter stacy today.\n\n"
 
-        "When saving, summarize the relevant points in neutral language, focusing on patterns, "
-        "preferences, or ongoing context that will remain useful over time."
+#         "DO NOT store:\n"
+#         "- Task-specific instructions, debugging steps, or one-off plans\n"
+#         "- Full dates of birth, national IDs, full addresses, payment details, passwords, or codes\n"
+#         "- Political opinions, intimate details, or sensitive traits unless explicitly requested\n"
+#         "- Trivial small talk, jokes, or short-lived emotional statements\n"
+#         "- Detailed profiles of third parties beyond name, role, and alert relevance\n\n"
 
-        "Example input:\n"
-        '{\n'
-        '  "user_id": 123,\n'
-        '  "conversation": [\n'
-        '    {"role": "system", "content": "Do you have any health conditions we should be aware of?"},\n'
-        '    {"role": "user", "content": "Yes, I have hypertension and mild arthritis."}\n'
-        '  ]\n'
-        '}\n'
-    )
-)
-async def add_to_user_memory(input: AddMemoryInput) -> Optional[bool]:
-    print(input.conversation)
-    await add_conversation(input.user_id, input.conversation)
-    return True
+#         "When saving, summarize the relevant points in neutral language, focusing on patterns, "
+#         "preferences, or ongoing context that will remain useful over time."
+
+#         "Example input:\n"
+#         '{\n'
+#         '  "user_id": 123,\n'
+#         '  "conversation": [\n'
+#         '    {"role": "system", "content": "Do you have any health conditions we should be aware of?"},\n'
+#         '    {"role": "user", "content": "Yes, I have hypertension and mild arthritis."}\n'
+#         '  ]\n'
+#         '}\n'
+#     )
+# )
+# async def add_to_user_memory(input: AddMemoryInput) -> Optional[bool]:
+#     print(input.conversation)
+#     await add_conversation(input.user_id, input.conversation)
+#     return True
 
 
 class RetrieveMemoryInput(BaseModel):
     user_id: int
 
 class UserMemory(BaseModel):
-    content: dict[str, str]
+    content: dict[str, List[dict]]
 
 @mcp.tool(
     name="retrieve_user_memories",
@@ -85,35 +90,51 @@ class UserMemory(BaseModel):
         "This tool should be called at the START of a conversation so the agent "
         "can personalize responses using known preferences, routines, context, "
         "and care-related information.\n\n"
-        "The returned memories are summarized and safe for direct agent consumption."
+        "You will get a list of relevant memories about the user as output, along with the date created for those memories.\n\n"
+        "Always use the memories as a guide to better understand and assist the user.\n\n"
+        "The returned memories are summarized for your consumption." \
+        "ALWAYS USE AT THE START OF THE CONVERSATION." \
     )
 )
 async def retrieve_user_memories(
     input: RetrieveMemoryInput
 ) -> UserMemory:
-    memories = await get_memories(str(input.user_id))
-    async with get_async_session() as db:
-        stmt = (
-            select(User)
-            .where(User.id == input.user_id)
+    memories = []
+    try:
+        memories = await asyncio.wait_for(
+            get_memories(str(input.user_id)),
+            timeout=5.0,  # seconds (tune this)
         )
+    except TimeoutError:
+        # IMPORTANT: fail gracefully for ElevenLabs
+        logger.error(f"Timeout retrieving memories for user {input.user_id}")
+    finally:
+        print('mem0====>', memories)
+        return {
+            "memories": memories,
+        }
 
-        result = await db.execute(stmt)
-        user = result.scalar_one()
-        address = user.full_address
-        full_name = user.full_name
-        email = user.email
-        phone_number = user.phone_number
-        timezone = user.timezone
 
-        print("user_data", full_name, email, phone_number, timezone, address, memories)
 
-    return {
-        "full_name": full_name,
-        "email": email,
-        "phone_number": phone_number,
-        "timezone": timezone,
-        "address": address,
-        "memories": memories
-    }
+# async def retrieve_user_profile(user_id: int) -> dict:
+#     async with get_async_session() as db:
+#         stmt = (
+#             select(User)
+#             .where(User.id == user_id)
+#         )
 
+#         result = await db.execute(stmt)
+#         user = result.scalar_one()
+#         address = user.full_address
+#         full_name = user.full_name
+#         email = user.email
+#         phone_number = user.phone_number
+#         timezone = user.timezone
+
+#         return {
+#             "full_name": full_name,
+#             "email": email,
+#             "phone_number": phone_number,
+#             "timezone": timezone,
+#             "address": address
+#         }
