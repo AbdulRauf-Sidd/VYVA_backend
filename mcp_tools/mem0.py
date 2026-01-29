@@ -106,6 +106,8 @@ async def retrieve_user_memories(
         phone_number = user.phone_number
         timezone = user.timezone
 
+        print("user_data", full_name, email, phone_number, timezone, address, memories)
+
     return {
         "full_name": full_name,
         "email": email,
