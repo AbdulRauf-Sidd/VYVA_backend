@@ -296,16 +296,15 @@ async def read_user_profile(
         )
 
     user = await get_current_user_from_session(session_id, db)
-    agent_mappings = {}
-    organization_agents = user.organization.agents if user.organization else []
-    for agent in organization_agents:
-        agent_mappings[agent.name_slug] = agent.agent_id
+
 
     if not user:
         raise HTTPException(
             status_code=401, 
             detail="Not authenticated: Invalid or expired session"
         )
+    
+    first_time_agents = [user.symptom_checker_first_time, user.medication_manager_first_time, user.brain_coach_first_time, user.assisstant_first_time, user.social_companion_first_time]
 
     return {
         "user_id": user.id,
@@ -313,7 +312,8 @@ async def read_user_profile(
         "last_name": user.last_name,
         "phone_number": user.phone_number,
         "organization_id": user.organization_id,
-        "agent_mappings": agent_mappings
+        "language": user.preferred_consultation_language,
+        "first_time_agents": first_time_agents
     }
 
 @router.get("/caretaker-profile")

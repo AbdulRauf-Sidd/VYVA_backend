@@ -29,6 +29,14 @@ class BrainCoachComplexityEnum(str, PyEnum):
     advanced = "Advanced"
     progressive = "Progressive"
 
+
+LANGUAGE_MAPPING = {
+    "english": "en",
+    "spanish": "es",
+    "german": "de",
+    "french": "fr",
+}
+
 #-------------------------------------------------------
 
 class User(Base):
@@ -103,6 +111,13 @@ class User(Base):
 
     emergency_line_phone = Column(String(20), nullable=True)
     
+
+    #First Time agents
+    medication_manager_first_time = Column(Boolean, nullable=True, default=True)
+    social_companion_first_time = Column(Boolean, nullable=True, default=True)
+    brain_coach_first_time = Column(Boolean, nullable=True, default=True)
+    symptom_checker_first_time = Column(Boolean, nullable=True, default=True)
+    assisstant_first_time = Column(Boolean, nullable=True, default=True)
     
     #Auth
     is_active = Column(Boolean, default=True)

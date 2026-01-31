@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import List, Optional
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, validator
 from enum import Enum
 from .health_care import LongTermConditionBase, LongTermConditionCreate, LongTermConditionRead
 from .activities import TopicOfInterestBase, TopicOfInterestCreate, TopicOfInterestRead, ActivityBase, ActivityCreate, ActivityRead
@@ -211,3 +211,8 @@ class UserRead(UserBase):
         elif self.last_name:
             return self.last_name
         return self.email
+    
+
+class UpdateFirstTimeAgentsRequest(BaseModel):
+    user_id: int
+    first_time_agents: List[bool]
