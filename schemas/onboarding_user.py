@@ -51,3 +51,4 @@ class OnboardingRequestBody(BaseModel):
     mobility: Optional[List[str]] = None
     preferences: Optional[List[str]] = None
     preferred_reminder_channel: Optional[str] = None
+    preferred_reports_channel: Optional[str] = None

@@ -8,7 +8,7 @@ class ElevenLabsSessions(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     call_successful = Column(String(20), nullable=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=True)
     agent_id = Column(String(80), nullable=True)
     duration = Column(Integer, nullable=True)
     status = Column(String(20), nullable=True)

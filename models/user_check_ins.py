@@ -7,17 +7,17 @@ import enum
 from core.database import Base
 
 class CheckInType(enum.Enum):
-    BRAIN_COACH = "brain_coach"
-    CHECK_UP_CALL = "check_up_call"
+    brain_coach = "brain_coach"
+    check_up_call = "check_up_call"
 
 class UserCheckin(Base):
     __tablename__ = "user_checkins"
     
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     user = relationship("User", back_populates="user_checkins")
-    scheduled_sessions = relationship("ScheduledSession", back_populates="user_checkin", cascade="all, delete-orphan")
-    check_in_type = Column(Enum(CheckInType), nullable=False) # brain coach, check up call. 
+    scheduled_sessions = relationship("ScheduledSession", back_populates="user_checkin", cascade="all, delete-orphan", passive_deletes=True)
+    check_in_type = Column(String(20), nullable=False) # brain coach, check up call. 
     check_in_frequency_days = Column(Integer, nullable=False)
     check_in_time = Column(Time, nullable=True)
     is_active = Column(Boolean, default=True)
@@ -33,12 +33,12 @@ class ScheduledSession(Base):
     id = Column(Integer, primary_key=True, index=True)
     # user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     # user = relationship("User", back_populates="scheduled_sessions")
-    session_type = Column(Enum(CheckInType), nullable=False)
+    session_type = Column(String(30), nullable=False)
     scheduled_at = Column(DateTime(timezone=True), nullable=False)
     completed_at = Column(DateTime(timezone=True), nullable=True)
     is_completed = Column(Boolean, default=False)
     
-    user_checkin = relationship("UserCheckin", back_populates="scheduled_sessions")
+    user_checkin = relationship("UserCheckin", passive_deletes=True)
     user_checkin_id = Column(Integer, ForeignKey("user_checkins.id"), nullable=False)
     
     def __repr__(self):

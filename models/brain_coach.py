@@ -21,7 +21,7 @@ class QuestionTranslations(Base):
     __tablename__ = "question_translations"
 
     id = Column(Integer, primary_key=True, index=True)
-    question_id = Column(Integer, ForeignKey('brain_coach_questions.id'), nullable=False)
+    question_id = Column(Integer, ForeignKey('brain_coach_questions.id', ondelete="CASCADE"), nullable=False)
     language = Column(String(30), nullable=False)  # 'en', 'es', 'fr', etc.
     question_text = Column(Text, nullable=False)
     expected_answer = Column(Text, nullable=False)
@@ -42,8 +42,8 @@ class BrainCoachResponses(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     session_id = Column(String(36), nullable=False) 
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    question_id = Column(Integer, ForeignKey("brain_coach_questions.id"), nullable=False) 
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    question_id = Column(Integer, ForeignKey("brain_coach_questions.id", ondelete="CASCADE"), nullable=False) 
     user_answer = Column(String(100), nullable=True)
     score = Column(Integer, nullable=False)  
     created = Column(DateTime(timezone=True), server_default=func.now())

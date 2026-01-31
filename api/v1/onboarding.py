@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Body, Response
-from fastmcp import settings
+from core.config import settings
 from sqlalchemy.ext.asyncio import AsyncSession
 from models.user import User, Caretaker
 from models.onboarding import OnboardingUser
@@ -17,7 +17,7 @@ from schemas.medication import BulkMedicationSchema
 from repositories.medication import MedicationRepository
 from services.medication import MedicationService
 from models.user_check_ins import UserCheckin, ScheduledSession, CheckInType
-from models.authentication import UserTempToken
+from models.authentication import CaretakerTempToken, UserTempToken
 from services.whatsapp_service import whatsapp_service
 from services.mem0 import add_conversation
 from datetime import timezone
@@ -88,7 +88,8 @@ async def onboard_user(
             caretaker_id=caregiver.id if caregiver_phone else None,
             caretaker_consent=caretaker_consent,
             caretaker=caregiver if caregiver_phone else None,
-            preferred_reminder_channel=payload.preferred_reminder_channel
+            preferred_reminder_channel=payload.preferred_reminder_channel,
+            preferred_reports_channel=payload.preferred_reports_channel
         )
 
         db.add(user)
@@ -104,7 +105,7 @@ async def onboard_user(
         if wants_brain_coach:
             check_in = UserCheckin(
                 user_id=user.id,
-                check_in_type=CheckInType.BRAIN_COACH,
+                check_in_type=CheckInType.brain_coach.value,
                 check_in_frequency_days=frequency_in_days if frequency_in_days else 7,
             )
             db.add(check_in)
@@ -114,7 +115,7 @@ async def onboard_user(
         if wants_daily_check_ins:
             check_in = UserCheckin(
                 user_id=user.id,
-                check_in_type=CheckInType.CHECK_UP_CALL,
+                check_in_type=CheckInType.check_up_call.value,
                 check_in_frequency_days=check_in_frequency if check_in_frequency else 7,
             )
             db.add(check_in)
@@ -130,16 +131,16 @@ async def onboard_user(
 
         temp_token = UserTempToken(
             user_id=user.id,
-            expires_at=datetime.now() + timedelta(hours=24),
+            expires_at=datetime.now() + timedelta(hours=96),
             used=False
         )
 
         temp_token_caregiver = None
 
         if caregiver:
-            temp_token_caregiver = UserTempToken(
+            temp_token_caregiver = CaretakerTempToken(
                 caretaker_id=caregiver.id,
-                expires_at=datetime.now() + timedelta(hours=24),
+                expires_at=datetime.now() + timedelta(hours=96),
                 used=False
             )
             db.add(temp_token_caregiver)
@@ -147,8 +148,10 @@ async def onboard_user(
         db.add(temp_token)
         await db.commit()
 
+        mem0_payload = []
+
         if mobility:
-            mem0_payload = construct_mem0_memory_onboarding(", ".join(mobility), "mobility")
+            mem0_payload += construct_mem0_memory_onboarding(", ".join(mobility), "mobility")
             await add_conversation(user.id, mem0_payload)
         if health_conditions:
             mem0_payload += construct_mem0_memory_onboarding(", ".join(health_conditions), "health_conditions")
@@ -166,14 +169,12 @@ async def onboard_user(
         await whatsapp_service.send_onboarding_message(user.phone_number, temmplate_data)
         
         if temp_token_caregiver:
-            caregiver_onboarding_link = f"https://care.{record.organization.sub_domain}.vyva.io/?token={temp_token_caregiver.token}"
+            caregiver_onboarding_link = f"https://care-{record.organization.sub_domain}.vyva.io/senior-verification?token={temp_token_caregiver.token}"
             temmplate_data = {
                 "caregiver_magic_link": caregiver_onboarding_link
             }
 
             await whatsapp_service.send_onboarding_message(caregiver.phone_number, temmplate_data, template_id=settings.TWILIO_WHATSAPP_CARETAKER_ONBOARDING_TEMPLATE_SID)
-
-        # await sms_service.send_magic_link(user.phone_number, temp_token.token, record.organization.sub_domain)
 
         return {
             "status": "success",
@@ -181,6 +182,7 @@ async def onboard_user(
             "received": payload.model_dump()
         }
     except Exception as e:
+        await db.rollback()
         logger.error(f"Error processing payload: {e}")
         raise HTTPException(status_code=400, detail="Invalid payload")
 

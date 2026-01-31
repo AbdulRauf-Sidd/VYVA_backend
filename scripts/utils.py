@@ -17,6 +17,13 @@ TZ_MAP = {
     "utc": "UTC",
 }
 
+LANGUAGE_MAP = {
+    "english": "en",
+    "spanish": "es",
+    "german": "de",
+    "french": "fr",
+}
+
 def date_time_to_utc(dt: datetime, tz_name: str | None = None) -> datetime:
     if dt.tzinfo is None:
         if tz_name:
