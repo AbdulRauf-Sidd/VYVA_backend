@@ -918,24 +918,24 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
             )
 
         # Send report to caregiver/caretaker if available
-        caretaker = user.caretaker
-        if caretaker:
-            caretaker_email = (caretaker.email or "").strip()
-            caretaker_phone = (caretaker.phone_number or "").strip()
+        # caretaker = user.caretaker
+        # if caretaker:
+        #     caretaker_email = (caretaker.email or "").strip()
+        #     caretaker_phone = (caretaker.phone_number or "").strip()
 
-            if caretaker_email:
-                caregiver_results["email"] = await _send_email_report(
-                    recipient_email=caretaker_email,
-                    report_content=report_content,
-                    patient_name=response_record.full_name or " "
-                )
+        #     if caretaker_email:
+        #         caregiver_results["email"] = await _send_email_report(
+        #             recipient_email=caretaker_email,
+        #             report_content=report_content,
+        #             patient_name=response_record.full_name or " "
+        #         )
 
-            if caretaker_phone:
-                caregiver_results["whatsapp"] = await _send_whatsapp_report(
-                    phone_number=caretaker_phone,
-                    report_content=report_content,
-                    patient_name=response_record.full_name or " "
-                )
+        #     if caretaker_phone:
+        #         caregiver_results["whatsapp"] = await _send_whatsapp_report(
+        #             phone_number=caretaker_phone,
+        #             report_content=report_content,
+        #             patient_name=response_record.full_name or " "
+        #         )
 
         # Send report to doctor if symptoms are severe
         is_severe = (response_record.severity or "").strip().lower() == "severe"
