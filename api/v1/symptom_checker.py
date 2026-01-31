@@ -211,6 +211,7 @@ async def _extract_ai_summaries(
 class SymptomCheckRequest(BaseModel):
     symptoms: str
     conversation_id: str  # Required - provided by frontend
+    user_id: Optional[int] = None  # Optional - used to include health conditions
     full_name: Optional[str] = None
     language: Optional[str] = None
     model_type: Optional[str] = "pro"
@@ -634,7 +635,20 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
 
     try:
         # Formulate comprehensive search query
+        health_conditions = None
+        if payload.user_id:
+            user_result = await db.execute(
+                select(User).where(User.id == payload.user_id)
+            )
+            user = user_result.scalar_one_or_none()
+            if user and user.health_conditions:
+                health_conditions = user.health_conditions.strip()
+
         formulated_symptoms = _formulate_symptom_query(payload)
+        if health_conditions:
+            formulated_symptoms = (
+                f"{formulated_symptoms}. Health conditions: {health_conditions}"
+            )
         logger.info(f"Formulated query: {formulated_symptoms}")
 
         # Call MediSearch API with formulated query
