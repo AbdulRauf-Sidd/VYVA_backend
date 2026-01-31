@@ -1,6 +1,6 @@
 from select import select
 from fastapi import APIRouter, Cookie, Cookie, Depends, HTTPException, status
-from fastmcp import settings
+from core.config import settings
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Optional
 

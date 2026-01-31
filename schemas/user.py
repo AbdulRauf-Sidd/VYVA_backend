@@ -214,5 +214,4 @@ class UserRead(UserBase):
     
 
 class UpdateFirstTimeAgentsRequest(BaseModel):
-    user_id: int
     first_time_agents: List[bool]

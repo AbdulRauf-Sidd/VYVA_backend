@@ -6,7 +6,7 @@ from scripts.authentication_helpers import get_current_caretaker_from_session, i
 from schemas.responses import StandardSuccessResponse, SessionSuccessResponse, SessionCheckResponse
 from sqlalchemy import select, delete
 from sqlalchemy.orm import selectinload
-from models.user import Caretaker, User
+from models.user import Caretaker, User, LANGUAGE_MAPPING
 from core.config import settings
 from models.authentication import CaretakerTempToken, UserTempToken, UserSession, CaretakerSession
 from datetime import datetime, timedelta, timezone
@@ -312,7 +312,7 @@ async def read_user_profile(
         "last_name": user.last_name,
         "phone_number": user.phone_number,
         "organization_id": user.organization_id,
-        "language": user.preferred_consultation_language,
+        "language": LANGUAGE_MAPPING.get(user.preferred_consultation_language, "English"),
         "first_time_agents": first_time_agents
     }
 
