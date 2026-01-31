@@ -37,3 +37,31 @@ async def retrieve_user_profile(input: RetrieveUserProfileInput) -> Optional[dic
                 "preferred_reports_channel": user.preferred_reports_channel,
             }
         return None
+    
+
+class RetrieveUserHealthProfileInput(BaseModel):
+    user_id: int
+
+@mcp.tool(
+    name="retrieve_user_health_profile",
+    description=(
+        "You will pass the user's id as input " \
+        "You will get the user's health profile. which includes the health conditions, and mobility issues" \
+        "Use the information to personalize the conversation."
+        'AWLAYS USE AT THE BEGINNING OF THE CALL.'
+    )
+)
+async def retrieve_user_health_profile(input: RetrieveUserHealthProfileInput) -> Optional[dict]:
+    async with get_async_session() as db:
+        stmt = select(User).where(User.id == input.user_id)
+        result = await db.execute(stmt)
+        user = result.scalars().first()
+
+        if user:
+            return {
+                "health_conditions": user.health_conditions,
+                "mobility_issues": user.mobility,
+            }
+        return None
+    
+    
