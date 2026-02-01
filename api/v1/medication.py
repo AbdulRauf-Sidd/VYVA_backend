@@ -467,6 +467,7 @@ async def get_weekly_medication_schedule(
             f"in {duration:.2f}s"
         )
 
+        print (total_scheduled, total_taken)
         return {
             "summary": {
                 "total_medicines_this_week": total_scheduled,
