@@ -183,7 +183,6 @@ async def process_valid_data(file_content, organization, db):
         
         reader = csv.DictReader(io.StringIO(file_content))
         new_users = []
-        agent_id = organization.onboarding_agent_id
         organization_id = organization.id
 
 
