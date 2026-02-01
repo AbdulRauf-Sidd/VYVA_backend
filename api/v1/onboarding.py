@@ -82,14 +82,16 @@ async def onboard_user(
             city=city,
             postal_code=postal_code,
             preferred_communication_channel=record.preferred_communication_channel,
-            preferred_consultation_language=record.language.title(),
+            preferred_consultation_language=record.language.lower() if record.language else "english",
             health_conditions=", ".join(health_conditions) if health_conditions else None,
             mobility=", ".join(mobility) if mobility else None,
             caretaker_id=caregiver.id if caregiver_phone else None,
             caretaker_consent=caretaker_consent,
             caretaker=caregiver if caregiver_phone else None,
             preferred_reminder_channel=payload.preferred_reminder_channel,
-            preferred_reports_channel=payload.preferred_reports_channel
+            preferred_reports_channel=payload.preferred_reports_channel,
+            timezone=record.timezone,
+            organization_id=record.organization_id,
         )
 
         db.add(user)

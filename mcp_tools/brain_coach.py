@@ -208,11 +208,17 @@ async def send_brain_coach_report(
         result = await db.execute(query)
         questions = result.all()
         for question, translation in questions:
+            score = 0
+            for response in responses:
+                if question.id == response.question_id:
+                    score = response.score
+                    break
+                
             report_content.append({
                 "question_text": translation.question_text,
                 "question_type": translation.question_type,
                 "theme": translation.theme,
-                'score': response.score,
+                'score': score,
                 "max_score": question.max_score,
                 'tier': question.tier,
                 'session': question.session,
