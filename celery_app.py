@@ -18,11 +18,11 @@ celery_app.conf.update(
     beat_schedule={
         "daily-process-pending-onboarding-users": {
         "task": "process_pending_onboarding_users",
-        "schedule": crontab(hour=16, minute=36),  # runs daily at 12 AM
+        "schedule": crontab(hour=0, minute=0),  # runs daily at 12 AM
         },
         "daily-medication-reminder-scheduler": {
             "task": "schedule_calls_for_day",
-            "schedule": crontab(hour=3, minute=36),  
+            "schedule": crontab(hour=0, minute=0),  
         }
     }
 )

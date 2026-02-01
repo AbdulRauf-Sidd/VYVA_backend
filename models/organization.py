@@ -35,13 +35,13 @@ class Organization(Base):
         return f"<Organization(id={self.id}, name='{self.name}')>"  
 
 class AgentTypeEnum(str, PyEnum):
-    MEDICATION_MANAGER = "medication_manager"
-    MAIN_AGENT = "main_agent"
-    SYMPTOM_CHECKER = "symptom_checker"
-    BRAIN_COACH = "brain_coach"
-    ONBOARDING_AGENT = "onboarding_agent"
-    MEDICATION_REMINDER = "medication_reminder"
-    FALL_DETECTOR = "fall_detector"
+    medication_manager = "medication_manager"
+    main_agent = "main_agent"
+    symptom_checker = "symptom_checker"
+    brain_coach = "brain_coach"
+    onboarding_agent = "onboarding_agent"
+    medication_reminder = "medication_reminder"
+    fall_detector = "fall_detector"
 
 class OrganizationAgents(Base):
     __tablename__ = "organization_agents"

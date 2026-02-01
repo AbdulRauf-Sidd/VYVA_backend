@@ -312,7 +312,7 @@ async def read_user_profile(
         "last_name": user.last_name,
         "phone_number": user.phone_number,
         "organization_id": user.organization_id,
-        "language": LANGUAGE_MAPPING.get(user.preferred_consultation_language, "English"),
+        "language": LANGUAGE_MAPPING.get(user.preferred_consultation_language.lower() if user.preferred_consultation_language else "english"),
         "first_time_agents": first_time_agents
     }
 
