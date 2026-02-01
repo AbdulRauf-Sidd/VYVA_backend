@@ -50,6 +50,8 @@ async def receive_incoming_message(request: Request, db: AsyncSession = Depends(
 
         update_med_logs(user_id, medication_taken, med_log_ids)
 
+        
+
         return PlainTextResponse("OK")
                 
     except Exception as e:
