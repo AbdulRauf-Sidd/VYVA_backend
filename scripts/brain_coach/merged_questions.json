@@ -21,7 +21,8 @@
         "theme": "Objetos",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 2,
@@ -45,7 +46,8 @@
         "theme": "Secuencias",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 3,
@@ -69,7 +71,8 @@
         "theme": "Asociaciones de palabras",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 4,
@@ -93,7 +96,8 @@
         "theme": "Lugar",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 5,
@@ -117,7 +121,8 @@
         "theme": "guión",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 6,
@@ -141,7 +146,8 @@
         "theme": "pasatiempos",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 7,
@@ -165,7 +171,8 @@
         "theme": "Objetos",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 8,
@@ -189,7 +196,8 @@
         "theme": "Secuencia",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 9,
@@ -213,7 +221,8 @@
         "theme": "categorías",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 10,
@@ -237,7 +246,8 @@
         "theme": "Lugar",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 11,
@@ -261,7 +271,8 @@
         "theme": "lógica",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 12,
@@ -285,7 +296,8 @@
         "theme": "pasatiempos",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 13,
@@ -309,7 +321,8 @@
         "theme": "bandera",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 14,
@@ -333,7 +346,8 @@
         "theme": "patronas",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 15,
@@ -357,7 +371,8 @@
         "theme": "Asociaciones de palabras",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 16,
@@ -381,7 +396,8 @@
         "theme": "Lugar",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 17,
@@ -405,7 +421,8 @@
         "theme": "lógica",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 18,
@@ -429,7 +446,8 @@
         "theme": "animales",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 19,
@@ -453,7 +471,8 @@
         "theme": "frutas",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 20,
@@ -477,7 +496,8 @@
         "theme": "Secuencia",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 21,
@@ -501,7 +521,8 @@
         "theme": "categorías",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 22,
@@ -525,7 +546,8 @@
         "theme": "tiempo",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 23,
@@ -549,7 +571,8 @@
         "theme": "lógica",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 24,
@@ -573,7 +596,8 @@
         "theme": "profesiones",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 25,
@@ -597,7 +621,8 @@
         "theme": "Objetos",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 26,
@@ -621,7 +646,8 @@
         "theme": "numbers",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 27,
@@ -645,7 +671,8 @@
         "theme": "Asociaciones de palabras",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 28,
@@ -669,7 +696,8 @@
         "theme": "contexto",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 29,
@@ -693,7 +721,8 @@
         "theme": "lógica",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 30,
@@ -717,7 +746,8 @@
         "theme": "pasatiempos",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 31,
@@ -741,7 +771,8 @@
         "theme": "bandera",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 32,
@@ -765,7 +796,8 @@
         "theme": "patronas",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 33,
@@ -789,7 +821,8 @@
         "theme": "Asociaciones de palabras",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 34,
@@ -813,7 +846,8 @@
         "theme": "tiempo",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 35,
@@ -837,7 +871,8 @@
         "theme": "matemáticas",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 36,
@@ -861,7 +896,8 @@
         "theme": "animales",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 37,
@@ -885,7 +921,8 @@
         "theme": "bandera",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 38,
@@ -909,7 +946,8 @@
         "theme": "Secuencia",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 39,
@@ -933,7 +971,8 @@
         "theme": "Asociaciones de palabras",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 40,
@@ -957,7 +996,8 @@
         "theme": "contexto",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 41,
@@ -981,7 +1021,8 @@
         "theme": "lógica",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 42,
@@ -1005,7 +1046,8 @@
         "theme": "pasatiempos",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 43,
@@ -1029,7 +1071,8 @@
         "theme": "centrado",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 44,
@@ -1053,7 +1096,8 @@
         "theme": "numeros",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 45,
@@ -1077,7 +1121,8 @@
         "theme": "Asociaciones de palabras",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 46,
@@ -1101,7 +1146,8 @@
         "theme": "contexto",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 47,
@@ -1125,7 +1171,8 @@
         "theme": "guión",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 48,
@@ -1149,7 +1196,8 @@
         "theme": "profesiones",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 49,
@@ -1173,7 +1221,8 @@
         "theme": "consciente",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 50,
@@ -1197,7 +1246,8 @@
         "theme": "Secuencia",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 51,
@@ -1221,7 +1271,8 @@
         "theme": "Asociaciones de palabras",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 52,
@@ -1245,7 +1296,8 @@
         "theme": "contexto",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 53,
@@ -1269,7 +1321,8 @@
         "theme": "matemáticas",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 54,
@@ -1293,7 +1346,8 @@
         "theme": "lógica",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 55,
@@ -1317,7 +1371,8 @@
         "theme": "frutas",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 56,
@@ -1341,7 +1396,8 @@
         "theme": "matemáticas",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 57,
@@ -1365,7 +1421,8 @@
         "theme": "Asociaciones de palabras",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 58,
@@ -1389,7 +1446,8 @@
         "theme": "contexto",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 59,
@@ -1413,7 +1471,8 @@
         "theme": "lógica",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 60,
@@ -1437,7 +1496,8 @@
         "theme": "animales",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 61,
@@ -1461,7 +1521,8 @@
         "theme": "categorías",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 62,
@@ -1485,7 +1546,8 @@
         "theme": "Lugar",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 63,
@@ -1509,7 +1571,8 @@
         "theme": "Lugar",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 64,
@@ -1533,7 +1596,8 @@
         "theme": "contexto",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 65,
@@ -1557,7 +1621,8 @@
         "theme": "lógica",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 66,
@@ -1581,7 +1646,8 @@
         "theme": "animales",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 67,
@@ -1605,7 +1671,8 @@
         "theme": "categorías",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 68,
@@ -1629,7 +1696,8 @@
         "theme": "lógica",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 69,
@@ -1653,7 +1721,8 @@
         "theme": "Asociaciones de palabras",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 70,
@@ -1677,7 +1746,8 @@
         "theme": "contexto",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 71,
@@ -1701,7 +1771,8 @@
         "theme": "matemáticas",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 72,
@@ -1725,7 +1796,8 @@
         "theme": "animales",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 73,
@@ -1749,7 +1821,8 @@
         "theme": "bandera",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 74,
@@ -1773,7 +1846,8 @@
         "theme": "patronas",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 75,
@@ -1797,7 +1871,8 @@
         "theme": "Asociaciones de palabras",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 76,
@@ -1821,7 +1896,8 @@
         "theme": "Lugar",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 77,
@@ -1845,7 +1921,8 @@
         "theme": "lógica",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 78,
@@ -1869,7 +1946,8 @@
         "theme": "pasatiempos",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 79,
@@ -1893,7 +1971,8 @@
         "theme": "frutas",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 80,
@@ -1917,7 +1996,8 @@
         "theme": "patronas",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 81,
@@ -1941,7 +2021,8 @@
         "theme": "Asociaciones de palabras",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 82,
@@ -1965,7 +2046,8 @@
         "theme": "tiempo",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 83,
@@ -1989,7 +2071,8 @@
         "theme": "matemáticas",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   },
   {
     "id": 84,
@@ -2013,6 +2096,7 @@
         "theme": "animales",
         "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
       }
-    ]
+    ],
+    "category": "cognitive_assessment"
   }
 ]
