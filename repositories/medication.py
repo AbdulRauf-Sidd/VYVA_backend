@@ -108,13 +108,18 @@ class MedicationRepository:
         """Get all medications for a user including times as strings"""
         try:
             result = await self.db_session.execute(
-                select(Medication).where(Medication.user_id == user_id)
+                select(Medication)
+                .options(selectinload(Medication.times_of_day))
+                .where(Medication.user_id == user_id)
             )
             medications = result.scalars().all()
             response = []
             for med in medications:
                 med_dict = med.__dict__.copy()
                 # Convert times_of_day to strings
+                
+                for t in med.times_of_day:
+                    med_dict['times_of_day'] = [t.time_of_day.strftime("%H:%M:%S") if hasattr(t.time_of_day, "strftime") else str(t.time_of_day)]
                 med_dict['times_of_day'] = [
                     t.time_of_day.strftime("%H:%M:%S") if hasattr(t.time_of_day, "strftime") else str(t.time_of_day)
                     for t in med.times_of_day

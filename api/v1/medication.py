@@ -9,7 +9,9 @@ from datetime import date, datetime, timezone, timedelta
 import time
 from zoneinfo import ZoneInfo
 from models.user import User
-from models.medication import MedicationStatus, Medication, MedicationLog
+from models.medication import MedicationStatus, Medication, MedicationLog, MedicationTime
+from datetime import time as dt_time
+import asyncio
 from sqlalchemy.orm import selectinload
 from core.database import get_db
 from services.medication import MedicationService
@@ -395,7 +397,7 @@ async def get_weekly_medication_schedule(
             log_date = log.created_at.date()
             log_map[
                 (log.medication_id, log.medication_time_id, log_date)
-            ] = log.status.value
+            ] = log.status
 
         weekly_schedule = defaultdict(list)
         now = datetime.now()
@@ -627,6 +629,7 @@ async def get_medications_with_times(
             detail="Failed to fetch medications"
         )
         
+
 @router.get(
     "/medication-info/{user_id}",
     response_model=MedicationInfoOut,
@@ -637,81 +640,61 @@ async def get_detailed_medication_info(
     db: AsyncSession = Depends(get_db)
 ):
     start_time = time.time()
-    request_id = f"get_med_info_{user_id}_{int(start_time * 1000)}"
-
-    logger.info(f"Request {request_id}: Fetching detailed medication info for user {user_id}")
 
     try:
         if user_id <= 0:
-            raise ValueError("Invalid user ID")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid user ID")
 
-        medication_repo = MedicationRepository(db)
-        medication_service = MedicationService(medication_repo)
-
-        medications = await medication_service.get_user_medications(user_id)
+        # Fetch medications with times and logs eagerly loaded
+        result = await db.execute(
+            select(Medication)
+            .options(
+                selectinload(Medication.times_of_day),
+                selectinload(Medication.logs)
+            )
+            .where(Medication.user_id == user_id)
+        )
+        medications = result.scalars().all()
 
         now_utc = datetime.now(timezone.utc)
         today = now_utc.date()
         week_start = today - timedelta(days=today.weekday())
         week_end = week_start + timedelta(days=6)
 
-        weekly_logs = []
-        for med in medications:
-            for log in med.logs:
-                if log.created_at:
-                    log_date = log.created_at.date()
-                    if week_start <= log_date <= week_end:
-                        weekly_logs.append(log)
-
+        # Weekly adherence
+        weekly_logs = [
+            log for med in medications for log in med.logs
+            if log.created_at and week_start <= log.created_at.date() <= week_end
+        ]
         total_logs = len(weekly_logs)
-        taken_logs = sum(
-            1 for log in weekly_logs if log.status == MedicationStatus.taken.value
-        )
+        taken_logs = sum(1 for log in weekly_logs if log.status == MedicationStatus.taken.value)
+        adherence_percentage = round((taken_logs / total_logs) * 100, 2) if total_logs else 0.0
 
-        adherence_percentage = (
-            round((taken_logs / total_logs) * 100, 2) if total_logs > 0 else 0.0
-        )
-
+        # Determine user timezone
         user = await db.get(User, user_id)
         user_tz = timezone.utc
         if user and getattr(user, "timezone", None):
             try:
                 user_tz = ZoneInfo(user.timezone)
             except Exception:
-                logger.warning(
-                    f"Request {request_id}: Invalid timezone for user {user_id}, falling back to UTC"
-                )
+                user_tz = timezone.utc
 
         now_local = now_utc.astimezone(user_tz)
 
+        # Upcoming doses
         upcoming_doses = []
         for med in medications:
             for t in med.times_of_day:
                 if not t.time_of_day:
                     continue
-
-                candidate_dt = datetime.combine(
-                    now_local.date(),
-                    t.time_of_day,
-                    tzinfo=user_tz
-                )
-
+                candidate_dt = datetime.combine(now_local.date(), t.time_of_day, tzinfo=user_tz)
                 if candidate_dt >= now_local:
                     upcoming_doses.append((candidate_dt, med.name))
 
         next_dose = None
         if upcoming_doses:
             next_time, med_name = min(upcoming_doses, key=lambda x: x[0])
-            next_dose = NextDoseOut(
-                medication_name=med_name,
-                time=next_time
-            )
-
-        duration = time.time() - start_time
-        logger.info(
-            f"Request {request_id}: Medication info computed for user {user_id} "
-            f"in {duration:.2f}s"
-        )
+            next_dose = NextDoseOut(medication_name=med_name, time=next_time)
 
         return MedicationInfoOut(
             weekly_adherence_percentage=adherence_percentage,
@@ -720,19 +703,8 @@ async def get_detailed_medication_info(
             next_dose=next_dose
         )
 
-    except ValueError as e:
-        logger.warning(f"Request {request_id}: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
-
     except Exception as e:
-        logger.error(
-            f"Request {request_id}: Failed to fetch medication info for user {user_id}: {str(e)}",
-            exc_info=True
-        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to fetch medication info"
+            detail=f"Failed to fetch medication info: {str(e)}"
         )
