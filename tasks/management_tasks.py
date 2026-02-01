@@ -55,7 +55,7 @@ def get_call_status_from_twilio(callSid: str) -> dict:
         logger.error(f"Error fetching call status from Twilio for Call SID {callSid}: {e}")
         return {}
 
-@celery_app.task(name="initiate_onboarding_call")
+@celery_app.task(name="initiate_onboarding_call", max_retries=0)
 def initiate_onboarding_call(payload: dict):
     try:
         db = SessionLocal()
@@ -83,7 +83,7 @@ def initiate_onboarding_call(payload: dict):
         db.close()
 
     
-@celery_app.task(name="process_pending_onboarding_users")
+@celery_app.task(name="process_pending_onboarding_users", max_retries=0)
 def process_pending_onboarding_users():
     db = SessionLocal()
     try:
@@ -151,7 +151,7 @@ def process_pending_onboarding_users():
         db.close()
 
 
-@celery_app.task(name="schedule_calls_for_day")
+@celery_app.task(name="schedule_calls_for_day", max_retries=0)
 def schedule_calls_for_day():
     db = SessionLocal()
     try:
@@ -181,7 +181,7 @@ def schedule_calls_for_day():
             user = med.user
             timezone = user.timezone
             preferred_reminder_channel = user.preferred_reminder_channel
-            agent_id = db.query(OrganizationAgents).filter(OrganizationAgents.agent_type == AgentTypeEnum.MEDICATION_REMINDER, OrganizationAgents.organization_id == user.organization_id).first().agent_id
+            agent_id = db.query(OrganizationAgents).filter(OrganizationAgents.agent_type == AgentTypeEnum.medication_reminder.value, OrganizationAgents.organization_id == user.organization_id).first().agent_id
 
 
             payload = {

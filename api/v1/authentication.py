@@ -6,7 +6,7 @@ from scripts.authentication_helpers import get_current_caretaker_from_session, i
 from schemas.responses import StandardSuccessResponse, SessionSuccessResponse, SessionCheckResponse
 from sqlalchemy import select, delete
 from sqlalchemy.orm import selectinload
-from models.user import Caretaker, User
+from models.user import Caretaker, User, LANGUAGE_MAPPING
 from core.config import settings
 from models.authentication import CaretakerTempToken, UserTempToken, UserSession, CaretakerSession
 from datetime import datetime, timedelta, timezone
@@ -222,8 +222,7 @@ async def session_auth(
         select(UserSession).where(UserSession.session_id == session_id)
     )
     session = result.scalar_one_or_none()
-    print(session.user_id, session.caretaker_id)
-
+    
     if not session:
         raise HTTPException(status_code=401, detail="Invalid session")
 
@@ -297,16 +296,15 @@ async def read_user_profile(
         )
 
     user = await get_current_user_from_session(session_id, db)
-    agent_mappings = {}
-    organization_agents = user.organization.agents if user.organization else []
-    for agent in organization_agents:
-        agent_mappings[agent.name_slug] = agent.agent_id
+
 
     if not user:
         raise HTTPException(
             status_code=401, 
             detail="Not authenticated: Invalid or expired session"
         )
+    
+    first_time_agents = [user.symptom_checker_first_time, user.medication_manager_first_time, user.brain_coach_first_time, user.assisstant_first_time, user.social_companion_first_time]
 
     return {
         "user_id": user.id,
@@ -314,7 +312,8 @@ async def read_user_profile(
         "last_name": user.last_name,
         "phone_number": user.phone_number,
         "organization_id": user.organization_id,
-        "agent_mappings": agent_mappings
+        "language": LANGUAGE_MAPPING.get(user.preferred_consultation_language.lower() if user.preferred_consultation_language else "english"),
+        "first_time_agents": first_time_agents
     }
 
 @router.get("/caretaker-profile")

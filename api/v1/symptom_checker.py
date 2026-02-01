@@ -211,6 +211,7 @@ async def _extract_ai_summaries(
 class SymptomCheckRequest(BaseModel):
     symptoms: str
     conversation_id: str  # Required - provided by frontend
+    user_id: Optional[int] = None  # Optional - used to include health conditions
     full_name: Optional[str] = None
     language: Optional[str] = None
     model_type: Optional[str] = "pro"
@@ -229,9 +230,9 @@ class SymptomCheckRequest(BaseModel):
 
 
 class SendReportRequest(BaseModel):
-    user_id: int  # Required - to fetch preferred communication channel
+    user_id: int  # Required - to fetch preferred reports channel
     conversation_id: str  # Required - to identify the specific report
-    action: Optional[str] = None  # Deprecated: use preferred_communication_channel
+    action: Optional[str] = None  # Deprecated: use preferred_reports_channel
     recipient_email: Optional[str] = None  # Deprecated: use user's email
     phone_number: Optional[str] = None  # Deprecated: use user's phone_number
     include_articles: Optional[bool] = True
@@ -634,7 +635,20 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
 
     try:
         # Formulate comprehensive search query
+        health_conditions = None
+        if payload.user_id:
+            user_result = await db.execute(
+                select(User).where(User.id == payload.user_id)
+            )
+            user = user_result.scalar_one_or_none()
+            if user and user.health_conditions:
+                health_conditions = user.health_conditions.strip()
+
         formulated_symptoms = _formulate_symptom_query(payload)
+        if health_conditions:
+            formulated_symptoms = (
+                f"{formulated_symptoms}. Health conditions: {health_conditions}"
+            )
         logger.info(f"Formulated query: {formulated_symptoms}")
 
         # Call MediSearch API with formulated query
@@ -839,7 +853,7 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
 @router.post("/send-report", status_code=status.HTTP_200_OK)
 async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get_db)) -> Dict[str, Any]:
     """
-    Send a medical report via the user's preferred communication channel.
+    Send a medical report via the user's preferred reports channel.
     """
     logger.info("=== SEND REPORT ENDPOINT CALLED ===")
     logger.info(f"Received payload: {payload.model_dump()}")
@@ -858,7 +872,7 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
                 detail=f"No analysis found for conversation_id: {payload.conversation_id}. Please run symptom analysis first."
             )
 
-        # Get user and preferred communication channel
+        # Get user and preferred reports channel
         user_result = await db.execute(
             select(User).where(User.id == payload.user_id)
         )
@@ -875,23 +889,23 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
                 detail="User does not match the requested report."
             )
 
-        preferred_channel = (user.preferred_communication_channel or "").strip().lower()
-        if preferred_channel not in ["email", "whatsapp"]:
+        preferred_reports_channel = (user.preferred_reports_channel or "").strip().lower()
+        if preferred_reports_channel not in ["email", "whatsapp"]:
             raise HTTPException(
                 status_code=400,
-                detail="Invalid preferred_communication_channel. Must be 'email' or 'whatsapp'."
+                detail="Invalid preferred reports channel. Must be 'email' or 'whatsapp'."
             )
 
         recipient_email = (user.email or "").strip()
         phone_number = (user.phone_number or "").strip()
 
-        if preferred_channel == "email" and not recipient_email:
+        if preferred_reports_channel == "email" and not recipient_email:
             raise HTTPException(
                 status_code=400,
                 detail="User email is required to send report via email."
             )
 
-        if preferred_channel == "whatsapp" and not phone_number:
+        if preferred_reports_channel == "whatsapp" and not phone_number:
             raise HTTPException(
                 status_code=400,
                 detail="User phone_number is required to send report via WhatsApp."
@@ -904,13 +918,13 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
         send_result = None
         caregiver_results = {"email": None, "whatsapp": None}
 
-        if preferred_channel == "email":
+        if preferred_reports_channel == "email":
             send_result = await _send_email_report(
                 recipient_email=recipient_email,
                 report_content=report_content,
                 patient_name=response_record.full_name or " "
             )
-        elif preferred_channel == "whatsapp":
+        elif preferred_reports_channel == "whatsapp":
             send_result = await _send_whatsapp_report(
                 phone_number=phone_number,
                 report_content=report_content,
@@ -918,24 +932,24 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
             )
 
         # Send report to caregiver/caretaker if available
-        caretaker = user.caretaker
-        if caretaker:
-            caretaker_email = (caretaker.email or "").strip()
-            caretaker_phone = (caretaker.phone_number or "").strip()
+        # caretaker = user.caretaker
+        # if caretaker:
+        #     caretaker_email = (caretaker.email or "").strip()
+        #     caretaker_phone = (caretaker.phone_number or "").strip()
 
-            if caretaker_email:
-                caregiver_results["email"] = await _send_email_report(
-                    recipient_email=caretaker_email,
-                    report_content=report_content,
-                    patient_name=response_record.full_name or " "
-                )
+        #     if caretaker_email:
+        #         caregiver_results["email"] = await _send_email_report(
+        #             recipient_email=caretaker_email,
+        #             report_content=report_content,
+        #             patient_name=response_record.full_name or " "
+        #         )
 
-            if caretaker_phone:
-                caregiver_results["whatsapp"] = await _send_whatsapp_report(
-                    phone_number=caretaker_phone,
-                    report_content=report_content,
-                    patient_name=response_record.full_name or " "
-                )
+        #     if caretaker_phone:
+        #         caregiver_results["whatsapp"] = await _send_whatsapp_report(
+        #             phone_number=caretaker_phone,
+        #             report_content=report_content,
+        #             patient_name=response_record.full_name or " "
+        #         )
 
         # Send report to doctor if symptoms are severe
         is_severe = (response_record.severity or "").strip().lower() == "severe"
@@ -956,7 +970,7 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
         return {
             "message": "Report sent successfully",
             "conversation_id": response_record.conversation_id,
-            "action": preferred_channel,
+            "action": preferred_reports_channel,
             "status": send_result,
             "caregiver_status": caregiver_results,
             "doctor_status": "pending" if is_severe else "not_applicable",

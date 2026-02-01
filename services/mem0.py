@@ -35,7 +35,7 @@ async def get_memories(user_id: int):
         memories.append({
             "memory": item.get("memory"),
             "created_at": item.get("created_at").split("T")[0],
-            'day of the week': item.get("day_of_the_week"),
+            # 'day of the week': item.get("day_of_the_week"),
         })
     return memories
 
