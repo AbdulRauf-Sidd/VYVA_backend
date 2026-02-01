@@ -562,77 +562,7 @@ async def get_all_medications_with_times(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to fetch medications"
         )
-        
-@router.get(
-    "/medication-times/{user_id}",
-    response_model=List[MedicationOut],
-    summary="Get all medications with times for a user"
-)
-async def get_medications_with_times(
-    user_id: int,
-    db: AsyncSession = Depends(get_db)
-):
-    start_time = time.time()
-    request_id = f"get_meds_times_{user_id}_{int(start_time * 1000)}"
 
-    logger.info(f"Request {request_id}: Fetching medications with times for user {user_id}")
-
-    try:
-        if not user_id or user_id <= 0:
-            raise ValueError("Invalid user ID")
-
-        query = (
-            select(Medication)
-            .options(selectinload(Medication.times_of_day))
-            .where(Medication.user_id == user_id)
-        )
-        result = await db.execute(query)
-        medications = result.scalars().all()
-        transformed = []
-        for med in medications:
-            transformed.append({
-                "id": med.id,
-                "name": med.name,
-                "dosage": med.dosage,
-                "purpose": med.purpose,
-                "side_effects": med.side_effects,
-                "notes": med.notes,
-                "times_of_day": [
-                    {
-                        "id": t.id,
-                        "time_of_day": t.time_of_day.strftime("%H:%M:%S"),
-                        "notes": t.notes
-                    }
-                    for t in med.times_of_day
-                ]
-            })
-
-        duration = time.time() - start_time
-        logger.info(
-            f"Request {request_id}: Found {len(transformed)} medications for user {user_id} in {duration:.2f}s"
-        )
-
-        if not transformed:
-            logger.info(f"Request {request_id}: No medications found for user {user_id}")
-
-        return transformed
-
-    except ValueError as e:
-        logger.warning(f"Request {request_id}: Invalid user ID {user_id}: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
-    except Exception as e:
-        logger.error(
-            f"Request {request_id}: Failed to fetch medications for user {user_id}: {str(e)}",
-            exc_info=True
-        )
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to fetch medications"
-        )
-        
 
 @router.get(
     "/medication-info/{user_id}",
