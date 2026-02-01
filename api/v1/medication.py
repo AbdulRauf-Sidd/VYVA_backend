@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from requests import Session
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, func
 from typing import List, Dict
 import logging
 import time
@@ -392,12 +393,10 @@ async def get_weekly_medication_schedule(
         logs = logs_result.scalars().all()
 
         # -------------------- LOG LOOKUP MAP (NEW) --------------------
-        log_map = {}
+        log_map = set()
         for log in logs:
-            log_date = log.created_at.date()
-            log_map[
-                (log.medication_id, log.medication_time_id, log_date)
-            ] = log.status
+            log_date = (log.taken_at or log.created_at).date()
+            log_map.add((log.medication_id, log_date))
 
         weekly_schedule = defaultdict(list)
         now = datetime.now()
@@ -444,7 +443,8 @@ async def get_weekly_medication_schedule(
                         
                     total_scheduled += 1
 
-                    if status_value == MedicationStatus.taken.value:
+                    if (med.id, current_date) in log_map:
+                        status_value = MedicationStatus.taken.value
                         total_taken += 1
 
                     weekly_schedule[day_name].append({
@@ -467,7 +467,10 @@ async def get_weekly_medication_schedule(
             f"in {duration:.2f}s"
         )
 
-        print (total_scheduled, total_taken)
+        logger.info(
+            f"Request {request_id}: Total scheduled doses this week: {total_scheduled}, "
+            f"Total taken doses this week: {total_taken}"
+        )
         return {
             "summary": {
                 "total_medicines_this_week": total_scheduled,
@@ -709,3 +712,91 @@ async def get_detailed_medication_info(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to fetch medication info: {str(e)}"
         )
+    
+def get_week_start(d: date) -> date:
+    return d - timedelta(days=d.weekday())
+
+@router.get("/adherence-history/{user_id}")
+async def get_adherence_history(
+    user_id: int,
+    weeks: int = 8,
+    db: AsyncSession = Depends(get_db),
+):
+    today = date.today()
+    history = []
+
+    for i in range(weeks):
+        week_start = today - timedelta(days=today.weekday()) - timedelta(weeks=i)
+        week_end = week_start + timedelta(days=6)
+
+        # ---- Scheduled doses ----
+        meds_stmt = (
+            select(
+                Medication.id,
+                Medication.start_date,
+                Medication.end_date,
+                func.count(MedicationTime.id).label("times_per_day")
+            )
+            .join(MedicationTime)
+            .where(Medication.user_id == user_id)
+            .group_by(Medication.id)
+        )
+
+        meds_result = await db.execute(meds_stmt)
+        total_scheduled = 0
+
+        for med_id, start_date, end_date, times_per_day in meds_result:
+            med_start = start_date or week_start
+            med_end = end_date or week_end
+
+            active_days = max(
+                0,
+                (min(med_end, week_end) - max(med_start, week_start)).days + 1
+            )
+
+            total_scheduled += active_days * times_per_day
+
+        # ---- Taken doses ----
+        logs_stmt = (
+            select(MedicationLog.medication_id, MedicationLog.taken_at, MedicationLog.created_at)
+            .where(
+                MedicationLog.user_id == user_id,
+                func.date(func.coalesce(
+                    MedicationLog.taken_at,
+                    MedicationLog.created_at
+                )) >= week_start,
+                func.date(func.coalesce(
+                    MedicationLog.taken_at,
+                    MedicationLog.created_at
+                )) <= week_end,
+            )
+        )
+        
+        logs_result = await db.execute(logs_stmt)
+        
+        taken_map = set()
+        
+        for med_id, taken_at, created_at in logs_result:
+            log_date = (taken_at or created_at).date()
+            taken_map.add((med_id, log_date))
+        
+        total_taken = len(taken_map)
+
+        adherence = (
+            round((total_taken / total_scheduled) * 100, 1)
+            if total_scheduled > 0
+            else 0
+        )
+
+        history.append({
+            "week_start": week_start.isoformat(),
+            "week_end": week_end.isoformat(),
+            "scheduled": total_scheduled,
+            "taken": total_taken,
+            "adherence": adherence
+        })
+
+    return {
+        "success": True,
+        "data": list(reversed(history))
+    }
