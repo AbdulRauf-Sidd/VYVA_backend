@@ -47,3 +47,6 @@ class BrainCoachResponses(Base):
     user_answer = Column(String(100), nullable=True)
     score = Column(Integer, nullable=False)  
     created = Column(DateTime(timezone=True), server_default=func.now())
+    
+    user = relationship("User", backref="brain_responses")
+    question = relationship("BrainCoachQuestions", backref="responses")

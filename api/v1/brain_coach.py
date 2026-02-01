@@ -1,4 +1,4 @@
-from sqlalchemy import select, func
+from sqlalchemy import select, func, distinct
 from fastapi import APIRouter, Depends, HTTPException, status, Path, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
@@ -351,30 +351,47 @@ async def get_cognitive_trend(
         "improvement": improvement
     }
     
-@router.get(
-    "/daily-session-activity/{user_id}",
-    response_model=DailySessionActivityResponse
-)
+@router.get("/daily-session-activity/{user_id}")
 async def daily_session_activity(
     user_id: int = Path(..., description="User ID"),
     days: int = Query(7, ge=1),
     db: AsyncSession = Depends(get_db)
 ):
-    """Return daily session counts for a user over the past 'days' days"""
+    """
+    Return daily session counts for a user over the past 'days' days.
+    Counts DISTINCT session_id per day (not individual responses).
+    Returns JSON like: { "trend": [ { "date": "YYYY-MM-DD", "sessions": 3 }, ... ] }
+    """
     try:
-        repo = BrainCoachResponseRepository(db)
-        trend = await repo.get_daily_session_activity(user_id, days)
+        start_date = datetime.utcnow() - timedelta(days=days)
 
-        # if not trend:
-        #     raise HTTPException(
-        #         status_code=status.HTTP_404_NOT_FOUND,
-        #         detail="No session activity found for the user in the given time frame"
-        #     )
+        # Count distinct sessions per day
+        query = (
+            select(
+                func.date(BrainCoachResponses.created).label("date"),
+                func.count(distinct(BrainCoachResponses.session_id)).label("sessions")
+            )
+            .where(
+                BrainCoachResponses.user_id == user_id,
+                BrainCoachResponses.created >= start_date
+            )
+            .group_by(func.date(BrainCoachResponses.created))
+            .order_by(func.date(BrainCoachResponses.created))
+        )
+
+        result = await db.execute(query)
+        rows = result.all()
+
+        trend = [
+            {
+                "date": row.date.strftime("%Y-%m-%d"),  # ISO format for frontend
+                "sessions": row.sessions
+            }
+            for row in rows
+        ]
 
         return {"trend": trend}
 
-    except HTTPException:
-        raise
     except Exception as e:
         logger.exception(f"Unexpected error fetching daily session activity: {e}")
         raise HTTPException(
