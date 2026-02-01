@@ -1,5 +1,5 @@
 from typing import List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class FindPlacesRequest(BaseModel):
@@ -44,6 +44,21 @@ class GetInformationRequest(BaseModel):
     question: str
     web: bool = Field(False, description="Set true to allow web lookup")
     sources_preferred: Optional[List[str]] = None
+
+    @field_validator("sources_preferred", mode="before")
+    def coerce_sources_preferred(cls, v):
+        if v is None:
+            return None
+        if isinstance(v, bool):
+            return None
+        if isinstance(v, str):
+            value = v.strip()
+            if not value:
+                return None
+            if value.lower() in {"true", "false", "null", "none"}:
+                return None
+            return [value]
+        return v
 
 
 class GetInformationResponse(BaseModel):
