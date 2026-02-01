@@ -91,11 +91,11 @@ async def find_places(req: FindPlacesRequest, db: AsyncSession = Depends(get_db)
                 detail=f"User not found for user_id: {req.user_id}"
             )
 
-        preferred_channel = (user.preferred_communication_channel or "").strip().lower()
+        preferred_channel = (user.preferred_reports_channel or "").strip().lower() or "email"
         if preferred_channel not in ["email", "whatsapp"]:
             raise HTTPException(
                 status_code=400,
-                detail="Invalid preferred_communication_channel. Must be 'email' or 'whatsapp'."
+                detail="Invalid preferred_reports_channel. Must be 'email' or 'whatsapp'."
             )
 
         recipient_email = (user.email or "").strip()
