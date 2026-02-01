@@ -1,0 +1,4626 @@
+[
+  {
+    "session": 15,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [sol, flor, mesa]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde estas palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 15,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 40 hasta 30.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario cuente correctamente del 40 al 30 en orden descendente\".",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 15,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común un cuchillo y unas tijeras?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga que ambos sirven para cortar\".",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 15,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿En qué mes naciste?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario indique el mes correcto de su nacimiento\".",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 15,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres objetos que usas al cocinar.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario mencione tres utensilios de cocina\".",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 15,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si tienes 10 euros y gastas 2, ¿cuánto te queda?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario responda 8 euros correctamente\".",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 16,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [estrella, cama, botella]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “sol — flor— mesaen cualquier orden ”.",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 16,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 25 en 2 en 2.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 25, 23, 21, etc.\"",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 16,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común el agua y el jugo?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga que ambos son líquidos o bebidas\".",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 16,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué día del mes es hoy?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga la fecha actual\".",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 16,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres medios de transporte.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario mencione coche, autobús y tren\".",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 16,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si duermes ocho horas cada noche, ¿cuántas horas duermes en una semana?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 56 horas\".",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 17,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [montaña, papel, anillo]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde las palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 17,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 60 hasta 50.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario cuente correctamente del 60 al 50\".",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 17,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común una camisa y un abrigo?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga que ambos son prendas de vestir\".",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 17,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué estación viene después del verano?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga otoño\".",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 17,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres frutas tropicales.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario mencione mango, piña o plátano\".",
+        "question_type": "Fluidez",
+        "theme": "frutas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 17,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si tienes tres manzanas y comes una, ¿cuántas quedan?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga dos manzanas\".",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 18,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [camino, fruta, silla]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “montaña — papel— anillo en cualquier orden ”.",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 18,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 15 restando 2 cada vez.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 13, 11, 9, etcétera\".",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 18,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común el sol y la luna?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga que ambos están en el cielo o son astros\".",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 18,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuántos días tiene un fin de semana?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga dos: sábado y domingo\".",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 18,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres profesiones.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario mencione oficios como médico, maestro o carpintero\".",
+        "question_type": "Fluidez",
+        "theme": "profesiones",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 18,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Di los números pares del 2 al 12 en orden inverso.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 12, 10, 8, 6, 4, 2 correctamente\".",
+        "question_type": "Atencion",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 19,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [silla, nube, llave]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde las tres palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 19,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 22 hasta 12.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario cuente correctamente desde el 22 hasta el 12 sin errores\".",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 19,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común el pan y el arroz?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga que ambos son alimentos o carbohidratos\".",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 19,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuántos meses tiene un año?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 12 meses\".",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 19,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres lugares que se visitan de vacaciones.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga playa, montaña o ciudad\".",
+        "question_type": "Fluidez",
+        "theme": "Lugar",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 19,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si hoy es viernes, ¿qué día fue ayer?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga jueves\".",
+        "question_type": "Razonamiento",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 20,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [tenedor, árbol, libro]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “silla — nube— llave en cualquier orden ”.",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 20,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 70 de cinco en cinco.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 70, 65, 60, 55, 50, etcétera\".",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 20,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común el lápiz y el bolígrafo?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga que ambos se usan para escribir\".",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 20,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué día de la semana será mañana?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga el día correcto siguiente al actual\".",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 20,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres objetos eléctricos del hogar.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario mencione, por ejemplo, televisión, nevera o lámpara\".",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 20,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si tienes 20 euros y gastas 5 en pan, ¿cuánto te queda?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 15 euros\".",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 21,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [árbol, mar, coche]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde las tres palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 21,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 12 en 1 en 1.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario cuente 12, 11, 10... hasta llegar a 1 sin errores\".",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 21,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común un zapato y una sandalia?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga que ambos se usan para caminar o son calzado\".",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 21,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿En qué estación del año naciste?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario indique la estación correcta (primavera, verano, otoño o invierno)\".",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 21,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres comidas típicas de España.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario mencione platos como paella, tortilla o gazpacho\".",
+        "question_type": "Fluidez",
+        "theme": "Lugar",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 21,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Repite esta secuencia al revés: 3, 6, 1, 9.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 9, 1, 6, 3 correctamente\".",
+        "question_type": "Atencion",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 22,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [puente, florero, coche]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “arbol — mar— coche en cualquier orden ”.",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 22,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 18 en 3 en 3.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 18, 15, 12, 9, 6, 3\".",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 22,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común el hielo y el vapor?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga que ambos son formas del agua o estados del mismo elemento\".",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 22,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuántos días tiene febrero en un año no bisiesto?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 28 días\".",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 22,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres tipos de flores.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario mencione rosas, tulipanes o margaritas\".",
+        "question_type": "Fluidez",
+        "theme": "categorías",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 22,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si un día tiene 24 horas, ¿cuántas horas hay en tres días?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 72 horas\".",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 23,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [mesa, taza, cuchillo]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde las tres palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 23,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 90 hasta 80.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 90, 89, 88... hasta 80 correctamente\".",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 23,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común la lluvia y la nieve?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga que ambas son formas de precipitación o agua del cielo\".",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 23,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿A qué hora sueles almorzar?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga una hora coherente con la comida del mediodía\".",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 23,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres colores primarios.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga rojo, azul y amarillo\".",
+        "question_type": "Fluidez",
+        "theme": "categorías",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 23,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si una semana tiene siete días, ¿cuántos días hay en dos semanas?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 14 días\".",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 24,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [cerro, ventana, leche]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “mesa — taza— cuchillo en cualquier orden ”.",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 24,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 10 hasta 0.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 10, 9, 8... hasta 0 correctamente\".",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 24,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común un libro y una revista?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga que ambos se leen o contienen texto e imágenes\".",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 24,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿En qué país estás ahora mismo?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga España o el país correcto en el que se encuentra\".",
+        "question_type": "Orientacion",
+        "theme": "Lugar",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 24,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres animales marinos.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga pez, delfín, tiburón o similares\".",
+        "question_type": "Fluidez",
+        "theme": "animales",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 24,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta los números impares del 1 al 11 en orden ascendente.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 1, 3, 5, 7, 9, 11 correctamente\".",
+        "question_type": "Atencion",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 25,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [camisa, lápiz, reloj]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde las tres palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 25,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 30 en 2 en 2.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 30, 28, 26, 24… hasta 0 sin errores\".",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 25,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común una lámpara y una linterna?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga que ambas dan luz o sirven para iluminar\".",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 25,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuántos años tiene una persona nacida en 2000?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 25 si el año actual es 2025\".",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 25,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres instrumentos musicales.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga guitarra, piano o violín\".",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 25,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si hoy es lunes, ¿qué día será en tres días?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga jueves\".",
+        "question_type": "Razonamiento",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 26,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [pescado, campana, plato]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “camisa — lapiz— reloj en cualquier orden ”.",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 26,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 16 en 2 en 2.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 16, 14, 12, 10, 8, 6, 4, 2\".",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 26,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común el chocolate y el azúcar?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga que ambos son dulces o ingredientes para postres\".",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 26,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué temporada viene después del invierno?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga primavera\".",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 26,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres animales del bosque.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga ciervo, zorro o ardilla\".",
+        "question_type": "Fluidez",
+        "theme": "animales",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 26,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [cielo, nube, sol]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde las tres palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 27,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 45 en 5 en 5.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 45, 40, 35, 30, 25, 20, etcétera\".",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 27,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común una ventana y una puerta?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga que ambas permiten pasar o dejar entrar luz/aire\".",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 27,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué día de la semana es anterior al lunes?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga domingo\".",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 27,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres cosas que flotan en el agua.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga barco, pelota o madera\".",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 27,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si tienes una docena de huevos y rompes tres, ¿cuántos quedan enteros?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga nueve\".",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 27,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [jardín, cartón, taza]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “cielo — nube— sol en cualquier orden ”.",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 28,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 24 hasta 14.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 24, 23, 22... hasta 14 correctamente\".",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 28,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común una cuchara y un cuchillo?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga que ambos son utensilios de cocina\".",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 28,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿En qué año estamos?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 2025 o el año actual correcto\".",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 28,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres cosas que emiten luz.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga bombilla, sol o vela\".",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 28,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si una hora tiene 60 minutos, ¿cuántos minutos hay en dos horas?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 120 minutos\".",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 28,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [agua, fuego, tierra]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde las tres palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 29,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 50 en 10 en 10.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 50, 40, 30, 20, 10, 0 sin errores\".",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 29,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común un avión y un helicóptero?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga que ambos son medios de transporte aéreo\".",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 29,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿En qué continente vives?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga Europa o el continente correcto\".",
+        "question_type": "Orientacion",
+        "theme": "Lugar",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 29,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres objetos de metal.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga cuchara, llave o clavo\".",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 29,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Di esta secuencia al revés: 2, 4, 6, 8.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 8, 6, 4, 2 correctamente\".",
+        "question_type": "Atencion",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 29,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [cartera, río, sombrero]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “agua — fuego— tierra en cualquier orden ”.",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 30,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 28 en 4 en 4.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 28, 24, 20, 16, 12, 8, 4\".",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 30,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común una carta y un correo electrónico?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga que ambos sirven para comunicarse o enviar mensajes\".",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 30,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuántos minutos tiene una hora?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 60 minutos\".",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 30,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres bebidas sin alcohol.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga agua, zumo o leche\".",
+        "question_type": "Fluidez",
+        "theme": "categorías",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 30,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si un mes tiene cuatro semanas, ¿cuántos días tiene aproximadamente?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 28 días\".",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 30,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [mesa, gato, nube]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario recuerde las tres palabras en cualquier orden\".",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 31,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 9 hasta 1.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 9, 8, 7... hasta 1 sin errores\".",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 31,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres partes del cuerpo humano.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga cabeza, manos o piernas\".",
+        "question_type": "Fluidez",
+        "theme": "categorías",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 31,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta los números del 1 al 10 saltando los impares.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 2, 4, 6, 8, 10 correctamente\".",
+        "question_type": "Atencion",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 31,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [radio, plátano, lámpara]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “mesa — gato— nube en cualquier orden ”.",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 31,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 33 en 3 en 3.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga 33, 30, 27, 24, 21, 18, 15, 12, 9, 6, 3\".",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 31,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común una silla y un sofá?",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga que ambos sirven para sentarse\".",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 31,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres animales que vivan en el mar.",
+        "expected_answer": "La respuesta esperada sería algo como \"se espera que el usuario diga delfín, pez o tiburón\".",
+        "question_type": "Fluidez",
+        "theme": "animales",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 32,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 22 hasta 14.",
+        "expected_answer": "la respuesta esperada seria que el usuario diga 22, 21, 20… hasta 14 correctamente.",
+        "question_type": "Atencion",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 32,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si tienes 8 manzanas y comes 3, ¿cuántas te quedan?",
+        "expected_answer": "la respuesta esperada es que el usuario diga “5”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 32,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿En qué parte de la casa te duchas?",
+        "expected_answer": "la respuesta esperada es que el usuario diga “baño”, ducha o similar",
+        "question_type": "Orientacion",
+        "theme": "Lugar",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 32,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres frutas de color rojo.",
+        "expected_answer": "la respuesta esperada es que el usuario diga “manzana, cereza, fresa” o similares.",
+        "question_type": "Fluidez",
+        "theme": "frutas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 32,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común un cuchillo y un tenedor?",
+        "expected_answer": "la respuesta esperada es que el usuario diga que ambos son utensilios para comer.",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 32,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [codo, jardín, libro]. Te las preguntaré más tarde.",
+        "expected_answer": "la respuesta esperada es que el usuario recuerde las tres palabras en cualquier orden.",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 33,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Di esta secuencia al revés: 4, 7, 9.",
+        "expected_answer": "la respuesta esperada es que el usuario diga “9, 7, 4”.",
+        "question_type": "Atencion",
+        "theme": "patronas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 33,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si un tren tarda 2 horas en llegar y otro tarda 1 hora, ¿cuál llega primero?",
+        "expected_answer": "la respuesta esperada es que el usuario diga “el que tarda 1 hora”.",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 33,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué día viene después del miércoles?",
+        "expected_answer": "la respuesta esperada es que el usuario diga “jueves”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 33,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres objetos que uses para escribir.",
+        "expected_answer": "la respuesta esperada es que el usuario diga “lápiz, bolígrafo, marcador” o similares.",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 33,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común una radio y un altavoz?",
+        "expected_answer": "la respuesta esperada es que el usuario diga que ambos producen sonido.",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 33,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [montaña, zapato, cuchillo]. Te las preguntaré más tarde.",
+        "expected_answer": "la respuesta esperada es que el usuario recuerde las tres palabras mencionadas antes (codo, jardin y libro) en cualquier orden",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 34,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta los números pares del 2 al 12.",
+        "expected_answer": "la respuesta esperada es que el usuario diga 2, 4, 6, 8, 10, 12.",
+        "question_type": "Atencion",
+        "theme": "numeros",
+        "scoring_logic": ""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 34,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si un cuarto tiene cuatro esquinas, ¿cuántas esquinas tienen dos cuartos?",
+        "expected_answer": "la respuesta esperada es que el usuario diga “ocho”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 34,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿En qué país vives?",
+        "expected_answer": "la respuesta esperada es que el usuario diga su país actual correctamente.",
+        "question_type": "Orientacion",
+        "theme": "Lugar",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 34,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres profesiones relacionadas con la salud.",
+        "expected_answer": "la respuesta esperada es que el usuario diga “doctor, enfermero, dentista” o similares.",
+        "question_type": "Fluidez",
+        "theme": "profesiones",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 34,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común un molino y un ventilador?",
+        "expected_answer": "la respuesta esperada es que el usuario diga que ambos giran o producen movimiento de aire.",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 34,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [camino, jarra, techo]. Te las preguntaré más tarde.",
+        "expected_answer": "la respuesta esperada es que el usuario recuerde las tres palabras en cualquier orden.",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 35,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Cuenta hacia atrás desde 31 en 3 en 3.",
+        "expected_answer": "la respuesta esperada es que el usuario diga 31, 28, 25, 22, 19, 16, 13, 10, 7, 4, 1.",
+        "question_type": "Atencion",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 35,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si tienes 20 euros y compras algo que cuesta 12, ¿cuánto dinero te queda?",
+        "expected_answer": "la respuesta esperada es que el usuario diga “8 euros”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 35,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿En qué parte de tu casa comes normalmente?",
+        "expected_answer": "la respuesta esperada es que el usuario diga “comedor” o “cocina”.",
+        "question_type": "Orientacion",
+        "theme": "Lugar",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 35,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres tipos de árboles comunes.",
+        "expected_answer": "la respuesta esperada es que el usuario diga “roble, pino, olivo” o similares.",
+        "question_type": "Fluidez",
+        "theme": "contexto",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 35,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué tienen en común una mochila y una maleta?",
+        "expected_answer": "la respuesta esperada es que el usuario diga que ambas sirven para guardar o transportar cosas.",
+        "question_type": "Razonamiento",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 35,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [cama, lápiz, fruta]. Te las preguntaré más tarde.",
+        "expected_answer": "la respuesta esperada es que el usuario recuerde las tres palabras (camino, jarra y techo) en cualquier orden",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 36,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Di una palabra relacionada con “montaña”.",
+        "expected_answer": "la respuesta esperada es que el usuario responda con algo como “nieve”, “piedras”, “altura” o palabras relacionadas.",
+        "question_type": "Atencion",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 36,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si una puerta está cerrada, ¿qué debes hacer para poder entrar?",
+        "expected_answer": "La repuesta esperada seria que el usuario diga ‘abrir la puerta’.",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 36,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿En qué estación del año estamos ahora?",
+        "expected_answer": "La respuesta esperada sería que el usuario diga la estación correcta.”",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 36,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si hoy es lunes, ¿qué día fue ayer?",
+        "expected_answer": "La respuesta esperada sería que el usuario diga domingo.”",
+        "question_type": "Razonamiento",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 36,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres verduras verdes",
+        "expected_answer": "La respuesta esperada sería: “Se espera que el usuario diga espinaca, lechuga, brócoli u otras verduras verdes.”",
+        "question_type": "Fluidez",
+        "theme": "frutas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 36,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: cielo — taza — montaña.",
+        "expected_answer": "La respuesta esperada sería: “Se espera que el usuario pueda repetir estas palabras después.”",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 37,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Di una palabra que esté relacionada con “mar”.",
+        "expected_answer": "La respuesta esperada sería una palabra como “ola”, “playa”, “arena”, “barco”, etc.",
+        "question_type": "Atencion",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 37,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿los gatos pueden ser domésticos?",
+        "expected_answer": "La respuesta esperada sería sí, porque pueden pertenecer al grupo de animales domésticos.",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 37,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué mes viene después de junio?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “julio”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 37,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál número no encaja en este grupo: 2, 4, 6, 9, 8?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “9”.",
+        "question_type": "Razonamiento",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 37,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres palabras que empiecen con la letra \"L\"",
+        "expected_answer": "La respuesta esperada seria que el usario debe rsponder con cualquier palabra que empiece con la letra L como \"libro\", \"luna\", \"lunar\" o similares",
+        "question_type": "Fluidez",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 37,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [camisa, tren, lámpara]. Te las preguntaré más tarde.",
+        "expected_answer": "la respuesta esperada es que el usuario recuerde las tres palabras (cielo, taza y montaña t) en cualquier orden",
+        "question_type": "Memoria",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 38,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece al grupo? (Dos son objetos y una no lo es): silla, mesa, perro.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “perro”.",
+        "question_type": "Atencion",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 38,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si un tren tarda 2 horas en llegar a su destino y otro tarda 4 horas, ¿cuál llega primero?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “el tren que tarda 2 horas”.",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 38,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué día de la semana viene después de miércoles?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “jueves”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 38,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál número no sigue la secuencia: 10, 20, 30, 35, 40?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “35”.",
+        "question_type": "Razonamiento",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 38,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres frutas de color amarillo.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “plátano, piña, mango” (o similares).",
+        "question_type": "Fluidez",
+        "theme": "frutas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 38,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: flor — tren — roca. Te las preguntaré después.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario memorice las palabras.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 39,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Di una palabra relacionada con “playa”.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga algo como “arena, mar, sol”.",
+        "question_type": "Atencion",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 39,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si multiplicas 3 × 5, ¿cuál es el resultado?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “15”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 39,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál estación viene después de primavera?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “verano”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 39,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál número no encaja en: 1, 3, 5, 7, 12?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “12”.",
+        "question_type": "Razonamiento",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 39,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres animales que vuelan.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “pájaro, águila, murciélago” (o similares).",
+        "question_type": "Fluidez",
+        "theme": "animales",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 39,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [rosa, nube, oso]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “flor — tren — roca”.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 40,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece? (Dos son profesiones y una no): doctor, carpintero, naranja.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “naranja”.",
+        "question_type": "Atencion",
+        "theme": "profesiones",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 40,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si restas 15 − 6, ¿qué número obtienes?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “9”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 40,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué mes es el último del año?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “diciembre”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 40,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Completa el patrón: sol — luna — sol — luna — ___",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “sol”.",
+        "question_type": "Razonamiento",
+        "theme": "patronas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 40,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres objetos que puedas encontrar en la cocina.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “plato, vaso, cuchara”.",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 40,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: nube — puerta — río. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario memorice las palabras.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 41,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Di una palabra que sea opuesta a “frío”.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “caliente”.",
+        "question_type": "Atencion",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 41,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si un perro tiene 4 patas y dos perros juntos, ¿cuántas patas tienen?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “8”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 41,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál día viene antes de domingo?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “sábado”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 41,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál palabra no encaja en este grupo: sal, azúcar, mesa, pimienta?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “mesa”.",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 41,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres frutas rojas.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “fresa, manzana roja, cereza” (o similares).",
+        "question_type": "Fluidez",
+        "theme": "frutas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 41,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [cuerda, motor, árbol]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “nube — puerta — río”.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 42,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál palabra no encaja en este grupo (tres son animales y una no lo es ) gato, perro, silla, caballo?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “silla”.",
+        "question_type": "Atencion",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 42,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si tienes 6 caramelos y te comes 2, ¿cuántos te quedan?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “4”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 42,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué día viene antes de viernes?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “jueves”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 42,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál número no encaja en esta secuencia: 2, 4, 6, 9, 8?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “9”.",
+        "question_type": "Razonamiento",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 42,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres animales de granja.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “vaca, cerdo, gallina” (o similares).",
+        "question_type": "Fluidez",
+        "theme": "animales",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 42,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: papel — barco — luna. Te las preguntaré después.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario memorice las palabras.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 43,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estos no es un animal? vaca, caballo, libro.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “libro”.",
+        "question_type": "Atencion",
+        "theme": "animales",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 43,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si una hora tiene 60 minutos, ¿cuántos minutos hay en media hora?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “30”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 43,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué mes viene después de agosto?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “septiembre”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 43,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Identifica el objeto diferente: lápiz, bolígrafo, zapato.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “zapato”.",
+        "question_type": "Razonamiento",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 43,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres cosas que se usan para escribir.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “lápiz, bolígrafo, marcador”.",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 43,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [pared, silla, papel]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “papel — barco — luna”.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 44,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece al grupo? (Dos son lugares y una no): playa, montaña, cuchara.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “cuchara”.",
+        "question_type": "Atencion",
+        "theme": "Lugar",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 44,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si un pastel se divide en 8 porciones y te comes 3, ¿cuántas porciones quedan?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “5”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 44,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué estación del año es la más fría en la mayoría de los países?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “invierno”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 44,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué palabra no encaja en este grupo: rojo, azul, triángulo, verde?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “triángulo”.",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 44,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres objetos que puedan encontrarse en un baño.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “jabón, toalla, cepillo de dientes”.",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 44,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: lámpara — nube — jardín. Te las preguntaré después.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario memorice las palabras.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 45,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece? (Dos son animales y una no): caballo, cerdo, camisa.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “camisa”.",
+        "question_type": "Atencion",
+        "theme": "animales",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 45,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si un reloj marca las 3:00 y pasan dos horas, ¿qué hora es?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “5:00”.",
+        "question_type": "Razonamiento",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 45,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué día viene después de lunes?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “martes”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 45,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál número no encaja en esta serie: 2, 4, 6, 9, 8?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “9”.",
+        "question_type": "Razonamiento",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 45,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres actividades que se pueden hacer como pasatiempo.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “leer, tejer, pintar”. o similares",
+        "question_type": "Fluidez",
+        "theme": "pasatiempos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 45,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [piano, playa, taza]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “lámpara — nube — jardín”.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 46,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece al grupo? (Dos son comidas y una no): sopa, arroz, zapato.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “zapato”.",
+        "question_type": "Atencion",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 46,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si un árbol tiene 12 manzanas y caen 5, ¿cuántas quedan en el árbol?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “7”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 46,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué día es el último de la semana?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “domingo”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 46,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál palabra no encaja en el grupo: alto, bajo, perro?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “perro”.",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 46,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres objetos que puedas encontrar en un dormitorio.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “cama, lámpara, almohada”.o similar",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 46,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: ventana — tren — hoja. Te las preguntaré después.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario memorice las palabras.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 47,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece? (Dos son emociones y una no): alegría, tristeza, mesa.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “mesa”.",
+        "question_type": "Atencion",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 47,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si tienes 20 euros y gastas 7, ¿cuánto dinero te queda?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “13”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 47,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué mes viene antes de marzo?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “febrero”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 47,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué palabra no encaja en este grupo: perro, gato, sofá?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “sofá”.",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 47,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres frutas cítricas.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “naranja, limón, toronja” (o similares).",
+        "question_type": "Fluidez",
+        "theme": "frutas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 47,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [cubo, mar, cartera]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga tren— hoja — ventana. en cualquier orden .",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 48,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece al grupo? (Dos son colores y una no): rojo, azul, puerta.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “puerta”.",
+        "question_type": "Atencion",
+        "theme": "patronas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 48,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si un libro cuesta 8 euros y compras 2, ¿cuánto pagas en total?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “16 euros”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 48,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué día viene antes de jueves?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “miércoles”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 48,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál número no encaja en: 5, 10, 15, 22, 20?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “22”.",
+        "question_type": "Razonamiento",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 48,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres animales que viven en el bosque.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “oso, lobo, ciervo” (o similares).",
+        "question_type": "Fluidez",
+        "theme": "animales",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 48,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: camino — sol — puerta. Te las preguntaré después.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario memorice las palabras.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 49,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece al grupo? (Dos son objetos y una no): mesa, ventana, elefante.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “elefante”.",
+        "question_type": "Atencion",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 49,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si un autobús tiene 30 asientos y se ocupan 18, ¿cuántos quedan libres?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “12”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 49,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué mes viene después de noviembre?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “diciembre”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 49,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál palabra no encaja en este grupo: correr, saltar, escribir?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “escribir”.",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 49,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres verduras verdes.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “brócoli, lechuga, espinaca” (o similares).",
+        "question_type": "Fluidez",
+        "theme": "frutas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 49,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [lago, sol, cuchara]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “camino — sol — puerta”.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 50,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece? (Dos son lugares y una no): parque, escuela, cuchillo.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “cuchillo”.",
+        "question_type": "Atencion",
+        "theme": "Lugar",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 50,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si dividimos 20 entre 5, ¿cuál es el resultado?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “4”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 50,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué día es el primero de la semana?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “lunes”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 50,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué palabra no encaja en el grupo: círculo, cuadrado, naranja?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “naranja”.",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 50,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres profesiones que trabajen al aire libre.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “jardinero, agricultor, cartero” (o similares).",
+        "question_type": "Fluidez",
+        "theme": "profesiones",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 50,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: faro — papel — lluvia. Te las preguntaré después.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario memorice las palabras.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 51,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece al grupo? (Dos son animales acuáticos y una no): pez, pulpo, mesa.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “mesa”.",
+        "question_type": "Atencion",
+        "theme": "animales",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 51,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si 9 + 6 = 15, ¿cuánto es 15 − 6?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “9”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 51,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué mes es el primero del año?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “enero”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 51,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Completa la secuencia: 2 — 4 — 6 — 8 — __",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “10”.",
+        "question_type": "Razonamiento",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 51,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres objetos que se usan para limpiar.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “escoba, detergente, trapo”.",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 51,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [lluvia, mesa, hoja]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “faro — papel — lluvia”.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 52,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece? (Dos son frutas y una no): mango, fresa, silla.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “silla”.",
+        "question_type": "Atencion",
+        "theme": "frutas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 52,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si a 30 le restas 12, ¿cuál es el resultado?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “18”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 52,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué día viene dos días después de martes?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “jueves”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 52,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué palabra no encaja en este grupo: cama, almohada, perro?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “perro”.",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 52,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres actividades que se pueden hacer en la playa.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “nadar, caminar, tomar sol”. o similares",
+        "question_type": "Fluidez",
+        "theme": "pasatiempos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 52,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: puerto — luna — jardín. Te las preguntaré después.",
+        "expected_answer": "a respuesta esperada sería: Se espera que el usuario memorice las palabras.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 53,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece? (Dos son partes del cuerpo y una no): mano, rodilla, ventana.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “ventana”.",
+        "question_type": "Atencion",
+        "theme": "patronas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 53,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si tienes 14 caramelos y regalas 5, ¿cuántos te quedan?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “9”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 53,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué estación viene después del invierno?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “primavera”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 53,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál número no encaja en: 3, 6, 9, 11, 12?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “11”.",
+        "question_type": "Razonamiento",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 53,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres cosas que puedes encontrar en una oficina.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “computadora, escritorio, silla”. o similares",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 53,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [sombrero, queso, perro]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “puerto — luna — jardín”.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 54,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece? (Dos son medios de transporte y una no): tren, bicicleta, cuchara.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “cuchara”.",
+        "question_type": "Atencion",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 54,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuánto es 25 dividido entre 5?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “5”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 54,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué mes viene antes de abril?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “marzo”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 54,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué palabra no pertenece en: cantar, bailar, martillar?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “martillar”.",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 54,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres bebidas calientes.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “té, café, chocolate caliente”. o similares",
+        "question_type": "Fluidez",
+        "theme": "categorías",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 54,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: piedra — nube — espejo. Te las preguntaré después.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario memorice las palabras.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 55,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece? (Dos son emociones y una no): alegría, miedo, zapato.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “zapato”.",
+        "question_type": "Atencion",
+        "theme": "Asociaciones de palabras",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 55,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si sumamos 17 + 8, ¿cuál es el resultado?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “25”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 55,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué día viene después de sábado?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “domingo”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 55,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Completa la secuencia: 10 — 20 — 30 — 40 — __",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “50”.",
+        "question_type": "Razonamiento",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 55,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres herramientas.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “martillo, destornillador, llave inglesa”.o similares",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 55,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [plato, nube, gato]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “piedra — nube — espejo”.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 56,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece? (Dos son animales terrestres y una no): caballo, perro, delfín.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “delfín”.",
+        "question_type": "Atencion",
+        "theme": "animales",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 56,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si tienes 50 euros y gastas 18, ¿cuánto te queda?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “32”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 56,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué día viene antes de lunes?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “domingo”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 56,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Completa la secuencia: 1 — 4 — 7 — 10 — __",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “13”.",
+        "question_type": "Razonamiento",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 56,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres cosas que puedes encontrar en una cocina.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “olla, cuchillo, plato”.",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 56,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: nido — sal — puerta. Te las preguntaré después.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario memorice las palabras.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 57,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece? (Dos son colores y una no): rojo, azul, zapato.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “zapato”.",
+        "question_type": "Atencion",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 57,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuánto es 12 × 2?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “24”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 57,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál mes viene después de septiembre?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “octubre”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 57,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál número no encaja: 5, 10, 15, 22, 20?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “22”.",
+        "question_type": "Razonamiento",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 57,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres cosas que se encuentran en un parque.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “árboles, banco, columpios”. o similarees",
+        "question_type": "Fluidez",
+        "theme": "contexto",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 57,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [viento, roca, cartera]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “nido — sal — puerta”.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 58,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece al grupo? (Dos son instrumentos y una no): guitarra, piano, manzana.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “manzana”.",
+        "question_type": "Atencion",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 58,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si tienes 20 monedas y regalas 5, ¿cuántas te quedan?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “15”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 58,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Qué día viene antes de martes?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “lunes”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 58,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál número no sigue el patrón: 4, 8, 12, 18, 16?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “18”.",
+        "question_type": "Razonamiento",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 58,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres bebidas.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “agua, jugo, café”.",
+        "question_type": "Fluidez",
+        "theme": "contexto",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 58,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: casa — nube — limón. Te las preguntaré después.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario memorice las palabras.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 59,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece? (Dos son bebidas y una no): jugo, refresco, zapato.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “zapato”.",
+        "question_type": "Atencion",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 59,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si tienes 12 caramelos y regalas 2, ¿cuántos te quedan?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “10”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 59,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿En qué estación suele hacer más frío?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “invierno”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 59,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál número no encaja en esta serie: 4, 8, 12, 16, 15?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “15”.",
+        "question_type": "Razonamiento",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 59,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres cosas que producen luz.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “sol, linterna, bombilla” (o similares).",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 59,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [sandía, río, zapato]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “casa — nube — limón”.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 60,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece? (Dos son vehículos y una no): bicicleta, carro, ventana.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “ventana”.",
+        "question_type": "Atencion",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 60,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si tienes 12 manzanas y das 3, ¿cuántas te quedan?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “9”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 60,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál día viene después de sábado?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “domingo”.",
+        "question_type": "Orientacion",
+        "theme": "tiempo",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 60,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál número no encaja en esta lista: 4, 8, 12, 17, 16?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “17”.",
+        "question_type": "Razonamiento",
+        "theme": "patronas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 60,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres cosas que hacen ruido.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “motor, perro, lluvia” (o similares).",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 60,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: faro — pluma — puente. Te las preguntaré después.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario memorice las palabras.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 61,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece? (Dos son alimentos y una no): queso, pan, cuaderno.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “cuaderno”.",
+        "question_type": "Atencion",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 61,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si un minuto tiene 60 segundos, ¿cuántos segundos hay en 5 minutos?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “300”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 61,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿En qué parte del día normalmente se desayuna?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “en la mañana”.",
+        "question_type": "Orientacion",
+        "theme": "contexto",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 61,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál número no sigue la secuencia: 5, 10, 15, 18, 20?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “18”.",
+        "question_type": "Razonamiento",
+        "theme": "Secuencia",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 61,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres animales que vivan en la selva.",
+        "expected_answer": "Nombra tres animales que vivan en la selva.",
+        "question_type": "Fluidez",
+        "theme": "animales",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 61,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: [árbol, campana, café]. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “faro — pluma — puente”.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 62,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál de estas palabras no pertenece? (Dos son animales y una no): caballo, vaca, plato.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “plato”.",
+        "question_type": "Atencion",
+        "theme": "animales",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 62,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Si tienes 12 caramelos y regalas 4, ¿cuántos te quedan?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “8”.",
+        "question_type": "Razonamiento",
+        "theme": "matemáticas",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 62,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuántos días tiene una semana?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “7 días”.",
+        "question_type": "Orientacion",
+        "theme": "numeros",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 62,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "¿Cuál palabra no encaja en este grupo: cuchara, tenedor, almohada?",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario diga “almohada”.",
+        "question_type": "Razonamiento",
+        "theme": "lógica",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 62,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Nombra tres objetos que puedas encontrar en una oficina.",
+        "expected_answer": "Se espera que el usuario diga “lápiz, computadora, cuaderno” (o similares).",
+        "question_type": "Fluidez",
+        "theme": "Objetos",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  },
+  {
+    "session": 62,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "es",
+        "question_text": "Recuerda estas palabras: puente — llave — montaña. Te las preguntaré más tarde.",
+        "expected_answer": "La respuesta esperada sería: Se espera que el usuario memorice las palabras.",
+        "question_type": "Memoria",
+        "theme": "guión",
+        "scoring_logic": "\"Solo se puntúa por una respuesta correcta. En números enteros\""
+      }
+    ],
+    "category": "cognitive_assessment"
+  }
+]
