@@ -128,10 +128,14 @@ class SymptomCheckerRepository:
     ) -> List[SymptomCheckerInteractionRead]:
         """Get all interactions for a specific user."""
         try:
+            order_timestamp = func.coalesce(
+                SymptomCheckerResponse.call_timestamp,
+                SymptomCheckerResponse.created_at
+            )
             query = (
                 select(SymptomCheckerResponse)
                 .where(SymptomCheckerResponse.user_id == user_id)
-                .order_by(SymptomCheckerResponse.call_timestamp.desc().nulls_last())
+                .order_by(order_timestamp.desc())
                 .order_by(SymptomCheckerResponse.created_at.desc())
                 .offset(skip)
                 .limit(limit)
@@ -163,6 +167,10 @@ class SymptomCheckerRepository:
     ) -> List[SymptomCheckerInteractionRead]:
         """Get all interactions for users assigned to a caretaker."""
         try:
+            order_timestamp = func.coalesce(
+                SymptomCheckerResponse.call_timestamp,
+                SymptomCheckerResponse.created_at
+            )
             # Build query with joins
             query = (
                 select(SymptomCheckerResponse)
@@ -193,7 +201,7 @@ class SymptomCheckerRepository:
             # Order and paginate
             query = (
                 query
-                .order_by(SymptomCheckerResponse.call_timestamp.desc().nulls_last())
+                .order_by(order_timestamp.desc())
                 .order_by(SymptomCheckerResponse.created_at.desc())
                 .offset(skip)
                 .limit(limit)
@@ -221,6 +229,10 @@ class SymptomCheckerRepository:
     ) -> List[SymptomCheckerInteractionRead]:
         """Get recent interactions, optionally filtered by user."""
         try:
+            order_timestamp = func.coalesce(
+                SymptomCheckerResponse.call_timestamp,
+                SymptomCheckerResponse.created_at
+            )
             query = select(SymptomCheckerResponse)
             
             if user_id:
@@ -228,7 +240,7 @@ class SymptomCheckerRepository:
             
             query = (
                 query
-                .order_by(SymptomCheckerResponse.call_timestamp.desc().nulls_last())
+                .order_by(order_timestamp.desc())
                 .order_by(SymptomCheckerResponse.created_at.desc())
                 .limit(limit)
             )
@@ -258,6 +270,10 @@ class SymptomCheckerRepository:
     ) -> List[SymptomCheckerInteractionRead]:
         """Get interactions within a date range."""
         try:
+            order_timestamp = func.coalesce(
+                SymptomCheckerResponse.call_timestamp,
+                SymptomCheckerResponse.created_at
+            )
             query = select(SymptomCheckerResponse).where(
                 or_(
                     and_(
@@ -277,7 +293,7 @@ class SymptomCheckerRepository:
             
             query = (
                 query
-                .order_by(SymptomCheckerResponse.call_timestamp.desc().nulls_last())
+                .order_by(order_timestamp.desc())
                 .order_by(SymptomCheckerResponse.created_at.desc())
                 .offset(skip)
                 .limit(limit)
