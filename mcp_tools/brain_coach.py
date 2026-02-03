@@ -65,7 +65,7 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
         result = await db.execute(stmt)
         session_count = result.scalar_one()
 
-        if input.questions_type == QuestionType.COGNITIVE_ASSESSMENT:
+        if input.questions_type == QuestionType.COGNITIVE_ASSESSMENT.value:
             target_session = session_count + 1
         else:
             target_session = 1
