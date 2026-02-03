@@ -16,6 +16,7 @@ class BrainCoachQuestions(Base):
     tier = Column(Integer, nullable=False)
     max_score = Column(Integer, nullable=True, default=1)
     category = Column(String(100), nullable=True)
+    responses = relationship("BrainCoachResponses", back_populates="question", cascade="all, delete-orphan", passive_deletes=True)
 
 class QuestionTranslations(Base):
     __tablename__ = "question_translations"
@@ -48,5 +49,5 @@ class BrainCoachResponses(Base):
     score = Column(Integer, nullable=False)  
     created = Column(DateTime(timezone=True), server_default=func.now())
     
-    user = relationship("User", backref="brain_responses")
-    question = relationship("BrainCoachQuestions", backref="responses")
+    user = relationship("User", back_populates="brain_responses", passive_deletes=True)
+    question = relationship("BrainCoachQuestions", back_populates="responses", passive_deletes=True)

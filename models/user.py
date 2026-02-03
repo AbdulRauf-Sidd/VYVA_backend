@@ -91,7 +91,8 @@ class User(Base):
         cascade="all, delete-orphan", passive_deletes=True
     )
     # escalate_to_emergency_contact = Column(Boolean, nullable=True)
-    symptom_checker_responses = relationship("SymptomCheckerResponse", cascade="all, delete-orphan", passive_deletes=True)
+    symptom_checker_responses = relationship("SymptomCheckerResponse", back_populates="user", cascade="all, delete-orphan", passive_deletes=True)
+    brain_responses = relationship("BrainCoachResponses", back_populates="user", cascade="all, delete-orphan", passive_deletes=True)
 
     #Reminders
     # preferred_channel = Column(String(50), nullable=True)
