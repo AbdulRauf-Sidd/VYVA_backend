@@ -81,7 +81,7 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
                 QuestionTranslations.question_id == BrainCoachQuestions.id
             )
             .where(
-                BrainCoachQuestions.category == input.questions_type.value,
+                BrainCoachQuestions.category == input.questions_type,
                 QuestionTranslations.language == 'es',
                 BrainCoachQuestions.session == session_count + 1 if input.questions_type == QuestionType.COGNITIVE_ASSESSMENT.value else 1,
                 # BrainCoachQuestions.id.not_in(answered_question_ids)
