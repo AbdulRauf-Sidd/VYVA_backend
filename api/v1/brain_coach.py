@@ -413,7 +413,7 @@ async def get_cognitive_trend(
             "average": average,
             "best_day": best_day,
             "best_day_display": best_day_display,
-            "best_score": best_score,
+            "best_score": best_score/10,
             "improvement": improvement
         }
 
