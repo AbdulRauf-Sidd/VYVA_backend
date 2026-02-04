@@ -386,10 +386,12 @@ async def ingest_user(payload: IngestUserRequest, organization: str, db=Depends(
         default_time = datetime.strptime("09:00", "%H:%M").time()
 
         # Local time 9am tomorrow
-        local_dt = datetime.combine(date.today(), default_time, tzinfo=ZoneInfo(timezone))
+        local_dt = datetime.combine(date.today(), default_time, tzinfo=ZoneInfo(payload.time_zone))
         local_dt_next_day = add_one_day(local_dt)
         # Convert to UTC
         final_utc_dt = local_dt_next_day.astimezone(ZoneInfo("UTC"))
+
+    caregiver_final_phone = payload.caregiver_contact_number.replace(" ", "").replace("-", "") if payload.caregiver_contact_number else None
 
     user = OnboardingUser(
                 first_name=payload.first_name,
@@ -399,7 +401,7 @@ async def ingest_user(payload: IngestUserRequest, organization: str, db=Depends(
                 organization_id=exists.id,
                 language=payload.language.lower(),
                 caregiver_name=payload.caregiver_name,
-                caregiver_contact_number=payload.caregiver_contact_number,
+                caregiver_contact_number=caregiver_final_phone,
                 city_state_province=payload.city_state_province,
                 postal_zip_code=payload.postal_zip_code,
                 preferred_time=final_utc_dt,
