@@ -1,7 +1,9 @@
 from datetime import datetime, date, time, timedelta
+from random import random
 from zoneinfo import ZoneInfo
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from models.brain_coach import BrainCoachResponses
 from models.user import Caretaker, User
 # from models.organization import TwilioWhatsappTemplates, TemplateTypeEnum
 # from core.database import SessionLocal
@@ -23,6 +25,59 @@ LANGUAGE_MAP = {
     "german": "de",
     "french": "fr",
 }
+
+MEDICATION_MESSAGES_MAP = {
+      "english": {
+        "taken": [
+          "That’s great. Well done taking your medication today.",
+          "Good job taking your medication.",
+          "Thank you for taking your medication.",
+          "Excellent. You are taking good care of your health.",
+          "Glad to hear it. Every dose matters."
+        ],
+        "missed": [
+          "That’s okay. Please try to take it when you can.",
+          "No problem. You can still take it if it is not too late.",
+          "Thank you for letting me know. We will try again next time.",
+          "That is alright. Let us stay on track together.",
+          "No worries. Tomorrow is another chance."
+        ]
+      },
+    
+      "spanish": {
+        "taken": [
+          "Excelente. Ha hecho muy bien en tomar su medicamento hoy.",
+          "Buen trabajo tomando su medicamento.",
+          "Gracias por tomar su medicamento.",
+          "Excelente. Está cuidando bien su salud.",
+          "Me alegra saberlo. Cada dosis es importante."
+        ],
+        "missed": [
+          "Está bien. Por favor tómelo cuando pueda.",
+          "No hay problema. Aún puede tomarlo si no es demasiado tarde.",
+          "Gracias por avisar. Lo intentaremos de nuevo la próxima vez.",
+          "No se preocupe. Seguiremos manteniendo el control.",
+          "No pasa nada. Mañana es una nueva oportunidad."
+        ]
+      },
+    
+      "german": {
+        "taken": [
+          "Sehr gut. Sie haben Ihr Medikament heute richtig eingenommen.",
+          "Gut gemacht beim Einnehmen Ihres Medikaments.",
+          "Vielen Dank, dass Sie Ihr Medikament eingenommen haben.",
+          "Ausgezeichnet. Sie kümmern sich gut um Ihre Gesundheit.",
+          "Das freut mich zu hören. Jede Dosis ist wichtig."
+        ],
+        "missed": [
+          "Das ist in Ordnung. Bitte nehmen Sie es ein, wenn Sie können.",
+          "Kein Problem. Sie können es noch einnehmen, wenn es nicht zu spät ist.",
+          "Danke für die Rückmeldung. Beim nächsten Mal klappt es wieder.",
+          "Alles gut. Wir bleiben gemeinsam dran.",
+          "Keine Sorge. Morgen ist eine neue Gelegenheit."
+        ]
+      }
+    }
 
 def date_time_to_utc(dt: datetime, tz_name: str | None = None) -> datetime:
     if dt.tzinfo is None:
@@ -103,3 +158,35 @@ def construct_mem0_memory_onboarding(message, message_type):
             {"role": "user", "content": message},
         ]
     
+
+def generate_medication_whatsapp_response_message(language, taken: bool) -> str:
+    lang_messages = MEDICATION_MESSAGES_MAP.get(language.lower(), MEDICATION_MESSAGES_MAP["english"])
+    if taken:
+        return random.choice(lang_messages["taken"])
+    else:
+        return random.choice(lang_messages["missed"])
+    
+
+def calculate_streak(dates: list[date]) -> int:
+    if not dates:
+        return 0
+
+    today = date.today()
+    dates_set = set(dates)
+
+    # Must have activity today or yesterday
+    if today not in dates_set and (today - timedelta(days=1)) not in dates_set:
+        return 0
+
+    streak = 0
+    check_day = today
+
+    # If no session today, start from yesterday
+    if check_day not in dates_set:
+        check_day = today - timedelta(days=1)
+
+    while check_day in dates_set:
+        streak += 1
+        check_day -= timedelta(days=1)
+
+    return streak

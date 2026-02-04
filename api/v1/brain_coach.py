@@ -14,6 +14,7 @@ from repositories.user import UserRepository
 from schemas.user import UserCreate, UserUpdate
 from typing import Optional
 # from services.whatsapp_service import whatsapp
+from scripts.utils import calculate_streak
 from services.email_service import EmailService
 from datetime import datetime, timedelta
 
@@ -261,7 +262,7 @@ async def get_brain_coach_info(
     db: AsyncSession = Depends(get_db),
 ):
     try:
-        now = datetime.utcnow()
+        now = datetime.now()
         begin_date = now - timedelta(days=days)
 
         base_filter = (
@@ -292,24 +293,15 @@ async def get_brain_coach_info(
             select(func.avg(session_totals_subq.c.session_score))
         ) or 0.0
 
-        result = await db.execute(
+        stmt = (
             select(func.date(BrainCoachResponses.created))
             .where(BrainCoachResponses.user_id == user_id)
-            .group_by(func.date(BrainCoachResponses.created))
-            .order_by(func.date(BrainCoachResponses.created).desc())
+            .distinct()
         )
 
-        active_days = {row[0] for row in result.fetchall()}
-
-        streak = 0
-        cursor_day = now.date()
-
-        if cursor_day not in active_days:
-            cursor_day -= timedelta(days=1)
-
-        while cursor_day in active_days:
-            streak += 1
-            cursor_day -= timedelta(days=1)
+        result = await db.execute(stmt)
+        dates = result.scalars().all()
+        streak = calculate_streak(dates)
 
         return {
             "average_session_score": round(average_session_score, 2),
@@ -385,7 +377,7 @@ async def get_cognitive_trend(
             {
                 "date": r.date.strftime("%Y-%m-%d"),
                 "display_date": r.date.strftime("%b %d"),
-                "score": round(float(r.avg_score) * SCORE_SCALE, 2),
+                "score": round(float(r.total_correct) * float(100/int(r.total_questions)), 2) if r.total_questions > 0 else 0,
                 "sessions": r.sessions
             }
             for r in rows
@@ -410,6 +402,8 @@ async def get_cognitive_trend(
         last_score = float(rows[-1].avg_score)
 
         improvement = round((last_score - first_score) * SCORE_SCALE, 2)
+
+        print(trend)
 
         return {
             "trend": trend,
