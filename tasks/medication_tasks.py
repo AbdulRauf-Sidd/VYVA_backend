@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 def notify_caregiver_on_missed_medication_task(user_id: int):
     notify_caretaker_on_missed_meds(user_id)
 
-@celery_app.task(name="send_whatsapp_medication_reminder")
+@celery_app.task(name="send_whatsapp_medication_reminder", max_retries=0)
 def send_whatsapp_medication_reminder(payload):
     try:
         user_id = payload.get("user_id")

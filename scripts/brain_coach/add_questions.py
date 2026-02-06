@@ -94,7 +94,7 @@ async def send_questions_to_api(questions_file: str, api_url: str, auth_token: s
 async def main():
     # Configuration
     # QUESTIONS_FILE = "merged_questions.json" 
-    QUESTIONS_FILE = "questions_from_15_to_62_sessions.json"
+    QUESTIONS_FILE = "merged_questions.json"
     API_URL = "http://localhost:8000/api/v1/brain-coach/questions" 
     
     # Option 2: Async without validation

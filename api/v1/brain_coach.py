@@ -1,4 +1,4 @@
-from sqlalchemy import select, func
+from sqlalchemy import select, func, distinct
 from fastapi import APIRouter, Depends, HTTPException, status, Path, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
@@ -14,6 +14,7 @@ from repositories.user import UserRepository
 from schemas.user import UserCreate, UserUpdate
 from typing import Optional
 # from services.whatsapp_service import whatsapp
+from scripts.utils import calculate_streak
 from services.email_service import EmailService
 from datetime import datetime, timedelta
 
@@ -251,22 +252,69 @@ async def create_response(
             detail="Internal server error"
         )
         
-@router.get("/brain-coach-info/{user_id}", response_model=BrainCoachStatsRead)
+@router.get(
+    "/brain-coach-info/{user_id}",
+    response_model=BrainCoachStatsRead
+)
 async def get_brain_coach_info(
     user_id: int = Path(..., description="The ID of the user"),
     days: int = Query(7, ge=1),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
 ):
     try:
-        repo = BrainCoachResponseRepository(db)
-        stats = await repo.get_brain_coach_info(user_id, days)
-        return stats
+        now = datetime.now()
+        begin_date = now - timedelta(days=days)
+
+        base_filter = (
+            (BrainCoachResponses.user_id == user_id) &
+            (BrainCoachResponses.created >= begin_date)
+        )
+
+        total_questions = await db.scalar(
+            select(func.count()).where(base_filter)
+        ) or 0
+
+        total_sessions = await db.scalar(
+            select(func.count(distinct(BrainCoachResponses.session_id)))
+            .where(base_filter)
+        ) or 0
+
+        session_totals_subq = (
+            select(
+                BrainCoachResponses.session_id,
+                func.sum(BrainCoachResponses.score).label("session_score")
+            )
+            .where(base_filter)
+            .group_by(BrainCoachResponses.session_id)
+            .subquery()
+        )
+
+        average_session_score = await db.scalar(
+            select(func.avg(session_totals_subq.c.session_score))
+        ) or 0.0
+
+        stmt = (
+            select(func.date(BrainCoachResponses.created))
+            .where(BrainCoachResponses.user_id == user_id)
+            .distinct()
+        )
+
+        result = await db.execute(stmt)
+        dates = result.scalars().all()
+        streak = calculate_streak(dates)
+
+        return {
+            "average_session_score": round(average_session_score, 2),
+            "total_sessions": total_sessions,
+            "total_questions": total_questions,
+            "streak": streak,
+        }
 
     except Exception as e:
         logger.exception(f"Unexpected error retrieving brain coach info: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
+            detail="Internal server error",
         )
         
 @router.get("/cognitive-trend/{user_id}")
@@ -275,106 +323,162 @@ async def get_cognitive_trend(
     days: int = Query(30, ge=1, le=90),
     db: AsyncSession = Depends(get_db)
 ):
-    since = datetime.utcnow() - timedelta(days=days)
+    try:
+        since = datetime.utcnow() - timedelta(days=days)
+        SCORE_SCALE = 10  
 
-    # Aggregate per day
-    session_totals_subq = (
-        select(
-            BrainCoachResponses.session_id,
-            func.sum(BrainCoachResponses.score).label("session_score"),
-            func.date(BrainCoachResponses.created).label("date")
+        session_totals_subq = (
+            select(
+                BrainCoachResponses.session_id,
+                func.sum(BrainCoachResponses.score).label("session_score"),
+                func.count(BrainCoachResponses.id).label("questions"),
+                func.date(BrainCoachResponses.created).label("date")
+            )
+            .where(
+                BrainCoachResponses.user_id == user_id,
+                BrainCoachResponses.created >= since
+            )
+            .group_by(
+                BrainCoachResponses.session_id,
+                func.date(BrainCoachResponses.created)
+            )
+            .subquery()
         )
-        .where(
-            BrainCoachResponses.user_id == user_id,
-            BrainCoachResponses.created >= since
+
+        daily_query = (
+            select(
+                func.date(BrainCoachResponses.created).label("date"),
+                (
+                    (func.sum(BrainCoachResponses.score) / func.count(BrainCoachResponses.id)) * 100
+                ).label("avg_score"),
+                func.sum(BrainCoachResponses.score).label("total_correct"),
+                func.count(BrainCoachResponses.id).label("total_questions"),
+                func.count(func.distinct(BrainCoachResponses.session_id)).label("sessions"),
+            )
+            .where(
+                BrainCoachResponses.user_id == user_id,
+                BrainCoachResponses.created >= since
+            )
+            .group_by(func.date(BrainCoachResponses.created))
+            .order_by(func.date(BrainCoachResponses.created))
         )
-        .group_by(BrainCoachResponses.session_id, func.date(BrainCoachResponses.created))
-        .subquery()
-    )
+        
+        result = await db.execute(daily_query)
+        rows = result.all()
 
-    daily_avg_query = (
-        select(
-            session_totals_subq.c.date,
-            func.avg(session_totals_subq.c.session_score).label("avg_score"),
-            func.count(session_totals_subq.c.session_id).label("sessions")
+        if not rows:
+            return {
+                "trend": [],
+                "average": 0,
+                "best_day": None,
+                "best_day_display": None,
+                "best_score": 0,
+                "improvement": 0
+            }
+
+        trend = [
+            {
+                "date": r.date.strftime("%Y-%m-%d"),
+                "display_date": r.date.strftime("%b %d"),
+                "score": round(float(r.total_correct) * float(100/int(r.total_questions)), 2) if r.total_questions > 0 else 0,
+                "sessions": r.sessions
+            }
+            for r in rows
+        ]
+
+        total_correct = sum(r.total_correct for r in rows)
+        total_questions = sum(r.total_questions for r in rows)
+
+        average = (
+            round((total_correct / total_questions) * SCORE_SCALE, 2)
+            if total_questions > 0
+            else 0
         )
-        .group_by(session_totals_subq.c.date)
-        .order_by(session_totals_subq.c.date)
-    )
 
-    result = await db.execute(daily_avg_query)
-    rows = result.all()
+        best = max(rows, key=lambda r: r.avg_score)
+        best_score = round(float(best.avg_score) * SCORE_SCALE, 2)
 
-    if not rows:
+        best_day = best.date.strftime("%Y-%m-%d")
+        best_day_display = best.date.strftime("%b %d")
+
+        first_score = float(rows[0].avg_score)
+        last_score = float(rows[-1].avg_score)
+
+        improvement = round((last_score - first_score) * SCORE_SCALE, 2)
+
+        print(trend)
+
         return {
-            "trend": [],
-            "average": 0,
-            "best_day": None,
-            "best_day_display": None,
-            "best_score": 0,
-            "improvement": 0
+            "trend": trend,
+            "average": average,
+            "best_day": best_day,
+            "best_day_display": best_day_display,
+            "best_score": best_score/10,
+            "improvement": improvement
         }
 
-    trend = [
-        {
-            "date": r.date.strftime("%Y-%m-%d"),      # ISO for frontend mapping
-            "display_date": r.date.strftime("%b %d"), # optional for UI
-            "score": float(r.avg_score) * 10,  
-            "sessions": r.sessions
-        }
-        for r in rows
-    ]
+    except SQLAlchemyError as db_err:
+        logger.exception(
+            "Database error in cognitive trend",
+            extra={"user_id": user_id, "days": days}
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch cognitive trend data"
+        )
 
-    # Compute average
-    all_scores = []
-    for r in rows:
-        all_scores.extend([float(r.avg_score)] * r.sessions)
-    average = round(sum(all_scores) / len(all_scores) * 10, 2) if all_scores else 0
-
-    # Best day and score
-    best = max(rows, key=lambda r: r.avg_score)
-    best_score = float(best.avg_score) * 10
-    best_day = best.date.strftime("%Y-%m-%d")
-    best_day_display = best.date.strftime("%b %d")
-
-    # Improvement from first to last day
-    first_score = float(rows[0].avg_score) if rows else 0
-    last_score = float(rows[-1].avg_score) if rows else 0
-    improvement = round(((last_score - first_score) / first_score) * 100, 2) if first_score != 0 else 0
-
-    return {
-        "trend": trend,
-        "average": average,
-        "best_day": best_day,
-        "best_day_display": best_day_display,
-        "best_score": best_score,
-        "improvement": improvement
-    }
+    except Exception as exc:
+        logger.exception(
+            "Unexpected error in cognitive trend",
+            extra={"user_id": user_id, "days": days}
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An unexpected error occurred"
+        )
+        
     
-@router.get(
-    "/daily-session-activity/{user_id}",
-    response_model=DailySessionActivityResponse
-)
+@router.get("/daily-session-activity/{user_id}")
 async def daily_session_activity(
     user_id: int = Path(..., description="User ID"),
     days: int = Query(7, ge=1),
     db: AsyncSession = Depends(get_db)
 ):
-    """Return daily session counts for a user over the past 'days' days"""
+    """
+    Return daily session counts for a user over the past 'days' days.
+    Counts DISTINCT session_id per day (not individual responses).
+    Returns JSON like: { "trend": [ { "date": "YYYY-MM-DD", "sessions": 3 }, ... ] }
+    """
     try:
-        repo = BrainCoachResponseRepository(db)
-        trend = await repo.get_daily_session_activity(user_id, days)
+        start_date = datetime.utcnow() - timedelta(days=days)
 
-        # if not trend:
-        #     raise HTTPException(
-        #         status_code=status.HTTP_404_NOT_FOUND,
-        #         detail="No session activity found for the user in the given time frame"
-        #     )
+        # Count distinct sessions per day
+        query = (
+            select(
+                func.date(BrainCoachResponses.created).label("date"),
+                func.count(distinct(BrainCoachResponses.session_id)).label("sessions")
+            )
+            .where(
+                BrainCoachResponses.user_id == user_id,
+                BrainCoachResponses.created >= start_date
+            )
+            .group_by(func.date(BrainCoachResponses.created))
+            .order_by(func.date(BrainCoachResponses.created))
+        )
+
+        result = await db.execute(query)
+        rows = result.all()
+
+        trend = [
+            {
+                "date": row.date.strftime("%Y-%m-%d"),  # ISO format for frontend
+                "sessions": row.sessions
+            }
+            for row in rows
+        ]
 
         return {"trend": trend}
 
-    except HTTPException:
-        raise
     except Exception as e:
         logger.exception(f"Unexpected error fetching daily session activity: {e}")
         raise HTTPException(
@@ -384,22 +488,23 @@ async def daily_session_activity(
         
 @router.get("/session-history/{user_id}")
 async def get_session_history(
-    user_id: int = Path(..., description="The ID of the user"),
+    user_id: int = Path(...),
     days: int = Query(7, ge=1, le=90),
     limit: int = Query(10, ge=1, le=50),
     offset: int = Query(0, ge=0),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
 ):
-    """
-    Return session history in the format expected by the frontend.
-    """
     try:
         start_date = datetime.utcnow() - timedelta(days=days)
 
-        stmt = select(BrainCoachResponses).where(
-            BrainCoachResponses.user_id == user_id,
-            BrainCoachResponses.created >= start_date
-        ).order_by(BrainCoachResponses.created.asc())
+        stmt = (
+            select(BrainCoachResponses)
+            .where(
+                BrainCoachResponses.user_id == user_id,
+                BrainCoachResponses.created >= start_date
+            )
+            .order_by(BrainCoachResponses.created.asc())
+        )
 
         result = await db.execute(stmt)
         responses = result.scalars().all()
@@ -408,40 +513,56 @@ async def get_session_history(
             return {"sessions": [], "total": 0}
 
         sessions_dict = {}
-        for r in responses:
-            if r.session_id not in sessions_dict:
-                sessions_dict[r.session_id] = {
-                    "session_id": r.session_id,
-                    "date": r.created.strftime("%b %d, %Y"),
-                    "Questions": 0,
-                    "score": 0,
-                    "duration": "0 min",
-                    "accuracy": "0%",
-                    "mood": "neutral" 
-                }
 
-            sessions_dict[r.session_id]["Questions"] += 1
-            sessions_dict[r.session_id]["score"] += r.score
+        for r in responses:
+            s = sessions_dict.setdefault(
+                r.session_id,
+                {
+                    "session_id": r.session_id,
+                    "created": r.created, 
+                    "Questions": 0,
+                    "raw_score": 0.0,
+                    "mood": "neutral",
+                },
+            )
+
+            s["Questions"] += 1
+            s["raw_score"] += r.score
 
         sessions = []
         for s in sessions_dict.values():
             total_questions = s["Questions"]
-            s["score"] = round((s["score"] / total_questions) * 10 * 1, 2) 
-            s["accuracy"] = f"{round((s['score'] / 100) * 100)}%"  
-            s["duration"] = f"{total_questions * 1} min" 
-            sessions.append(s)
 
-        # Sort by date descending
-        sessions.sort(key=lambda x: datetime.strptime(x["date"], "%b %d, %Y"), reverse=True)
+            avg_score = s["raw_score"] / total_questions
+            normalized_score = round(avg_score * 10, 2)  
+            accuracy = round(avg_score * 100)
 
-        return {"sessions": sessions[offset:offset+limit], "total": len(sessions)}
+            sessions.append({
+                "session_id": s["session_id"],
+                "date": s["created"].strftime("%b %d, %Y"),
+                "Questions": total_questions,
+                "score": normalized_score,
+                "accuracy": f"{accuracy}%",
+                "duration": f"{total_questions} min",
+                "mood": s["mood"],
+                "_sort_date": s["created"],  
+            })
+
+        sessions.sort(key=lambda x: x["_sort_date"], reverse=True)
+
+        paginated = sessions[offset: offset + limit]
+
+        for s in paginated:
+            s.pop("_sort_date", None)
+
+        return {
+            "sessions": paginated,
+            "total": len(sessions),
+        }
 
     except Exception as e:
         logger.exception(f"Failed to fetch session history: {e}")
-        raise HTTPException(
-            status_code=500,
-            detail="Internal server error"
-        )
+        raise HTTPException(status_code=500, detail="Internal server error")
         
         
 # @router.get("/user-responses/{user_id}", response_model=List[BrainCoachResponseRead])

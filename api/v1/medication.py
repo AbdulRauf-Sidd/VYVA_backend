@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from requests import Session
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, func
 from typing import List, Dict
 import logging
 import time
@@ -9,7 +10,9 @@ from datetime import date, datetime, timezone, timedelta
 import time
 from zoneinfo import ZoneInfo
 from models.user import User
-from models.medication import MedicationStatus, Medication, MedicationLog
+from models.medication import MedicationStatus, Medication, MedicationLog, MedicationTime
+from datetime import time as dt_time
+import asyncio
 from sqlalchemy.orm import selectinload
 from core.database import get_db
 from services.medication import MedicationService
@@ -390,12 +393,10 @@ async def get_weekly_medication_schedule(
         logs = logs_result.scalars().all()
 
         # -------------------- LOG LOOKUP MAP (NEW) --------------------
-        log_map = {}
+        log_map = set()
         for log in logs:
-            log_date = log.created_at.date()
-            log_map[
-                (log.medication_id, log.medication_time_id, log_date)
-            ] = log.status.value
+            log_date = (log.taken_at or log.created_at).date()
+            log_map.add((log.medication_id, log_date))
 
         weekly_schedule = defaultdict(list)
         now = datetime.now()
@@ -442,7 +443,8 @@ async def get_weekly_medication_schedule(
                         
                     total_scheduled += 1
 
-                    if status_value == MedicationStatus.taken.value:
+                    if (med.id, current_date) in log_map:
+                        status_value = MedicationStatus.taken.value
                         total_taken += 1
 
                     weekly_schedule[day_name].append({
@@ -460,11 +462,7 @@ async def get_weekly_medication_schedule(
             weekly_schedule.setdefault(day, [])
 
         duration = (datetime.now() - start_time).total_seconds()
-        logger.info(
-            f"Request {request_id}: Retrieved weekly medication schedule for user {user_id} "
-            f"in {duration:.2f}s"
-        )
-
+        
         return {
             "summary": {
                 "total_medicines_this_week": total_scheduled,
@@ -556,77 +554,8 @@ async def get_all_medications_with_times(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to fetch medications"
         )
-        
-@router.get(
-    "/medication-times/{user_id}",
-    response_model=List[MedicationOut],
-    summary="Get all medications with times for a user"
-)
-async def get_medications_with_times(
-    user_id: int,
-    db: AsyncSession = Depends(get_db)
-):
-    start_time = time.time()
-    request_id = f"get_meds_times_{user_id}_{int(start_time * 1000)}"
 
-    logger.info(f"Request {request_id}: Fetching medications with times for user {user_id}")
 
-    try:
-        if not user_id or user_id <= 0:
-            raise ValueError("Invalid user ID")
-
-        query = (
-            select(Medication)
-            .options(selectinload(Medication.times_of_day))
-            .where(Medication.user_id == user_id)
-        )
-        result = await db.execute(query)
-        medications = result.scalars().all()
-        transformed = []
-        for med in medications:
-            transformed.append({
-                "id": med.id,
-                "name": med.name,
-                "dosage": med.dosage,
-                "purpose": med.purpose,
-                "side_effects": med.side_effects,
-                "notes": med.notes,
-                "times_of_day": [
-                    {
-                        "id": t.id,
-                        "time_of_day": t.time_of_day.strftime("%H:%M:%S"),
-                        "notes": t.notes
-                    }
-                    for t in med.times_of_day
-                ]
-            })
-
-        duration = time.time() - start_time
-        logger.info(
-            f"Request {request_id}: Found {len(transformed)} medications for user {user_id} in {duration:.2f}s"
-        )
-
-        if not transformed:
-            logger.info(f"Request {request_id}: No medications found for user {user_id}")
-
-        return transformed
-
-    except ValueError as e:
-        logger.warning(f"Request {request_id}: Invalid user ID {user_id}: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
-    except Exception as e:
-        logger.error(
-            f"Request {request_id}: Failed to fetch medications for user {user_id}: {str(e)}",
-            exc_info=True
-        )
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to fetch medications"
-        )
-        
 @router.get(
     "/medication-info/{user_id}",
     response_model=MedicationInfoOut,
@@ -637,81 +566,61 @@ async def get_detailed_medication_info(
     db: AsyncSession = Depends(get_db)
 ):
     start_time = time.time()
-    request_id = f"get_med_info_{user_id}_{int(start_time * 1000)}"
-
-    logger.info(f"Request {request_id}: Fetching detailed medication info for user {user_id}")
 
     try:
         if user_id <= 0:
-            raise ValueError("Invalid user ID")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid user ID")
 
-        medication_repo = MedicationRepository(db)
-        medication_service = MedicationService(medication_repo)
-
-        medications = await medication_service.get_user_medications(user_id)
+        # Fetch medications with times and logs eagerly loaded
+        result = await db.execute(
+            select(Medication)
+            .options(
+                selectinload(Medication.times_of_day),
+                selectinload(Medication.logs)
+            )
+            .where(Medication.user_id == user_id)
+        )
+        medications = result.scalars().all()
 
         now_utc = datetime.now(timezone.utc)
         today = now_utc.date()
         week_start = today - timedelta(days=today.weekday())
         week_end = week_start + timedelta(days=6)
 
-        weekly_logs = []
-        for med in medications:
-            for log in med.logs:
-                if log.created_at:
-                    log_date = log.created_at.date()
-                    if week_start <= log_date <= week_end:
-                        weekly_logs.append(log)
-
+        # Weekly adherence
+        weekly_logs = [
+            log for med in medications for log in med.logs
+            if log.created_at and week_start <= log.created_at.date() <= week_end
+        ]
         total_logs = len(weekly_logs)
-        taken_logs = sum(
-            1 for log in weekly_logs if log.status == MedicationStatus.taken.value
-        )
+        taken_logs = sum(1 for log in weekly_logs if log.status == MedicationStatus.taken.value)
+        adherence_percentage = round((taken_logs / total_logs) * 100, 2) if total_logs else 0.0
 
-        adherence_percentage = (
-            round((taken_logs / total_logs) * 100, 2) if total_logs > 0 else 0.0
-        )
-
+        # Determine user timezone
         user = await db.get(User, user_id)
         user_tz = timezone.utc
         if user and getattr(user, "timezone", None):
             try:
                 user_tz = ZoneInfo(user.timezone)
             except Exception:
-                logger.warning(
-                    f"Request {request_id}: Invalid timezone for user {user_id}, falling back to UTC"
-                )
+                user_tz = timezone.utc
 
         now_local = now_utc.astimezone(user_tz)
 
+        # Upcoming doses
         upcoming_doses = []
         for med in medications:
             for t in med.times_of_day:
                 if not t.time_of_day:
                     continue
-
-                candidate_dt = datetime.combine(
-                    now_local.date(),
-                    t.time_of_day,
-                    tzinfo=user_tz
-                )
-
+                candidate_dt = datetime.combine(now_local.date(), t.time_of_day, tzinfo=user_tz)
                 if candidate_dt >= now_local:
                     upcoming_doses.append((candidate_dt, med.name))
 
         next_dose = None
         if upcoming_doses:
             next_time, med_name = min(upcoming_doses, key=lambda x: x[0])
-            next_dose = NextDoseOut(
-                medication_name=med_name,
-                time=next_time
-            )
-
-        duration = time.time() - start_time
-        logger.info(
-            f"Request {request_id}: Medication info computed for user {user_id} "
-            f"in {duration:.2f}s"
-        )
+            next_dose = NextDoseOut(medication_name=med_name, time=next_time)
 
         return MedicationInfoOut(
             weekly_adherence_percentage=adherence_percentage,
@@ -720,19 +629,107 @@ async def get_detailed_medication_info(
             next_dose=next_dose
         )
 
-    except ValueError as e:
-        logger.warning(f"Request {request_id}: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
-
     except Exception as e:
-        logger.error(
-            f"Request {request_id}: Failed to fetch medication info for user {user_id}: {str(e)}",
-            exc_info=True
-        )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to fetch medication info"
+            detail=f"Failed to fetch medication info: {str(e)}"
+        )
+    
+def get_week_start(d: date) -> date:
+    return d - timedelta(days=d.weekday())
+
+@router.get("/adherence-history/{user_id}")
+async def get_adherence_history(
+    user_id: int,
+    weeks: int = 8,
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        today = date.today()
+        history = []
+
+        for i in range(weeks):
+            week_start = today - timedelta(days=today.weekday()) - timedelta(weeks=i)
+            week_end = week_start + timedelta(days=6)
+
+            # ---- Scheduled doses ----
+            meds_stmt = (
+                select(
+                    Medication.id,
+                    Medication.start_date,
+                    Medication.end_date,
+                    func.count(MedicationTime.id).label("times_per_day")
+                )
+                .join(MedicationTime)
+                .where(Medication.user_id == user_id)
+                .group_by(Medication.id)
+            )
+
+            meds_result = await db.execute(meds_stmt)
+            total_scheduled = 0
+
+            for med_id, start_date, end_date, times_per_day in meds_result:
+                med_start = start_date or week_start
+                med_end = end_date or week_end
+
+                active_days = max(
+                    0,
+                    (min(med_end, week_end) - max(med_start, week_start)).days + 1
+                )
+
+                total_scheduled += active_days * times_per_day
+
+            # ---- Taken doses ----
+            logs_stmt = (
+                select(MedicationLog.medication_id, MedicationLog.taken_at, MedicationLog.created_at)
+                .where(
+                    MedicationLog.user_id == user_id,
+                    func.date(func.coalesce(
+                        MedicationLog.taken_at,
+                        MedicationLog.created_at
+                    )) >= week_start,
+                    func.date(func.coalesce(
+                        MedicationLog.taken_at,
+                        MedicationLog.created_at
+                    )) <= week_end,
+                )
+            )
+            
+            logs_result = await db.execute(logs_stmt)
+            
+            taken_map = set()
+            
+            for med_id, taken_at, created_at in logs_result:
+                log_date = (taken_at or created_at).date()
+                taken_map.add((med_id, log_date))
+            
+            total_taken = len(taken_map)
+
+            adherence = (
+                round((total_taken / total_scheduled) * 100, 1)
+                if total_scheduled > 0
+                else 0
+            )
+
+            history.append({
+                "week_start": week_start.isoformat(),
+                "week_end": week_end.isoformat(),
+                "scheduled": total_scheduled,
+                "taken": total_taken,
+                "adherence": adherence
+            })
+
+        return {
+            "success": True,
+            "data": list(reversed(history))
+        }
+
+    except HTTPException:
+        raise  # propagate HTTPExceptions as-is
+
+    except Exception as e:
+        logger.exception(f"Failed to fetch adherence history for user {user_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error while fetching adherence history"
         )
