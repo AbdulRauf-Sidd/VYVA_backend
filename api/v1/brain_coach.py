@@ -347,19 +347,22 @@ async def get_cognitive_trend(
 
         daily_query = (
             select(
-                session_totals_subq.c.date,
-                func.avg(
-                    session_totals_subq.c.session_score
-                    / session_totals_subq.c.questions
+                func.date(BrainCoachResponses.created).label("date"),
+                (
+                    (func.sum(BrainCoachResponses.score) / func.count(BrainCoachResponses.id)) * 100
                 ).label("avg_score"),
-                func.sum(session_totals_subq.c.session_score).label("total_correct"),
-                func.sum(session_totals_subq.c.questions).label("total_questions"),
-                func.count(func.distinct(session_totals_subq.c.session_id)).label("sessions"),
+                func.sum(BrainCoachResponses.score).label("total_correct"),
+                func.count(BrainCoachResponses.id).label("total_questions"),
+                func.count(func.distinct(BrainCoachResponses.session_id)).label("sessions"),
             )
-            .group_by(session_totals_subq.c.date)
-            .order_by(session_totals_subq.c.date)
+            .where(
+                BrainCoachResponses.user_id == user_id,
+                BrainCoachResponses.created >= since
+            )
+            .group_by(func.date(BrainCoachResponses.created))
+            .order_by(func.date(BrainCoachResponses.created))
         )
-
+        
         result = await db.execute(daily_query)
         rows = result.all()
 
@@ -410,7 +413,7 @@ async def get_cognitive_trend(
             "average": average,
             "best_day": best_day,
             "best_day_display": best_day_display,
-            "best_score": best_score,
+            "best_score": best_score/10,
             "improvement": improvement
         }
 
