@@ -87,6 +87,7 @@ class SymptomCheckerInteractionRead(BaseModel):
     vitals_data: Optional[Dict[str, Any]] = None
     vitals_ai_summary: Optional[str] = None
     symptoms_ai_summary: Optional[str] = None
+    breakdown: Optional[Dict[str, Any]] = None
     
     # Existing fields from SymptomCheckerResponse model
     heart_rate: Optional[str] = None
@@ -122,6 +123,10 @@ class SymptomCheckerInteractionRead(BaseModel):
                 "heart_rate": "72",
                 "respiratory_rate": "16",
                 "symptoms": "Headache, fatigue",
+                "breakdown": {
+                    "symptom_1": "Headache",
+                    "symptom_2": "Fatigue"
+                },
                 "full_name": "John Doe",
                 "language": "en",
                 "severity": "mild",
