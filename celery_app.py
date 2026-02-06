@@ -31,3 +31,7 @@ celery_app.conf.update(
 celery_app.conf.task_annotations = {
     "*": {"max_retries": 3, "default_retry_delay": 5}
 }
+
+celery_app.conf.broker_transport_options = {
+    'visibility_timeout': 108000,  # 30 hours in seconds
+}
