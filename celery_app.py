@@ -29,7 +29,7 @@ celery_app.conf.update(
 
 # Optional: autoretry policy
 celery_app.conf.task_annotations = {
-    "*": {"max_retries": 3, "default_retry_delay": 5}
+    "*": {"max_retries": 1, "default_retry_delay": 60}
 }
 
 celery_app.conf.broker_transport_options = {
