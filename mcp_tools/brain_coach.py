@@ -12,6 +12,9 @@ from sqlalchemy import false
 from services.helpers import construct_whatsapp_brain_coach_message
 from services.whatsapp_service import whatsapp_service
 from services.email_service import email_service
+import logging
+
+logger = logging.getLogger(__name__)
 
 class QuestionType(str, Enum):
     TRIVIA = "trivia"
@@ -154,6 +157,7 @@ async def store_user_answer(input: StoreAnswerInput) -> dict:
                 "success": True,
             }
     except Exception as e:
+        logger.error(f"Error storing user answer: {e}")
         return {
             "success": False
         }
