@@ -125,6 +125,7 @@ class StoreAnswerInput(BaseModel):
     user_id: int
     question_id: int
     score: int
+    user_answer: str
 
 
 @mcp.tool(
@@ -142,6 +143,7 @@ async def store_user_answer(input: StoreAnswerInput) -> dict:
                 user_id=input.user_id,
                 question_id=input.question_id,
                 score=input.score,
+                user_answer=input.user_answer
             )
 
             db.add(response)
@@ -165,9 +167,8 @@ class SendBrainCoachReportInput(BaseModel):
 @mcp.tool(
     name="send_brain_coach_report",
     description=(
-        "You will use this tool to update an existing medication for a user."
-        "You will call this when the user wants to update their medication details."
-        "Times should be in 24-hour format."
+        "You will use this tool to send the current sessions report to a user."
+        "You will call this when the user wants to receive their brain coach report."
     )
 )
 async def send_brain_coach_report(
