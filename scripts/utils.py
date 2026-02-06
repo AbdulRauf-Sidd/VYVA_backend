@@ -1,5 +1,5 @@
 from datetime import datetime, date, time, timedelta
-from random import random
+import random
 from zoneinfo import ZoneInfo
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession

@@ -71,6 +71,8 @@ async def onboard_user(
 
         if caregiver_phone:
             caregiver, created = await get_or_create_caregiver(db, caregiver_phone, caretaker_name)
+        else:
+            caregiver = None
 
         user = User(
             first_name=record.first_name,
