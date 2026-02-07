@@ -47,19 +47,6 @@ class RetrieveQuestionsOutput(BaseModel):
 async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestionsOutput:
     async with get_async_session() as db:
 
-        # answered_stmt = (
-        #     select(BrainCoachResponses.question_id)
-        #     .where(BrainCoachResponses.user_id == input.user_id)
-        # )
-        # answered_result = await db.execute(answered_stmt)
-        # answered_question_ids = [row[0] for row in answered_result.all()]
-
-        # language = (
-        #     Language.SPANISH.value
-        #     if input.questions_type == QuestionType.TRIVIA
-        #     else input.language.value
-        # ) SINCE WE DONT HAVE ENGLISH TRANSLATIONS FOR EXTENDED SESSIONS( 15-62), WE WILL USE SPANISH
-
         stmt = (
             select(func.count(func.distinct(BrainCoachResponses.session_id)))
             .where(BrainCoachResponses.user_id == input.user_id)
@@ -102,6 +89,18 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
         result = await db.execute(stmt)
         rows = result.all()
 
+        memory_row = None
+        other_rows = []
+        
+        for row in rows:
+            if row.question_type in ("Memory", "Memoria"):
+                memory_row = row
+            else:
+                other_rows.append(row)
+        
+        # rebuild ordered list
+        ordered_rows = ([memory_row] if memory_row else []) + other_rows
+        
         questions = [
             {
                 "id": row.id,
@@ -112,7 +111,7 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
                 "question_type": row.question_type,
                 "theme": row.theme,
             }
-            for row in rows
+            for row in ordered_rows
         ]
 
         session_id = str(uuid.uuid4())
