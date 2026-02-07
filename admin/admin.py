@@ -6,6 +6,7 @@ from models.organization import Organization, OrganizationAgents, TwilioWhatsapp
 from models.onboarding import OnboardingUser
 from models.onboarding import OnboardingLogs
 from models.symptom_checker import SymptomCheckerResponse
+from models.user_check_ins import UserCheckin
 from admin.auth import AdminAuth
 from core.config import settings
 from models.medication import MedicationTime, MedicationLog
@@ -72,6 +73,11 @@ def setup_admin(app):
     class MedicationLogAdmin(ModelView, model=MedicationLog):
         column_list = "__all__"
 
+    class UserCheckinAdmin(ModelView, model=UserCheckin):
+        column_list = "__all__"
+
+
+
     admin.add_view(UserAdmin)
     admin.add_view(CaretakerAdmin)
     admin.add_view(TwilioWhatsappTemplatesAdmin)
@@ -88,3 +94,4 @@ def setup_admin(app):
     admin.add_view(BrainCoachResponsesAdmin)
     admin.add_view(CareTakerTempTokenAdmin)
     admin.add_view(CaretakerSessionAdmin)
+    admin.add_view(UserCheckinAdmin)
