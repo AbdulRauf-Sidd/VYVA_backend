@@ -187,7 +187,7 @@ async def _extract_ai_summaries(
                 {"role": "user", "content": text},
             ],
             response_format={"type": "json_object"},
-            max_tokens=200,
+            max_completion_tokens=200,
             temperature=0.2,
         )
         content = completion.choices[0].message.content if completion and completion.choices else None
