@@ -5,8 +5,9 @@ from models.user import User, Caretaker
 from models.onboarding import OnboardingUser
 from datetime import datetime, timedelta
 from sqlalchemy.sql import func
-from sqlalchemy import select
+from sqlalchemy import select, or_  
 from sqlalchemy.orm import selectinload
+from models.onboarding import OnboardingUser, OnboardingLogs
 from core.database import get_db
 # from services.email_service import email_service
 from services.sms_service import sms_service
@@ -278,4 +279,118 @@ async def delete_onboarding_user_by_id(
         raise
     except Exception as e:
         logger.exception(f"Error deleting onboarding user {user_id}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+    
+@router.get(
+    "/onboarding-users-summary",
+    status_code=status.HTTP_200_OK,
+    summary="Get onboarding users summary",
+    description="Return counts for pending, ongoing, completed, and failed onboarding items"
+)
+async def get_onboarding_users_summary(
+    db: AsyncSession = Depends(get_db)
+):
+    try:
+        pending_q = select(func.count()).select_from(OnboardingUser).where(
+            or_(OnboardingUser.onboarding_status.is_(None), OnboardingUser.onboarding_status.is_(False))
+        )
+        pending_res = await db.execute(pending_q)
+        pending_count = int(pending_res.scalar() or 0)
+
+        completed_q = select(func.count()).select_from(OnboardingUser).where(OnboardingUser.onboarding_status == True)
+        completed_res = await db.execute(completed_q)
+        completed_count = int(completed_res.scalar() or 0)
+
+        ongoing_statuses = [
+            "in_progress",
+            "in progress",
+            "inprogress",
+            "in-progress",
+            "ringing",
+            "started",
+            "calling",
+            "in_call",
+            "in-call",
+        ]
+
+        failed_statuses = [
+            "not answered",
+            "not_answered",
+            "notanswered",
+            "no answer",
+            "no_answer",
+            "no-answer",
+            "not_available",
+            "no-answer",
+            "busy",
+            "declined",
+            "unavailable",
+            "no-answer",
+        ]
+
+        ongoing_summary_conds = [OnboardingLogs.summary.ilike(f"%{s}%") for s in ongoing_statuses]
+        ongoing_status_cond = func.lower(OnboardingLogs.status).in_(ongoing_statuses)
+        ongoing_condition = or_(ongoing_status_cond, or_(*ongoing_summary_conds))
+
+        ongoing_q = select(func.count()).select_from(OnboardingLogs)
+        ongoing_q = ongoing_q.where(ongoing_condition)
+        ongoing_res = await db.execute(ongoing_q)
+        ongoing_count = int(ongoing_res.scalar() or 0)
+
+        failed_summary_conds = [OnboardingLogs.summary.ilike(f"%{s}%") for s in failed_statuses]
+        failed_status_cond = func.lower(OnboardingLogs.status).in_(failed_statuses)
+        failed_condition = or_(failed_status_cond, or_(*failed_summary_conds))
+
+        failed_q = select(func.count()).select_from(OnboardingLogs)
+        failed_q = failed_q.where(failed_condition)
+        failed_res = await db.execute(failed_q)
+        failed_count = int(failed_res.scalar() or 0)
+
+        return {
+            "Pending_users": pending_count,
+            "Ongoing_calls": ongoing_count,
+            "Completed_calls": completed_count,
+            "Failed_attempts": failed_count,
+        }
+    except Exception as e:
+        logger.error(f"Error retrieving onboarding summary: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+       
+
+@router.get(
+    "/onboarding-users-trend",
+    status_code=status.HTTP_200_OK,
+    summary="Get onboarding users trend",
+    description="Return count of users created within different time windows (30, 25, 20, 15, 10, 5, 0 days ago)"
+)
+async def get_onboarding_users_trend(
+    db: AsyncSession = Depends(get_db)
+):
+    try:
+        from datetime import timezone
+        
+        user_count = [0, 0, 0, 0, 0, 0, 0]
+        
+        current_date = datetime.now(timezone.utc)
+        
+        thresholds = [30, 25, 20, 15, 10, 5, 0]
+        
+        query = select(OnboardingUser.id, OnboardingUser.created_at)
+        
+        result = await db.execute(query)
+        records = result.all()
+        
+        for record in records:
+            created_at = record[1]
+            
+            for idx, days_ago in enumerate(thresholds):
+                threshold_date = current_date - timedelta(days=days_ago)
+                if created_at <= threshold_date:
+                    user_count[idx] += 1
+        
+        return {
+            "user_count": user_count
+        }
+    except Exception as e:
+        logger.error(f"Error retrieving onboarding trend: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
