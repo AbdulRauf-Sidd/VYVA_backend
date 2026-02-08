@@ -2,7 +2,7 @@ from elevenlabs import ElevenLabs, OutboundCallRecipient, ConversationConfigOver
 from core.config import settings
 from models.onboarding import OnboardingUser
 import requests
-from services.helpers import construct_initial_agent_message_for_reminders, constuct_initial_agent_message_for_onboarding
+from services.helpers import construct_initial_agent_message_for_reminders, constuct_initial_agent_message_for_onboarding, construct_general_welcome_message
 from scripts.utils import LANGUAGE_MAP
 
 client = ElevenLabs(
@@ -273,3 +273,88 @@ def make_medication_reminder_call(payload: dict):
         logger.error(f"Elevenlabs medication reminder call failed: {e}")
         return None
     
+
+def make_brain_coach_call(payload: dict):
+    try:
+        id = payload.get("user_id")
+        agent_id = payload.get("agent_id")
+        phone_number = payload.get("phone_number")
+        first_name = payload.get("first_name")
+        language = payload.get("language")
+        iso_language = LANGUAGE_MAP.get(language.lower(), "en")
+        initial_message = construct_general_welcome_message(first_name, iso_language)
+
+        response = requests.post(
+          "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
+          headers={
+            "xi-api-key": settings.ELEVENLABS_API_KEY
+          },
+          json={
+            "agent_id": agent_id,
+            "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
+            "to_number": phone_number,
+            "conversation_initiation_client_data": {
+              "conversation_config_override": {
+                "agent": {
+                    "language": iso_language,
+                    "first_message": initial_message
+                }
+              },
+              "dynamic_variables": {
+                "user_id": id,
+                "first_name": first_name,
+                "phone_number": phone_number
+              }
+            }
+          },
+        )
+
+        logger.info(f"Call response for brain coach call: {response.json()}")
+        
+        return response.json()
+    except Exception as e:
+        logger.error(f"Elevenlabs brain coach call failed: {e}")
+        return None
+    
+
+def make_check_up_call(payload: dict):
+    try:
+        id = payload.get("user_id")
+        agent_id = payload.get("agent_id")
+        phone_number = payload.get("phone_number")
+        first_name = payload.get("first_name")
+        language = payload.get("language")
+        iso_language = LANGUAGE_MAP.get(language.lower(), "en")
+        initial_message = construct_general_welcome_message(first_name, iso_language)
+
+        response = requests.post(
+          "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
+          headers={
+            "xi-api-key": settings.ELEVENLABS_API_KEY
+          },
+          json={
+            "agent_id": agent_id,
+            "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
+            "to_number": phone_number,
+            "conversation_initiation_client_data": {
+              "conversation_config_override": {
+                "agent": {
+                    "language": iso_language,
+                    "first_message": initial_message
+                }
+              },
+              "dynamic_variables": {
+                "user_id": id,
+                "first_name": first_name,
+                "phone_number": phone_number
+              }
+            }
+          },
+        )
+
+        logger.info(f"Call response for brain coach call: {response.json()}")
+        
+        return response.json()
+    except Exception as e:
+        logger.error(f"Elevenlabs check up call failed: {e}")
+        return None

@@ -1,21 +1,22 @@
 from core.database import SessionLocal
 from celery_app import celery_app
 from models import user
-from services.elevenlabs_service import make_onboarding_call, make_medication_reminder_call
+from services.elevenlabs_service import make_onboarding_call, make_medication_reminder_call, make_brain_coach_call, make_check_up_call
 from models.user import User
 from models.onboarding import OnboardingUser, OnboardingLogs
+from models.organization import Organization, OrganizationAgents, AgentTypeEnum
 import logging
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, with_loader_criteria
 from datetime import datetime
 from sqlalchemy.orm import Session
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 from zoneinfo import ZoneInfo
-from models.medication import Medication, MedicationTime, MedicationStatus
-from models.organization import OrganizationAgents, AgentTypeEnum
+from models.medication import MedicationStatus
 from sqlalchemy import or_, select
 from models.eleven_labs_sessions import ElevenLabsSessions
-
-from tasks.utils import schedule_celery_task_for_call_status_check, schedule_reminder_message, update_medication_status
+from scripts.medication_utils import schedule_medication_reminders_for_day 
+from models.user_check_ins import UserCheckin, CheckInType
+from tasks.utils import schedule_celery_task_for_call_status_check, update_medication_status, schedule_check_in_calls_for_day
 
 # from scripts.utils import construct_onboarding_user_payload
 
@@ -153,97 +154,14 @@ def process_pending_onboarding_users():
 
 @celery_app.task(name="schedule_calls_for_day", max_retries=0)
 def schedule_calls_for_day():
-    db = SessionLocal()
     try:
+        db = SessionLocal()
         today = date.today()
-        active_medications = (
-            db.query(Medication)
-            .options(
-                selectinload(Medication.times_of_day),
-                selectinload(Medication.user),
-            )
-            .filter(
-                or_(
-                    Medication.start_date == None,
-                    Medication.start_date <= today,
-                ),
-                or_(
-                    Medication.end_date == None,
-                    Medication.end_date >= today,
-                )
-            )
-            .all()
-        )
-
-        user_reminders = {}
-
-        for med in active_medications:
-            user = med.user
-            timezone = user.timezone
-            preferred_reminder_channel = user.preferred_reminder_channel
-            agent_id = db.query(OrganizationAgents).filter(OrganizationAgents.agent_type == AgentTypeEnum.medication_reminder.value, OrganizationAgents.organization_id == user.organization_id).first().agent_id
-
-
-            payload = {
-                "user_info": {
-                    'first_name': user.first_name,
-                    'last_name': user.last_name,
-                    'phone_number': user.phone_number,
-                    'language': user.preferred_consultation_language,
-                    'user_id': user.id,
-                    "agent_id": agent_id,
-                    "preferred_reminder_channel": preferred_reminder_channel,
-                },
-                "medication_info": {}
-            }
-            
-            if user.id not in user_reminders:
-                user_reminders[user.id] = payload
-
-
-            for time in med.times_of_day:
-                med_time = time.time_of_day
-                local_dt = datetime.combine(today, med_time, tzinfo=ZoneInfo(timezone))
-                dt_utc = local_dt.astimezone(ZoneInfo("UTC"))
-                dt_utc = dt_utc.replace(second=0, microsecond=0)
-
-
-                med_payload = {
-                    'medication_id': med.id,
-                    'medication_name': med.name,
-                    'medication_dosage': med.dosage,
-                    'medication_purpose': med.purpose,
-                    'time_of_day': med_time.strftime("%H:%M"),
-                    'time_id': time.id
-                }               
-
-                if dt_utc not in user_reminders[user.id]["medication_info"]:
-                    user_reminders[user.id]["medication_info"][dt_utc] = [med_payload]
-                    
-                else:
-                    user_reminders[user.id]["medication_info"][dt_utc].append(med_payload)
-
-                # schedule_reminder_message(payload, dt_utc, preferred_reminder_channel, agent_id)
-
-        for user_id, info in user_reminders.items():
-            preferred_reminder_channel = info['user_info']["preferred_reminder_channel"]
-            for dt_utc, meds in info["medication_info"].items():
-                schedule_reminder_message(
-                    payload={
-                        **user_reminders[user_id]["user_info"],
-                        "medications": meds
-                    },
-                    dt_utc=dt_utc,
-                    preferred_reminder_channel=preferred_reminder_channel,
-                )
-        
-        logger.info(f"Scheduled medication reminders for {len(active_medications)} active medications.")
-        
-        ### schedule check in calls. .. to be implemented TODO
+        schedule_medication_reminders_for_day(db, today)
+        schedule_check_in_calls_for_day(db, today)
 
     except Exception as e:
-        db.rollback()
-        logger.exception(f"Error scheduling calls for day: {e}")
+        logger.error(f"Error scheduling calls for the day: {e}")
     finally:
         db.close()
 
@@ -389,5 +307,141 @@ def check_onboarding_call_status():
         db.rollback()
         logger.error(f"Error checking onboarding call status: {e}")
 
+    finally:
+        db.close()
+
+
+@celery_app.task(name="initiate_brain_coach_session")
+def initiate_brain_coach_session(check_in_id: int):
+    db = SessionLocal()
+    try:
+        user_checkin = (
+            db.query(UserCheckin)
+            .options(
+                selectinload(UserCheckin.scheduled_sessions),
+                selectinload(UserCheckin.user)
+                .selectinload(User.organization)
+                .selectinload(Organization.agents),
+
+                # with_loader_criteria(
+                #     OrganizationAgents,   
+                #     OrganizationAgents.agent_type == AgentTypeEnum.brain_coach.value,  # filter for brain coach agents
+                #     include_aliases=True
+                # )
+            )
+            .filter(UserCheckin.id == check_in_id)
+            .first()
+        )
+        if not user_checkin:
+            logger.error(f"UserCheckin not found for check_in_id {check_in_id}")
+            return
+        user = user_checkin.user
+        last_pending_session = max(
+            (s for s in user_checkin.scheduled_sessions if not s.is_completed and s.session_type == CheckInType.brain_coach.value),
+            key=lambda s: s.scheduled_at,
+            default=None
+        )
+
+        brain_coach_agent_id = None
+        agents = user.organization.agents
+        for agent in agents:
+            logger.info(agent.agent_type)
+            if agent.agent_type == AgentTypeEnum.brain_coach.value:
+                brain_coach_agent_id = agent.agent_id
+                break
+        
+        if not brain_coach_agent_id:
+            logger.error(f"No brain coach agent found for organization {user.organization.id}")
+            return
+
+        
+        payload = {
+            "user_id": user.id,
+            "agent_id": brain_coach_agent_id,
+            "first_name": user.first_name,
+            "phone_number": user.phone_number,
+            "language": user.preferred_consultation_language,
+        }
+        
+        response = make_brain_coach_call(payload)
+        if not last_pending_session:
+            logger.warning(f"No pending session found for check in {check_in_id}")
+            return
+        
+        if response:
+            last_pending_session.completed_at = datetime.now(timezone.utc)
+            last_pending_session.is_completed = True
+            db.commit()
+
+        
+    except Exception as e:
+        logger.error(f"Error initiating brain coach session for check ID {check_in_id}: {e}")
+    finally:
+        db.close()
+
+@celery_app.task(name="initiate_check_up_call")
+def initiate_check_up_call(check_in_id: int):
+    # Similar structure to initiate_brain_coach_session but with differences in payload and agent selection
+    db = SessionLocal()
+    try:
+        user_checkin = (
+            db.query(UserCheckin)
+            .options(
+                selectinload(UserCheckin.scheduled_sessions),
+                selectinload(UserCheckin.user)
+                .selectinload(User.organization)
+                .selectinload(Organization.agents),
+                # with_loader_criteria(
+                #     OrganizationAgents,
+                #     OrganizationAgents.agent_type == AgentTypeEnum.main_agent.value,
+                #     include_aliases=True,
+                # ),
+            )
+            .filter(UserCheckin.id == check_in_id)
+            .first()
+        )
+        if not user_checkin:
+            logger.error(f"UserCheckin not found for check_in_id {check_in_id}")
+            return
+
+        user = user_checkin.user
+        last_pending_session = max(
+            (s for s in user_checkin.scheduled_sessions if not s.is_completed and s.session_type == CheckInType.check_up_call.value),
+            key=lambda s: s.scheduled_at,
+            default=None,
+        )
+
+        check_up_agent_id = None
+        agents = user.organization.agents
+        print(agents)
+        for agent in agents:
+            logger.info(agent.agent_type)
+            if agent.agent_type == AgentTypeEnum.main_agent.value:
+                check_up_agent_id = agent.agent_id
+                break
+        if not check_up_agent_id:
+            logger.error(f"No check-up agent found for organization {user.organization.id}")
+            return
+
+        payload = {
+            "user_id": user.id,
+            "agent_id": check_up_agent_id,
+            "first_name": user.first_name,
+            "phone_number": user.phone_number,
+            "language": user.preferred_consultation_language,
+        }
+
+        response = make_check_up_call(payload)
+        if not last_pending_session:
+            logger.warning(f"No pending session found for check in {check_in_id}")
+            return
+
+        if response:
+            last_pending_session.completed_at = datetime.now(timezone.utc)
+            last_pending_session.is_completed = True
+            db.commit()
+
+    except Exception as e:
+        logger.error(f"Error initiating check-up call for check ID {check_in_id}: {e}")
     finally:
         db.close()

@@ -37,6 +37,7 @@ class ScheduledSession(Base):
     scheduled_at = Column(DateTime(timezone=True), nullable=False)
     completed_at = Column(DateTime(timezone=True), nullable=True)
     is_completed = Column(Boolean, default=False)
+    task_id = Column(String(100), nullable=True)
     
     user_checkin = relationship("UserCheckin", passive_deletes=True)
     user_checkin_id = Column(Integer, ForeignKey("user_checkins.id"), nullable=False)

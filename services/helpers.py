@@ -6,23 +6,25 @@ from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
+MEDICATION_REMINDER_MESSAGE_MAP = {
+    'en': "hello {first_name}, this is a reminder to take your medication.",
+    'es': "hola {first_name}, este es un recordatorio para tomar su medicamento."
+}
+
+
+ONBOARDING_MESSAGE_MAP = {
+    'en': "Hello {first_name}, welcome to VYVA!",
+    'es': "Hola {first_name}, ¡bienvenido a VYVA!"
+}
+
+GENERAL_MESSAGE_MAP = {
+    'en': "Hello {first_name}, how are you doing?",
+    'es': "Hola {first_name}, ¿cómo estás?"
+}
+
+
 def generate_random_string(length=8):
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
-
-# Example usage:
-# random_string = generate_random_string()
-# print(random_string)
-
-
-# Configure the hashing algorithm
-# pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-# def hash_password(password: str) -> str:
-#     return pwd_context.hash(password)
-
-# def verify_password(plain_password: str, hashed_password: str) -> bool:
-#     return pwd_context.verify(plain_password, hashed_password)
-
 
 def construct_whatsapp_sms_message(user):
     meds = user['medications']
@@ -69,41 +71,14 @@ async def construct_whatsapp_brain_coach_message(first_name, report_content, sug
     return content
 
 
-# async def construct_email_brain_coach_message(responses, repo):
-#     report_content = []
-#     for response in responses:
-#         question = await repo.get_question_translation(response.question_id, 'es')
-#         if question:
-#             report_content.append({
-#                 "question_text": question.question_text,
-#                 "question_type": question.question_type,
-#                 "theme": question.theme,
-#                 'score': response.score,
-#                 "max_score": question.max_score,
-#                 'tier': question.tier,
-#                 'session': question.session,
-#             })
-#         else:
-            
-#     return report_content
 
-
-def construct_phone_call_message(user, medication):
-    pass
-
-MEDICATION_REMINDER_MESSAGE_MAP = {
-    'en': "hello {first_name}, this is a reminder to take your medication.",
-    'es': "hola {first_name}, este es un recordatorio para tomar su medicamento."
-}
+def construct_general_welcome_message(first_name, iso_language='en'):
+    return GENERAL_MESSAGE_MAP.get(iso_language).format(first_name=first_name)
 
 def construct_initial_agent_message_for_reminders(first_name, iso_language='en'):
     return MEDICATION_REMINDER_MESSAGE_MAP.get(iso_language).format(first_name=first_name)
     # pass
 
-ONBOARDING_MESSAGE_MAP = {
-    'en': "Hello {first_name}, welcome to VYVA!",
-    'es': "Hola {first_name}, ¡bienvenido a VYVA!"
-}
-
 def constuct_initial_agent_message_for_onboarding(first_name, iso_language='en'):
     return ONBOARDING_MESSAGE_MAP.get(iso_language).format(first_name=first_name)
+

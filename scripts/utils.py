@@ -1,6 +1,6 @@
 from datetime import datetime, date, time, timedelta
 import random
-from zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from models.brain_coach import BrainCoachResponses
@@ -190,3 +190,55 @@ def calculate_streak(dates: list[date]) -> int:
         check_day -= timedelta(days=1)
 
     return streak
+
+
+def get_zoneinfo_safe(tz_name: str | None) -> ZoneInfo:
+    """
+    Return ZoneInfo or fallback to UTC if invalid/null.
+    """
+    try:
+        if not tz_name:
+            logger.warning("No timezone provided, defaulting to UTC.")
+            return ZoneInfo("UTC")
+        
+        return ZoneInfo(tz_name)
+    except ZoneInfoNotFoundError:
+        logger.warning(f"Invalid timezone name: {tz_name}, defaulting to UTC.")
+        return ZoneInfo("UTC")
+
+
+def convert_to_utc_datetime(tz_name: str, date: date | None = None, time: time | None = None, dt: datetime | None = None, normalize_seconds: bool = True) -> datetime:
+    """
+    Convert a local date+time OR datetime into UTC.
+
+    Rules:
+    - If dt is provided → use it
+    - Else require both d and t
+    - If dt is naive → attach tz_name
+    - If dt already has tz → convert from it
+    - Raises ValueError if insufficient inputs
+    """
+
+    try:
+        tz = get_zoneinfo_safe(tz_name)
+
+        # --- choose source datetime ---
+        if dt is not None:
+            local_dt = dt
+        elif date is not None and time is not None:
+            local_dt = datetime.combine(date, time)
+        else:
+            raise ValueError("Provide either dt OR both date and time")
+
+        local_dt = local_dt.replace(tzinfo=tz)
+
+        # --- convert to UTC ---
+        dt_utc = local_dt.astimezone(ZoneInfo("UTC"))
+
+        if normalize_seconds:
+            dt_utc = dt_utc.replace(second=0, microsecond=0)
+
+        return dt_utc
+    except Exception as e:
+        logger.error(f"Error in to_utc_datetime: {e}")
+        return None

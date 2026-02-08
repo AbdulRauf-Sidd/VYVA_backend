@@ -556,7 +556,7 @@ async def get_session_history(
             s.pop("_sort_date", None)
 
         return {
-            "sessions": paginated,
+            "sessions": paginated, 
             "total": len(sessions),
         }
 
