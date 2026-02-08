@@ -452,7 +452,8 @@ async def get_weekly_medication_schedule(
                         "dosage": med.dosage,
                         "time": time_str,
                         "notes": time_entry.notes,
-                        "status": status_value  # ✅ NEW
+                        "status": status_value  # ✅ NEW,
+                        # "taken_at": #TODO
                     })
 
                 current_date += timedelta(days=1)

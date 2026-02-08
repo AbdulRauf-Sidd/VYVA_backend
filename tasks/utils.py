@@ -132,7 +132,7 @@ def schedule_check_in_calls_for_day(db, today): #TODO can implement checks so th
                 task_id = celery_app.send_task(
                     task_name,
                     args=[checkin.id,],
-                    # eta=scheduled_dt
+                    eta=scheduled_dt
                 ).id
 
                 # --- create scheduled session row ---
