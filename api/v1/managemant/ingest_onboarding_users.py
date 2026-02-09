@@ -305,6 +305,7 @@ async def ingest_csv(organization: str = Form(...), file: UploadFile = File(...)
 class IngestUserRequest(BaseModel):
     first_name: str = Field(..., min_length=1)
     last_name: str = Field(..., min_length=1)
+    email: Optional[str] = Field(None)
     country_code: str = Field(..., min_length=1)
     telephone_number: str = Field(..., min_length=1)
     time_zone: str = Field(..., min_length=1)
@@ -393,9 +394,12 @@ async def ingest_user(payload: IngestUserRequest, organization: str, db=Depends(
 
     caregiver_final_phone = payload.caregiver_contact_number.replace(" ", "").replace("-", "") if payload.caregiver_contact_number else None
 
+    email = payload.email.strip() if payload.email else None
+
     user = OnboardingUser(
                 first_name=payload.first_name,
                 last_name=payload.last_name,
+                email=email,
                 phone_number=full_phone.replace(" ", "").replace("-", ""),
                 timezone=payload.time_zone,
                 organization_id=exists.id,

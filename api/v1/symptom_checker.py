@@ -63,8 +63,15 @@ def _normalize_ai_summary_value(value: Optional[str]) -> Optional[str]:
         trimmed = value.strip()
         if not trimmed or trimmed.lower() == "null":
             return None
-        if len(trimmed) > 200:
-            return trimmed[:200]
+        normalized_match = re.search(r"(?i)\bnormalized\s*:\s*(.+)", trimmed, flags=re.DOTALL)
+        if normalized_match:
+            normalized = normalized_match.group(1).strip()
+            normalized = re.split(r"(?i)\bverbatim\s*:\b", normalized)[0].strip()
+            normalized = normalized.strip(" '\"\t|")
+            if normalized:
+                return normalized
+        if trimmed.lower().startswith("verbatim:"):
+            trimmed = trimmed[len("verbatim:"):].strip()
         return trimmed
     return None
 
@@ -124,8 +131,6 @@ def _derive_fallback_summaries(
 
     if symptoms:
         symptoms_summary = symptoms.strip()
-        if len(symptoms_summary) > 200:
-            symptoms_summary = symptoms_summary[:200]
 
     return {
         "vitals_ai_summary": vitals_summary,
@@ -171,7 +176,7 @@ async def _extract_ai_summaries(
         "If insufficient info, respond with null.\n\n"
         "Return a JSON object with exactly these keys: "
         '{"vitals_ai_summary": "... or null", "symptoms_ai_summary": "... or null"}.\n'
-        "Keep each summary under 200 characters. Do not fabricate data."
+        "Do not fabricate data. Do not add labels like VERBATIM or NORMALIZED."
     )
 
     # Trim overly long text to reduce tokens
