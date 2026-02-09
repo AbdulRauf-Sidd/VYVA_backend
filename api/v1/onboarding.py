@@ -399,16 +399,14 @@ async def get_onboarding_users_trend(
     "/onboarding-users-overview",
     status_code=status.HTTP_200_OK,
     summary="Get onboarding users overview",
-    description="Return overview of onboarding users with next scheduled call information"
+    description="Return the onboarding user with next scheduled call closest to current time"
 )
 async def get_onboarding_users_overview(
-    organization_id: int = Query(..., description="Organization ID"),
     db: AsyncSession = Depends(get_db)
 ):
     try:
         query = select(OnboardingUser).where(
-            (OnboardingUser.organization_id == organization_id)
-            & (OnboardingUser.onboarding_call_scheduled == True)
+            (OnboardingUser.onboarding_call_scheduled == True)
             & (OnboardingUser.onboarding_status == False)
             & (OnboardingUser.preferred_time.isnot(None))
         )
@@ -417,12 +415,14 @@ async def get_onboarding_users_overview(
         onboarding_users = result.scalars().all()
         
         if not onboarding_users:
-            return []
+            raise HTTPException(status_code=404, detail="No pending onboarding users found")
         
         current_time = datetime.now(timezone.utc)
         current_date = current_time.date()
         
-        response_data = []
+        closest_user = None
+        closest_time_diff = None
+        closest_scheduled_time = None
         
         for user in onboarding_users:
             preferred_time = user.preferred_time
@@ -436,18 +436,43 @@ async def get_onboarding_users_overview(
                     preferred_time
                 ).replace(tzinfo=timezone.utc)
             
-            full_name = f"{user.first_name or ''} {user.last_name or ''}".strip()
+            time_diff = abs((scheduled_datetime - current_time).total_seconds())
             
-            response_data.append({
-                "full_name": full_name,
-                "Scheduled_at": scheduled_datetime.isoformat(),
-                "Total_calls_scheduled": user.call_attempts
-            })
+            if closest_time_diff is None or time_diff < closest_time_diff:
+                closest_time_diff = time_diff
+                closest_user = user
+                closest_scheduled_time = scheduled_datetime
         
-        response_data.sort(key=lambda x: x["Scheduled_at"])
+        if not closest_user:
+            raise HTTPException(status_code=404, detail="No suitable onboarding user found")
         
-        return response_data
+        full_name = f"{closest_user.first_name or ''} {closest_user.last_name or ''}".strip()
         
+        logs_query = select(OnboardingLogs).where(
+            OnboardingLogs.onboarding_user_id == closest_user.id
+        )
+        logs_result = await db.execute(logs_query)
+        logs = logs_result.scalars().all()
+        
+        successful_calls = 0
+        if logs:
+            successful_statuses = ["Call status: answered, raw status: completed", "completed", "successful", "success", "answered"]
+            for log in logs:
+                if log.status and log.status.lower() in successful_statuses:
+                    successful_calls += 1
+        
+        total_calls = closest_user.call_attempts or 0
+        success_rate = (successful_calls / total_calls * 100) if total_calls > 0 else 0
+        
+        return {
+            "full_name": full_name,
+            "next_call": closest_scheduled_time.strftime("%m/%d %H:%M, UTC"),
+            "total_calls": total_calls,
+            "success_rate": round(success_rate, 2)
+        }
+        
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error retrieving onboarding users overview: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
