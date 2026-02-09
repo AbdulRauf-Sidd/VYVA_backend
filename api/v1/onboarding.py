@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Body, Response
+from fastapi import APIRouter, Depends, HTTPException, status, Body, Response, Query
 from core.config import settings
 from sqlalchemy.ext.asyncio import AsyncSession
 from models.user import User, Caretaker
 from models.onboarding import OnboardingUser
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from sqlalchemy.sql import func
 from sqlalchemy import select, or_  
 from sqlalchemy.orm import selectinload
@@ -393,4 +393,61 @@ async def get_onboarding_users_trend(
         }
     except Exception as e:
         logger.error(f"Error retrieving onboarding trend: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@router.get(
+    "/onboarding-users-overview",
+    status_code=status.HTTP_200_OK,
+    summary="Get onboarding users overview",
+    description="Return overview of onboarding users with next scheduled call information"
+)
+async def get_onboarding_users_overview(
+    organization_id: int = Query(..., description="Organization ID"),
+    db: AsyncSession = Depends(get_db)
+):
+    try:
+        query = select(OnboardingUser).where(
+            (OnboardingUser.organization_id == organization_id)
+            & (OnboardingUser.onboarding_call_scheduled == True)
+            & (OnboardingUser.onboarding_status == False)
+            & (OnboardingUser.preferred_time.isnot(None))
+        )
+        
+        result = await db.execute(query)
+        onboarding_users = result.scalars().all()
+        
+        if not onboarding_users:
+            return []
+        
+        current_time = datetime.now(timezone.utc)
+        current_date = current_time.date()
+        
+        response_data = []
+        
+        for user in onboarding_users:
+            preferred_time = user.preferred_time
+            
+            scheduled_datetime = datetime.combine(current_date, preferred_time)
+            scheduled_datetime = scheduled_datetime.replace(tzinfo=timezone.utc)
+            
+            if scheduled_datetime < current_time:
+                scheduled_datetime = datetime.combine(
+                    current_date + timedelta(days=1),
+                    preferred_time
+                ).replace(tzinfo=timezone.utc)
+            
+            full_name = f"{user.first_name or ''} {user.last_name or ''}".strip()
+            
+            response_data.append({
+                "full_name": full_name,
+                "Scheduled_at": scheduled_datetime.isoformat(),
+                "Total_calls_scheduled": user.call_attempts
+            })
+        
+        response_data.sort(key=lambda x: x["Scheduled_at"])
+        
+        return response_data
+        
+    except Exception as e:
+        logger.error(f"Error retrieving onboarding users overview: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
