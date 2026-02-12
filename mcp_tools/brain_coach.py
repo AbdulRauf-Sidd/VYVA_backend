@@ -1,3 +1,4 @@
+from models.organization import TemplateTypeEnum, TwilioWhatsappTemplates
 from .mcp_instance import mcp
 from datetime import time
 from pydantic import BaseModel
@@ -166,12 +167,16 @@ class SendBrainCoachReportInput(BaseModel):
     user_id: int
     session_id: str 
     question_type: QuestionType
+    agent_notes_and_suggestions: str
     
 @mcp.tool(
     name="send_brain_coach_report",
     description=(
         "You will use this tool to send the current sessions report to a user."
         "You will call this when the user wants to receive their brain coach report."
+        "You will always send agent notes and suggestions in the report."
+        "the agent notes and suggestions will be based on how the user did this session. " \
+        "Examples for agent notes and suggestions: 'Good progress today. Continue memory recall exercises and repeat attention drills tomorrow.'"
     )
 )
 async def send_brain_coach_report(
@@ -251,19 +256,48 @@ async def send_brain_coach_report(
                 phone_number = user.phone_number
 
             if phone_number:
-                whatsapp_content = await construct_whatsapp_brain_coach_message(user.first_name, report_content, "Well Done")
-                await whatsapp_service.send_brain_coach_report(phone_number, whatsapp_content)
+                stmt = (
+                    select(TwilioWhatsappTemplates)
+                    .where(
+                        TwilioWhatsappTemplates.template_type == TemplateTypeEnum.medication_reminder.value,
+                        TwilioWhatsappTemplates.language == user.preferred_consultation_language,
+                    )
+                )
+                
+                result = await db.execute(stmt)
+                template = result.scalars().first()
+                whatsapp_template_id = template.id if template else None
+                if not whatsapp_template_id:
+                    logger.warning(f"No WhatsApp template found for language {user.preferred_consultation_language}")
+                    return {
+                        "success": False
+                    }
+                    
+                whatsapp_content = construct_whatsapp_brain_coach_message(user.first_name, report_content, input.agent_notes_and_suggestions)
+                await whatsapp_service.send_message(phone_number, whatsapp_content, template_id=whatsapp_template_id)
+                return {
+                    "success": True,
+                    "message": "Report sent via WhatsApp"
+                }
             else:
                 if not user.email:
                     return {
                         "success": False,
                         "message": "email required"
                     }
-                await email_service.send_brain_coach_report(user.email, report_content, user.full_name, "well Done", "1", language=user.preferred_consultation_language)
+                await email_service.send_brain_coach_report(user.email, report_content, user.full_name, input.agent_notes_and_suggestions, "1", language=user.preferred_consultation_language)
+                return {
+                    "success": True,
+                    "message": "Report sent via Email"
+                }
         else:
             if not user.email:
                 return {
                     "success": False,
                     "message": "email required"
                 }
-            await email_service.send_brain_coach_report(user.email, report_content, user.full_name, "well Done", "1", language=user.preferred_consultation_language)
+            await email_service.send_brain_coach_report(user.email, report_content, user.full_name, input.agent_notes_and_suggestions, "1", language=user.preferred_consultation_language)
+            return {
+                    "success": True,
+                    "message": "Report sent via Email"
+                }

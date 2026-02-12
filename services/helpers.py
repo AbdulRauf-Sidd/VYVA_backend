@@ -46,28 +46,38 @@ def construct_sms_body_from_template_for_reminders(content, language='en'):
     if language == 'es':
         return f"Hola {content[1]}, \nes hora de tus medicamentos:\n{content[2]} \n\n- VYVA"
 
-
-
-async def construct_whatsapp_brain_coach_message(first_name, report_content, suggestions):
+def construct_whatsapp_brain_coach_message(
+    first_name,
+    report_content,
+    suggestions,
+):
     user_score = 0
-    total_max_score = 0
-    scores_content = ""
-    length = len(report_content) - 1
+    total_max_score = 6
+    lines = []
+
     current_date = datetime.now().strftime("%A, %B %d, %Y")
-    for i, rep in enumerate(report_content):
-        if rep['score'] == 1:
-            user_score += 1
-            symbol = '✅'
-        else:
-            symbol = '❌'
-        if i == length:
-            scores_content += f"{rep['question_type']} {symbol}"
-        else:
-            scores_content += f"{rep['question_type']} {symbol} \n- " 
-        total_max_score += rep['max_score']
-        user_score += rep['score']
-    
-    content = {1: first_name, 2: current_date, 3: scores_content, 4: user_score, 5: total_max_score, 6: suggestions}
+
+    for rep in report_content:
+        score = rep.get("score", 0)
+        user_score += score
+        
+        question_type = rep.get("question_type", "")
+
+        lines.append(
+            f"{question_type} - {score}"
+        )
+
+    scores_content = "\n".join(lines)
+
+    content = {
+        1: first_name,
+        2: current_date,
+        3: scores_content,
+        4: user_score,
+        5: total_max_score,
+        7: suggestions
+    }
+
     return content
 
 
