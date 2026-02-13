@@ -223,7 +223,7 @@ async def send_brain_coach_report(
             )
             .where(
                 BrainCoachQuestions.id.in_(question_ids) if question_ids else false(),
-                QuestionTranslations.language == language
+                QuestionTranslations.language == 'spanish'
             )
             .order_by(BrainCoachQuestions.id)
         )
