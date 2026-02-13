@@ -263,7 +263,7 @@ async def send_brain_coach_report(
                 stmt = (
                     select(TwilioWhatsappTemplates)
                     .where(
-                        TwilioWhatsappTemplates.template_type == TemplateTypeEnum.medication_reminder.value,
+                        TwilioWhatsappTemplates.template_type == TemplateTypeEnum.brain_coach.value,
                         TwilioWhatsappTemplates.language == user.preferred_consultation_language,
                     )
                 )
