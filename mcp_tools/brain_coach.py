@@ -339,7 +339,7 @@ class BrainCoachTrendOutput(BaseModel):
         "short-term changes, and consistency indicators. "
         "Use this before giving performance feedback or coaching guidance."
     ),
-    output_schema=BrainCoachTrendOutput
+    output_schema=BrainCoachTrendOutput.model_json_schema()
 )
 async def get_brain_coach_trends(
     input: BrainCoachTrendInput
