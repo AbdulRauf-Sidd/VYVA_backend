@@ -24,9 +24,9 @@ class QuestionType(str, Enum):
     cognitive_assessment = "cognitive_assessment"
 
 class Language(str, Enum):
-    ENGLISH = 'english'
-    SPANISH = 'spanish'
-    GERMAN = 'german'
+    egnlish = 'english'
+    spanish = 'spanish'
+    german = 'german'
 
 class RetrieveQuestionsInput(BaseModel):
     user_id: int
@@ -58,7 +58,7 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
         result = await db.execute(stmt)
         session_count = result.scalar_one()
 
-        if input.questions_type.value == QuestionType.COGNITIVE_ASSESSMENT.value:
+        if input.questions_type.value == QuestionType.cognitive_assessment.value:
             target_session = session_count + 1
         else:
             target_session = 1
