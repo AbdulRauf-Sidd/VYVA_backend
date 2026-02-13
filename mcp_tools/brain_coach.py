@@ -270,7 +270,7 @@ async def send_brain_coach_report(
                 
                 result = await db.execute(stmt)
                 template = result.scalars().first()
-                whatsapp_template_id = template.id if template else None
+                whatsapp_template_id = template.template_id if template else None
                 if not whatsapp_template_id:
                     logger.warning(f"No WhatsApp template found for language {user.preferred_consultation_language}")
                     return {
