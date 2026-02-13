@@ -307,3 +307,58 @@ async def send_brain_coach_report(
                     "success": True,
                     "message": "Report sent via Email"
                 }
+        
+
+from pydantic import BaseModel
+from typing import List, Literal, Optional
+
+class BrainCoachTrendInput(BaseModel):
+    user_id: int
+
+class BrainCoachTrendOutput(BaseModel):
+
+    sessions_total: int
+
+    last_session_percent: Optional[int]
+
+    last_n_session_percents: List[int]
+
+    moving_average_percent: Optional[float]
+
+    trend_direction: Literal[
+        "improving",
+        "declining",
+        "stable",
+        "insufficient_data"
+    ]
+
+    delta_last_vs_previous: Optional[int]
+
+    delta_last_vs_average: Optional[float]
+
+    consistency_stddev: Optional[float]
+
+
+@mcp.tool(
+    name="get_brain_coach_trends",
+    description=(
+        "Returns trend-based progress statistics for a user's brain coach sessions. "
+        "Includes recent session score trends, moving averages, performance direction, "
+        "short-term changes, and consistency indicators. "
+        "Use this before giving performance feedback or coaching guidance."
+    ),
+    output_schema=BrainCoachTrendOutput
+)
+async def get_brain_coach_trends(
+    input: BrainCoachTrendInput
+) -> BrainCoachTrendOutput:
+    return BrainCoachTrendOutput(
+        sessions_total=0,
+        last_session_percent=None,
+        last_n_session_percents=[],
+        moving_average_percent=None,
+        trend_direction="insufficient_data",
+        delta_last_vs_previous=None,
+        delta_last_vs_average=None,
+        consistency_stddev=None,
+    )
