@@ -75,7 +75,7 @@ def construct_whatsapp_brain_coach_message(
         3: scores_content,
         4: user_score,
         5: total_max_score,
-        7: suggestions
+        6: suggestions
     }
 
     return content
