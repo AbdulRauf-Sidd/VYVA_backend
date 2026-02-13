@@ -29,14 +29,6 @@ class BrainCoachComplexityEnum(str, PyEnum):
     advanced = "Advanced"
     progressive = "Progressive"
 
-
-LANGUAGE_MAPPING = {
-    "english": "en",
-    "spanish": "es",
-    "german": "de",
-    "french": "fr",
-}
-
 #-------------------------------------------------------
 
 class User(Base):

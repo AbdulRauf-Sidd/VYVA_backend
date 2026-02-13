@@ -13,13 +13,15 @@ from sqlalchemy import false
 from services.helpers import construct_whatsapp_brain_coach_message
 from services.whatsapp_service import whatsapp_service
 from services.email_service import email_service
+from scripts.utils import LANGUAGE_MAP
 import logging
+
 
 logger = logging.getLogger(__name__)
 
 class QuestionType(str, Enum):
-    TRIVIA = "trivia"
-    COGNITIVE_ASSESSMENT = "cognitive_assessment"
+    trivia = "trivia"
+    cognitive_assessment = "cognitive_assessment"
 
 class Language(str, Enum):
     ENGLISH = 'english'
@@ -212,8 +214,10 @@ async def send_brain_coach_report(
             question_ids.append(response.question_id)
 
         language = (
-            'spanish' if input.question_type == QuestionType.TRIVIA else user.preferred_consultation_language
+            'spanish' if input.question_type == QuestionType.trivia.value else user.preferred_consultation_language
         )
+
+        iso_language = LANGUAGE_MAP.get(language.lower() if language else "english")
 
         query = (
             select(BrainCoachQuestions, QuestionTranslations)
@@ -223,7 +227,7 @@ async def send_brain_coach_report(
             )
             .where(
                 BrainCoachQuestions.id.in_(question_ids) if question_ids else false(),
-                QuestionTranslations.language == 'spanish'
+                QuestionTranslations.language == iso_language
             )
             .order_by(BrainCoachQuestions.id)
         )
