@@ -14,6 +14,7 @@ from services.helpers import construct_whatsapp_brain_coach_message
 from services.whatsapp_service import whatsapp_service
 from services.email_service import email_service
 import logging
+from typing import List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -123,41 +124,49 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
         }
 
 
-class StoreAnswerInput(BaseModel):
-    session_id: str
-    user_id: int
+class AnswerItem(BaseModel):
     question_id: int
     score: int
     user_answer: str
 
 
+class StoreSessionAnswersInput(BaseModel):
+    session_id: str
+    user_id: int
+    answers: List[AnswerItem]
+
+
 @mcp.tool(
-    name="store_user_answer",
+    name="store_session_answers",
     description=(
-        "Store a user's response to a brain coach question."
-        "You will call the tool every time the user answer's the questions."
+        "Store all answers for a completed brain coach session at once. "
+        "Call this tool only after the user finishes the full session."
     )
 )
-async def store_user_answer(input: StoreAnswerInput) -> dict:
+async def store_session_answers(input: StoreSessionAnswersInput) -> dict:
     try:
         async with get_async_session() as db:
-            response = BrainCoachResponses(
-                session_id=input.session_id,
-                user_id=input.user_id,
-                question_id=input.question_id,
-                score=input.score,
-                user_answer=input.user_answer
-            )
+            responses = [
+                BrainCoachResponses(
+                    session_id=input.session_id,
+                    user_id=input.user_id,
+                    question_id=answer.question_id,
+                    score=answer.score,
+                    user_answer=answer.user_answer
+                )
+                for answer in input.answers
+            ]
 
-            db.add(response)
+            db.add_all(responses)
             await db.commit()
-            await db.refresh(response)
 
             return {
                 "success": True,
+                "stored_count": len(responses)
             }
+
     except Exception as e:
-        logger.error(f"Error storing user answer: {e}")
+        logger.error(f"Error storing session answers: {e}")
         return {
             "success": False
         }
