@@ -13,19 +13,21 @@ from sqlalchemy import false
 from services.helpers import construct_whatsapp_brain_coach_message
 from services.whatsapp_service import whatsapp_service
 from services.email_service import email_service
+from scripts.utils import LANGUAGE_MAP
 import logging
 from typing import List, Optional
+
 
 logger = logging.getLogger(__name__)
 
 class QuestionType(str, Enum):
-    TRIVIA = "trivia"
-    COGNITIVE_ASSESSMENT = "cognitive_assessment"
+    trivia = "trivia"
+    cognitive_assessment = "cognitive_assessment"
 
 class Language(str, Enum):
-    ENGLISH = 'english'
-    SPANISH = 'spanish'
-    GERMAN = 'german'
+    egnlish = 'english'
+    spanish = 'spanish'
+    german = 'german'
 
 class RetrieveQuestionsInput(BaseModel):
     user_id: int
@@ -57,7 +59,7 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
         result = await db.execute(stmt)
         session_count = result.scalar_one()
 
-        if input.questions_type.value == QuestionType.COGNITIVE_ASSESSMENT.value:
+        if input.questions_type.value == QuestionType.cognitive_assessment.value:
             target_session = session_count + 1
         else:
             target_session = 1
@@ -221,8 +223,10 @@ async def send_brain_coach_report(
             question_ids.append(response.question_id)
 
         language = (
-            'spanish' if input.question_type == QuestionType.TRIVIA else user.preferred_consultation_language
+            'spanish' if input.question_type == QuestionType.trivia.value else user.preferred_consultation_language
         )
+
+        iso_language = LANGUAGE_MAP.get(language.lower() if language else "english")
 
         query = (
             select(BrainCoachQuestions, QuestionTranslations)
@@ -232,7 +236,7 @@ async def send_brain_coach_report(
             )
             .where(
                 BrainCoachQuestions.id.in_(question_ids) if question_ids else false(),
-                QuestionTranslations.language == language
+                QuestionTranslations.language == iso_language
             )
             .order_by(BrainCoachQuestions.id)
         )
@@ -268,14 +272,14 @@ async def send_brain_coach_report(
                 stmt = (
                     select(TwilioWhatsappTemplates)
                     .where(
-                        TwilioWhatsappTemplates.template_type == TemplateTypeEnum.medication_reminder.value,
+                        TwilioWhatsappTemplates.template_type == TemplateTypeEnum.brain_coach.value,
                         TwilioWhatsappTemplates.language == user.preferred_consultation_language,
                     )
                 )
                 
                 result = await db.execute(stmt)
                 template = result.scalars().first()
-                whatsapp_template_id = template.id if template else None
+                whatsapp_template_id = template.template_id if template else None
                 if not whatsapp_template_id:
                     logger.warning(f"No WhatsApp template found for language {user.preferred_consultation_language}")
                     return {
@@ -283,6 +287,8 @@ async def send_brain_coach_report(
                     }
                     
                 whatsapp_content = construct_whatsapp_brain_coach_message(user.first_name, report_content, input.agent_notes_and_suggestions)
+                print(question_ids, report_content, questions, responses, input.session_id)
+                print(f"Constructed WhatsApp content: {whatsapp_content}, template_id: {whatsapp_template_id}")
                 await whatsapp_service.send_message(phone_number, whatsapp_content, template_id=whatsapp_template_id)
                 return {
                     "success": True,
@@ -310,3 +316,41 @@ async def send_brain_coach_report(
                     "success": True,
                     "message": "Report sent via Email"
                 }
+        
+
+from pydantic import BaseModel
+from typing import List, Literal, Optional
+
+class BrainCoachTrendInput(BaseModel):
+    user_id: int
+
+class BrainCoachTrendOutput(BaseModel):
+    sessions_total: int
+    last_session_percent: Optional[int]
+    last_n_session_percents: List[int]
+    moving_average_percent: Optional[float]
+    trend_direction: Literal[
+        "improving",
+        "declining",
+        "stable",
+        "insufficient_data"
+    ]
+    delta_last_vs_previous: Optional[int]
+    delta_last_vs_average: Optional[float]
+    consistency_stddev: Optional[float]
+
+
+@mcp.tool(
+    name="get_brain_coach_trends",
+    description=(
+        "Returns trend-based progress statistics for a user's brain coach sessions. "
+        "Includes recent session score trends, moving averages, performance direction, "
+        "short-term changes, and consistency indicators. "
+        "Use this before giving performance feedback or coaching guidance."
+    ),
+    output_schema=BrainCoachTrendOutput.model_json_schema()
+)
+async def get_brain_coach_trends(
+    input: BrainCoachTrendInput
+) -> Optional[BrainCoachTrendOutput]:
+    return None

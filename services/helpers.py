@@ -67,15 +67,15 @@ def construct_whatsapp_brain_coach_message(
             f"{question_type} - {score}"
         )
 
-    scores_content = "\n".join(lines)
+    scores_content = " | ".join(lines)
 
     content = {
         1: first_name,
         2: current_date,
         3: scores_content,
-        4: user_score,
-        5: total_max_score,
-        7: suggestions
+        4: str(user_score),
+        5: str(total_max_score),
+        6: suggestions
     }
 
     return content

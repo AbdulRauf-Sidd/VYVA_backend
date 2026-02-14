@@ -191,6 +191,28 @@ async def list_tasks():
         "scheduled": scheduled or {}
     }
 
+{
+  1: "AbdulRauf",
+  2: "Friday, February 13, 2026",
+  3: "Memoria - 0\nAtencion - 1\nIdioma - 0\nFluidez - 1\nOrientacion - 1\nRazonamiento - 0",
+  4: "3",
+  5: "6",
+  6: "Good progress today. Continue memory recall exercises and repeat attention drills tomorrow."
+}
+
+def test():
+    from services.whatsapp_service import whatsapp_service
+    content = {
+        1: "AbdulRauf",
+        2: "Friday, February 13, 2026",
+        3: "Memoria - 0 | Atencion - 1 | Idioma - 0 | Fluidez - 1 | Orientacion - 1 | Razonamiento - 0",
+        4: "3",
+        5: "6",
+        6: "Good progress today. Continue memory recall exercises and repeat attention drills tomorrow."
+    }
+    template_id = "HX6c215f7f9feafc818c92931e052bee4a"
+    whatsapp_service.send_message_sync("+923152526525", content, template_id)
+
 # Include API routers
 app.include_router(users.router, prefix="/api/v1/users", tags=["Users"])
 app.include_router(onboarding.router, prefix="/api/v1/onboarding", tags=["Onboarding"])

@@ -72,6 +72,7 @@ class TemplateTypeEnum(str, PyEnum):
     caretaker_magic_link = "caretaker_magic_link"
     symptom_checker = "symptom_checker"
     fall_detection = "fall_detection"
+    brain_coach = "brain_coach"
 
 class TwilioWhatsappTemplates(Base):
     __tablename__ = "twilio_whatsapp_templates"
