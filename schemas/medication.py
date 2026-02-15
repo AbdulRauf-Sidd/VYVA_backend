@@ -79,3 +79,10 @@ class BulkMedicationRequest(BaseModel):
 class BulkMedicationSchema(BaseModel):
     medication_details: List[MedicationInput]
     user_id: int = None
+
+
+class WeeklyScheduleRequest(BaseModel):
+    user_id: int
+    date_start: date
+    date_end: date
+    is_present: bool

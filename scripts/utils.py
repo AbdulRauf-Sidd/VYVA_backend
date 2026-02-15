@@ -242,3 +242,34 @@ def convert_to_utc_datetime(tz_name: str, date: date | None = None, time: time |
     except Exception as e:
         logger.error(f"Error in to_utc_datetime: {e}")
         return None
+
+
+def convert_utc_time_to_local_time(
+    utc_time: time,
+    timezone_str: str,
+    reference_date: date | None = None
+) -> time:
+    """
+    Convert a UTC time object to a local time object in the given timezone.
+
+    :param utc_time: time object assumed to be in UTC
+    :param timezone_str: IANA timezone string (e.g. 'Asia/Karachi')
+    :param reference_date: date to use for conversion (important for DST).
+                           Defaults to today in UTC.
+    :return: time object in target timezone
+    """
+
+    if reference_date is None:
+        reference_date = datetime.now(ZoneInfo("UTC")).date()
+
+    # Combine date + time and mark as UTC
+    utc_datetime = datetime.combine(
+        reference_date,
+        utc_time,
+        tzinfo=ZoneInfo("UTC")
+    )
+
+    # Convert timezone
+    local_datetime = utc_datetime.astimezone(ZoneInfo(timezone_str))
+
+    return local_datetime.time()

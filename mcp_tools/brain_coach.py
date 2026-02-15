@@ -15,7 +15,7 @@ from services.whatsapp_service import whatsapp_service
 from services.email_service import email_service
 from scripts.utils import LANGUAGE_MAP
 import logging
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 
 logger = logging.getLogger(__name__)
@@ -320,37 +320,156 @@ async def send_brain_coach_report(
 
 from pydantic import BaseModel
 from typing import List, Literal, Optional
+from collections import defaultdict
+import statistics
 
 class BrainCoachTrendInput(BaseModel):
     user_id: int
 
+class ThemeTrend(BaseModel):
+    last_3: List[int]
+    trend: Literal["improving", "declining", "stable"]
+
+
 class BrainCoachTrendOutput(BaseModel):
     sessions_total: int
     last_session_percent: Optional[int]
-    last_n_session_percents: List[int]
-    moving_average_percent: Optional[float]
+    last_5_session_percents: List[int]
+    moving_avg_5: Optional[float]
     trend_direction: Literal[
         "improving",
         "declining",
         "stable",
         "insufficient_data"
     ]
-    delta_last_vs_previous: Optional[int]
-    delta_last_vs_average: Optional[float]
+    delta_last_vs_prev: Optional[int]
     consistency_stddev: Optional[float]
+    # theme_trends: Dict[str, ThemeTrend]
 
 
 @mcp.tool(
     name="get_brain_coach_trends",
-    description=(
-        "Returns trend-based progress statistics for a user's brain coach sessions. "
-        "Includes recent session score trends, moving averages, performance direction, "
-        "short-term changes, and consistency indicators. "
-        "Use this before giving performance feedback or coaching guidance."
-    ),
-    output_schema=BrainCoachTrendOutput.model_json_schema()
+    description="Returns performance statistics and trends for a user's brain coach sessions."
 )
-async def get_brain_coach_trends(
-    input: BrainCoachTrendInput
-) -> Optional[BrainCoachTrendOutput]:
-    return None
+async def get_brain_coach_trends(input: BrainCoachTrendInput) -> BrainCoachTrendOutput:
+    async with get_async_session() as db:
+
+        # Fetch responses + related question
+        result = await db.execute(
+            select(BrainCoachResponses)
+            .where(BrainCoachResponses.user_id == input.user_id)
+            .options(selectinload(BrainCoachResponses.question))
+            .order_by(BrainCoachResponses.created.asc())
+        )
+
+        responses = result.scalars().all()
+
+        if not responses:
+            return BrainCoachTrendOutput(
+                sessions_total=0,
+                last_session_percent=None,
+                last_5_session_percents=[],
+                moving_avg_5=None,
+                trend_direction="insufficient_data",
+                delta_last_vs_prev=None,
+                consistency_stddev=None,
+                theme_trends={}
+            )
+
+        # --------------------------
+        # GROUP BY SESSION
+        # --------------------------
+        sessions = defaultdict(list)
+        for r in responses:
+            sessions[r.session_id].append(r)
+
+        session_percents = []
+        # theme_session_scores = defaultdict(list)
+
+        for session_id in sorted(sessions.keys()):
+            session_items = sessions[session_id]
+
+            total_score = sum(r.score for r in session_items)
+            max_score = sum(r.question.max_score or 1 for r in session_items)
+
+            percent = round((total_score / max_score) * 100)
+            session_percents.append(percent)
+
+            # THEME breakdown
+            # theme_totals = defaultdict(lambda: {"score": 0, "max": 0})
+
+            # for r in session_items:
+            #     theme = r.question.category or "General"
+            #     theme_totals[theme]["score"] += r.score
+            #     theme_totals[theme]["max"] += r.question.max_score or 1
+
+            # for theme, values in theme_totals.items():
+            #     theme_percent = round((values["score"] / values["max"]) * 100)
+            #     theme_session_scores[theme].append(theme_percent)
+
+        # --------------------------
+        # OVERALL METRICS
+        # --------------------------
+        sessions_total = len(session_percents)
+        last_session_percent = session_percents[-1]
+
+        last_5 = session_percents[-5:]
+        moving_avg_5 = round(sum(last_5) / len(last_5), 1)
+
+        delta_last_vs_prev = None
+        trend_direction = "insufficient_data"
+
+        if sessions_total >= 2:
+            delta_last_vs_prev = session_percents[-1] - session_percents[-2]
+
+            if delta_last_vs_prev > 1:
+                trend_direction = "improving"
+            elif delta_last_vs_prev < -1:
+                trend_direction = "declining"
+            else:
+                trend_direction = "stable"
+
+        consistency_stddev = None
+        if sessions_total >= 2:
+            consistency_stddev = round(statistics.pstdev(session_percents), 1)
+
+        # --------------------------
+        # THEME TRENDS
+        # --------------------------
+        # theme_trends = {}
+
+        # for theme, scores in theme_session_scores.items():
+        #     if len(scores) < 2:
+        #         continue
+
+        #     last_3 = scores[-3:]
+
+        #     if len(last_3) >= 2:
+        #         delta = last_3[-1] - last_3[0]
+
+        #         if delta > 2:
+        #             trend = "improving"
+        #         elif delta < -2:
+        #             trend = "declining"
+        #         else:
+        #             trend = "stable"
+        #     else:
+        #         trend = "stable"
+
+        #     theme_trends[theme] = ThemeTrend(
+        #         last_3=last_3,
+        #         trend=trend
+        #     )
+
+        print(sessions_total, last_session_percent, last_5, moving_avg_5, trend_direction, delta_last_vs_prev, consistency_stddev)
+
+        return BrainCoachTrendOutput(
+            sessions_total=sessions_total,
+            last_session_percent=last_session_percent,
+            last_5_session_percents=last_5,
+            moving_avg_5=moving_avg_5,
+            trend_direction=trend_direction,
+            delta_last_vs_prev=delta_last_vs_prev,
+            consistency_stddev=consistency_stddev,
+            # theme_trends=theme_trends
+        )

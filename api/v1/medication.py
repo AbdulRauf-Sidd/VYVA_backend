@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from requests import Session
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import or_, select, func
 from typing import List, Dict
 import logging
 import time
@@ -15,6 +15,7 @@ from datetime import time as dt_time
 import asyncio
 from sqlalchemy.orm import selectinload
 from core.database import get_db
+from scripts.utils import convert_utc_time_to_local_time
 from services.medication import MedicationService
 from repositories.user import UserRepository
 from repositories.medication import MedicationRepository
@@ -25,7 +26,8 @@ from schemas.medication import (
     MedicationCreate,
     MedicationUpdate,
     MedicationInDB,
-    BulkMedicationSchema
+    BulkMedicationSchema,
+    WeeklyScheduleRequest
 )
 
 # Configure logging
@@ -350,25 +352,161 @@ async def bulk_update_medications(
             detail="Failed to update medications"
         )
 
-@router.get(
-    "/weekly-schedule/{user_id}",
+@router.post(
+    "/weekly-schedule",
     response_model=dict,
-    summary="Get weekly medication schedule for a user (current week)"
+    summary="Get weekly medication schedule for a user"
 )
 async def get_weekly_medication_schedule(
-    user_id: int,
+    payload: WeeklyScheduleRequest,
     db: AsyncSession = Depends(get_db)
 ):
+    
     start_time = datetime.now()
-    request_id = f"weekly_schedule_{user_id}_{int(start_time.timestamp() * 1000)}"
-
-    logger.info(f"Request {request_id}: Fetching weekly medication schedule for user {user_id}")
-
+    weekly_schedule = defaultdict(list)
+    total_scheduled = 0
+    taken_medications = 0
+    
     try:
+        result = await db.execute(
+            select(User.timezone).where(User.id == payload.user_id)
+        )
+        user_timezone = result.scalar_one_or_none()
+        logger.info(f"User timezone: {user_timezone}")
+        now_utc = datetime.now(timezone.utc)
+        user_now = now_utc.astimezone(ZoneInfo(user_timezone))
+        today = user_now.date()
+
+        if payload.is_present:
+            result = await db.execute(
+                select(Medication)
+                .where(
+                    Medication.user_id == payload.user_id,
+                    Medication.start_date <= payload.date_end,
+                    or_(
+                        Medication.end_date.is_(None),
+                        Medication.end_date >= payload.date_start
+                    )
+                )
+                .options(
+                    selectinload(Medication.times_of_day)
+                    .selectinload(MedicationTime.logs)
+                )
+            )
+
+            medications = result.scalars().unique().all()
+
+            now_utc = datetime.now(timezone.utc)
+            user_now = now_utc.astimezone(ZoneInfo(user_timezone))
+            today = user_now.date()
+            current_time = user_now.time()
+
+            current_date = payload.date_start + timedelta(days=1)
+            end_date = payload.date_end + timedelta(days=1)
+
+            while current_date <= end_date:
+                day_name = current_date.strftime("%A")
+
+                for med in medications:
+                    for time_entry in med.times_of_day:
+                        if not time_entry.time_of_day:
+                            continue
+                        
+                        total_scheduled += 1
+
+                        local_time = convert_utc_time_to_local_time(
+                            time_entry.time_of_day,
+                            user_timezone
+                        )
+
+                        # Check if log exists for that date
+                        log = next(
+                            (log for log in time_entry.logs
+                             if log.created_at.astimezone(
+                                 ZoneInfo(user_timezone)
+                             ).date() == current_date),
+                            None
+                        )
+
+                        if current_date < today:
+                            # Past day → behave like historical
+                            status_value = log.status if log else MedicationStatus.unconfirmed.value
+
+                        elif current_date == today:
+                            # Today logic
+                            if local_time <= current_time:
+                                # Dose time has passed
+                                status_value = log.status if log else MedicationStatus.upcoming.value
+                            else:
+                                # Future dose today
+                                status_value = MedicationStatus.upcoming.value
+
+                        else:
+                            # Future days
+                            status_value = MedicationStatus.upcoming.value
+
+                        if status_value == "taken":
+                            taken_medications += 1
+
+                        weekly_schedule[day_name].append({
+                            "medication_name": med.name,
+                            "dosage": med.dosage,
+                            "time": local_time.strftime("%H:%M"),
+                            "notes": time_entry.notes,
+                            "status": status_value
+                        })
+
+                current_date += timedelta(days=1)
+        else:
+            result = await db.execute(
+                select(Medication)
+                .where(
+                    Medication.user_id == payload.user_id,
+                    Medication.start_date <= payload.date_end,
+                    or_(
+                        Medication.end_date.is_(None),
+                        Medication.end_date >= payload.date_start
+                    )
+                )
+                .options(
+                    selectinload(Medication.times_of_day)
+                    .selectinload(MedicationTime.logs)
+                )
+            )
+            
+            medications = result.scalars().unique().all()
+
+            current_date = payload.date_start
+
+            while current_date <= payload.date_end:
+                day_name = current_date.strftime("%A")  # Get weekday name
+                for med in medications:
+                    for time_entry in med.times_of_day:
+                        if time_entry.time_of_day:  # Only consider times that are set
+                            local_time = convert_utc_time_to_local_time(time_entry.time_of_day, user_timezone)
+                            log = next((log for log in time_entry.logs if log.created_at.date() == current_date), None)
+                            status_value = log.status if log else MedicationStatus.unconfirmed.value
+                            
+                            weekly_schedule[day_name].append({
+                                "medication_name": med.name,
+                                "dosage": med.dosage,
+                                "time": local_time.strftime("%H:%M"),
+                                "notes": time_entry.notes,
+                                "status": status_value
+                            })
+
+                current_date += timedelta(days=1)
+
+        print(weekly_schedule)
+
+        return {
+            "schedule": dict(weekly_schedule)
+        }
+
         # -------------------- FETCH MEDICATIONS --------------------
         result = await db.execute(
             select(Medication)
-            .where(Medication.user_id == user_id)
+            .where(Medication.user_id == payload.user_id)
             .options(selectinload(Medication.times_of_day))
         )
         medications = result.scalars().all()
@@ -474,7 +612,7 @@ async def get_weekly_medication_schedule(
 
     except Exception as e:
         logger.error(
-            f"Request {request_id}: Failed to fetch weekly medication schedule for user {user_id}: {str(e)}",
+            f"Request : Failed to fetch weekly medication schedule for user {payload.user_id}: {str(e)}",
             exc_info=True
         )
         raise HTTPException(
@@ -483,6 +621,123 @@ async def get_weekly_medication_schedule(
         )
 
         
+from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
+from sqlalchemy import select, or_
+from collections import defaultdict
+
+@router.get("/weekly-overview/{user_id}")
+async def get_weekly_overview(
+    user_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    result = await db.execute(
+        select(User.timezone).where(User.id == user_id)
+    )
+    user_timezone = result.scalar_one_or_none()
+
+    if not user_timezone:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    tz = ZoneInfo(user_timezone)
+
+    now_utc = datetime.now(timezone.utc)
+    user_now = now_utc.astimezone(tz)
+    today = user_now.date()
+    current_time = user_now.time()
+
+    monday = today - timedelta(days=today.weekday())
+    sunday = monday + timedelta(days=6)
+
+    result = await db.execute(
+        select(Medication)
+        .where(
+            Medication.user_id == user_id,
+            Medication.start_date <= sunday,
+            or_(
+                Medication.end_date.is_(None),
+                Medication.end_date >= monday
+            )
+        )
+        .options(
+            selectinload(Medication.times_of_day)
+            .selectinload(MedicationTime.logs)
+        )
+    )
+
+    medications = result.scalars().unique().all()
+
+    total_scheduled = 0
+    total_taken = 0
+
+    upcoming_medicine = None
+    upcoming_datetime = None
+
+    log_lookup = {}
+    for med in medications:
+        for time_entry in med.times_of_day:
+            for log in time_entry.logs:
+                log_date = log.created_at.astimezone(tz).date()
+                key = (time_entry.id, log_date)
+                log_lookup[key] = log
+
+    current_date = monday
+
+    upcoming_medicines_today = []
+
+    while current_date <= sunday:
+        for med in medications:
+            for time_entry in med.times_of_day:
+                if not time_entry.time_of_day:
+                    continue
+
+                total_scheduled += 1
+
+                log = log_lookup.get((time_entry.id, current_date))
+                if log and log.status == MedicationStatus.taken.value:
+                    total_taken += 1
+
+                # Check upcoming (only today forward)
+                local_time = convert_utc_time_to_local_time(
+                    time_entry.time_of_day,
+                    user_timezone
+                )
+
+                dose_datetime = datetime.combine(
+                    current_date,
+                    local_time,
+                    tzinfo=tz
+                )
+
+                if current_date == today:
+                    status = log.status if log else MedicationStatus.unconfirmed.value
+                    if time_entry.time_of_day >= current_time:
+                        status = MedicationStatus.upcoming.value
+                    upcoming_medicines_today.append({
+                        "name": med.name,
+                        "time": local_time.strftime("%H:%M"),
+                        "status": status
+                    })
+
+                if dose_datetime > user_now:
+                    if upcoming_datetime is None or dose_datetime < upcoming_datetime:
+                        upcoming_datetime = dose_datetime
+                        upcoming_medicine = {
+                            "name": med.name,
+                            "time": local_time.strftime("%H:%M")
+                        }
+
+        current_date += timedelta(days=1)
+
+    return {
+        "total_scheduled_current_week": total_scheduled,
+        "total_taken_this_week": total_taken,
+        "adherence_percentage": round((total_taken / total_scheduled) * 100, 2) if total_scheduled else 0.0,
+        "upcoming_medicine": upcoming_medicine,
+        "todays_medicines": upcoming_medicines_today
+    }
+
+
 @router.get(
     "/medications/{user_id}",
     response_model=List[MedicationOut],

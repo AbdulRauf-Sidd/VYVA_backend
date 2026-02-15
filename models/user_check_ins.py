@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean, Time, Enum
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean, Time, Enum, UniqueConstraint
 from sqlalchemy.sql import func
 from zoneinfo import ZoneInfo
 from sqlalchemy.orm import relationship
@@ -25,6 +25,9 @@ class UserCheckin(Base):
     def __repr__(self):
         return f"<UserCheckin(id={self.id}, check_in_type='{self.check_in_type}')>"  
     
+    __table_args__ = (
+        UniqueConstraint("user_id", "check_in_type", name="uq_user_checkin_type"),
+)
 
 
 class ScheduledSession(Base):

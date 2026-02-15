@@ -73,7 +73,7 @@ class MedicationStatus(enum.Enum):
     taken = "taken"
     missed = "missed"
     unconfirmed = "unconfirmed"
-    # unconfirmed = 'temp'
+    upcoming = "upcoming"
 
 
 class MedicationLog(Base):

@@ -4,6 +4,12 @@ from typing import Optional
 from core.database import get_async_session
 from pydantic import BaseModel, EmailStr
 from models.user import User, PreferredReportsChannelEnum
+from models.user_check_ins import UserCheckin, CheckInType
+import enum
+import logging
+from datetime import time
+
+logger = logging.getLogger(__name__)
 
 class RetrieveUserProfileInput(BaseModel):
     phone_number: str
@@ -113,3 +119,115 @@ async def update_user_profile(
             "preferred_reports_channel": user.preferred_reports_channel,
             "status": "updated"
         }
+
+
+class CheckInOperation(str, enum.Enum):
+    add = "add"
+    delete = "delete"
+
+
+class ManageUserCheckinInput(BaseModel):
+    user_id: int
+    check_in_type: CheckInType
+    operation: CheckInOperation
+    
+    # Only required for add/update
+    check_in_frequency_days: Optional[int] = None
+    check_in_time: Optional[time] = None
+    is_active: Optional[bool] = True
+
+
+@mcp.tool(
+    name="manage_user_checkin",
+    description=(
+        "Use this tool to create, update, or delete a user's check-in configuration "
+        "for a specific check-in type (brain_coach or check_up_call). "
+        "If operation is 'add', the tool will create the configuration if it does not exist, "
+        "or update the existing one if it already exists. "
+        "If operation is 'delete', the tool will permanently remove the configuration "
+        "for that check-in type. "
+        "For 'add' operations, you must provide check_in_frequency_days, and optionally "
+        "check_in_time and is_active."
+    )
+)
+async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
+
+    async with get_async_session() as db:
+        try:
+            result = await db.execute(
+                select(UserCheckin).where(
+                    UserCheckin.user_id == input.user_id,
+                    UserCheckin.check_in_type == input.check_in_type.value
+                )
+            )
+
+            existing = result.scalar_one_or_none()
+
+            # -------------------------
+            # DELETE
+            # -------------------------
+            if input.operation == CheckInOperation.delete.value:
+
+                if not existing:
+                    return {
+                        "success": False,
+                        "message": "Check-in configuration does not exist."
+                    }
+
+                await db.delete(existing)
+                await db.commit()
+
+                return {
+                    "success": True,
+                    "message": "Check-in configuration deleted."
+                }
+
+            # -------------------------
+            # ADD / UPDATE
+            # -------------------------
+            if input.operation == CheckInOperation.add.value:
+
+                if input.check_in_frequency_days is None:
+                    return {
+                        "success": False,
+                        "message": "check_in_frequency_days is required for add operation."
+                    }
+
+                if existing:
+                    # UPDATE
+                    existing.check_in_frequency_days = input.check_in_frequency_days
+                    existing.check_in_time = input.check_in_time
+                    existing.is_active = input.is_active
+
+                    await db.commit()
+
+                    return {
+                        "success": True,
+                        "message": "Check-in configuration updated."
+                    }
+
+                else:
+                    # CREATE
+                    new_checkin = UserCheckin(
+                        user_id=input.user_id,
+                        check_in_type=input.check_in_type.value,
+                        check_in_frequency_days=input.check_in_frequency_days,
+                        check_in_time=input.check_in_time,
+                        is_active=input.is_active
+                    )
+
+                    db.add(new_checkin)
+                    await db.commit()
+
+                    return {
+                        "success": True,
+                        "message": "Check-in configuration created."
+                    }
+
+        except Exception as e:
+            await db.rollback()
+            logger.error(f"Error managing check-in: {e}")
+            return {
+                "success": False,
+                "message": "Internal error occurred."
+            }
