@@ -304,7 +304,7 @@ async def get_brain_coach_info(
         streak = calculate_streak(dates)
 
         return {
-            "average_session_score": round(average_session_score, 2),
+            "average_session_score": round((average_session_score/6) * 100, 2) if average_session_score > 0 else 0,
             "total_sessions": total_sessions,
             "total_questions": total_questions,
             "streak": streak,

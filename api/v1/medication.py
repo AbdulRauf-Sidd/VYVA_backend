@@ -415,7 +415,7 @@ async def get_weekly_medication_schedule(
                             continue
 
                         
-                        total_scheduled += 1
+                        # total_scheduled += 1
 
                         local_time = convert_utc_time_to_local_time(
                             time_entry.time_of_day,
@@ -561,7 +561,7 @@ async def get_weekly_overview(
 
     medications = result.scalars().unique().all()
 
-    total_scheduled = 0
+    total = 0
     total_taken = 0
 
     upcoming_medicine = None
@@ -585,7 +585,7 @@ async def get_weekly_overview(
                 if not time_entry.time_of_day:
                     continue
 
-                total_scheduled += 1
+                
 
                 log = log_lookup.get((time_entry.id, current_date))
                 if log and log.status == MedicationStatus.taken.value:
@@ -603,10 +603,16 @@ async def get_weekly_overview(
                     tzinfo=tz
                 )
 
+                if current_date < today:
+                    total += 1 
+
                 if current_date == today:
                     status = log.status if log else MedicationStatus.unconfirmed.value
-                    if time_entry.time_of_day >= current_time:
+                    if local_time >= current_time:
                         status = MedicationStatus.upcoming.value
+                    else:
+                        total += 1
+
                     upcoming_medicines_today.append({
                         "name": med.name,
                         "time": local_time.strftime("%H:%M"),
@@ -622,11 +628,10 @@ async def get_weekly_overview(
                         }
 
         current_date += timedelta(days=1)
-
     return {
-        "total_scheduled_current_week": total_scheduled,
+        "total_scheduled_current_week": total,
         "total_taken_this_week": total_taken,
-        "adherence_percentage": round((total_taken / total_scheduled) * 100, 2) if total_scheduled else 0.0,
+        "adherence_percentage": round((total_taken / total) * 100, 2) if total else 0.0,
         "upcoming_medicine": upcoming_medicine,
         "todays_medicines": upcoming_medicines_today
     }
