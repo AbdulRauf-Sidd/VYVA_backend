@@ -408,9 +408,12 @@ async def get_weekly_medication_schedule(
                 day_name = current_date.strftime("%A")
 
                 for med in medications:
+                    if med.end_date and med.end_date < current_date:
+                        continue  # Skip medications that have ended before the current date
                     for time_entry in med.times_of_day:
                         if not time_entry.time_of_day:
                             continue
+
                         
                         total_scheduled += 1
 
@@ -497,116 +500,7 @@ async def get_weekly_medication_schedule(
 
                 current_date += timedelta(days=1)
 
-        print(weekly_schedule)
-
         return {
-            "schedule": dict(weekly_schedule)
-        }
-
-        # -------------------- FETCH MEDICATIONS --------------------
-        result = await db.execute(
-            select(Medication)
-            .where(Medication.user_id == payload.user_id)
-            .options(selectinload(Medication.times_of_day))
-        )
-        medications = result.scalars().all()
-
-        # -------------------- WEEK RANGE --------------------
-        today = date.today()
-        monday = today - timedelta(days=today.weekday())
-        sunday = monday + timedelta(days=6)
-        weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-
-        date_to_weekday = {monday + timedelta(days=i): weekdays[i] for i in range(7)}
-
-        # -------------------- FETCH LOGS (NEW) --------------------
-        logs_result = await db.execute(
-            select(MedicationLog)
-            .where(
-                MedicationLog.user_id == user_id,
-                MedicationLog.created_at >= datetime.combine(monday, datetime.min.time()),
-                MedicationLog.created_at <= datetime.combine(sunday, datetime.max.time()),
-            )
-        )
-        logs = logs_result.scalars().all()
-
-        # -------------------- LOG LOOKUP MAP (NEW) --------------------
-        log_map = set()
-        for log in logs:
-            log_date = (log.taken_at or log.created_at).date()
-            log_map.add((log.medication_id, log_date))
-
-        weekly_schedule = defaultdict(list)
-        now = datetime.now()
-        
-        total_scheduled = 0
-        total_taken = 0
-        
-        # -------------------- BUILD SCHEDULE --------------------
-        for med in medications:
-            med_start = med.start_date or today
-            med_end = med.end_date or today
-
-            week_start = max(med_start, monday)
-            week_end = min(med_end, sunday)
-
-            current_date = week_start
-            while current_date <= week_end:
-                day_name = date_to_weekday[current_date]
-                seen_times = set()
-
-                for time_entry in med.times_of_day:
-                    if not time_entry.time_of_day:
-                        continue
-
-                    time_str = time_entry.time_of_day.strftime("%H:%M")
-                    if time_str in seen_times:
-                        continue
-                    seen_times.add(time_str)
-
-                    # -------------------- STATUS LOGIC (NEW) --------------------
-                    scheduled_datetime = datetime.combine(
-                        current_date,
-                        time_entry.time_of_day
-                    )
-
-                    log_key = (med.id, time_entry.id, current_date)
-
-                    if log_key in log_map:
-                        status_value = log_map[log_key]
-                    elif scheduled_datetime < now:
-                        status_value = MedicationStatus.missed.value
-                    else:
-                        status_value = MedicationStatus.unconfirmed.value
-                        
-                    total_scheduled += 1
-
-                    if (med.id, current_date) in log_map:
-                        status_value = MedicationStatus.taken.value
-                        total_taken += 1
-
-                    weekly_schedule[day_name].append({
-                        "medication_name": med.name,
-                        "dosage": med.dosage,
-                        "time": time_str,
-                        "notes": time_entry.notes,
-                        "status": status_value  # ✅ NEW,
-                        # "taken_at": #TODO
-                    })
-
-                current_date += timedelta(days=1)
-
-        # -------------------- ENSURE ALL DAYS --------------------
-        for day in weekdays:
-            weekly_schedule.setdefault(day, [])
-
-        duration = (datetime.now() - start_time).total_seconds()
-        
-        return {
-            "summary": {
-                "total_medicines_this_week": total_scheduled,
-                "total_taken_this_week": total_taken
-            },
             "schedule": dict(weekly_schedule)
         }
 
