@@ -361,10 +361,7 @@ async def get_weekly_medication_schedule(
     payload: WeeklyScheduleRequest,
     db: AsyncSession = Depends(get_db)
 ):
-    
-    start_time = datetime.now()
     weekly_schedule = defaultdict(list)
-    total_scheduled = 0
     taken_medications = 0
     
     try:
@@ -500,6 +497,7 @@ async def get_weekly_medication_schedule(
 
                 current_date += timedelta(days=1)
 
+        print(payload.date_start, payload.date_end, payload.user_id, weekly_schedule)
         return {
             "schedule": dict(weekly_schedule)
         }
