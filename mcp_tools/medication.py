@@ -23,7 +23,7 @@ async def retrieve_user_medications(user_id: int) -> list[dict]:
     async with get_async_session() as db:
         stmt = (
             select(Medication)
-            .where(Medication.user_id == user_id)
+            .where(Medication.user_id == user_id, Medication.is_active == True)
             .options(selectinload(Medication.times_of_day))
             .order_by(Medication.id)
         )
