@@ -496,8 +496,7 @@ async def get_weekly_medication_schedule(
                             })
 
                 current_date += timedelta(days=1)
-
-        print(payload.date_start, payload.date_end, payload.user_id, weekly_schedule)
+                
         return {
             "schedule": dict(weekly_schedule)
         }

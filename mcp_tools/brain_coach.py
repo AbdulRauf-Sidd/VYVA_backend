@@ -143,10 +143,22 @@ class StoreSessionAnswersInput(BaseModel):
     description=(
         "Store all answers for a completed brain coach session at once. "
         "Call this tool only after the user finishes the full session."
+        "the answers should be in the following format:" \
+        "[{"
+        "question_id,"
+        "score,"
+        "user_answer"
+        "}," \
+        "{"
+        "question_id,"
+        "score,"
+        "user_answer"
+        "}]"
     )
 )
 async def store_session_answers(input: StoreSessionAnswersInput) -> dict:
     try:
+        print(input.answers)
         async with get_async_session() as db:
             responses = [
                 BrainCoachResponses(
