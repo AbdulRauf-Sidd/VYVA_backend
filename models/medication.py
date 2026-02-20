@@ -30,6 +30,8 @@ class Medication(Base):
     side_effects = Column(Text, nullable=True)
     notes = Column(Text, nullable=True)
 
+    is_active = Column(Boolean, nullable=True, default=True)
+
     # Relationships
     user = relationship("User", back_populates="medications")
     times_of_day = relationship("MedicationTime", back_populates="medication", cascade="all, delete-orphan", passive_deletes=True, lazy="selectin")
