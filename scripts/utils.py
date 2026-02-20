@@ -273,3 +273,9 @@ def convert_utc_time_to_local_time(
     local_datetime = utc_datetime.astimezone(ZoneInfo(timezone_str))
 
     return local_datetime.time()
+
+def get_iso_language(language):
+    iso_language = LANGUAGE_MAP.get(language, None)
+    if not iso_language:
+        logger.error('iso language returned None')
+        return 'es'

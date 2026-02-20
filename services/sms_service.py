@@ -55,7 +55,7 @@ class SMSService:
         except Exception as e:
             logger.error(f"Unexpected error sending SMS to {to_number}: {str(e)}")
             return False
-    
+        
     async def send_emergency_alert(
         self,
         to_number: str,

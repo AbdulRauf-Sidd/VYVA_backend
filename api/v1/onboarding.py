@@ -12,17 +12,18 @@ from core.database import get_db
 from services.sms_service import sms_service
 import logging
 from schemas.onboarding_user import OnboardingRequestBody
-from scripts.utils import get_or_create_caregiver, construct_mem0_memory_onboarding
+from scripts.utils import get_or_create_caregiver, construct_mem0_memory_onboarding, get_iso_language
 from schemas.medication import BulkMedicationSchema
 from repositories.medication import MedicationRepository
 from services.medication import MedicationService
 from models.user_check_ins import UserCheckin, ScheduledSession, CheckInType
 from models.authentication import CaretakerTempToken, UserTempToken
-from services.whatsapp_service import whatsapp_service
+# from services.whatsapp_service import whatsapp_service
 from services.mem0 import add_conversation
 from datetime import timezone
 from typing import Optional
 from celery.result import AsyncResult
+from scripts.onboarding_utils import construct_onboarding_message_for_caretaker, construct_onboarding_message_for_user
 
 
 logger = logging.getLogger(__name__)
@@ -74,6 +75,8 @@ async def onboard_user(
         else:
             caregiver = None
 
+        language = record.language.lower() if record.language else "english"
+
         user = User(
             first_name=record.first_name,
             last_name=record.last_name,
@@ -84,7 +87,7 @@ async def onboard_user(
             city=city,
             postal_code=postal_code,
             preferred_communication_channel=record.preferred_communication_channel,
-            preferred_consultation_language=record.language.lower() if record.language else "english",
+            preferred_consultation_language=language,
             health_conditions=", ".join(health_conditions) if health_conditions else None,
             mobility=", ".join(mobility) if mobility else None,
             caretaker_id=caregiver.id if caregiver_phone else None,
@@ -170,15 +173,23 @@ async def onboard_user(
             "link": onboarding_link
         }
 
-        await whatsapp_service.send_onboarding_message(user.phone_number, temmplate_data)
+        iso_language = get_iso_language(language)
+        user_message = construct_onboarding_message_for_user(iso_language, onboarding_link)
+        await sms_service.send_sms(user.phone_number, user_message)
+        
+        # await whatsapp_service.send_onboarding_message(user.phone_number, temmplate_data)
+        
+
         
         if temp_token_caregiver:
             caregiver_onboarding_link = f"https://care-{record.organization.sub_domain}.vyva.io/senior-verification?token={temp_token_caregiver.token}"
-            temmplate_data = {
-                "caregiver_magic_link": caregiver_onboarding_link
-            }
+            caregiver_message = construct_onboarding_message_for_caretaker(iso_language, caregiver_onboarding_link)
+            await sms_service.send_sms(user.phone_number, caregiver_message)
+            # temmplate_data = {
+            #     "caregiver_magic_link": caregiver_onboarding_link
+            # }
 
-            await whatsapp_service.send_onboarding_message(caregiver.phone_number, temmplate_data, template_id=settings.TWILIO_WHATSAPP_CARETAKER_ONBOARDING_TEMPLATE_SID)
+            # await whatsapp_service.send_onboarding_message(caregiver.phone_number, temmplate_data, template_id=settings.TWILIO_WHATSAPP_CARETAKER_ONBOARDING_TEMPLATE_SID)
 
         return {
             "status": "success",
