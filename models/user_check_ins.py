@@ -43,7 +43,7 @@ class ScheduledSession(Base):
     task_id = Column(String(100), nullable=True)
     
     user_checkin = relationship("UserCheckin", passive_deletes=True)
-    user_checkin_id = Column(Integer, ForeignKey("user_checkins.id"), nullable=False)
+    user_checkin_id = Column(Integer, ForeignKey("user_checkins.id", ondelete="CASCADE"), nullable=False)
     
     def __repr__(self):
         return f"<ScheduledSession(id={self.id}, scheduled_at='{self.scheduled_at}', is_completed={self.is_completed})>"
