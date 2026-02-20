@@ -45,7 +45,7 @@ def get_location_params(location: str) -> Dict[str, str]:
 # Routes
 # -------------------------------------------------------------------
 
-@router.post("/news", response_model=NewsResponse)
+@router.post("/", response_model=NewsResponse)
 async def vyva_news(req: NewsRequest):
     if not req.location:
         raise HTTPException(
