@@ -199,6 +199,8 @@ class Settings(BaseSettings):
 
     ADMIN_USERNAME: str = Field(default="", env="ADMIN_USERNAME")
     ADMIN_PASSWORD: str = Field(default="", env="ADMIN_PASSWORD")
+
+    MEDIASTACK_ACCESS_KEY: str = Field(default="", env="MEDIASTACK_ACCESS_KEY")
     
     class Config:
         env_file = ".env"

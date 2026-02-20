@@ -496,7 +496,7 @@ async def get_weekly_medication_schedule(
                             })
 
                 current_date += timedelta(days=1)
-                
+
         return {
             "schedule": dict(weekly_schedule)
         }
@@ -510,12 +510,6 @@ async def get_weekly_medication_schedule(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to fetch weekly medication schedule"
         )
-
-        
-from datetime import datetime, timedelta, timezone
-from zoneinfo import ZoneInfo
-from sqlalchemy import select, or_
-from collections import defaultdict
 
 @router.get("/weekly-overview/{user_id}")
 async def get_weekly_overview(
@@ -610,13 +604,14 @@ async def get_weekly_overview(
                     else:
                         total += 1
 
-                    upcoming_medicines_today.append({
-                        "name": med.name,
-                        "time": local_time.strftime("%H:%M"),
-                        "status": status
-                    })
+                    if med.is_active:
+                        upcoming_medicines_today.append({
+                            "name": med.name,
+                            "time": local_time.strftime("%H:%M"),
+                            "status": status
+                        })
 
-                if dose_datetime > user_now:
+                if dose_datetime > user_now and med.is_active:
                     if upcoming_datetime is None or dose_datetime < upcoming_datetime:
                         upcoming_datetime = dose_datetime
                         upcoming_medicine = {
