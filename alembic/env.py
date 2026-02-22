@@ -8,9 +8,7 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-# Import all models to ensure they are registered with SQLAlchemy
-# from models import Base
-from models import eleven_labs_batch_calls, eleven_labs_sessions, onboarding, organization, user, authentication, user_check_ins, medication, brain_coach, symptom_checker
+import models
 from core.config import settings
 from core.database import Base
 
@@ -23,26 +21,24 @@ target_metadata = Base.metadata
 
 
 def get_url():
-    """Get database URL from settings, convert asyncpg to psycopg2 for Alembic."""
     url = settings.database_url
     if not url:
         raise ValueError(
             "DATABASE_URL is not set. Please check your .env file or environment variables."
         )
-    # Convert asyncpg driver to psycopg2 for Alembic (sync operations)
     if "+asyncpg" in url:
         url = url.replace("postgresql+asyncpg", "postgresql+psycopg2")
     return url
 
 
 def run_migrations_offline():
-    """Run migrations in 'offline' mode."""
     url = get_url()
     context.configure(
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        compare_type=True,
     )
 
     with context.begin_transaction():
@@ -50,7 +46,6 @@ def run_migrations_offline():
 
 
 def run_migrations_online():
-    """Run migrations in 'online' mode using a sync engine."""
     configuration = config.get_section(config.config_ini_section)
     db_url = get_url()
     configuration["sqlalchemy.url"] = db_url
@@ -74,7 +69,6 @@ def run_migrations_online():
             context.configure(
                 connection=connection,
                 target_metadata=target_metadata,
-                # version_table_schema="public"  # Alembic version table goes here
             )
             with context.begin_transaction():
                 context.run_migrations()

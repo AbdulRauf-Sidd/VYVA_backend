@@ -12,7 +12,7 @@ from core.database import get_db
 from services.sms_service import sms_service
 import logging
 from schemas.onboarding_user import OnboardingRequestBody
-from scripts.utils import get_or_create_caregiver, construct_mem0_memory_onboarding, get_iso_language
+from scripts.utils import get_or_create_caregiver, construct_mem0_memory_onboarding, get_iso_language, date_now_in_timezone, convert_to_utc_datetime
 from schemas.medication import BulkMedicationSchema
 from repositories.medication import MedicationRepository
 from services.medication import MedicationService
@@ -23,8 +23,8 @@ from services.mem0 import add_conversation
 from datetime import timezone
 from typing import Optional
 from celery.result import AsyncResult
-from scripts.onboarding_utils import construct_onboarding_message_for_caretaker, construct_onboarding_message_for_user
-
+from scripts.onboarding_utils import construct_onboarding_message_for_caretaker, construct_onboarding_message_for_user, construct_onboarding_user_payload
+from celery_app import celery_app
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +51,33 @@ async def onboard_user(
         record = result.scalar_one()
         if not record:
             raise HTTPException(status_code=404, detail="User not found") 
+        
+        if payload.call_back_date_time:
+            callback_date = payload.call_back_date_time.date()
+            user_today = date_now_in_timezone(record.timezone)
+            record.call_back_date_time = payload.call_back_date_time
+            if callback_date == user_today:
+                payload = construct_onboarding_user_payload(user, user.organization.onboarding_agent_id)
+
+                dt_utc = convert_to_utc_datetime(tz_name=record.timezone, dt=payload.call_back_date_time)
+                celery_app.send_task(
+                    "initiate_onboarding_call",
+                    args=[payload,],
+                    eta=dt_utc
+                )
+
+                record.onboarding_call_scheduled = True
+            
+            db.add(record)
+            db.commit()
+            return
+        
+        # --- check consent ---
+        record.consent_given = payload.consent_given
+        if payload.consent_given and payload.consent_given is False:
+            db.add(record)
+            db.commit()
+            return
         
         phone_number = record.phone_number
         caretaker_phone = data.get("caretaker_phone", None)

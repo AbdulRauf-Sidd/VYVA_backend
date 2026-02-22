@@ -17,7 +17,7 @@ from tasks.management_tasks import initiate_onboarding_call
 import logging
 from pydantic import BaseModel, Field
 from typing import Optional
-from scripts.utils import construct_onboarding_user_payload
+from scripts.onboarding_utils import construct_onboarding_user_payload
 
 logger = logging.getLogger(__name__)
 

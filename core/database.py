@@ -31,6 +31,11 @@ engine = create_async_engine(
     max_overflow=settings.DATABASE_MAX_OVERFLOW,
     pool_pre_ping=True,
     pool_recycle=3600,
+    connect_args={
+        "server_settings": {
+            "statement_timeout": "30000"
+        }
+    },
 )
 
 # Create async session factory
@@ -69,8 +74,6 @@ async def get_async_session():
         except Exception:
             await session.rollback()
             raise
-        finally:
-            await session.close()
 
 
 async def init_db():

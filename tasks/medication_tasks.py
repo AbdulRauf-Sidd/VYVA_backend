@@ -1,28 +1,15 @@
 from core.database import SessionLocal
 from celery_app import celery_app
 from services.whatsapp_service import whatsapp_service
-from models import user
 from services.elevenlabs_service import make_onboarding_call, make_medication_reminder_call
-from models.user import User
-from models.onboarding import OnboardingUser, OnboardingLogs
 import logging
-from sqlalchemy.orm import selectinload
-from datetime import datetime
-from sqlalchemy.orm import Session
-from datetime import datetime, date
-from zoneinfo import ZoneInfo
 from models.medication import Medication, MedicationTime, MedicationStatus, MedicationLog
 from models.organization import AgentTypeEnum, TwilioWhatsappTemplates, TemplateTypeEnum
 from sqlalchemy import or_, select
 from models.eleven_labs_sessions import ElevenLabsSessions
 from scripts.medication_utils import notify_caretaker_on_missed_meds, construct_medication_string_for_whatsapp
-from tasks.utils import schedule_celery_task_for_call_status_check, schedule_reminder_message, update_medication_status
 import asyncio
 
-# from scripts.utils import construct_onboarding_user_payload
-
-from twilio.rest import Client
-from core.config import settings
 
 logger = logging.getLogger(__name__)
 

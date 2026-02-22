@@ -32,6 +32,8 @@ class OnboardingUser(Base):
     onboarding_call_task_id = Column(String(255), nullable=True)
     onboarding_status = Column(Boolean, default=False)
     onboarded_at = Column(DateTime(timezone=True), nullable=True)
+    call_back_date_time = Column(DateTime(timezone=True), nullable=True)
+    consent_given = Column(Boolean, nullable=True)
     call_attempts = Column(Integer, default=0)
     called_at = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
