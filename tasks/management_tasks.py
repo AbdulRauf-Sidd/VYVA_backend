@@ -19,6 +19,7 @@ from models.user_check_ins import UserCheckin, CheckInType
 from tasks.utils import schedule_celery_task_for_call_status_check, update_medication_status, schedule_check_in_calls_for_day
 
 from scripts.onboarding_utils import construct_onboarding_user_payload
+from scripts.utils import date_now_in_timezone
 
 from twilio.rest import Client
 from core.config import settings
@@ -91,46 +92,31 @@ def process_pending_onboarding_users():
         pending_users = (
             db.query(OnboardingUser)
             .options(selectinload(OnboardingUser.organization))
-            .filter(OnboardingUser.onboarding_status == False, OnboardingUser.onboarding_call_scheduled == False, OnboardingUser.call_attempts < 3)
+            .filter(OnboardingUser.onboarding_status == False, OnboardingUser.onboarding_call_scheduled == False, OnboardingUser.call_attempts < 3, OnboardingUser.consent_given != False)
             .all()
         )
 
-
         for user in pending_users:
+            call_back_date_time = user.call_back_date_time
+            if call_back_date_time: #check if the user has call back time that is later than today 
+                user_today = date_now_in_timezone(user.timezone)
+                callback_local_date = call_back_date_time.astimezone(
+                    ZoneInfo(user.timezone)
+                ).date()
 
-            preferred_time = user.preferred_time
-            if preferred_time:
-                dt_today_utc = datetime.combine(date.today(), preferred_time, tzinfo=ZoneInfo("UTC"))
-            else:
-                default_time = datetime.strptime("09:00", "%H:%M").time()
-                local_dt = datetime.combine(date.today(), default_time, tzinfo=ZoneInfo(user.timezone))
-                dt_today_utc = local_dt.astimezone(ZoneInfo("UTC"))
+                if callback_local_date > user_today:
+                    continue
+                
+                dt_today_utc = call_back_date_time
 
-            # full_address = ""
-
-            # if user.address:
-            #     full_address = user.address
-            # if user.city_state_province:
-            #     full_address += f", {user.city_state_province}"
-            # if user.postal_zip_code:
-            #     full_address += f", {user.postal_zip_code}"
-
-            # if not full_address:
-            #     full_address = "Not Available"
-
-            # payload = {
-            #     'first_name': user.first_name,
-            #     'last_name': user.last_name,
-            #     'phone_number': user.phone_number,
-            #     'language': user.language,
-            #     'user_id': user.id,
-            #     'agent_id': user.organization.onboarding_agent_id,
-            #     'address': full_address,
-            #     'user_type': user.preferred_communication_channel,
-            #     'caregiver_name': user.caregiver_name,
-            #     'caregiver_phone': user.caregiver_contact_number,
-            #     'email': user.email
-            # }
+            if not dt_today_utc:
+                preferred_time = user.preferred_time
+                if preferred_time:
+                    dt_today_utc = datetime.combine(date.today(), preferred_time, tzinfo=ZoneInfo("UTC"))
+                else:
+                    default_time = datetime.strptime("09:00", "%H:%M").time()
+                    local_dt = datetime.combine(date.today(), default_time, tzinfo=ZoneInfo(user.timezone))
+                    dt_today_utc = local_dt.astimezone(ZoneInfo("UTC"))
 
             payload = construct_onboarding_user_payload(user, user.organization.onboarding_agent_id)
 

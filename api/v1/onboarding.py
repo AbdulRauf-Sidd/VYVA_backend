@@ -74,7 +74,7 @@ async def onboard_user(
         
         # --- check consent ---
         record.consent_given = payload.consent_given
-        if payload.consent_given and payload.consent_given is False:
+        if not payload.consent_given:
             db.add(record)
             db.commit()
             return

@@ -40,8 +40,8 @@ class BrainCoach(BaseModel):
 
 class OnboardingRequestBody(BaseModel):
     user_id: int
-    call_back_date_time = Optional[datetime]
-    consent_given = Optional[bool]
+    call_back_date_time: Optional[datetime] = None
+    consent_given: Optional[bool] = None
     medication_details: Optional[List[MedicationDetailsItem]] = None
     caretaker_phone: Optional[str] = None
     check_in_details: Optional[CheckInDetails] = None
