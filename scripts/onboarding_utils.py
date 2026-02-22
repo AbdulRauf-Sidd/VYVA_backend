@@ -50,6 +50,7 @@ def construct_onboarding_user_payload(user, agent_id) -> dict:
         "user_type": user.preferred_communication_channel,
         "caregiver_name": user.caregiver_name,
         "caregiver_contact_number": user.caregiver_contact_number,
+        "timezone": user.timezone,
         "email": user.email
     }
     return payload

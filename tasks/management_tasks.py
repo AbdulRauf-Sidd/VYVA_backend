@@ -92,11 +92,12 @@ def process_pending_onboarding_users():
         pending_users = (
             db.query(OnboardingUser)
             .options(selectinload(OnboardingUser.organization))
-            .filter(OnboardingUser.onboarding_status == False, OnboardingUser.onboarding_call_scheduled == False, OnboardingUser.call_attempts < 3, OnboardingUser.consent_given != False)
+            .filter(OnboardingUser.onboarding_status == False, OnboardingUser.onboarding_call_scheduled == False, OnboardingUser.call_attempts < 3, OnboardingUser.consent_given.is_not(False))
             .all()
         )
 
         for user in pending_users:
+            dt_today_utc = None
             call_back_date_time = user.call_back_date_time
             if call_back_date_time: #check if the user has call back time that is later than today 
                 user_today = date_now_in_timezone(user.timezone)
