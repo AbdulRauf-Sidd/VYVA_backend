@@ -69,14 +69,14 @@ async def onboard_user(
                 record.onboarding_call_scheduled = True
             
             db.add(record)
-            db.commit()
+            await db.commit()
             return
         
         # --- check consent ---
         record.consent_given = payload.consent_given
         if not payload.consent_given:
             db.add(record)
-            db.commit()
+            await db.commit()
             return
         
         phone_number = record.phone_number
