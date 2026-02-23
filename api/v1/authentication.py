@@ -10,7 +10,7 @@ from models.user import Caretaker, User
 from core.config import settings
 from models.authentication import CaretakerTempToken, UserTempToken, UserSession, CaretakerSession
 from datetime import datetime, timedelta, timezone
-from schemas.authentication import PhoneRequest, VerifyOtpRequest
+from schemas.authentication import PhoneRequest, VerifyOtpRequest, CaretakerProfileUpdate
 from services.whatsapp_service import whatsapp_service
 from scripts.utils import LANGUAGE_MAP
 
@@ -338,6 +338,69 @@ async def read_caretaker_profile(
         "user_id": first_assigned_user.id if first_assigned_user else None,
         "senior_name": first_assigned_user.full_name if first_assigned_user else "User"
     }
+
+
+@router.patch("/caretaker-profile/")
+async def update_caretaker_profile(
+    payload: CaretakerProfileUpdate,
+    session_id: str = Cookie(None, alias=settings.SESSION_COOKIE_NAME),
+    db: AsyncSession = Depends(get_db),
+):
+    if not session_id:
+        return {"ok": False, "error": "Not authenticated: Missing session cookie"}
+
+    caretaker = await get_current_caretaker_from_session(session_id, db)
+    update_data = {}
+
+    if payload.name is not None:
+        name = payload.name.strip()
+        if not name:
+            return {"ok": False, "error": "Name cannot be empty"}
+        update_data["name"] = name
+
+    if payload.email is not None:
+        email = payload.email.strip()
+        if not email:
+            return {"ok": False, "error": "Email cannot be empty"}
+        update_data["email"] = email
+
+    if payload.phone_number is not None:
+        phone = payload.phone_number.strip()
+        if not phone:
+            return {"ok": False, "error": "Phone number cannot be empty"}
+        if not is_valid_phone_number(phone):
+            return {"ok": False, "error": "Invalid phone number"}
+        update_data["phone_number"] = phone
+
+    if not update_data:
+        return {"ok": False, "error": "No fields to update"}
+
+    if "email" in update_data:
+        result = await db.execute(
+            select(Caretaker).where(
+                Caretaker.email == update_data["email"],
+                Caretaker.id != caretaker.id,
+            )
+        )
+        if result.scalar_one_or_none():
+            return {"ok": False, "error": "Email already in use"}
+
+    if "phone_number" in update_data:
+        result = await db.execute(
+            select(Caretaker).where(
+                Caretaker.phone_number == update_data["phone_number"],
+                Caretaker.id != caretaker.id,
+            )
+        )
+        if result.scalar_one_or_none():
+            return {"ok": False, "error": "Phone number already in use"}
+
+    for field, value in update_data.items():
+        setattr(caretaker, field, value)
+
+    await db.commit()
+
+    return {"ok": True}
 
 @router.post("/logout", response_model=StandardSuccessResponse)
 async def logout(
