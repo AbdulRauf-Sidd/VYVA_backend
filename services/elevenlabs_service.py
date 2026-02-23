@@ -183,6 +183,8 @@ def make_onboarding_call(payload: dict):
         agent_id = payload.get("agent_id")
         phone_number = payload.get("phone_number")
         user_type = payload.get("user_type")
+        email = payload.get("email")
+        timezone = payload.get("timezone")
         language = payload.get("language")
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
         first_name = payload.get("first_name")
@@ -214,7 +216,9 @@ def make_onboarding_call(payload: dict):
                 "address": address,
                 "caregiver_name": caregiver_name,
                 "caregiver_phone": caregiver_phone,
-                "user_type": user_type
+                "user_type": user_type,
+                "email": email,
+                "timezone": timezone
               }
             }
           },

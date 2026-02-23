@@ -69,14 +69,14 @@ async def onboard_user(
                 record.onboarding_call_scheduled = True
             
             db.add(record)
-            db.commit()
+            await db.commit()
             return
         
         # --- check consent ---
         record.consent_given = payload.consent_given
         if not payload.consent_given:
             db.add(record)
-            db.commit()
+            await db.commit()
             return
         
         phone_number = record.phone_number
@@ -211,7 +211,7 @@ async def onboard_user(
         if temp_token_caregiver:
             caregiver_onboarding_link = f"https://care-{record.organization.sub_domain}.vyva.io/senior-verification?token={temp_token_caregiver.token}"
             caregiver_message = construct_onboarding_message_for_caretaker(iso_language, caregiver_onboarding_link)
-            await sms_service.send_sms(user.phone_number, caregiver_message)
+            await sms_service.send_sms(caregiver.phone_number, caregiver_message)
             # temmplate_data = {
             #     "caregiver_magic_link": caregiver_onboarding_link
             # }

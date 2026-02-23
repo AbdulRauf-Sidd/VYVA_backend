@@ -24,12 +24,12 @@ CAREGIVER_MESSAGE_MAP = {
 
 
 def construct_onboarding_message_for_user(iso_language, link):
-    message = USER_MESSAGE_MAP.get(iso_language, "PLACEHOLDER")
+    message = USER_MESSAGE_MAP.get(iso_language)
     message = message.replace('PLACEHOLDER', link)
     return message
 
 def construct_onboarding_message_for_caretaker(iso_language, link):
-    message = CAREGIVER_MESSAGE_MAP.get(iso_language, "PLACEHOLDER")
+    message = CAREGIVER_MESSAGE_MAP.get(iso_language)
     message = message.replace('PLACEHOLDER', link)
     return message
 
@@ -50,6 +50,7 @@ def construct_onboarding_user_payload(user, agent_id) -> dict:
         "user_type": user.preferred_communication_channel,
         "caregiver_name": user.caregiver_name,
         "caregiver_contact_number": user.caregiver_contact_number,
+        "timezone": user.timezone,
         "email": user.email
     }
     return payload
