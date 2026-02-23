@@ -24,12 +24,12 @@ CAREGIVER_MESSAGE_MAP = {
 
 
 def construct_onboarding_message_for_user(iso_language, link):
-    message = USER_MESSAGE_MAP.get(iso_language, "PLACEHOLDER")
+    message = USER_MESSAGE_MAP.get(iso_language)
     message = message.replace('PLACEHOLDER', link)
     return message
 
 def construct_onboarding_message_for_caretaker(iso_language, link):
-    message = CAREGIVER_MESSAGE_MAP.get(iso_language, "PLACEHOLDER")
+    message = CAREGIVER_MESSAGE_MAP.get(iso_language)
     message = message.replace('PLACEHOLDER', link)
     return message
 
