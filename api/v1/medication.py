@@ -449,7 +449,7 @@ async def get_weekly_medication_schedule(
                         weekly_schedule[day_name].append({
                             "medication_name": med.name,
                             "dosage": med.dosage,
-                            "time": time_entry.strftime("%H:%M"),
+                            "time": time_entry.time_of_day.strftime("%H:%M"),
                             "notes": time_entry.notes,
                             "status": status_value
                         })
@@ -488,7 +488,7 @@ async def get_weekly_medication_schedule(
                             weekly_schedule[day_name].append({
                                 "medication_name": med.name,
                                 "dosage": med.dosage,
-                                "time": local_time.strftime("%H:%M"),
+                                "time": time_entry.time_of_day.strftime("%H:%M"),
                                 "notes": time_entry.notes,
                                 "status": status_value
                             })
@@ -605,7 +605,7 @@ async def get_weekly_overview(
                     if med.is_active:
                         upcoming_medicines_today.append({
                             "name": med.name,
-                            "time": time_entry.strftime("%H:%M"),
+                            "time": time_entry.time_of_day.strftime("%H:%M"),
                             "status": status
                         })
 
@@ -614,7 +614,7 @@ async def get_weekly_overview(
                         upcoming_datetime = dose_datetime
                         upcoming_medicine = {
                             "name": med.name,
-                            "time": time_entry.strftime("%H:%M")
+                            "time": time_entry.time_of_day.strftime("%H:%M")
                         }
 
         current_date += timedelta(days=1)
