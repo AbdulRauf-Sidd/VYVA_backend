@@ -241,7 +241,7 @@ async def end_user_medication(medication_id: int) -> DeleteUserMedication:
         return DeleteUserMedication(medication_id=medication_id)
     
 
-class UpdateReinderChannel(BaseModel):
+class UpdateReminderChannel(BaseModel):
     user_id: int
     channel: str
 
@@ -253,7 +253,7 @@ class UpdateReinderChannel(BaseModel):
         "options are 1. app. 2. phone. 3. whatsapp"
     )
 )
-async def update_reminder_channel(channel_input: UpdateReinderChannel) -> bool:
+async def update_reminder_channel(channel_input: UpdateReminderChannel) -> bool:
     async with get_async_session() as db:
         stmt = select(User).where(User.id == channel_input.user_id)
         result = await db.execute(stmt)

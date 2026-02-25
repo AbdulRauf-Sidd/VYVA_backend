@@ -422,9 +422,7 @@ async def get_weekly_medication_schedule(
                         # Check if log exists for that date
                         log = next(
                             (log for log in time_entry.logs
-                             if log.created_at.astimezone(
-                                 ZoneInfo(user_timezone)
-                             ).date() == current_date),
+                             if log.created_at.date() == current_date),
                             None
                         )
 
@@ -451,7 +449,7 @@ async def get_weekly_medication_schedule(
                         weekly_schedule[day_name].append({
                             "medication_name": med.name,
                             "dosage": med.dosage,
-                            "time": local_time.strftime("%H:%M"),
+                            "time": time_entry.strftime("%H:%M"),
                             "notes": time_entry.notes,
                             "status": status_value
                         })

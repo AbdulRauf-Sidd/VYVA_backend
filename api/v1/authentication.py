@@ -317,7 +317,7 @@ async def read_user_profile(
         "first_time_agents": first_time_agents
     }
 
-@router.get("/caretaker-profile")
+@router.get("/caretaker-profile/")
 async def read_caretaker_profile(
     session_id: str = Cookie(None, alias=settings.SESSION_COOKIE_NAME), 
     db: AsyncSession = Depends(get_db) 
