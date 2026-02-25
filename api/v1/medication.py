@@ -605,7 +605,7 @@ async def get_weekly_overview(
                     if med.is_active:
                         upcoming_medicines_today.append({
                             "name": med.name,
-                            "time": local_time.strftime("%H:%M"),
+                            "time": time_entry.strftime("%H:%M"),
                             "status": status
                         })
 
@@ -614,7 +614,7 @@ async def get_weekly_overview(
                         upcoming_datetime = dose_datetime
                         upcoming_medicine = {
                             "name": med.name,
-                            "time": local_time.strftime("%H:%M")
+                            "time": time_entry.strftime("%H:%M")
                         }
 
         current_date += timedelta(days=1)
