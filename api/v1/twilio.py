@@ -67,6 +67,7 @@ async def receive_incoming_message(request: Request, db: AsyncSession = Depends(
 
 class TwilioPersonalizationRequest(BaseModel):
     caller_id: str
+    conversation_id: str
 
 
 @router.post("/personalization")
@@ -82,7 +83,6 @@ async def personalize_call(
         raise HTTPException(status_code=404, detail="User not found")
 
     iso_language = get_iso_language(user.preferred_consultation_language)
-    print(iso_language, user.preferred_consultation_language)
     first_message = construct_general_welcome_message(user.first_name, iso_language)
 
 
@@ -100,5 +100,6 @@ async def personalize_call(
             "first_name": user.first_name,
             "phone_number": user.phone_number,
             "timezone": user.timezone,
+            "conversation_id": payload.conversation_id
         },
     }

@@ -256,7 +256,8 @@ def get_iso_language(language):
     iso_language = LANGUAGE_MAP.get(language, None)
     if not iso_language:
         logger.error('iso language returned None')
-        return 'es'
+        iso_language = 'es'
+    return iso_language
     
 def dt_now_in_timezone(tz_name: str) -> datetime:
     return datetime.now(ZoneInfo(tz_name))
