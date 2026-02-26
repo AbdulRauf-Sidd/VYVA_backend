@@ -83,7 +83,7 @@ def construct_whatsapp_brain_coach_message(
 
 
 def construct_general_welcome_message(first_name, iso_language='en'):
-    return GENERAL_MESSAGE_MAP.get(iso_language).format(first_name=first_name)
+    return GENERAL_MESSAGE_MAP.get('es').format(first_name=first_name)
 
 def construct_initial_agent_message_for_reminders(first_name, iso_language='en'):
     return MEDICATION_REMINDER_MESSAGE_MAP.get(iso_language).format(first_name=first_name)

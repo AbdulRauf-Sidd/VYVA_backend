@@ -82,6 +82,7 @@ async def personalize_call(
         raise HTTPException(status_code=404, detail="User not found")
 
     iso_language = get_iso_language(user.preferred_consultation_language)
+    print(iso_language, user.preferred_consultation_language)
     first_message = construct_general_welcome_message(user.first_name, iso_language)
 
 
