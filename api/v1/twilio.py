@@ -66,7 +66,7 @@ async def receive_incoming_message(request: Request, db: AsyncSession = Depends(
         }
 
 class TwilioPersonalizationRequest(BaseModel):
-    phone_number: str
+    caller_id: str
 
 
 @router.post("/personalization")
@@ -74,7 +74,7 @@ async def personalize_call(
     payload: TwilioPersonalizationRequest,
     db: AsyncSession = Depends(get_db)
 ):
-    stmt = select(User).where(User.phone_number == payload.phone_number)
+    stmt = select(User).where(User.phone_number == payload.caller_id)
     result = await db.execute(stmt)
     user = result.scalar_one_or_none()
 
