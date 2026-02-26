@@ -4,17 +4,18 @@ Twilio Webhook Endpoints
 Handles incoming messages from Twilio webhooks.
 """
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request,  Depends, HTTPException, Response
 import logging
 from fastapi.responses import PlainTextResponse
 from models.user import User
-from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from core.database import get_db
 from scripts.medication_utils import update_med_logs
-from scripts.utils import generate_medication_whatsapp_response_message
-from fastapi import Response
+from scripts.utils import generate_medication_whatsapp_response_message, get_iso_language
+
+from pydantic import BaseModel
+from services.helpers import construct_general_welcome_message
 
 
 logger = logging.getLogger(__name__)
@@ -64,3 +65,39 @@ async def receive_incoming_message(request: Request, db: AsyncSession = Depends(
             "message": str(e)
         }
 
+class TwilioPersonalizationRequest(BaseModel):
+    phone_number: str
+
+
+@router.post("/personalization")
+async def personalize_call(
+    payload: TwilioPersonalizationRequest,
+    db: AsyncSession = Depends(get_db)
+):
+    stmt = select(User).where(User.phone_number == payload.phone_number)
+    result = await db.execute(stmt)
+    user = result.scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    iso_language = get_iso_language(user.preferred_consultation_language)
+    first_message = construct_general_welcome_message(user.first_name, iso_language)
+
+
+    return {
+        "conversation_config_override": {
+            "agent": {
+                "first_message": first_message,
+            }
+            # "tts": {
+            #   "voice_id": "new-voice-id"
+            # }
+        },
+        "dynamic_variables": {
+            "user_id": user.id,
+            "first_name": user.first_name,
+            "phone_number": user.phone_number,
+            "timezone": user.timezone,
+        },
+    }
