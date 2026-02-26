@@ -410,7 +410,7 @@ async def get_weekly_medication_schedule(
 
                     if med.start_date and med.start_date > current_date:
                         continue  
-                    
+
                     for time_entry in med.times_of_day:
                         if not time_entry.time_of_day:
                             continue
@@ -483,6 +483,12 @@ async def get_weekly_medication_schedule(
             while current_date <= payload.date_end:
                 day_name = current_date.strftime("%A")  # Get weekday name
                 for med in medications:
+                    if med.end_date and med.end_date < current_date:
+                        continue  # Skip medications that have ended before the current date
+
+                    if med.start_date and med.start_date > current_date:
+                        continue  # Skip medications that start after the current date
+                    
                     for time_entry in med.times_of_day:
                         if time_entry.time_of_day:  # Only consider times that are set
                             local_time = convert_utc_time_to_local_time(time_entry.time_of_day, user_timezone)
