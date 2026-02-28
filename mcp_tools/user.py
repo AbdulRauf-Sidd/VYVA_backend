@@ -1,3 +1,4 @@
+from schemas.twilio import MessageTypeEnum, SendWhatsappMessage
 from .mcp_instance import mcp
 from sqlalchemy import select
 from typing import Optional
@@ -8,6 +9,8 @@ from models.user_check_ins import UserCheckin, CheckInType
 import enum
 import logging
 from datetime import time
+from models.organization import TwilioWhatsappTemplates, TemplateTypeEnum
+from services.whatsapp_service import whatsapp_service
 
 logger = logging.getLogger(__name__)
 
@@ -231,3 +234,61 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
                 "success": False,
                 "message": "Internal error occurred."
             }
+
+
+
+@mcp.tool(
+    name="send_whatsapp",
+    description=(
+        "Use this tool to send a WhatsApp message to a user. "
+        "You need to provide the user_id, the message content (optional), and the message type. "
+        "The tool will send the formatted WhatsApp message "
+        "using the appropriate message template based on the message type."
+    )
+)
+async def send_whatsapp(input: SendWhatsappMessage):
+    async with get_async_session() as db:
+        stmt = select(User.first_name, User.preferred_consultation_language).where(User.id == input.user_id)
+        result = await db.execute(stmt)
+        user = result.scalar_one_or_none()
+
+        if not user:
+            logger.warning(f"User not found for WhatsApp message: {input.user_id}")
+            return {
+                "success": False,
+                "message": "User not found."
+            }
+
+
+        if input.message_type == MessageTypeEnum.emergency_contact_alert.value:
+            content_variables = {
+                "1": user.first_name,
+                "2": (input.message or ""),
+            }
+        else:
+            logger.error(f"Unsupported message type: {input.message_type}")
+            return {
+                "success": False,
+                "message": "Unsupported message type."
+            }
+
+        template_result = await db.execute(
+            select(TwilioWhatsappTemplates.template_id).where(TwilioWhatsappTemplates.language == user.preferred_consultation_language, TwilioWhatsappTemplates.template_type == input.message_type.value)
+        )
+        template_id = template_result.scalar_one_or_none()
+
+        success = await whatsapp_service.send_message(
+            content_sid=template_id,
+            content_variables=content_variables,
+        )
+
+        if not success:
+            logger.error(f"Failed to send WhatsApp message for user {input.user_id}")
+            raise {
+                "success": False,
+                "detail": "Failed to send WhatsApp.",
+            }
+        return {
+            "success": True,
+            "message": "WhatsApp sent successfully",
+        }

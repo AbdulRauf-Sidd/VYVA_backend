@@ -1,21 +1,23 @@
-"""
-Twilio Webhook Endpoints
-
-Handles incoming messages from Twilio webhooks.
-"""
-
-from fastapi import APIRouter, Request,  Depends, HTTPException, Response
+from fastapi import APIRouter, Request, Depends, HTTPException, Response, status
 import logging
 from fastapi.responses import PlainTextResponse
 from models.user import User
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from core.database import get_db
+from core.config import settings
 from scripts.medication_utils import update_med_logs
-from scripts.utils import generate_medication_whatsapp_response_message, get_iso_language
-
-from pydantic import BaseModel
+from scripts.utils import generate_medication_whatsapp_response_message, get_iso_language, generate_reminder_later_whatsapp_response_message
+from models.organization import TemplateTypeEnum, TwilioWhatsappTemplates
+from models.medication import MedicationLog
 from services.helpers import construct_general_welcome_message
+from services.whatsapp_service import whatsapp_service
+from scripts.medication_utils import build_medication_payload
+from tasks.utils import schedule_reminder_message
+from datetime import datetime, timedelta, timezone
+from services.whatsapp_service import whatsapp_service
+from schemas.twilio import TwilioPersonalizationRequest
 
 
 logger = logging.getLogger(__name__)
@@ -39,10 +41,6 @@ async def receive_incoming_message(request: Request, db: AsyncSession = Depends(
         if not button_payload:
             return Response(status_code=200)
         
-        action, reminder_id = button_payload.split(":")
-        med_log_ids = [int(x.strip()) for x in reminder_id.split(",")]
-        medication_taken = (action == "Yes")
-        
         whatsapp_number = form.get("From")
         phone_number = whatsapp_number.replace("whatsapp:", "")
         user_result = await db.execute(
@@ -50,13 +48,79 @@ async def receive_incoming_message(request: Request, db: AsyncSession = Depends(
         )
         user = user_result.scalar_one_or_none()
 
-        update_med_logs(user.id, medication_taken, med_log_ids)
+        ## QUICK REPLY
+        try:
+            payload = button_payload.split(":")
+            if len(payload) != 2:
+                logger.warning(f"Unexpected ButtonPayload format: {button_payload}")
+                return Response(status_code=200)
+            
+            action = payload[0]
+            template_type = payload[-1]
+            reminder_ids = payload[1]
+            med_log_ids = [int(x.strip()) for x in reminder_id.split(",")]
+            if template_type == TemplateTypeEnum.ask_for_reminder.value:
+                if action == "Yes":
+                    stmt = (
+                        select(MedicationLog)
+                        .where(MedicationLog.id.in_(reminder_ids))
+                        .options(
+                            selectinload(MedicationLog.medication),
+                            selectinload(MedicationLog.medication_time),
+                        )
+                    )
 
-        response_message = generate_medication_whatsapp_response_message(user.preferred_consultation_language, medication_taken)
-        if response_message:
-            return PlainTextResponse(response_message)    
+                    result = await db.execute(stmt)
+                    logs = result.scalars().all()
+                    meds = []
+                    for log in logs:
+                        medication = log.medication
+                        medication_time = log.medication_time
+                        medication_payload = build_medication_payload(medication, medication_time)
+                        meds.append(medication_payload)
+                    
+                    
+                    
+                    payload = {
+                        'first_name': user.first_name,
+                        'last_name': user.last_name,
+                        'phone_number': user.phone_number,
+                        'language': user.preferred_consultation_language,
+                        'user_id': user.id,
+                        "medications": meds
+                    }
+
+                    dt_utc = datetime.now(timezone.utc) + timedelta(minutes=15) 
+                    schedule_reminder_message(payload, dt_utc=dt_utc, preferred_reminder_channel='whatsapp')
+                    
+                response_message = generate_reminder_later_whatsapp_response_message(user.preferred_consultation_language, action)
+                return PlainTextResponse(response_message)
+            if template_type == TemplateTypeEnum.medication_reminder.value:
+                reminder_id = payload[1]
+                med_log_ids = [int(x.strip()) for x in reminder_id.split(",")]
+                medication_taken = (action == "Yes")
+                
+                update_med_logs(user.id, medication_taken, med_log_ids)
+                if not medication_taken:
+                    template_result = await db.execute(
+                        select(TwilioWhatsappTemplates.template_id).where(TwilioWhatsappTemplates.language == user.preferred_consultation_language, TwilioWhatsappTemplates.template_type == TemplateTypeEnum.ask_for_reminder.value)
+                    )
+                    template_id = template_result.scalar_one_or_none()
+
+                    template_data = {
+                        1: reminder_id,
+                        2: TemplateTypeEnum.ask_for_reminder.value
+                    }
+                    await whatsapp_service.send_message(user.phone_number, template_id=template_id, template_data=template_data)
+                    return PlainTextResponse("")
+                
+                response_message = generate_medication_whatsapp_response_message(user.preferred_consultation_language, medication_taken)
+                if response_message:
+                    return PlainTextResponse(response_message)    
         
-        return PlainTextResponse("OK")
+        except Exception as e:
+            logger.error(f"Error processing ButtonPayload: {e}")
+            return Response(status_code=200)
                 
     except Exception as e:
         logger.exception(f"Error processing Twilio webhook: {e}")
@@ -64,10 +128,6 @@ async def receive_incoming_message(request: Request, db: AsyncSession = Depends(
             "status": "error",
             "message": str(e)
         }
-
-class TwilioPersonalizationRequest(BaseModel):
-    caller_id: str
-    conversation_id: str
 
 
 @router.post("/personalization")

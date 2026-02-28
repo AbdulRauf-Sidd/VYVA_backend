@@ -58,7 +58,8 @@ def send_whatsapp_medication_reminder(payload):
         template_dic = {
             1: first_name,
             2: med_string,
-            3: ", ".join(str(i) for i in med_log_ids)
+            3: ", ".join(str(i) for i in med_log_ids),
+            4: TemplateTypeEnum.medication_reminder.value
         }
         asyncio.run(whatsapp_service.send_message(phone_number, template_dic, template_id))
     

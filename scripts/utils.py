@@ -79,6 +79,42 @@ MEDICATION_MESSAGES_MAP = {
       }
     }
 
+REMINDER_LATER_MESSAGES_MAP = {
+    "english": {
+        "yes": [
+            "Okay. I will remind you again a little later.",
+            "Got it. I will send you another reminder shortly.",
+            "No problem. I will check back with you soon.",
+            "Alright. I will remind you again in a little while.",
+            "Understood. Expect another reminder soon."
+        ],
+        "no": [
+            "That’s okay. Please try to take it when you can.",
+          "No problem. You can still take it if it is not too late.",
+          "Thank you for letting me know. We will try again next time.",
+          "That is alright. Let us stay on track together.",
+          "No worries. Tomorrow is another chance."
+        ]
+    },
+
+    "spanish": {
+        "yes": [
+            "Está bien. Le recordaré nuevamente un poco más tarde.",
+            "Entendido. Le enviaré otro recordatorio pronto.",
+            "No hay problema. Volveré a recordarle en breve.",
+            "De acuerdo. Le recordaré otra vez en un momento.",
+            "Perfecto. Espere otro recordatorio pronto."
+        ],
+        "no": [
+            "Está bien. Por favor tómelo cuando pueda.",
+          "No hay problema. Aún puede tomarlo si no es demasiado tarde.",
+          "Gracias por avisar. Lo intentaremos de nuevo la próxima vez.",
+          "No se preocupe. Seguiremos manteniendo el control.",
+          "No pasa nada. Mañana es una nueva oportunidad."
+        ]
+    }
+}
+
 def date_time_to_utc(dt: datetime, tz_name: str | None = None) -> datetime:
     if dt.tzinfo is None:
         if tz_name:
@@ -143,6 +179,23 @@ def generate_medication_whatsapp_response_message(language, taken: bool) -> str:
         return random.choice(lang_messages["taken"])
     else:
         return random.choice(lang_messages["missed"])
+    
+
+def generate_reminder_later_whatsapp_response_message(
+    language: str,
+    answer: str
+) -> str:
+    # normalize language with safe fallback
+    lang_messages = REMINDER_LATER_MESSAGES_MAP.get((language).lower(), REMINDER_LATER_MESSAGES_MAP["english"])
+
+    # normalize answer
+    normalized_answer = (answer or "").strip().lower()
+
+    if normalized_answer not in ("yes", "no"):
+        # safe fallback — treat unknown as no
+        normalized_answer = "no"
+
+    return random.choice(lang_messages[normalized_answer])
     
 
 def calculate_streak(dates: list[date]) -> int:
