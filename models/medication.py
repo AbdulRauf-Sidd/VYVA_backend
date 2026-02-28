@@ -97,7 +97,7 @@ class MedicationLog(Base):
         nullable=True
     )
 
-    taken_at = Column(DateTime, nullable=True)
+    taken_at = Column(DateTime(timezone=True), nullable=True)
 
     status = Column(String(50), nullable=False)
 
