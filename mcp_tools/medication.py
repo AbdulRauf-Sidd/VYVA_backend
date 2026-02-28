@@ -295,7 +295,7 @@ class MedicationLogInput(BaseModel):
     )
 )
 
-async def update_medication_log(input: MedicationLogInput) -> bool:
+async def update_medication_log(input: MedicationLogInput) -> dict:
     async with get_async_session() as db:
         if not input.user_id:
             raise ValueError(f"User with ID {input.user_id} not found.")
