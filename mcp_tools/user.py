@@ -1,6 +1,7 @@
 from schemas.twilio import MessageTypeEnum, SendWhatsappMessage
 from .mcp_instance import mcp
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from typing import Optional
 from core.database import get_async_session
 from pydantic import BaseModel, EmailStr
@@ -248,7 +249,9 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
 )
 async def send_whatsapp(input: SendWhatsappMessage):
     async with get_async_session() as db:
-        stmt = select(User.first_name, User.preferred_consultation_language).where(User.id == input.user_id)
+        stmt = select(User).options(
+            selectinload(User.caretaker)
+        ).where(User.id == input.user_id)
         result = await db.execute(stmt)
         user = result.scalar_one_or_none()
 
@@ -258,7 +261,13 @@ async def send_whatsapp(input: SendWhatsappMessage):
                 "success": False,
                 "message": "User not found."
             }
-
+        
+        if not user.caretaker:
+            logger.info(f"No caretaker assigned for user {input.user_id}, skipping WhatsApp message.")
+            return {
+                "success": False,
+                "message": "No caretaker assigned to user."
+            }
 
         if input.message_type == MessageTypeEnum.emergency_contact_alert.value:
             content_variables = {
@@ -278,6 +287,7 @@ async def send_whatsapp(input: SendWhatsappMessage):
         template_id = template_result.scalar_one_or_none()
 
         success = await whatsapp_service.send_message(
+            to_phone=user.caretaker.phone_number,
             content_sid=template_id,
             content_variables=content_variables,
         )
