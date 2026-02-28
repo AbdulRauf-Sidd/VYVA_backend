@@ -1,21 +1,23 @@
 """
 Twilio Webhook Endpoints
 
-Handles incoming messages from Twilio webhooks.
+Handles incoming messages from Twilio webhooks and outbound WhatsApp (e.g. emergency).
 """
 
-from fastapi import APIRouter, Request,  Depends, HTTPException, Response
+from fastapi import APIRouter, Request, Depends, HTTPException, Response, status
 import logging
 from fastapi.responses import PlainTextResponse
 from models.user import User
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from core.database import get_db
+from core.config import settings
 from scripts.medication_utils import update_med_logs
 from scripts.utils import generate_medication_whatsapp_response_message, get_iso_language
 
 from pydantic import BaseModel
 from services.helpers import construct_general_welcome_message
+from services.whatsapp_service import WhatsAppService
 
 
 logger = logging.getLogger(__name__)
@@ -65,6 +67,15 @@ async def receive_incoming_message(request: Request, db: AsyncSession = Depends(
             "message": str(e)
         }
 
+class SendEmergencyWhatsAppRequest(BaseModel):
+    """Request body for sending an emergency WhatsApp via Twilio template."""
+
+    To: str  # Recipient; will be normalized to whatsapp:+... if needed
+    From: str  # Sender (Twilio WhatsApp number); same normalization
+    Body: str  # Maps to template variable {{2}} (e.g. symptom/description)
+    user_name: str  # Maps to template variable {{1}}
+
+
 class TwilioPersonalizationRequest(BaseModel):
     caller_id: str
     conversation_id: str
@@ -102,4 +113,50 @@ async def personalize_call(
             "timezone": user.timezone,
             "conversation_id": payload.conversation_id
         },
+    }
+
+
+@router.post("/send-emergency-whatsapp", status_code=status.HTTP_200_OK)
+async def send_emergency_whatsapp(payload: SendEmergencyWhatsAppRequest):
+    """
+    Send an emergency WhatsApp message using the Twilio template.
+
+    Template: 🚨 EMERGENCIA: {{1}} está experimentando {{2}}. Llamada transferida al 112. Por favor, contacte inmediatamente.
+    - {{1}} = user_name
+    - {{2}} = Body (symptom/description from request)
+    """
+    to_phone = (payload.To or "").strip()
+    from_phone = (payload.From or "").strip()
+    if not to_phone or not from_phone:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="To and From are required.",
+        )
+    if not payload.user_name or not (payload.Body or "").strip():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="user_name and Body are required.",
+        )
+
+    content_variables = {
+        "1": payload.user_name.strip(),
+        "2": (payload.Body or "").strip(),
+    }
+    template_sid = settings.TWILIO_WHATSAPP_EMERGENCY_TEMPLATE_SID
+
+    whatsapp_service = WhatsAppService()
+    success = await whatsapp_service.send_emergency_template(
+        to_phone=to_phone,
+        from_phone=from_phone,
+        content_sid=template_sid,
+        content_variables=content_variables,
+    )
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Failed to send emergency WhatsApp via Twilio.",
+        )
+    return {
+        "message": "Emergency WhatsApp sent successfully",
+        "success": True,
     }

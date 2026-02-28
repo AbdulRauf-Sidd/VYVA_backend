@@ -123,7 +123,62 @@ class WhatsAppService:
         except Exception as e:
             logger.error(f"Error sending WhatsApp message: {str(e)}")
             return False
-        
+
+    async def send_emergency_template(
+        self,
+        to_phone: str,
+        from_phone: str,
+        content_sid: str,
+        content_variables: Dict[str, str],
+    ) -> bool:
+        """
+        Send a WhatsApp message using a Twilio Content template with custom From/To.
+
+        Args:
+            to_phone: Recipient (e.g. whatsapp:+34... or +34...)
+            from_phone: Sender (e.g. whatsapp:+14155238886 or +14155238886)
+            content_sid: Twilio Content Template SID (e.g. HX...)
+            content_variables: Numbered template variables, e.g. {"1": "name", "2": "symptoms"}
+        """
+        if not self.enabled:
+            logger.warning("WhatsApp service is disabled - cannot send emergency template")
+            return False
+        try:
+            to_phone = to_phone.strip()
+            from_phone = from_phone.strip()
+            if not to_phone.startswith("whatsapp:"):
+                to_phone = f"whatsapp:{to_phone}"
+            if not from_phone.startswith("whatsapp:"):
+                from_phone = f"whatsapp:{from_phone}"
+
+            content_variables_json = json.dumps(content_variables)
+            message_data = {
+                "From": from_phone,
+                "To": to_phone,
+                "ContentSid": content_sid,
+                "ContentVariables": content_variables_json,
+            }
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    self.base_url,
+                    auth=(self.account_sid, self.auth_token),
+                    data=message_data,
+                    headers={"Content-Type": "application/x-www-form-urlencoded"},
+                    timeout=30.0,
+                )
+                response.raise_for_status()
+                result = response.json()
+                logger.info(
+                    f"Emergency WhatsApp sent to {to_phone}. Message SID: {result.get('sid', 'unknown')}"
+                )
+                return True
+        except httpx.HTTPStatusError as e:
+            logger.error(f"Twilio API error: {e.response.status_code} - {e.response.text}")
+            return False
+        except Exception as e:
+            logger.error(f"Error sending emergency WhatsApp: {str(e)}")
+            return False
+
     async def send_sms(
         self,
         to_phone: str,
