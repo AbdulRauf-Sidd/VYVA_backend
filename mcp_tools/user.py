@@ -245,6 +245,7 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
         "You need to provide the user_id, the message content (optional), and the message type. "
         "The tool will send the formatted WhatsApp message "
         "using the appropriate message template based on the message type."
+        "if it's emergency, use emergency_contact_alert message_type"
     )
 )
 async def send_whatsapp(input: SendWhatsappMessage):
