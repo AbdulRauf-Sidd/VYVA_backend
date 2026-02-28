@@ -1,10 +1,4 @@
-"""
-Twilio Webhook Endpoints
-
-Handles incoming messages from Twilio webhooks.
-"""
-
-from fastapi import APIRouter, Request,  Depends, HTTPException, Response
+from fastapi import APIRouter, Request, Depends, HTTPException, Response, status
 import logging
 from fastapi.responses import PlainTextResponse
 from models.user import User
@@ -12,16 +6,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from core.database import get_db
+from core.config import settings
 from scripts.medication_utils import update_med_logs
 from scripts.utils import generate_medication_whatsapp_response_message, get_iso_language, generate_reminder_later_whatsapp_response_message
 from models.organization import TemplateTypeEnum, TwilioWhatsappTemplates
-from pydantic import BaseModel
-from models.medication import Medication, MedicationTime, MedicationLog
+from models.medication import MedicationLog
 from services.helpers import construct_general_welcome_message
 from services.whatsapp_service import whatsapp_service
 from scripts.medication_utils import build_medication_payload
 from tasks.utils import schedule_reminder_message
 from datetime import datetime, timedelta, timezone
+from services.whatsapp_service import whatsapp_service
+from schemas.twilio import TwilioPersonalizationRequest
 
 
 logger = logging.getLogger(__name__)
@@ -132,10 +128,6 @@ async def receive_incoming_message(request: Request, db: AsyncSession = Depends(
             "status": "error",
             "message": str(e)
         }
-
-class TwilioPersonalizationRequest(BaseModel):
-    caller_id: str
-    conversation_id: str
 
 
 @router.post("/personalization")

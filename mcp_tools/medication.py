@@ -271,6 +271,7 @@ async def update_reminder_channel(channel_input: UpdateReminderChannel) -> bool:
 
 class MedicationLogInput(BaseModel):
     user_id: int
+    reminder: bool
     medication_logs: list[dict]
 
 @mcp.tool(
@@ -293,6 +294,7 @@ class MedicationLogInput(BaseModel):
         "}"
     )
 )
+
 async def update_medication_log(input: MedicationLogInput) -> bool:
     async with get_async_session() as db:
         if not input.user_id:

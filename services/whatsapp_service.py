@@ -30,31 +30,8 @@ class WhatsAppService:
             return
         
         self.enabled = True
-        # Template SID is optional - only required for template messages
 
         self.base_url = f"https://api.twilio.com/2010-04-01/Accounts/{self.account_sid}/Messages.json"
-
-    def _sanitize_template_variable(self, value: str) -> str:
-        """
-        Sanitize template variable values to avoid Twilio error 21656.
-        
-        Args:
-            value: The variable value to sanitize
-            
-        Returns:
-            str: Sanitized value
-        """
-        if not isinstance(value, str):
-            value = str(value)
-        
-        # Replace problematic characters that can cause error 21656
-        # Replace straight apostrophe with right single quotation mark
-        value = value.replace("'", "'")
-        
-        # Remove or replace other problematic characters if needed
-        # Add more replacements as needed based on your specific use case
-        
-        return value
 
     async def send_template_message(
         self,
@@ -123,7 +100,7 @@ class WhatsAppService:
         except Exception as e:
             logger.error(f"Error sending WhatsApp message: {str(e)}")
             return False
-        
+
     async def send_sms(
         self,
         to_phone: str,
@@ -184,30 +161,7 @@ class WhatsAppService:
         recipient_phone: str,
         report_content: Dict[str, Any]
     ) -> bool:
-        """
-        Send a medical report via WhatsApp using the symptoms template.
-
-        Args:
-            recipient_phone: Recipient phone number
-            report_content: Report content from the database
-
-        Returns:
-            bool: True if message sent successfully, False otherwise
-        """
         try:
-            # Extract breakdown from report content
-            # breakdown = report_content.get('breakdown', {})
-
-            # Use breakdown directly as template data if it's a dict
-            # This allows for multiple template variables like {{1}}, {{2}}, etc.
-            # if isinstance(breakdown, dict):
-            #     template_data = breakdown
-            # else:
-            #     # If breakdown is not a dict, convert to string and use as single variable
-            #     breakdown_text = str(breakdown)
-            #     template_data = {
-            #         "breakdown": breakdown_text
-            #     }
 
             logger.info(f"Sending Report content: {report_content}")
             # Send the template message
@@ -235,16 +189,6 @@ class WhatsAppService:
         to_phone: str,
         message: str
     ) -> bool:
-        """
-        Send a simple WhatsApp message (not using templates).
-
-        Args:
-            to_phone: Recipient phone number
-            message: Message content
-
-        Returns:
-            bool: True if message sent successfully, False otherwise
-        """
         try:
             # Ensure phone number has whatsapp: prefix
             if not to_phone.startswith("whatsapp:"):
@@ -287,16 +231,6 @@ class WhatsAppService:
         template_data: Dict[str, Any],
         template_id: str = settings.TWILIO_WHATSAPP_REMINDER_TEMPLATE_SID
     ) -> bool:
-        """
-        Send a WhatsApp message using a Twilio template.
-
-        Args:
-            to_phone: Recipient phone number (format: +1234567890)
-            template_data: Data to populate template variables
-
-        Returns:
-            bool: True if message sent successfully, False otherwise
-        """
         try:
             # Check if template_sid is configured
             if not template_id:
