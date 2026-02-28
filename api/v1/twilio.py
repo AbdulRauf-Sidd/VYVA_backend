@@ -108,8 +108,8 @@ async def receive_incoming_message(request: Request, db: AsyncSession = Depends(
                     template_id = template_result.scalar_one_or_none()
 
                     template_data = {
-                        1: reminder_id,
-                        2: TemplateTypeEnum.ask_for_reminder.value
+                        "1": reminder_id,
+                        "2": TemplateTypeEnum.ask_for_reminder.value
                     }
                     await whatsapp_service.send_message(user.phone_number, template_id=template_id, template_data=template_data)
                     return PlainTextResponse("")

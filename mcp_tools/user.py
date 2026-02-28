@@ -289,8 +289,8 @@ async def send_whatsapp(input: SendWhatsappMessage):
 
         success = await whatsapp_service.send_message(
             to_phone=user.caretaker.phone_number,
-            content_sid=template_id,
-            content_variables=content_variables,
+            template_id=template_id,
+            template_data=content_variables,
         )
 
         if not success:
