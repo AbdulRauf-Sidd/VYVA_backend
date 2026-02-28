@@ -303,12 +303,10 @@ async def update_medication_log(input: MedicationLogInput) -> bool:
         if not input.medication_logs:
             raise ValueError(f"Med Logs not found.")
         
-        update_caretaker = False
+        # update_caretaker = False
         
         for med in input.medication_logs:
             med_taken = med['taken']
-            if not med_taken:
-                update_caretaker = True
 
             log = MedicationLog(
                 medication_id = med['medication_id'],
@@ -321,9 +319,8 @@ async def update_medication_log(input: MedicationLogInput) -> bool:
 
         await db.commit()
 
-        if update_caretaker:
-            message = "Caretaker alerted, and encourage user to take medications"
-            notify_caregiver_on_missed_medication_task.apply_async(input.user_id)
+        if input.reminder:
+            message = "meds scheduled for reminder. "
             return {
                 "success": True,
                 "message": message
@@ -331,7 +328,7 @@ async def update_medication_log(input: MedicationLogInput) -> bool:
         else:
             return {
                 "success": True,
-                "message": "Congratulate User on taker medications."
+                "message": "Congratulate User on taking medications."
             }
     
 
