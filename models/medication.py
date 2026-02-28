@@ -102,7 +102,7 @@ class MedicationLog(Base):
     status = Column(String(50), nullable=False)
 
     notes = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     medication = relationship("Medication", back_populates="logs")
     medication_time = relationship("MedicationTime", back_populates="logs")
