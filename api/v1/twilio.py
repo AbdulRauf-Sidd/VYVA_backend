@@ -116,7 +116,12 @@ async def receive_incoming_message(request: Request, db: AsyncSession = Depends(
                 
                 response_message = generate_medication_whatsapp_response_message(user.preferred_consultation_language, medication_taken)
                 if response_message:
-                    return PlainTextResponse(response_message)    
+                    return PlainTextResponse(response_message)
+            
+
+            logger.warning(f"Unhandled ButtonPayload: {button_payload}")
+            print(template_type)
+            return Response(status_code=200)
         
         except Exception as e:
             logger.error(f"Error processing ButtonPayload: {e}")
