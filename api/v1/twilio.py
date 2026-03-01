@@ -163,6 +163,7 @@ async def personalize_call(
             "first_name": user.first_name,
             "phone_number": user.phone_number,
             "timezone": user.timezone,
-            "conversation_id": payload.conversation_id
+            "conversation_id": payload.conversation_id,
+            "app_user": False
         },
     }
