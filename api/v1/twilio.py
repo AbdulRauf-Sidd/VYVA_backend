@@ -51,7 +51,7 @@ async def receive_incoming_message(request: Request, db: AsyncSession = Depends(
         ## QUICK REPLY
         try:
             payload = button_payload.split(":")
-            if len(payload) != 2:
+            if len(payload) < 2:
                 logger.warning(f"Unexpected ButtonPayload format: {button_payload}")
                 return Response(status_code=200)
             
