@@ -63,7 +63,7 @@ async def receive_incoming_message(request: Request, db: AsyncSession = Depends(
                 if action == "Yes":
                     stmt = (
                         select(MedicationLog)
-                        .where(MedicationLog.id.in_(reminder_ids))
+                        .where(MedicationLog.id.in_(med_log_ids))
                         .options(
                             selectinload(MedicationLog.medication),
                             selectinload(MedicationLog.medication_time),
