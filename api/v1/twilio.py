@@ -58,7 +58,7 @@ async def receive_incoming_message(request: Request, db: AsyncSession = Depends(
             action = payload[0]
             template_type = payload[-1]
             reminder_ids = payload[1]
-            med_log_ids = [int(x.strip()) for x in reminder_id.split(",")]
+            med_log_ids = [int(x.strip()) for x in reminder_ids.split(",")]
             if template_type == TemplateTypeEnum.ask_for_reminder.value:
                 if action == "Yes":
                     stmt = (
