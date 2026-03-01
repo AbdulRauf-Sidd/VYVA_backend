@@ -250,6 +250,7 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
 )
 async def send_whatsapp(input: SendWhatsappMessage):
     async with get_async_session() as db:
+        logger.info(f"Processing send_whatsapp for user_id: {input.user_id}, message_type: {input.message_type}")
         stmt = select(User).options(
             selectinload(User.caretaker)
         ).where(User.id == input.user_id)
