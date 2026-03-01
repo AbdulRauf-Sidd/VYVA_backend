@@ -11,7 +11,7 @@ from scripts.medication_utils import update_med_logs
 from scripts.utils import generate_medication_whatsapp_response_message, get_iso_language, generate_reminder_later_whatsapp_response_message
 from models.organization import TemplateTypeEnum, TwilioWhatsappTemplates
 from models.medication import MedicationLog
-from services.helpers import construct_general_welcome_message
+from services.helpers import construct_general_welcome_message, construct_welcome_message_for_main_agent
 from services.whatsapp_service import whatsapp_service
 from scripts.medication_utils import build_medication_payload
 from tasks.utils import schedule_reminder_message
@@ -79,8 +79,6 @@ async def receive_incoming_message(request: Request, db: AsyncSession = Depends(
                         medication_payload = build_medication_payload(medication, medication_time)
                         meds.append(medication_payload)
                     
-                    
-                    
                     payload = {
                         'first_name': user.first_name,
                         'last_name': user.last_name,
@@ -112,7 +110,7 @@ async def receive_incoming_message(request: Request, db: AsyncSession = Depends(
                         "2": TemplateTypeEnum.ask_for_reminder.value
                     }
                     await whatsapp_service.send_message(user.phone_number, template_id=template_id, template_data=template_data)
-                    return PlainTextResponse("")
+                    return Response(status_code=200)
                 
                 response_message = generate_medication_whatsapp_response_message(user.preferred_consultation_language, medication_taken)
                 if response_message:
@@ -120,7 +118,6 @@ async def receive_incoming_message(request: Request, db: AsyncSession = Depends(
             
 
             logger.warning(f"Unhandled ButtonPayload: {button_payload}")
-            print(template_type)
             return Response(status_code=200)
         
         except Exception as e:
@@ -147,8 +144,9 @@ async def personalize_call(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
+    first_time = user.social_companion_first_time
     iso_language = get_iso_language(user.preferred_consultation_language)
-    first_message = construct_general_welcome_message(user.first_name, iso_language)
+    first_message = construct_welcome_message_for_main_agent(user.first_name, iso_language, first_time)
 
 
     return {

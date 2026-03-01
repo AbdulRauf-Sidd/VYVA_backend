@@ -18,8 +18,16 @@ ONBOARDING_MESSAGE_MAP = {
 }
 
 GENERAL_MESSAGE_MAP = {
-    'en': "Hello {first_name}, how are you doing?",
-    'es': "Hola {first_name}, ¿cómo estás?"
+    'en': "Hello {first_name}, How can I help you?",
+    'es': "Hola {first_name}. En qué le puedo ayudar?"
+}
+
+MAIN_AGENT_INITITAL_FIRST_MESSAGE_MAP = {
+    'en': "Hello, {first_name}. I'm VYVA."
+          "I'm here to support you and help with your well-being, reminders, and daily life. How can I help you today?",
+    'es': "Hola, {first_name}. Soy VYVA."
+          "Estoy aquí para acompañarle y ayudarle con su bienestar, recordatorios y apoyo en su día a día."
+          "¿En qué le puedo ayudar hoy?"
 }
 
 
@@ -87,8 +95,12 @@ def construct_general_welcome_message(first_name, iso_language='en'):
 
 def construct_initial_agent_message_for_reminders(first_name, iso_language='en'):
     return MEDICATION_REMINDER_MESSAGE_MAP.get(iso_language).format(first_name=first_name)
-    # pass
 
 def constuct_initial_agent_message_for_onboarding(first_name, iso_language='en'):
     return ONBOARDING_MESSAGE_MAP.get(iso_language).format(first_name=first_name)
 
+def construct_welcome_message_for_main_agent(first_name, iso_language='en', first_time=False):
+    if first_time:
+        return MAIN_AGENT_INITITAL_FIRST_MESSAGE_MAP.get(iso_language).format(first_name=first_name)
+    else:
+        return construct_general_welcome_message(first_name, iso_language)
