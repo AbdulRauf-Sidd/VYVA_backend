@@ -363,6 +363,7 @@ async def get_weekly_medication_schedule(
 ):
     weekly_schedule = defaultdict(list)
     taken_medications = 0
+    print(payload.date_start, payload.date_end)
     
     try:
         result = await db.execute(
@@ -478,9 +479,10 @@ async def get_weekly_medication_schedule(
             
             medications = result.scalars().unique().all()
 
-            current_date = payload.date_start
+            current_date = payload.date_start + timedelta(days=1)
+            end_date = payload.date_end + timedelta(days=1)
 
-            while current_date <= payload.date_end:
+            while current_date <= end_date:
                 day_name = current_date.strftime("%A")  # Get weekday name
                 for med in medications:
                     if med.end_date and med.end_date < current_date:
