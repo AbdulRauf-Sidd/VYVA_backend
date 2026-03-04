@@ -413,7 +413,7 @@ async def ingest_user(payload: IngestUserRequest, organization: str, db=Depends(
     db.add(user)
     await db.flush()
     
-    task_payload = await construct_onboarding_user_payload(user, exists.onboarding_agent_id)
+    task_payload = construct_onboarding_user_payload(user, exists.onboarding_agent_id)
     
     task = initiate_onboarding_call.apply_async(
                 args=[task_payload,],
