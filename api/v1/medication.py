@@ -593,12 +593,6 @@ async def get_weekly_overview(
                 if log and log.status == MedicationStatus.taken.value:
                     total_taken += 1
 
-                # Check upcoming (only today forward)
-                local_time = convert_utc_time_to_local_time(
-                    medication_time,
-                    user_timezone
-                )
-
                 dose_datetime = datetime.combine(
                     current_date,
                     medication_time,
@@ -610,7 +604,7 @@ async def get_weekly_overview(
 
                 if current_date == today:
                     status = log.status if log else MedicationStatus.unconfirmed.value
-                    if local_time >= current_time:
+                    if medication_time >= current_time:
                         status = MedicationStatus.upcoming.value
                     else:
                         total += 1
