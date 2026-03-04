@@ -66,3 +66,7 @@ class GetInformationResponse(BaseModel):
     used_web: bool = False
     sources: List[Source] = Field(default_factory=list)
 
+
+class EmergencyResponderRequest(BaseModel):
+    user_id: int = Field(..., description="The user ID")
+    emergency_message: str = Field(..., description="The emergency message or description")

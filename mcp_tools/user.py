@@ -10,8 +10,10 @@ from models.user_check_ins import UserCheckin, CheckInType
 import enum
 import logging
 from datetime import time
-from models.organization import TwilioWhatsappTemplates, TemplateTypeEnum
+from models.organization import OrganizationAgents, TwilioWhatsappTemplates, TemplateTypeEnum, AgentTypeEnum
 from services.whatsapp_service import whatsapp_service
+from services.elevenlabs_service import call_agent
+from schemas.tools import EmergencyResponderRequest
 
 logger = logging.getLogger(__name__)
 
@@ -304,3 +306,78 @@ async def send_whatsapp(input: SendWhatsappMessage):
             "success": True,
             "message": "WhatsApp sent successfully",
         }
+    
+
+@mcp.tool(
+    name="emergency_responder",
+    description=(
+        "Send an emergency alert by invoking the org's responder agent. "
+        "Provide user_id and emergency_message."
+    )
+)
+async def emergency_responder(req: EmergencyResponderRequest):
+    try:
+        async with get_async_session() as db:
+            logger.info(f"Emergency responder endpoint called for user_id: {req.user_id}, message: {req.emergency_message}")
+
+            # Fetch user with organization relationship
+            user_result = await db.execute(
+                select(User).options(
+                    selectinload(User.organization)
+                ).where(User.id == req.user_id)
+            )
+            user = user_result.scalar_one_or_none()
+
+            if not user:
+                logger.warning(f"User not found: {req.user_id}")
+                return {
+                    "status_code": 404,
+                    "detail": f"User not found for user_id: {req.user_id}"
+                }
+
+            if not user.organization:
+                logger.warning(f"User {req.user_id} has no organization assigned")
+                return {
+                    "status_code": 400,
+                    "detail": "User has no organization assigned"
+                }
+
+            # Get organization's emergency responder agent
+            agent_result = await db.execute(
+                select(OrganizationAgents).where(
+                    OrganizationAgents.organization_id == user.organization.id,
+                    OrganizationAgents.agent_type == AgentTypeEnum.emergency_responder.value,
+                    OrganizationAgents.is_active == True
+                )
+            )
+            agent = agent_result.scalar_one_or_none()
+
+            if not agent:
+                logger.warning(f"No active emergency responder agent found for organization {user.organization.id}")
+                return {
+                    "status_code": 404,
+                    "detail": "No emergency responder agent found for this organization"
+                }
+
+            # Build payload with user details
+            payload = {
+                "full_name": user.full_name,
+                "address": user.full_address,
+                "phone_number": user.phone_number,
+                "emergency": req.emergency_message,
+                "language": "english",
+            }
+
+            # Call general agent function
+            response = call_agent(agent_id=agent.agent_id, phone_number="+923152526525", payload=payload)
+
+            logger.info(f"Emergency responder agent response: {response}")
+            return response
+        
+    except Exception as e:
+        logger.error(f"Error in emergency_responder endpoint: {str(e)}", exc_info=True)
+        return {
+            "status_code": 500
+        }
+
+

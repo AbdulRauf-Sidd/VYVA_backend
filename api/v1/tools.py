@@ -7,9 +7,10 @@ Provides:
 """
 
 from fastapi import APIRouter, HTTPException, status, Depends
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import logging
 from urllib.parse import quote
+from datetime import datetime
 
 from schemas.tools import (
     FindPlacesRequest,
@@ -18,15 +19,20 @@ from schemas.tools import (
     GetInformationRequest,
     GetInformationResponse,
     Source,
+    EmergencyResponderRequest,
 )
+from schemas.twilio import SendWhatsappMessage, MessageTypeEnum
 from services.google_places_service import google_places
 from math import radians, cos, sin, asin, sqrt
 from services.ai_assistant_service import ai_assistant_service
 from services.email_service import EmailService
-from services.whatsapp_service import WhatsAppService
+from services.whatsapp_service import WhatsAppService, whatsapp_service
+from services.elevenlabs_service import call_agent
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
-from core.database import get_db
+from core.database import get_db, get_async_session
+from models.organization import TwilioWhatsappTemplates, OrganizationAgents, AgentTypeEnum
 from models.user import User
 
 
@@ -282,5 +288,3 @@ async def _send_places_whatsapp(
     except Exception as e:
         logger.error(f"Failed to send places WhatsApp: {str(e)}")
         return "whatsapp_failed"
-
-

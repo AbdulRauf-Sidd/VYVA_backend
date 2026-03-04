@@ -4,6 +4,8 @@ from models.onboarding import OnboardingUser
 import requests
 from services.helpers import construct_initial_agent_message_for_reminders, constuct_initial_agent_message_for_onboarding, construct_general_welcome_message
 from scripts.utils import LANGUAGE_MAP
+from typing import Optional, Dict, Any
+from datetime import datetime
 
 client = ElevenLabs(
     api_key=settings.ELEVENLABS_API_KEY,
@@ -362,3 +364,44 @@ def make_check_up_call(payload: dict):
     except Exception as e:
         logger.error(f"Elevenlabs check up call failed: {e}")
         return None
+    
+def call_agent(agent_id: str, phone_number: str, payload: Optional[Dict[str, Any]] = None) -> dict:
+    try:
+        if not agent_id or not phone_number:
+            raise ValueError("Both agent_id and phone_number are required to make the call.")
+        
+        language = payload.get("language", "en")
+        iso_language = LANGUAGE_MAP.get(language.lower(), "en")
+                
+        # Build dynamic variables from entire payload
+        dynamic_variables = {k: v for k, v in payload.items() if k != "agent_id"}
+        
+        # Make the ElevenLabs API call
+        response = requests.post(
+            "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
+            headers={
+                "xi-api-key": settings.ELEVENLABS_API_KEY
+            },
+            json={
+                "agent_id": agent_id,
+                "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
+                "to_number": phone_number,
+                "conversation_initiation_client_data": {
+                    "conversation_config_override": {
+                        "agent": {
+                            "language": iso_language,
+                        }
+                    },
+                    "dynamic_variables": dynamic_variables
+                }
+            },
+        )
+        
+        return response.json()
+    except Exception as e:
+        logger.error(f"Error calling agent {agent_id}: {str(e)}", exc_info=True)
+        return {
+            "success": False,
+            "agent_id": agent_id,
+            "error": str(e)
+        }
