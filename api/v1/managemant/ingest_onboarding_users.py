@@ -255,7 +255,7 @@ async def process_valid_data(file_content, organization, db):
             # await db.commit()
             await db.flush()
 
-            payload = await construct_onboarding_user_payload(user, organization.onboarding_agent_id)
+            payload = construct_onboarding_user_payload(user, organization.onboarding_agent_id)
 
             task_result = initiate_onboarding_call.apply_async(
                 args=[payload,],
