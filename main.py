@@ -24,6 +24,7 @@ from core.config import settings
 from core.logging import setup_logging
 from core.database import engine, Base
 from api.v1 import onboarding, users, social, brain_coach, medication, fall_detection, tts, symptom_checker, post_call, ai_assistant, news, tools, organization, authentication, twilio
+from api.v1 import webhooks
 from api.v1.managemant import ingest_onboarding_users, call_queues
 from api.v1.managemant import ingest_onboarding_users
 # from apscheduler.schedulers.background import BackgroundScheduler
@@ -191,28 +192,6 @@ async def list_tasks():
         "scheduled": scheduled or {}
     }
 
-{
-  1: "AbdulRauf",
-  2: "Friday, February 13, 2026",
-  3: "Memoria - 0\nAtencion - 1\nIdioma - 0\nFluidez - 1\nOrientacion - 1\nRazonamiento - 0",
-  4: "3",
-  5: "6",
-  6: "Good progress today. Continue memory recall exercises and repeat attention drills tomorrow."
-}
-
-def test():
-    from services.whatsapp_service import whatsapp_service
-    content = {
-        1: "AbdulRauf",
-        2: "Friday, February 13, 2026",
-        3: "Memoria - 0 | Atencion - 1 | Idioma - 0 | Fluidez - 1 | Orientacion - 1 | Razonamiento - 0",
-        4: "3",
-        5: "6",
-        6: "Good progress today. Continue memory recall exercises and repeat attention drills tomorrow."
-    }
-    template_id = "HX6c215f7f9feafc818c92931e052bee4a"
-    whatsapp_service.send_message_sync("+923152526525", content, template_id)
-
 # Include API routers
 app.include_router(users.router, prefix="/api/v1/users", tags=["Users"])
 app.include_router(onboarding.router, prefix="/api/v1/onboarding", tags=["Onboarding"])
@@ -231,6 +210,7 @@ app.include_router(ai_assistant.router, prefix="/api/v1/ai-assistant", tags=["AI
 app.include_router(news.router, prefix="/api/v1/news", tags=["News"])
 app.include_router(tools.router, prefix="/api/v1/tools", tags=["Tools"])
 app.include_router(twilio.router, prefix="/api/v1/twilio", tags=["Twilio"])
+app.include_router(webhooks.router, prefix="/api/v1/webhook", tags=["Webhooks"])
 
 if __name__ == "__main__":
     import uvicorn

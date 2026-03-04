@@ -288,3 +288,7 @@ async def _send_places_whatsapp(
     except Exception as e:
         logger.error(f"Failed to send places WhatsApp: {str(e)}")
         return "whatsapp_failed"
+
+
+
+
