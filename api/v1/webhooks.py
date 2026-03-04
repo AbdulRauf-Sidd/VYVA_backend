@@ -110,7 +110,7 @@ async def handle_vyva_weather(location: Optional[str], user_location: Optional[s
             "q": f"tiempo {place} España",
             "gl": "es",
             "hl": "es",
-            "api_key": settings.SERPAPI_API_KEY,
+            "api_key": settings.SERP_API_KEY,
         }
 
         async with httpx.AsyncClient(timeout=30) as client:
