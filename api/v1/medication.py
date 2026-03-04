@@ -363,7 +363,6 @@ async def get_weekly_medication_schedule(
 ):
     weekly_schedule = defaultdict(list)
     taken_medications = 0
-    print(payload.date_start, payload.date_end)
     
     try:
         result = await db.execute(
@@ -436,10 +435,11 @@ async def get_weekly_medication_schedule(
                             status_value = log.status if log else MedicationStatus.unconfirmed.value
 
                         elif current_date == today:
+                            print('TODAY', med.name, local_time, current_time, log.status if log else "no log")
                             # Today logic
                             if local_time <= current_time:
                                 # Dose time has passed
-                                status_value = log.status if log else MedicationStatus.upcoming.value
+                                status_value = log.status if log else MedicationStatus.unconfirmed.value
                             else:
                                 # Future dose today
                                 status_value = MedicationStatus.upcoming.value
