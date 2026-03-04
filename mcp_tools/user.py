@@ -365,11 +365,11 @@ async def emergency_responder(req: EmergencyResponderRequest):
                 "address": user.full_address,
                 "phone_number": user.phone_number,
                 "emergency": req.emergency_message,
-                "language": "english",
+                "language": user.preferred_consultation_language or "spanish",
             }
 
             # Call general agent function
-            response = call_agent(agent_id=agent.agent_id, phone_number="+923152526525", payload=payload)
+            response = call_agent(agent_id=agent.agent_id, phone_number="+34664338991", payload=payload)
 
             logger.info(f"Emergency responder agent response: {response}")
             return response
