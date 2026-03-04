@@ -144,7 +144,8 @@ async def personalize_call(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    first_time = user.social_companion_first_time
+    first_time = not bool(user.social_companion_first_time)
+    
     iso_language = get_iso_language(user.preferred_consultation_language)
     first_message = construct_welcome_message_for_main_agent(user.first_name, iso_language, first_time)
 
