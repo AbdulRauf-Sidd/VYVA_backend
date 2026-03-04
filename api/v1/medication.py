@@ -583,7 +583,8 @@ async def get_weekly_overview(
     while current_date <= sunday:
         for med in medications:
             for time_entry in med.times_of_day:
-                if not time_entry.time_of_day:
+                medication_time = time_entry.time_of_day
+                if not medication_time:
                     continue
 
                 
@@ -594,13 +595,13 @@ async def get_weekly_overview(
 
                 # Check upcoming (only today forward)
                 local_time = convert_utc_time_to_local_time(
-                    time_entry.time_of_day,
+                    medication_time,
                     user_timezone
                 )
 
                 dose_datetime = datetime.combine(
                     current_date,
-                    local_time,
+                    medication_time,
                     tzinfo=tz
                 )
 
@@ -617,7 +618,7 @@ async def get_weekly_overview(
                     if med.is_active:
                         upcoming_medicines_today.append({
                             "name": med.name,
-                            "time": time_entry.time_of_day.strftime("%H:%M"),
+                            "time": medication_time.strftime("%H:%M"),
                             "status": status
                         })
 
@@ -626,7 +627,7 @@ async def get_weekly_overview(
                         upcoming_datetime = dose_datetime
                         upcoming_medicine = {
                             "name": med.name,
-                            "time": time_entry.time_of_day.strftime("%H:%M")
+                            "time": medication_time.strftime("%H:%M")
                         }
 
         current_date += timedelta(days=1)
@@ -658,7 +659,7 @@ async def get_all_medications_with_times(
 
         stmt = (
             select(Medication)
-            .where(Medication.user_id == user_id)
+            .where(Medication.user_id == user_id, Medication.is_active == True)
             .options(selectinload(Medication.times_of_day))
         )
         result = await db.execute(stmt)
