@@ -47,10 +47,12 @@ async def onboard_user(
         if not record:
             raise HTTPException(status_code=404, detail="User not found") 
         
-        if payload.call_back_date_time:
-            callback_date = payload.call_back_date_time.date()
+        print(data)
+        
+        if data.get("call_back_date_time"):
+            callback_date = data["call_back_date_time"].date()
             user_today = date_now_in_timezone(record.timezone)
-            record.call_back_date_time = payload.call_back_date_time
+            record.call_back_date_time = data["call_back_date_time"]
             if callback_date == user_today:
                 payload = construct_onboarding_user_payload(record, record.organization.onboarding_agent_id)
 
