@@ -147,13 +147,22 @@ class ManageUserCheckinInput(BaseModel):
 @mcp.tool(
     name="manage_user_checkin",
     description=(
-        "Use this tool to create, update, or delete a user's check-in configuration "
-        "for a specific check-in type (brain_coach or check_up_call). "
-        "If operation is 'add', the tool will create the configuration if it does not exist, "
-        "or update the existing one if it already exists. "
-        "If operation is 'delete', the tool will permanently remove the configuration "
-        "for that check-in type. "
-        "For 'add' operations, you must provide check_in_frequency_days, and optionally "
+        "Use this tool to create, update, delete, or retrieve a user's check-in configuration "
+        "for a specific check-in type (brain_coach or check_up_call)."
+
+        "The following user terms should be interpreted as a request for a check_up_call:"
+        "wellness_call, control_call, follow-up_call, check-up_call, check-in_call, status_call."
+
+        "If operation is 'add', the tool will create the configuration if it does not exist,"
+        "or update the existing one if it already exists."
+
+        "If operation is 'delete', the tool will permanently remove the configuration"
+        "for that check-in type."
+
+        "If operation is 'retrieve', the tool will return the current configuration"
+        "for that check-in type if it exists."
+        
+        "For 'add' operations, you must provide check_in_frequency_days, and optionally"
         "check_in_time."
     )
 )
