@@ -54,12 +54,12 @@ async def onboard_user(
             user_today = date_now_in_timezone(record.timezone)
             record.call_back_date_time = data["call_back_date_time"]
             if callback_date == user_today:
-                payload = construct_onboarding_user_payload(record, record.organization.onboarding_agent_id)
+                onboarding_payload = construct_onboarding_user_payload(record, record.organization.onboarding_agent_id)
 
-                dt_utc = convert_to_utc_datetime(tz_name=record.timezone, dt=payload.call_back_date_time)
+                dt_utc = convert_to_utc_datetime(tz_name=record.timezone, dt=data["call_back_date_time"])
                 celery_app.send_task(
                     "initiate_onboarding_call",
-                    args=[payload,],
+                    args=[onboarding_payload,],
                     eta=dt_utc
                 )
 
