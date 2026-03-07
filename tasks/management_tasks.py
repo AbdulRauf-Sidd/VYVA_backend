@@ -369,7 +369,6 @@ def initiate_brain_coach_session(check_in_id: int):
 
 @celery_app.task(name="initiate_check_up_call")
 def initiate_check_up_call(check_in_id: int):
-    # Similar structure to initiate_brain_coach_session but with differences in payload and agent selection
     db = SessionLocal()
     try:
         user_checkin = (
@@ -379,11 +378,6 @@ def initiate_check_up_call(check_in_id: int):
                 selectinload(UserCheckin.user)
                 .selectinload(User.organization)
                 .selectinload(Organization.agents),
-                # with_loader_criteria(
-                #     OrganizationAgents,
-                #     OrganizationAgents.agent_type == AgentTypeEnum.main_agent.value,
-                #     include_aliases=True,
-                # ),
             )
             .filter(UserCheckin.id == check_in_id)
             .first()
@@ -401,10 +395,9 @@ def initiate_check_up_call(check_in_id: int):
 
         check_up_agent_id = None
         agents = user.organization.agents
-        print(agents)
         for agent in agents:
             logger.info(agent.agent_type)
-            if agent.agent_type == AgentTypeEnum.main_agent.value:
+            if agent.agent_type == AgentTypeEnum.check_in.value:
                 check_up_agent_id = agent.agent_id
                 break
         if not check_up_agent_id:
@@ -415,8 +408,10 @@ def initiate_check_up_call(check_in_id: int):
             "user_id": user.id,
             "agent_id": check_up_agent_id,
             "first_name": user.first_name,
+            "last_name": user.last_name,
             "phone_number": user.phone_number,
             "language": user.preferred_consultation_language,
+            "address": user.full_address
         }
 
         response = make_check_up_call(payload)

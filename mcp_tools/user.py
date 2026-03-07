@@ -161,12 +161,18 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
 
     async with get_async_session() as db:
         try:
+            user = await db.get(User, input.user_id)
+            if not user:
+                return {
+                    "success": False,
+                    "message": "User not found."
+                }
+
             result = await db.execute(
                 select(UserCheckin).where(
                     UserCheckin.user_id == input.user_id,
                     UserCheckin.check_in_type == input.check_in_type.value
                 )
-                .options(selectinload(UserCheckin.user))
             )
 
             existing = result.scalar_one_or_none()
@@ -201,10 +207,9 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
                         "message": "check_in_frequency_days is required for add operation."
                     }
 
-                utc_time = convert_local_time_to_utc_time(input.check_in_time, existing.user.timezone)
+                utc_time = convert_local_time_to_utc_time(input.check_in_time, user.timezone)
                 if existing:
                     # UPDATE
-                    utc_time = convert_local_time_to_utc_time(input.check_in_time, existing.user.timezone)
                     existing.check_in_frequency_days = input.check_in_frequency_days
                     existing.check_in_time = utc_time
 
@@ -238,7 +243,7 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
                         "success": False,
                         "message": "Check-in configuration does not exist."
                     }
-                check_time_local = convert_utc_time_to_local_time(existing.check_in_time, existing.user.timezone)
+                check_time_local = convert_utc_time_to_local_time(existing.check_in_time, user.timezone)
                 return {
                     "success": True,
                     "check_in_type": existing.check_in_type,

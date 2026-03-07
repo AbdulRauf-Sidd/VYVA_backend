@@ -329,9 +329,10 @@ def make_check_up_call(payload: dict):
         agent_id = payload.get("agent_id")
         phone_number = payload.get("phone_number")
         first_name = payload.get("first_name")
+        last_name = payload.get("last_name")
+        address = payload.get("address")
         language = payload.get("language")
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
-        initial_message = construct_general_welcome_message(first_name, iso_language)
 
         response = requests.post(
           "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
@@ -346,13 +347,14 @@ def make_check_up_call(payload: dict):
               "conversation_config_override": {
                 "agent": {
                     "language": iso_language,
-                    "first_message": initial_message
                 }
               },
               "dynamic_variables": {
                 "user_id": id,
                 "first_name": first_name,
-                "phone_number": phone_number
+                "last_name": last_name,
+                "phone_number": phone_number,
+                "address": address
               }
             }
           },

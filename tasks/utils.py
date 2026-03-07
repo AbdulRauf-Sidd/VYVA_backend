@@ -7,7 +7,7 @@ from models.user_check_ins import ScheduledSession, UserCheckin, CheckInType
 from sqlalchemy.orm import selectinload
 from sqlalchemy import desc
 from datetime import datetime, date, time
-from scripts.utils import convert_to_utc_datetime
+from scripts.utils import convert_to_utc_datetime, convert_utc_time_to_local_time
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +80,7 @@ def update_medication_status(payload, status):
     finally:
         db.close()
 
-def schedule_check_in_calls_for_day(db, today): #TODO can implement checks so that only one type of check in can exist in a day 
+def schedule_check_in_calls_for_day(db, today): 
     try:
         checkins = (
             db.query(UserCheckin)
@@ -117,6 +117,8 @@ def schedule_check_in_calls_for_day(db, today): #TODO can implement checks so th
                 check_time = checkin.check_in_time
                 if not check_time:
                     check_time = get_default_time_obj(check_in_type=checkin.check_in_type)  # default to 12 PM if no time set
+                else:
+                    check_time = convert_utc_time_to_local_time(check_time, checkin.user.timezone) #converting to local time to convert to utc later on
                 
 
                 scheduled_dt = convert_to_utc_datetime(tz_name=checkin.user.timezone, date=today, time=check_time)

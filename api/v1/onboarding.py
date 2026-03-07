@@ -47,8 +47,6 @@ async def onboard_user(
         if not record:
             raise HTTPException(status_code=404, detail="User not found") 
         
-        print(data)
-        
         if data.get("call_back_date_time"):
             callback_date = data["call_back_date_time"].date()
             user_today = date_now_in_timezone(record.timezone)
