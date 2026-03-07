@@ -1,5 +1,5 @@
 from schemas.twilio import MessageTypeEnum, SendWhatsappMessage
-from scripts.utils import convert_local_time_to_utc_time
+from scripts.utils import convert_local_time_to_utc_time, convert_utc_time_to_local_time
 from .mcp_instance import mcp
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
@@ -238,7 +238,7 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
                         "success": False,
                         "message": "Check-in configuration does not exist."
                     }
-                check_time_local = convert_local_time_to_utc_time(existing.check_in_time, existing.user.timezone)
+                check_time_local = convert_utc_time_to_local_time(existing.check_in_time, existing.user.timezone)
                 return {
                     "success": True,
                     "check_in_type": existing.check_in_type,
