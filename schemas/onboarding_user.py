@@ -31,11 +31,13 @@ class MedicationDetailsItem(BaseModel):
 class CheckInDetails(BaseModel):
     wants_check_ins: bool
     frequency_in_days: Optional[int] = None
+    time_of_day: Optional[str] = None
 
 
 class BrainCoach(BaseModel):
     wants_brain_coach_sessions: bool
     frequency_in_days: Optional[int] = None 
+    time_of_day: Optional[str] = None
 
 
 class OnboardingRequestBody(BaseModel):

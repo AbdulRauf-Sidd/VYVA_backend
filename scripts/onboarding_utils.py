@@ -63,7 +63,7 @@ def construct_onboarding_user_payload(user, agent_id) -> dict:
     return payload
 
 
-def send_onboarding_sms(phone_number: str, user: User = None, send_to_caregiver: bool = False):
+def send_onboarding_sms(phone_number: str = None, user: User = None, send_to_caregiver: bool = False):
     with get_sync_session() as db:
         if not user:
             if not phone_number:

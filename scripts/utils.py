@@ -3,13 +3,9 @@ import random
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from models.brain_coach import BrainCoachResponses
 from models.user import Caretaker, User
-# from models.organization import TwilioWhatsappTemplates, TemplateTypeEnum
-# from core.database import SessionLocal
-# from sqlalchemy.orm import selectinload
-# from services.whatsapp_service import whatsapp_service
 import logging
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -279,31 +275,42 @@ def convert_utc_time_to_local_time(
     utc_time: time,
     timezone_str: str,
     reference_date: date | None = None
-) -> time:
-    """
-    Convert a UTC time object to a local time object in the given timezone.
-
-    :param utc_time: time object assumed to be in UTC
-    :param timezone_str: IANA timezone string (e.g. 'Asia/Karachi')
-    :param reference_date: date to use for conversion (important for DST).
-                           Defaults to today in UTC.
-    :return: time object in target timezone
-    """
-
+) -> Optional[time]:
+    if not utc_time or not timezone_str:
+        return None
+    
     if reference_date is None:
         reference_date = datetime.now(ZoneInfo("UTC")).date()
 
-    # Combine date + time and mark as UTC
     utc_datetime = datetime.combine(
         reference_date,
         utc_time,
         tzinfo=ZoneInfo("UTC")
     )
 
-    # Convert timezone
     local_datetime = utc_datetime.astimezone(ZoneInfo(timezone_str))
-
     return local_datetime.time()
+
+
+def convert_local_time_to_utc_time(
+    local_time: time,
+    timezone_str: str,
+    reference_date: date | None = None
+) -> Optional[time]:
+    if not local_time or not timezone_str:
+        return None
+    
+    if reference_date is None:
+        reference_date = dt_now_in_timezone(timezone_str).date()
+
+    local_datetime = datetime.combine(
+        reference_date,
+        local_time,
+        tzinfo=ZoneInfo(timezone_str)
+    )
+    utc_datetime = local_datetime.astimezone(ZoneInfo("UTC"))
+    return utc_datetime.time()
+
 
 def get_iso_language(language):
     iso_language = LANGUAGE_MAP.get(language, None)
@@ -319,3 +326,12 @@ def date_now_in_timezone(tz_name: str) -> date:
     return dt_now_in_timezone(tz_name).date()
 
 
+def parse_time_string(time_str: str) -> time:
+    try:
+        if not time_str:
+            return None
+        hours, minutes = map(int, time_str.split(':'))
+        return time(hour=hours, minute=minutes)
+    except (ValueError, AttributeError):
+        logger.error(f"Invalid time format: {time_str}. Expected format: 'HH:MM'")
+        return None

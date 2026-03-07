@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Body, Response
-from core.config import settings
 from sqlalchemy.ext.asyncio import AsyncSession
 from models.user import User, Caretaker
 from models.onboarding import OnboardingUser
@@ -8,22 +7,18 @@ from sqlalchemy.sql import func
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from core.database import get_db
-# from services.email_service import email_service
-from services.sms_service import sms_service
 import logging
 from schemas.onboarding_user import OnboardingRequestBody
-from scripts.utils import get_or_create_caregiver, construct_mem0_memory_onboarding, get_iso_language, date_now_in_timezone, convert_to_utc_datetime
+from scripts.utils import convert_local_time_to_utc_time, get_or_create_caregiver, construct_mem0_memory_onboarding, date_now_in_timezone, convert_to_utc_datetime, parse_time_string
 from schemas.medication import BulkMedicationSchema
 from repositories.medication import MedicationRepository
 from services.medication import MedicationService
 from models.user_check_ins import UserCheckin, ScheduledSession, CheckInType
-from models.authentication import CaretakerTempToken, UserTempToken
-# from services.whatsapp_service import whatsapp_service
 from services.mem0 import add_conversation
 from datetime import timezone
 from typing import Optional
 from celery.result import AsyncResult
-from scripts.onboarding_utils import construct_onboarding_message_for_caretaker, construct_onboarding_message_for_user, construct_onboarding_user_payload
+from scripts.onboarding_utils import construct_onboarding_user_payload, send_onboarding_sms
 from celery_app import celery_app
 
 logger = logging.getLogger(__name__)
@@ -136,21 +131,28 @@ async def onboard_user(
 
         wants_brain_coach = brain_coach.get("wants_brain_coach_sessions", False)
         frequency_in_days = brain_coach.get("frequency_in_days", None)
+        time_of_day = brain_coach.get("time_of_day", None)
         if wants_brain_coach:
+            time_obj = parse_time_string(time_of_day)
+            utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
             check_in = UserCheckin(
                 user_id=user.id,
                 check_in_type=CheckInType.brain_coach.value,
                 check_in_frequency_days=frequency_in_days if frequency_in_days else 7,
+                check_in_time=utc_time
             )
             db.add(check_in)
 
         wants_daily_check_ins = check_in_details.get("wants_check_ins", False)
         check_in_frequency = check_in_details.get("frequency_in_days", None)
         if wants_daily_check_ins:
+            time_obj = parse_time_string(time_of_day)
+            utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
             check_in = UserCheckin(
                 user_id=user.id,
                 check_in_type=CheckInType.check_up_call.value,
                 check_in_frequency_days=check_in_frequency if check_in_frequency else 7,
+                check_in_time=utc_time
             )
             db.add(check_in)
 
@@ -176,43 +178,12 @@ async def onboard_user(
             mem0_payload += construct_mem0_memory_onboarding(", ".join(preferences), "preferences")
             await add_conversation(user.id, mem0_payload)
         
-        temp_token = UserTempToken(
-            user_id=user.id,
-            expires_at=datetime.now() + timedelta(hours=96),
-            used=False
-        )
-
-        temp_token_caregiver = None
-
-        if caregiver:
-            temp_token_caregiver = CaretakerTempToken(
-                caretaker_id=caregiver.id,
-                expires_at=datetime.now() + timedelta(hours=96),
-                used=False
-            )
-            db.add(temp_token_caregiver)
-
-        db.add(temp_token)
         await db.commit()
-        # Send WhatsApp message with onboarding link
-        onboarding_link = f"https://{record.organization.sub_domain}.vyva.io/verify?token={temp_token.token}"
-        temmplate_data = {
-            "link": onboarding_link
-        }
-
-        iso_language = get_iso_language(language)
-        user_message = construct_onboarding_message_for_user(iso_language, onboarding_link)
-        await sms_service.send_sms(user.phone_number, user_message)
-        
-        if temp_token_caregiver:
-            caregiver_onboarding_link = f"https://care-{record.organization.sub_domain}.vyva.io/senior-verification?token={temp_token_caregiver.token}"
-            caregiver_message = construct_onboarding_message_for_caretaker(iso_language, caregiver_onboarding_link)
-            await sms_service.send_sms(caregiver.phone_number, caregiver_message)
+        send_onboarding_sms(user=user, send_to_caregiver=True)
             
         return {
             "status": "success",
             "message": "Payload processed",
-            "received": payload.model_dump()
         }
     except Exception as e:
         await db.rollback()

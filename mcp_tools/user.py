@@ -1,4 +1,5 @@
 from schemas.twilio import MessageTypeEnum, SendWhatsappMessage
+from scripts.utils import convert_local_time_to_utc_time
 from .mcp_instance import mcp
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
@@ -130,6 +131,7 @@ async def update_user_profile(
 class CheckInOperation(str, enum.Enum):
     add = "add"
     delete = "delete"
+    retrieve = "retrieve"
 
 
 class ManageUserCheckinInput(BaseModel):
@@ -140,7 +142,6 @@ class ManageUserCheckinInput(BaseModel):
     # Only required for add/update
     check_in_frequency_days: Optional[int] = None
     check_in_time: Optional[time] = None
-    is_active: Optional[bool] = True
 
 
 @mcp.tool(
@@ -153,7 +154,7 @@ class ManageUserCheckinInput(BaseModel):
         "If operation is 'delete', the tool will permanently remove the configuration "
         "for that check-in type. "
         "For 'add' operations, you must provide check_in_frequency_days, and optionally "
-        "check_in_time and is_active."
+        "check_in_time."
     )
 )
 async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
@@ -165,6 +166,7 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
                     UserCheckin.user_id == input.user_id,
                     UserCheckin.check_in_type == input.check_in_type.value
                 )
+                .options(selectinload(UserCheckin.user))
             )
 
             existing = result.scalar_one_or_none()
@@ -199,11 +201,12 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
                         "message": "check_in_frequency_days is required for add operation."
                     }
 
+                utc_time = convert_local_time_to_utc_time(input.check_in_time, existing.user.timezone)
                 if existing:
                     # UPDATE
+                    utc_time = convert_local_time_to_utc_time(input.check_in_time, existing.user.timezone)
                     existing.check_in_frequency_days = input.check_in_frequency_days
-                    existing.check_in_time = input.check_in_time
-                    existing.is_active = input.is_active
+                    existing.check_in_time = utc_time
 
                     await db.commit()
 
@@ -218,8 +221,8 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
                         user_id=input.user_id,
                         check_in_type=input.check_in_type.value,
                         check_in_frequency_days=input.check_in_frequency_days,
-                        check_in_time=input.check_in_time,
-                        is_active=input.is_active
+                        check_in_time=utc_time,
+                        is_active=True
                     )
 
                     db.add(new_checkin)
@@ -229,6 +232,19 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
                         "success": True,
                         "message": "Check-in configuration created."
                     }
+            if input.operation == CheckInOperation.retrieve.value:
+                if not existing:
+                    return {
+                        "success": False,
+                        "message": "Check-in configuration does not exist."
+                    }
+                check_time_local = convert_local_time_to_utc_time(existing.check_in_time, existing.user.timezone)
+                return {
+                    "success": True,
+                    "check_in_type": existing.check_in_type,
+                    "check_in_frequency_days": existing.check_in_frequency_days,
+                    "check_in_time": check_time_local,
+                }
 
         except Exception as e:
             await db.rollback()
@@ -237,8 +253,6 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
                 "success": False,
                 "message": "Internal error occurred."
             }
-
-
 
 @mcp.tool(
     name="send_whatsapp",
