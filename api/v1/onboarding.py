@@ -163,6 +163,19 @@ async def onboard_user(
             medication_service = MedicationService(medication_repo)
             await medication_service.process_bulk_medication_request(medication_request)
 
+
+        mem0_payload = []
+
+        if mobility:
+            mem0_payload += construct_mem0_memory_onboarding(", ".join(mobility), "mobility")
+            await add_conversation(user.id, mem0_payload)
+        if health_conditions:
+            mem0_payload += construct_mem0_memory_onboarding(", ".join(health_conditions), "health_conditions")
+            await add_conversation(user.id, mem0_payload)
+        if preferences:
+            mem0_payload += construct_mem0_memory_onboarding(", ".join(preferences), "preferences")
+            await add_conversation(user.id, mem0_payload)
+        
         temp_token = UserTempToken(
             user_id=user.id,
             expires_at=datetime.now() + timedelta(hours=96),
@@ -181,19 +194,6 @@ async def onboard_user(
 
         db.add(temp_token)
         await db.commit()
-
-        mem0_payload = []
-
-        if mobility:
-            mem0_payload += construct_mem0_memory_onboarding(", ".join(mobility), "mobility")
-            await add_conversation(user.id, mem0_payload)
-        if health_conditions:
-            mem0_payload += construct_mem0_memory_onboarding(", ".join(health_conditions), "health_conditions")
-            await add_conversation(user.id, mem0_payload)
-        if preferences:
-            mem0_payload += construct_mem0_memory_onboarding(", ".join(preferences), "preferences")
-            await add_conversation(user.id, mem0_payload)
-        
         # Send WhatsApp message with onboarding link
         onboarding_link = f"https://{record.organization.sub_domain}.vyva.io/verify?token={temp_token.token}"
         temmplate_data = {
@@ -204,20 +204,11 @@ async def onboard_user(
         user_message = construct_onboarding_message_for_user(iso_language, onboarding_link)
         await sms_service.send_sms(user.phone_number, user_message)
         
-        # await whatsapp_service.send_onboarding_message(user.phone_number, temmplate_data)
-        
-
-        
         if temp_token_caregiver:
             caregiver_onboarding_link = f"https://care-{record.organization.sub_domain}.vyva.io/senior-verification?token={temp_token_caregiver.token}"
             caregiver_message = construct_onboarding_message_for_caretaker(iso_language, caregiver_onboarding_link)
             await sms_service.send_sms(caregiver.phone_number, caregiver_message)
-            # temmplate_data = {
-            #     "caregiver_magic_link": caregiver_onboarding_link
-            # }
-
-            # await whatsapp_service.send_onboarding_message(caregiver.phone_number, temmplate_data, template_id=settings.TWILIO_WHATSAPP_CARETAKER_ONBOARDING_TEMPLATE_SID)
-
+            
         return {
             "status": "success",
             "message": "Payload processed",

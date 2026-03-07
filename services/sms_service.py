@@ -56,6 +56,35 @@ class SMSService:
             logger.error(f"Unexpected error sending SMS to {to_number}: {str(e)}")
             return False
         
+    def send_sms_sync(
+        self,
+        to_number: str,
+        message: str,
+        from_number: Optional[str] = None
+    ) -> bool:
+        """Send an SMS message."""
+        if not self.client:
+            logger.warning("SMS service not configured, skipping SMS send")
+            return False
+        
+        try:
+            # Send SMS
+            message_obj = self.client.messages.create(
+                body=message,
+                from_=from_number or self.phone_number,
+                to=to_number
+            )
+            
+            logger.info(f"SMS sent successfully to {to_number}, SID: {message_obj.sid}")
+            return True
+            
+        except TwilioException as e:
+            logger.error(f"Failed to send SMS to {to_number}: {str(e)}")
+            return False
+        except Exception as e:
+            logger.error(f"Unexpected error sending SMS to {to_number}: {str(e)}")
+            return False
+        
     async def send_emergency_alert(
         self,
         to_number: str,

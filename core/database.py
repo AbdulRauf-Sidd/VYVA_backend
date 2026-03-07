@@ -10,7 +10,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.pool import NullPool
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, contextmanager
 
 from core.config import settings
 
@@ -73,6 +73,16 @@ async def get_async_session():
             yield session
         except Exception:
             await session.rollback()
+            raise
+
+@contextmanager
+def get_sync_session():
+    """Provides a managed async session (auto-commit/rollback)."""
+    with SessionLocal() as session:
+        try:
+            yield session
+        except Exception:
+            session.rollback()
             raise
 
 

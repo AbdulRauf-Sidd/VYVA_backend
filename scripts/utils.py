@@ -317,3 +317,5 @@ def dt_now_in_timezone(tz_name: str) -> datetime:
 
 def date_now_in_timezone(tz_name: str) -> date:
     return dt_now_in_timezone(tz_name).date()
+
+

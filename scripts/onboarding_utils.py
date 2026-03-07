@@ -1,3 +1,10 @@
+from core.database import get_sync_session
+from models import User
+from models.authentication import UserTempToken, CaretakerTempToken
+from datetime import datetime, timedelta
+from services.sms_service import sms_service
+from scripts.utils import get_iso_language
+
 USER_MESSAGE_MAP = {
     "es": "¡Bienvenido/a a VYVA! Toque este enlace para acceder: PLACEHOLDER",
     "en": "Welcome to VYVA! Tap this link to access: PLACEHOLDER",
@@ -54,3 +61,45 @@ def construct_onboarding_user_payload(user, agent_id) -> dict:
         "email": user.email
     }
     return payload
+
+
+def send_onboarding_sms(phone_number: str, user: User = None, send_to_caregiver: bool = False):
+    with get_sync_session() as db:
+        if not user:
+            if not phone_number:
+                raise ValueError("Either user or phone_number must be provided")
+
+            user = db.query(User).filter_by(phone_number=phone_number).first()
+            if not user:
+                raise ValueError(f"User with phone number {phone_number} not found")
+
+        temp_token = UserTempToken(
+            user_id=user.id,
+            expires_at=datetime.now() + timedelta(hours=96),
+            used=False
+        )
+        db.add(temp_token)
+
+        # Create caregiver temp token if applicable
+        temp_token_caregiver = None
+        if send_to_caregiver and user.caretaker:
+            temp_token_caregiver = CaretakerTempToken(
+                caretaker_id=user.caretaker.id,
+                expires_at=datetime.now() + timedelta(hours=96),
+                used=False
+            )
+            db.add(temp_token_caregiver)
+
+        db.commit()
+
+        # Send user onboarding SMS
+        onboarding_link = f"https://{user.organization.sub_domain}.vyva.io/verify?token={temp_token.token}"
+        iso_language = get_iso_language(user.preferred_consultation_language)
+        user_message = construct_onboarding_message_for_user(iso_language, onboarding_link)
+        sms_service.send_sms_sync(user.phone_number, user_message)
+
+        # Send caregiver onboarding SMS if applicable
+        if temp_token_caregiver:
+            caregiver_onboarding_link = f"https://care-{user.organization.sub_domain}.vyva.io/senior-verification?token={temp_token_caregiver.token}"
+            caregiver_message = construct_onboarding_message_for_caretaker(iso_language, caregiver_onboarding_link)
+            sms_service.send_sms_sync(user.caretaker.phone_number, caregiver_message)
