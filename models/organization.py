@@ -16,7 +16,7 @@ class Organization(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
     country = Column(String(50), nullable=False)
-    timezone = Column(String(20), nullable=False, default="UTC")
+    name_slug = Column(String(100), nullable=True, unique=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     onboarding_agent_id = Column(String(100), nullable=False)
     users = relationship("User", cascade="all, delete-orphan", passive_deletes=True, back_populates="organization")

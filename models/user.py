@@ -125,6 +125,7 @@ class User(Base):
     postal_code = Column(String(20), nullable=True)  
     country = Column(String(100), nullable=True)
     address = Column(Text, nullable=True)
+    house_number = Column(String(40), nullable=True)
 
     #Brain Coach
     brain_coach_complexity = Column(String(50), nullable=True)  
