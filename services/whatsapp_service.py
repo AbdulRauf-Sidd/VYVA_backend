@@ -384,7 +384,6 @@ class WhatsAppService:
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
                 timeout=30.0
             )
-            print(response)
             response.raise_for_status()
             return response
         
@@ -419,7 +418,6 @@ class WhatsAppService:
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
                 timeout=30.0
             )
-            print(response)
             response.raise_for_status()
             return response
         

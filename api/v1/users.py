@@ -27,8 +27,6 @@ async def update_profile_first_time_agents(
 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    
-    print("Updating first_time_agents for user:", user.id, payload.first_time_agents)
 
     (
         user.symptom_checker_first_time,

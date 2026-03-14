@@ -10,6 +10,7 @@ class ElevenLabsSessions(Base):
     call_successful = Column(String(20), nullable=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=True)
     agent_id = Column(String(80), nullable=True)
+    agent_type = Column(String(50), nullable=True)
     duration = Column(Integer, nullable=True)
     status = Column(String(20), nullable=True)
     call_sid = Column(String(100), nullable=True)

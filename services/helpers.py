@@ -8,18 +8,21 @@ logger = logging.getLogger(__name__)
 
 MEDICATION_REMINDER_MESSAGE_MAP = {
     'en': "hello {first_name}, this is a reminder to take your medication.",
-    'es': "hola {first_name}, este es un recordatorio para tomar su medicamento."
+    'es': "hola {first_name}, este es un recordatorio para tomar su medicamento.",
+    'de': "Hallo {first_name}, dies ist eine Erinnerung, Ihr Medikament einzunehmen."
 }
 
 
 ONBOARDING_MESSAGE_MAP = {
     'en': "Hello {first_name}, welcome to VYVA!",
-    'es': "Hola {first_name}, ¡bienvenido a VYVA!"
+    'es': "Hola {first_name}, ¡bienvenido a VYVA!",
+    'de': "Hallo {first_name}, willkommen bei VYVA!"
 }
 
 GENERAL_MESSAGE_MAP = {
     'en': "Hello {first_name}, How can I help you?",
-    'es': "Hola {first_name}. En qué le puedo ayudar?"
+    'es': "Hola {first_name}. En qué le puedo ayudar?",
+    'de': "Hallo {first_name}, wie kann ich Ihnen helfen?"
 }
 
 MAIN_AGENT_INITITAL_FIRST_MESSAGE_MAP = {
@@ -27,7 +30,15 @@ MAIN_AGENT_INITITAL_FIRST_MESSAGE_MAP = {
           "I'm here to support you and help with your well-being, reminders, and daily life. How can I help you today?",
     'es': "Hola, {first_name}. Soy VYVA."
           "Estoy aquí para acompañarle y ayudarle con su bienestar, recordatorios y apoyo en su día a día."
-          "¿En qué le puedo ayudar hoy?"
+          "¿En qué le puedo ayudar hoy?",
+    'de': "Hallo, {first_name}. Ich bin VYVA."
+          "Ich bin hier, um Sie zu unterstützen und Ihnen bei Ihrem Wohlbefinden, Erinnerungen und Alltag zu helfen. Wie kann ich Ihnen heute helfen?"
+}
+
+USER_NOT_PICKED_UP_MESSAGE_MAP = {
+    'en': "Did not answer our check-in call.",
+    'es': "no respondió nuestra llamada de verificación.",
+    'de': "Anruf nicht beantwortet."
 }
 
 
@@ -98,6 +109,11 @@ def construct_initial_agent_message_for_reminders(first_name, iso_language='en')
 
 def constuct_initial_agent_message_for_onboarding(first_name, iso_language='en'):
     return ONBOARDING_MESSAGE_MAP.get(iso_language).format(first_name=first_name)
+
+
+def construct_user_not_picked_up_message(iso_language: str) -> str:
+    message_template = USER_NOT_PICKED_UP_MESSAGE_MAP.get(iso_language, USER_NOT_PICKED_UP_MESSAGE_MAP['en'])
+    return message_template
 
 def construct_welcome_message_for_main_agent(first_name, iso_language='en', first_time=False):
     if first_time:

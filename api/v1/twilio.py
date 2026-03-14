@@ -168,3 +168,49 @@ async def personalize_call(
             "app_user": False
         },
     }
+
+
+@router.post("/rc/personalization")
+async def personalize_call(
+    payload: TwilioPersonalizationRequest,
+    db: AsyncSession = Depends(get_db)
+):
+    stmt = select(User).where(User.phone_number == payload.caller_id)
+    result = await db.execute(stmt)
+    user = result.scalar_one_or_none()
+
+    if not user:
+        return {
+        "dynamic_variables": {
+            "user_id": "",
+            "first_name": "",
+            "phone_number": payload.caller_id,
+            "conversation_id": payload.conversation_id,
+            "is_registered": False,
+            "app_user": False
+        },
+    }
+
+    first_time = not bool(user.social_companion_first_time)
+    
+    iso_language = get_iso_language(user.preferred_consultation_language)
+    first_message = construct_welcome_message_for_main_agent(user.first_name, iso_language, first_time)
+
+
+    return {
+        "conversation_config_override": {
+            "agent": {
+                "first_message": first_message,
+            }
+        },
+        "dynamic_variables": {
+            "user_id": user.id,
+            "address": user.full_address,
+            "first_name": user.first_name,
+            "phone_number": user.phone_number,
+            "timezone": user.timezone,
+            "conversation_id": payload.conversation_id,
+            "is_registered": True,
+            "app_user": False
+        },
+    }

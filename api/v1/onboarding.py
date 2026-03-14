@@ -13,7 +13,7 @@ from scripts.utils import convert_local_time_to_utc_time, get_or_create_caregive
 from schemas.medication import BulkMedicationSchema
 from repositories.medication import MedicationRepository
 from services.medication import MedicationService
-from models.user_check_ins import UserCheckin, ScheduledSession, CheckInType
+from models.user_check_ins import UserCheckin, CheckInType
 from models.organization import Organization
 from services.mem0 import add_conversation
 from datetime import timezone
@@ -274,7 +274,7 @@ async def onboard_user(
             address=street_address,
             city=city,
             postal_code=post_code,
-            hourse_number=house_number,
+            house_number=house_number,
             preferred_communication_channel='phone', #defaulting to phone for red cross for now
             preferred_consultation_language=language,
             health_conditions=", ".join(health_conditions) if health_conditions else None,
@@ -312,6 +312,7 @@ async def onboard_user(
 
         wants_daily_check_ins = check_in_details.get("wants_check_ins", False)
         check_in_frequency = check_in_details.get("frequency_in_days", None)
+        time_of_day = check_in_details.get("time_of_day", None)
         if wants_daily_check_ins:
             time_obj = parse_time_string(time_of_day)
             utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)

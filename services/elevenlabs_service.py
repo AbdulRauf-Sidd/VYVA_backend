@@ -360,7 +360,7 @@ def make_check_up_call(payload: dict):
           },
         )
 
-        logger.info(f"Call response for brain coach call: {response.json()}")
+        logger.info(f"Call response for check up call: {response.json()}")
         
         return response.json()
     except Exception as e:

@@ -1,5 +1,5 @@
 from celery_app import celery_app
-from core.redis import conn, ONBOARDING_CALL_STATUS_CHECK_REDIS_KEY, MEDICATION_REMINDER_CALL_STATUS_CHECK_REDIS_KEY
+from core.redis import conn, ONBOARDING_CALL_STATUS_CHECK_REDIS_KEY, CALL_STATUS_CHECK_REDIS_KEY, SCHEDULED_SESSION_STATUS_CHECK_REDIS_KEY
 from models.medication import MedicationLog
 import logging
 from core.database import SessionLocal
@@ -40,16 +40,17 @@ def schedule_reminder_message(payload, dt_utc, preferred_reminder_channel):
             )
 
 
-def schedule_celery_task_for_call_status_check(payload=None):
-    if payload:
-        exists = conn.get(MEDICATION_REMINDER_CALL_STATUS_CHECK_REDIS_KEY)
+def schedule_celery_task_for_call_status_check(payload=None, agent_type=None):
+    if agent_type:
+        exists = conn.get(CALL_STATUS_CHECK_REDIS_KEY)
         if not exists:
             celery_app.send_task(
                 "update_call_status",
-                args=[payload,],
+                args=[payload, agent_type],
                 countdown=300 # 5 minutes
             )
-            conn.set(MEDICATION_REMINDER_CALL_STATUS_CHECK_REDIS_KEY, 1, ex=300)    
+            conn.set(CALL_STATUS_CHECK_REDIS_KEY, 1, ex=300)    
+            return
     else:
         exists = conn.get(ONBOARDING_CALL_STATUS_CHECK_REDIS_KEY)
     if not exists:
@@ -59,6 +60,15 @@ def schedule_celery_task_for_call_status_check(payload=None):
         )
         conn.set(ONBOARDING_CALL_STATUS_CHECK_REDIS_KEY, 1, ex=300)  # Key expires in 5 minutes
 
+def schedule_celery_task_for_scheduled_session_status_check():
+    exists = conn.get(SCHEDULED_SESSION_STATUS_CHECK_REDIS_KEY)
+    if not exists:
+        celery_app.send_task(
+            "update_scheduled_call_status",
+            countdown=120 # 2 minutes
+        )
+        conn.set(SCHEDULED_SESSION_STATUS_CHECK_REDIS_KEY, 1, ex=120)    
+        return
 
 def update_medication_status(payload, status):
     db = SessionLocal()

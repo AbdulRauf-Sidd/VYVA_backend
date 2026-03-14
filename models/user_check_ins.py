@@ -34,13 +34,14 @@ class ScheduledSession(Base):
     __tablename__ = "scheduled_sessions"
     
     id = Column(Integer, primary_key=True, index=True)
-    # user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    # user = relationship("User", back_populates="scheduled_sessions")
     session_type = Column(String(30), nullable=False)
     scheduled_at = Column(DateTime(timezone=True), nullable=False)
     completed_at = Column(DateTime(timezone=True), nullable=True)
     is_completed = Column(Boolean, default=False)
     task_id = Column(String(100), nullable=True)
+    attempts = Column(Integer, default=0)
+    call_sid = Column(String(100), nullable=True)
+    status = Column(String(20), nullable=True) # completed, missed, voicemail, etc.
     
     user_checkin = relationship("UserCheckin", passive_deletes=True)
     user_checkin_id = Column(Integer, ForeignKey("user_checkins.id", ondelete="CASCADE"), nullable=False)

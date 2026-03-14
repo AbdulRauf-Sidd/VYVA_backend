@@ -73,7 +73,6 @@ class OnboardingRequestBodyRedCross(OnboardingRequestBody):
     brain_coach: Optional[BrainCoach] = None
     caretaker_consent: Optional[bool] = None
     health_conditions: Optional[List[str]] = None
-    address: Optional[str] = None
     street_address: Optional[str] = None
     city: Optional[str] = None
     post_code: Optional[str] = None

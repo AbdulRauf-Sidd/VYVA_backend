@@ -66,7 +66,6 @@ class User(Base):
     local_event_recommendations = Column(Boolean, nullable=True)
 
     #sessions
-    # scheduled_sessions = relationship("ScheduledSession", back_populates="user", cascade="all, delete-orphan")
     user_checkins = relationship("UserCheckin", back_populates="user", cascade="all, delete-orphan", passive_deletes=True)
 
 
