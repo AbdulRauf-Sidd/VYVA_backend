@@ -394,10 +394,11 @@ async def emergency_responder(req: EmergencyResponderRequest):
                 "phone_number": user.phone_number,
                 "emergency": req.emergency_message,
                 "language": user.preferred_consultation_language or "spanish",
+                "phone_number_id": user.organization.phone_number_id
             }
 
             # Call general agent function
-            response = call_agent(agent_id=agent.agent_id, phone_number="112", payload=payload)
+            response = call_agent(agent_id=agent.agent_id, phone_number="+34664338991", payload=payload) #DUMMY
 
             logger.info(f"Emergency responder agent response: {response}")
             return response

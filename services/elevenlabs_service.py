@@ -235,6 +235,10 @@ def make_onboarding_call(payload: dict):
 
 def make_medication_reminder_call(payload: dict):
     try:
+        phone_number_id = payload.get("phone_number_id", None)
+        if not phone_number_id:
+            settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
+
         id = payload.get("user_id")
         agent_id = payload.get("agent_id")
         phone_number = payload.get("phone_number")
@@ -252,13 +256,12 @@ def make_medication_reminder_call(payload: dict):
           },
           json={
             "agent_id": agent_id,
-            "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
+            "agent_phone_number_id": phone_number_id,
             "to_number": phone_number,
             "conversation_initiation_client_data": {
               "conversation_config_override": {
                 "agent": {
                     "language": iso_language,
-                    "first_message": first_message
                 }
               },
               "user_id": str(id),
@@ -282,6 +285,10 @@ def make_medication_reminder_call(payload: dict):
 
 def make_brain_coach_call(payload: dict):
     try:
+        phone_number_id = payload.get("phone_number_id", None)
+        if not phone_number_id:
+            settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
+
         id = payload.get("user_id")
         agent_id = payload.get("agent_id")
         phone_number = payload.get("phone_number")
@@ -297,7 +304,7 @@ def make_brain_coach_call(payload: dict):
           },
           json={
             "agent_id": agent_id,
-            "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
+            "agent_phone_number_id": phone_number_id,
             "to_number": phone_number,
             "conversation_initiation_client_data": {
               "conversation_config_override": {
@@ -325,6 +332,10 @@ def make_brain_coach_call(payload: dict):
 
 def make_check_up_call(payload: dict):
     try:
+        phone_number_id = payload.get("phone_number_id", None)
+        if not phone_number_id:
+            settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
+
         id = payload.get("user_id")
         agent_id = payload.get("agent_id")
         phone_number = payload.get("phone_number")
@@ -341,7 +352,7 @@ def make_check_up_call(payload: dict):
           },
           json={
             "agent_id": agent_id,
-            "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
+            "agent_phone_number_id": phone_number_id,
             "to_number": phone_number,
             "conversation_initiation_client_data": {
               "conversation_config_override": {
@@ -374,9 +385,12 @@ def call_agent(agent_id: str, phone_number: str, payload: Optional[Dict[str, Any
         
         language = payload.get("language", "en")
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
+        phone_number_id = payload.get("phone_number_id", None)
+        if not phone_number_id:
+            settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
                 
         # Build dynamic variables from entire payload
-        dynamic_variables = {k: v for k, v in payload.items() if k != "agent_id"}
+        dynamic_variables = {k: v for k, v in payload.items() if k != "agent_id" or k != "phone_number_id"}
         
         # Make the ElevenLabs API call
         response = requests.post(
@@ -386,7 +400,7 @@ def call_agent(agent_id: str, phone_number: str, payload: Optional[Dict[str, Any
             },
             json={
                 "agent_id": agent_id,
-                "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
+                "agent_phone_number_id": phone_number_id,
                 "to_number": phone_number,
                 "conversation_initiation_client_data": {
                     "conversation_config_override": {

@@ -161,6 +161,7 @@ def schedule_medication_reminders_for_day(db, today: datetime.date):
                         'user_id': user.id,
                         "agent_id": agent_id,
                         "preferred_reminder_channel": preferred_reminder_channel,
+                        "phone_number_id": user.organization.phone_number_id
                     },
                     "medication_info": {}
                 }

@@ -309,8 +309,9 @@ def call_emergency_outbound_agent(user_id):
             "phone_number": user.phone_number,
             "emergency": message,
             "language": user.preferred_consultation_language or "spanish",
+            "phone_number_id": user.organization.phone_number_id
         }
-        response = call_agent(agent_id=agent_id, phone_number=user.caretaker.phone_number, payload=payload)
+        response = call_agent(agent_id=agent_id, phone_number="+34664338991", payload=payload) #DUMMY
         logger.info(f"Emergency outbound agent response: {response}")
 
 @celery_app.task(name="check_onboarding_call_status")
@@ -401,6 +402,7 @@ def initiate_brain_coach_session(check_in_id: int):
             "first_name": user.first_name,
             "phone_number": user.phone_number,
             "language": user.preferred_consultation_language,
+            "phone_number_id": user.organization.phone_number_id
         }
         
         response = make_brain_coach_call(payload)
@@ -463,7 +465,8 @@ def initiate_check_up_call(check_in_id: int):
             "last_name": user.last_name,
             "phone_number": user.phone_number,
             "language": user.preferred_consultation_language,
-            "address": user.full_address
+            "address": user.full_address,
+            "phone_number_id": user.organization.phone_number_id
         }
 
         if not last_pending_session:

@@ -23,6 +23,7 @@ class Organization(Base):
     onboarding_users = relationship("OnboardingUser", cascade="all, delete-orphan", passive_deletes=True, back_populates="organization")
     sub_domain = Column(String(100), nullable=True, unique=True)
     is_active = Column(Boolean, default=True)
+    phone_number_id = Column(String(50), nullable=True)
 
     agents = relationship(
         "OrganizationAgents",
