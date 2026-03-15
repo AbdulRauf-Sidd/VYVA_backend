@@ -231,11 +231,8 @@ async def onboard_user(
             # return
         
         # --- check consent --- no need for this if the user is calling
-        # record.consent_given = payload.consent_given
-        # if not payload.consent_given:
-        #     db.add(record)
-        #     await db.commit()
-        #     return
+        if not payload.consent_given:
+            raise HTTPException(status_code=400, detail="Consent not given")
         
         phone_number = data["phone_number"]
         first_name = data["first_name"]
