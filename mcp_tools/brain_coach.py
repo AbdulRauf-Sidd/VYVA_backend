@@ -13,7 +13,7 @@ from sqlalchemy import false
 from services.helpers import construct_whatsapp_brain_coach_message
 from services.whatsapp_service import whatsapp_service
 from services.email_service import email_service
-from scripts.utils import LANGUAGE_MAP
+from scripts.utils import LANGUAGE_MAP, get_iso_language
 import logging
 from typing import Dict, List, Optional
 
@@ -64,6 +64,19 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
         else:
             target_session = 1
 
+        user_result = await db.execute(
+            select(User).where(User.id == input.user_id)
+        )
+        user = user_result.scalar_one_or_none()
+
+        if not user:
+            return {
+                "success": False,
+                "message": "user not found"
+            }
+        
+        iso_language = get_iso_language(user.preferred_consultation_language)
+
         stmt = (
             select(
                 BrainCoachQuestions.id,
@@ -81,7 +94,7 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
             )
             .where(
                 BrainCoachQuestions.category == input.questions_type.value,
-                QuestionTranslations.language == 'es',
+                QuestionTranslations.language == iso_language,
                 BrainCoachQuestions.session == target_session,
                 # BrainCoachQuestions.id.not_in(answered_question_ids)
                 # if answered_question_ids else True
