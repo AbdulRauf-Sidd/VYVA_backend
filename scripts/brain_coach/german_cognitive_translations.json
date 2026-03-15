@@ -1,0 +1,5597 @@
+[
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Bitte merke dir diese Wörter: [Apfel, Hund, Buch]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer diese Wörter in beliebiger Reihenfolge erinnert.",
+        "question_type": "Gedächtnis",
+        "theme": "Unnamed: 6",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 89 bis 79.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer rückwärts von 89 bis 79 einschließlich zählt.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben \"Hund\" und \"Katze\" gemeinsam?",
+        "expected_answer": "Es wird erwartet, dass der Nutzer etwas nennt, das beiden gemeinsam ist, z. B. dass beide Tiere sind oder vier Pfoten haben.",
+        "question_type": "Sprache",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was war der Wochentag vor zwei Tagen?",
+        "expected_answer": "Es wird erwartet, dass der Nutzer den Wochentag von vor 2 Tagen nennt. Verwende das aktuelle Datum zur Überprüfung.",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du 15 Euro hast und 7 ausgibst, wie viel bleibt dir übrig?",
+        "expected_answer": "8",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Tiere, die in kalten Klimazonen leben.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer drei Tiere nennt, die in kalten Klimazonen leben, z. B. Bär, Pinguin, Robbe, Fuchs, Eule oder Ähnliches.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 2,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Baum, Wolke, Schuh]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: Der Nutzer soll \"Apfel — Hund — Buch in beliebiger Reihenfolge\" sagen.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 2,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 15 bis 1.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer rückwärts von 15 bis 1 einschließlich zählt.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 2,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben \"Rose\" und \"Tulpe\" gemeinsam?",
+        "expected_answer": "Es wird erwartet, dass der Nutzer etwas nennt, das beiden gemeinsam ist, z. B. dass beide Blumen sind oder schön sind.",
+        "question_type": "Sprache",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 2,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Wochentag ist heute?",
+        "expected_answer": "Es wird erwartet, dass der Nutzer den heutigen Wochentag nennt. Verwende das aktuelle Datum zur Überprüfung.",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 2,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Du hast ein Buch für 14 Euro gekauft und mit einem 20-Euro-Schein bezahlt. Wie viel Wechselgeld bekommst du?",
+        "expected_answer": "6",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 2,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Tiere, die in warmen Klimazonen leben.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer drei Tiere nennt, die in warmen Klimazonen leben, z. B. Kamel, Elefant, Löwe, Reptil, Schlange oder Ähnliches.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 3,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Bitte merke dir diese Wörter: [Himmel, Karte, Kompass]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer diese Wörter in beliebiger Reihenfolge erinnert.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 3,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 12 bis 2, dabei jede zweite Zahl überspringen.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer rückwärts von 12 bis 2 einschließlich zählt.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 3,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben \"Klavier\" und \"Gitarre\" gemeinsam?",
+        "expected_answer": "Es wird erwartet, dass der Nutzer etwas nennt, das beiden gemeinsam ist, z. B. dass beide Musikinstrumente sind oder Klänge erzeugen.",
+        "question_type": "Sprache",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 3,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Wochentag wird es in zwei Tagen sein?",
+        "expected_answer": "Es wird erwartet, dass der Nutzer den Wochentag in 2 Tagen nennt. Verwende das aktuelle Datum zur Überprüfung.",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 3,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Du hast 30 Euro gewonnen und 10 einem Freund gegeben. Wie viel behältst du?",
+        "expected_answer": "20",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 3,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Küchenutensilien.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer drei Gegenstände nennt, die in einer Küche verwendet werden, wie Löffel, Gabel, Messer, Pfanne, Ofen, Kühlschrank oder Ähnliches.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 4,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Feder, Tisch, See]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: Der Nutzer soll \"Himmel — Karte — Kompass in beliebiger Reihenfolge\" sagen.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 4,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Starte bei 30 und zähle in Dreierschritten rückwärts.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer rückwärts in Dreierschritten ab 30 zählt.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 4,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben \"Flugzeug\" und \"Auto\" gemeinsam?",
+        "expected_answer": "Es wird erwartet, dass der Nutzer etwas nennt, das beiden gemeinsam ist, z. B. dass beide Transportmittel oder Maschinen sind.",
+        "question_type": "Sprache",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 4,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Tage hat ein Jahr?",
+        "expected_answer": "365",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 4,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Du hast 50 Euro gespart und 25 für Lebensmittel ausgegeben. Wie viel bleibt übrig?",
+        "expected_answer": "25",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 4,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Dinge, die man auf einem Flughafen sieht.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer drei Dinge nennt, die auf einem Flughafen zu sehen sind, z. B. Flugzeug, Gepäck, Schalter, Hangar, Personal, Reisende, Geschäfte oder Ähnliches.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 5,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Bitte merke dir diese Wörter: [Uhr, Mond, Fernseher]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer diese Wörter in beliebiger Reihenfolge erinnert.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 5,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 20, dabei nur gerade Zahlen nennen.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer rückwärts von 20 zählt und dabei nur gerade Zahlen nennt.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 5,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben \"Hut\" und \"Regenschirm\" gemeinsam?",
+        "expected_answer": "Es wird erwartet, dass der Nutzer etwas nennt, das beiden gemeinsam ist, z. B. dass beide zum Schutz vor Regen oder Sonne genutzt werden.",
+        "question_type": "Sprache",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 5,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Tage hat eine Woche?",
+        "expected_answer": "7",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 5,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Du findest 8 Euro und gibst 3 für Kaffee aus. Wie viel hast du noch?",
+        "expected_answer": "5",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 5,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Länder mit kaltem Klima.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer drei Länder mit kaltem Klima nennt, z. B. Russland, Island, Norwegen, Kanada, Schweden, Finnland oder Ähnliches.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 6,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Sonne, Papier, Tasse]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: Der Nutzer soll \"Uhr — Mond — Fernseher in beliebiger Reihenfolge\" sagen.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 6,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 25 bis 5, dabei jede zweite Zahl überspringen.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer rückwärts von 25 bis 5 zählt und dabei jede ungerade Zahl überspringt.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 6,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben \"Ring\" und \"Halskette\" gemeinsam?",
+        "expected_answer": "Es wird erwartet, dass der Nutzer etwas nennt, das beiden gemeinsam ist, z. B. dass beide Schmuck oder Dekorationsgegenstände sind.",
+        "question_type": "Sprache",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 6,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Wochen hat ein Jahr?",
+        "expected_answer": "52",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 6,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Du hattest 40 Euro, hast 12 für das Mittagessen und 5 für ein Geschenk ausgegeben. Was bleibt übrig?",
+        "expected_answer": "23",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 6,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Dinge, die man am Strand sehen kann.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer drei Dinge nennt, die am Strand zu sehen sind, z. B. Sonnenschirm, Liegestuhl, Ball, Surfbrett, Menschen, Boote oder Ähnliches.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 7,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Bitte merke dir diese Wörter: [Meer, Segel, Mond]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer diese Wörter in beliebiger Reihenfolge erinnert.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 7,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 18, dabei nur ungerade Zahlen nennen.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer rückwärts von 18 zählt und dabei nur ungerade Zahlen nennt.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 7,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben \"Bett\" und \"Kissen\" gemeinsam?",
+        "expected_answer": "Es wird erwartet, dass der Nutzer etwas nennt, das beiden gemeinsam ist, z. B. dass beide zum Schlafen gehören oder bequem sind.",
+        "question_type": "Sprache",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 7,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Monate hat ein Jahr?",
+        "expected_answer": "Es gibt 12 Monate",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 7,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Du leihst dir 100 Euro und gibst 13 zurück. Wie viel schuldest du noch?",
+        "expected_answer": "87",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 7,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Dinge, die man in einem Restaurant sehen kann.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer drei Dinge nennt, die in einem Restaurant zu sehen sind, z. B.: Speisekarte, Essen, Stühle, Tische, Kellner, Gabeln, Messer, Teller oder Ähnliches.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 8,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Stuhl, Blume, Zug]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: Der Nutzer soll \"Meer — Segel — Mond in beliebiger Reihenfolge\" sagen.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 8,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Starte bei 40 und zähle in Fünferschritten rückwärts.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer von 40 bis 0 in Fünferschritten rückwärts zählt.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 8,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben \"Tür\" und \"Schlüssel\" gemeinsam?",
+        "expected_answer": "Es wird erwartet, dass der Nutzer etwas nennt, das beiden gemeinsam ist, z. B. dass beide Sicherheitselemente sind oder mit dem Haus zusammenhängen.",
+        "question_type": "Sprache",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 8,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Sekunden hat eine Stunde?",
+        "expected_answer": "3600",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 8,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du 150 Euro hast und 17 ausgibst, wie viel bleibt dir?",
+        "expected_answer": "133",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 8,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Dinge, die man in einem Büro findet.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer drei Dinge nennt, die man in einem Büro finden kann, z. B.: Computer, Personal, Schreibtische, Papier, Stifte, Bildschirme oder Ähnliches.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 9,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Bitte merke dir diese Wörter: [Kalender, Kaffee, Brot]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer diese Wörter in beliebiger Reihenfolge erinnert.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 9,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 14, aber nenne nur Zahlen, die durch 2 teilbar sind.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer rückwärts von 14 zählt, aber nur Zahlen nennt, die durch 2 teilbar sind.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 9,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben \"Rad\" und \"Reifen\" gemeinsam?",
+        "expected_answer": "Es wird erwartet, dass der Nutzer etwas nennt, das beiden gemeinsam ist, z. B. dass beide mit Autos zusammenhängen oder rund sind.",
+        "question_type": "Sprache",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 9,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Stunden hat ein Tag?",
+        "expected_answer": "24",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 9,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Du hast ein Buch für 12 Euro gekauft und mit einem 20-Euro-Schein bezahlt. Wie viel Wechselgeld bekommst du?",
+        "expected_answer": "8",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 9,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Länder, die in Europa liegen.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer drei Länder nennt, die in Europa liegen, z. B. Spanien, Frankreich, Italien, Schweden, Belgien oder Ähnliches.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 10,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Stein, Baum, Hemd]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: Der Nutzer soll \"Kalender — Kaffee — Brot in beliebiger Reihenfolge\" sagen.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 10,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 20, dabei jede dritte Zahl überspringen.",
+        "expected_answer": "\"Es wird erwartet, dass der Nutzer von 20 bis 0 rückwärts in Zweierschritten zählt\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 10,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben \"Delfine\" und \"Wale\" gemeinsam?",
+        "expected_answer": "Es wird erwartet, dass der Nutzer etwas nennt, das beiden gemeinsam ist, z. B. dass beide Tiere oder Säugetiere sind.",
+        "question_type": "Sprache",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 10,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "An welchem Datum ist Silvester?",
+        "expected_answer": "31. Dezember",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 10,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Du hast 30 Euro gewonnen und 10 einem Freund gegeben. Wie viel hast du noch?",
+        "expected_answer": "20",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 10,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche drei Tiere sind bekannt dafür, Pflanzenfresser zu sein?",
+        "expected_answer": "Es wird erwartet, dass der Nutzer drei Tiere nennt, die nur Pflanzen essen, z. B. Elefant, Pferd, Schaf, Kuh, Kaninchen oder Ähnliches.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 11,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Bitte merke dir diese Wörter: [Geld, Bank, Laden]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer diese Wörter in beliebiger Reihenfolge erinnert.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 11,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Starte bei 35 und zähle in Siebener schritten rückwärts.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer ab 35 rückwärts in Siebener schritten zählt.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 11,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben eine Gabel und ein Löffel gemeinsam?",
+        "expected_answer": "Es wird erwartet, dass der Nutzer etwas nennt, das beiden gemeinsam ist, z. B. dass beide zum Essen verwendet werden oder mit Nahrung zu tun haben.",
+        "question_type": "Sprache",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 11,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "An welchem Datum ist Heiligabend?",
+        "expected_answer": "24. Dezember",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 11,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Du hast 50 Euro gespart und 25 für Lebensmittel ausgegeben. Was bleibt übrig?",
+        "expected_answer": "25",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 11,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Tiere, die Flügel haben.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer drei Tiere mit Flügeln nennt, z. B. Vögel, Insekten, Fledermäuse, Pinguine oder Ähnliches.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 12,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Schlüssel, Fluss, Lampe]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: Der Nutzer soll \"Geld — Bank — Laden in beliebiger Reihenfolge\" sagen.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 12,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 60 in Zehnerschritten.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer von 60 bis 0 rückwärts in Zehnerschritten zählt.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 12,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Worin ähneln sich eine Kerze und eine Taschenlampe?",
+        "expected_answer": "Es wird erwartet, dass der Nutzer etwas nennt, das beiden gemeinsam ist, z. B. dass beide Licht erzeugen oder Dunkelheit beseitigen.",
+        "question_type": "Sprache",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 12,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Jahre hat ein Jahrzehnt?",
+        "expected_answer": "10 Jahre",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 12,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Du hast 8 Euro gefunden und 3,50 für Kaffee ausgegeben. Wie viel hast du noch?",
+        "expected_answer": "Es bleiben 4,50 Euro",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 12,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Tiere, die schwimmen können.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer drei Tiere nennt, die schwimmen können, z. B. Fisch, Schildkröte, Delfin, Hai, Hund, Tiger, Elefant oder Ähnliches.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 13,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Bitte merke dir diese Wörter: [Orange, Baum, Dschungel]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer diese Wörter in beliebiger Reihenfolge erinnert.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 13,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Starte bei 11 und zähle in Zweierschritten rückwärts.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer ab 11 rückwärts in Zweierschritten zählt.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 13,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Worin ähneln sich ein Apfel und eine Banane?",
+        "expected_answer": "Es wird erwartet, dass der Nutzer etwas nennt, das beiden gemeinsam ist, z. B. dass beide Früchte oder Lebensmittel sind.",
+        "question_type": "Sprache",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 13,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "In welcher Jahreszeit befinden wir uns heute — Frühling, Sommer, Herbst oder Winter?",
+        "expected_answer": "Es wird erwartet, dass der Nutzer eine Jahreszeit nennt. Verwende das aktuelle Datum zur Überprüfung.",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 13,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Du hattest 50 Euro, hast 12 für das Mittagessen und 5 für ein Geschenk ausgegeben. Was bleibt?",
+        "expected_answer": "33",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 13,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Dinge, die man in einer Schule findet.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer drei Dinge nennt, die in einer Schule zu finden sind, z. B. Bücher, Lehrer, Stifte, Schreibtische, Schüler, Tafeln oder Ähnliches.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 14,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Tür, Orange, Auto]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: Der Nutzer soll \"Orange — Baum — Dschungel in beliebiger Reihenfolge\" sagen.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 14,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Starte bei 50 und zähle in Sechserschritten rückwärts.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer ab 50 rückwärts in Sechserschritten zählt.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 14,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben ein Stift und ein Bleistift gemeinsam?",
+        "expected_answer": "Mit beiden kann man schreiben.",
+        "question_type": "Sprache",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 14,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ist der sechste Monat des Jahres?",
+        "expected_answer": "Juni",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 14,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Du hast 100 Euro geliehen und 0,50 zurückgegeben. Wie viel schuldest du noch?",
+        "expected_answer": "99,50",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 14,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Tiere, die Fleischfresser sind.",
+        "expected_answer": "Es wird erwartet, dass der Nutzer drei Tiere nennt, die nur Fleisch essen, z. B. Löwe, Tiger, Krokodil, Hai, Adler oder Ähnliches.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 15,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Bitte merke dir diese Wörter: [Banane, Stuhl, Löffel, Auto]. Ich werde sie dir später abfragen.",
+        "expected_answer": "gesprochene Antwort",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 15,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 20 in Zweierschritten (20, 18, …).",
+        "expected_answer": "gesprochene Antwort",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 15,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Dinge, die man üblicherweise in einem Krankenhauszimmer findet.",
+        "expected_answer": "gesprochene Antwort",
+        "question_type": "Sprache",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 15,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "In welchem Monat befinden wir uns gerade und welches Wetter ist typisch dafür?",
+        "expected_answer": "gesprochene Antwort",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 15,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Du bist um 15:00 Uhr weggegangen und um 18:00 Uhr zurückgekehrt. Wie lange warst du weg?",
+        "expected_answer": "3 Stunden",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 15,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne in 30 Sekunden so viele Dinge wie möglich, die sich weich anfühlen.",
+        "expected_answer": "gesprochene Antwort",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 16,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Stern, Bett, Flasche]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: Der Nutzer soll \"Sonne — Blume — Tisch in beliebiger Reihenfolge\" sagen.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 16,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 25 in Zweierschritten.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 25, 23, 21 usw. sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 16,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben Wasser und Saft gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sagt, dass beide Flüssigkeiten oder Getränke sind.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 16,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Datum des Monats ist heute?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer das aktuelle Datum nennt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 16,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Transportmittel.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Auto, Bus und Zug nennt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 16,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du jede Nacht acht Stunden schläfst, wie viele Stunden schläfst du in einer Woche?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 56 Stunden sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 17,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Berg, Papier, Ring]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer die Wörter in beliebiger Reihenfolge erinnert.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 17,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 60 bis 50.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer korrekt von 60 bis 50 zählt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 17,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben ein Hemd und ein Mantel gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sagt, dass beide Kleidungsstücke sind.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 17,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Jahreszeit kommt nach dem Sommer?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Herbst sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 17,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei tropische Früchte.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Mango, Ananas oder Banane nennt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 17,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du drei Äpfel hast und einen isst, wie viele bleiben übrig?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer zwei Äpfel sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 18,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Weg, Frucht, Stuhl]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: Der Nutzer soll \"Berg — Papier — Ring in beliebiger Reihenfolge\" sagen.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 18,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 15, dabei jeweils 2 abziehen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 13, 11, 9 usw. sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 18,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben Sonne und Mond gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sagt, dass beide am Himmel stehen oder Himmelskörper sind.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 18,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Tage hat ein Wochenende?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer zwei sagt: Samstag und Sonntag.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 18,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Berufe.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Berufe wie Arzt, Lehrer oder Schreiner nennt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 18,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Sage die geraden Zahlen von 2 bis 12 in umgekehrter Reihenfolge.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer korrekt 12, 10, 8, 6, 4, 2 sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 19,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Stuhl, Wolke, Schlüssel]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer die drei Wörter in beliebiger Reihenfolge erinnert.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 19,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 22 bis 12.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer korrekt von 22 bis 12 ohne Fehler zählt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 19,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben Brot und Reis gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sagt, dass beide Lebensmittel oder Kohlenhydrate sind.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 19,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Tage hat eine Woche?",
+        "expected_answer": "Eine Woche hat sieben Tage.",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 19,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Orte, die man im Urlaub besucht.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Strand, Berge oder Stadt sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 19,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn heute Freitag ist, was war gestern?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Donnerstag sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 20,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Gabel, Baum, Buch]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: Der Nutzer soll \"Stuhl — Wolke — Schlüssel in beliebiger Reihenfolge\" sagen.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 20,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 70 in Fünferschritten.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 70, 65, 60, 55, 50 usw. sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 20,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben Bleistift und Kugelschreiber gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sagt, dass beide zum Schreiben genutzt werden.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 20,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Wochentag ist morgen?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer den korrekten nächsten Tag nennt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 20,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei elektrische Haushaltsgeräte.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer z. B. Fernseher, Kühlschrank oder Lampe nennt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 20,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du 20 Euro hast und 5 für Brot ausgibst, wie viel bleibt dir?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 15 Euro sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 21,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Baum, Meer, Auto]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer die drei Wörter in beliebiger Reihenfolge erinnert.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 21,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 12 in Einerschritten.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 12, 11, 10... bis 1 ohne Fehler zählt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 21,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben ein Schuh und eine Sandale gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sagt, dass beide zum Laufen dienen oder Schuhwerk sind.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 21,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "In welcher Jahreszeit bist du geboren?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer die korrekte Jahreszeit nennt (Frühling, Sommer, Herbst oder Winter).\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 21,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei typische deutsche Gerichte.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Gerichte wie Schnitzel, Sauerkraut oder Bratwurst nennt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 21,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wiederhole diese Abfolge rückwärts: 3, 6, 1, 9.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer korrekt 9, 1, 6, 3 sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 22,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Brücke, Vase, Auto]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: Der Nutzer soll \"Baum — Meer — Auto in beliebiger Reihenfolge\" sagen.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 22,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 18 in Dreierschritten.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 18, 15, 12, 9, 6, 3 sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 22,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben Eis und Dampf gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sagt, dass beide Formen des Wassers oder Zustände desselben Elements sind.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 22,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Tage hat der Februar in einem Nicht-Schaltjahr?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 28 Tage sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 22,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Blumenarten.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Rosen, Tulpen oder Gänseblümchen nennt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 22,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn ein Tag 24 Stunden hat, wie viele Stunden gibt es in drei Tagen?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 72 Stunden sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 23,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Tisch, Tasse, Messer]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer die drei Wörter in beliebiger Reihenfolge erinnert.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 23,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 90 bis 80.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer korrekt 90, 89, 88... bis 80 zählt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 23,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben Regen und Schnee gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sagt, dass beide Niederschlagsformen oder Wasser vom Himmel sind.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 23,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Um wie viel Uhr isst du normalerweise zu Mittag?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer eine Zeit nennt, die mit dem Mittagessen zusammenpasst.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 23,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Grundfarben.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Rot, Blau und Gelb sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 23,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn eine Woche sieben Tage hat, wie viele Tage haben zwei Wochen?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 14 Tage sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 24,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Hügel, Fenster, Milch]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: Der Nutzer soll \"Tisch — Tasse — Messer in beliebiger Reihenfolge\" sagen.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 24,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 10 bis 0.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer korrekt 10, 9, 8... bis 0 zählt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 24,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben ein Buch und eine Zeitschrift gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sagt, dass beide gelesen werden oder Text und Bilder enthalten.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 24,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "In welchem Land befindest du dich gerade?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Deutschland oder das korrekte Land nennt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 24,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Meerestiere.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Fisch, Delfin, Hai oder Ähnliches sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 24,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle die ungeraden Zahlen von 1 bis 11 in aufsteigender Reihenfolge.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer korrekt 1, 3, 5, 7, 9, 11 sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 25,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Hemd, Bleistift, Uhr]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer die drei Wörter in beliebiger Reihenfolge erinnert.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 25,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 30 in Zweierschritten.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 30, 28, 26, 24… bis 0 ohne Fehler sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 25,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben eine Lampe und eine Taschenlampe gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sagt, dass beide Licht geben oder zum Beleuchten dienen.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 25,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie alt ist eine Person, die im Jahr 2000 geboren wurde?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 25 sagt, wenn das aktuelle Jahr 2025 ist.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 25,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Musikinstrumente.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Gitarre, Klavier oder Geige sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 25,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn heute Montag ist, welcher Tag ist in drei Tagen?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Donnerstag sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 26,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Fisch, Glocke, Teller]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: Der Nutzer soll \"Hemd — Bleistift — Uhr in beliebiger Reihenfolge\" sagen.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 26,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 16 in Zweierschritten.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 16, 14, 12, 10, 8, 6, 4, 2 sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 26,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben Schokolade und Zucker gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sagt, dass beide süß oder Zutaten für Desserts sind.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 26,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Jahreszeit kommt nach dem Winter?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Frühling sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 26,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Waldtiere.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Hirsch, Fuchs oder Eichhörnchen sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 26,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Himmel, Wolke, Sonne]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer die drei Wörter in beliebiger Reihenfolge erinnert.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 27,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 45 in Fünferschritten.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 45, 40, 35, 30, 25, 20 usw. sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 27,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben ein Fenster und eine Tür gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sagt, dass beide den Durchgang erlauben oder Licht/Luft hereinlassen.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 27,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Wochentag kommt vor Montag?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Sonntag sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 27,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Dinge, die auf dem Wasser schwimmen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Boot, Ball oder Holz sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 27,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du ein Dutzend Eier hast und drei brichst, wie viele bleiben ganz?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer neun sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 27,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Garten, Karton, Tasse]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: Der Nutzer soll \"Himmel — Wolke — Sonne in beliebiger Reihenfolge\" sagen.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 28,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 24 bis 14.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer korrekt 24, 23, 22... bis 14 zählt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 28,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben ein Löffel und ein Messer gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sagt, dass beide Küchenutensilien sind.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 28,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "In welchem Jahr befinden wir uns?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 2025 oder das korrekte aktuelle Jahr sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 28,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Dinge, die Licht ausstrahlen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Glühbirne, Sonne oder Kerze sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 28,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn eine Stunde 60 Minuten hat, wie viele Minuten sind in zwei Stunden?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 120 Minuten sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 28,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Wasser, Feuer, Erde]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer die drei Wörter in beliebiger Reihenfolge erinnert.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 29,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 50 in Zehnerschritten.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer korrekt 50, 40, 30, 20, 10, 0 sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 29,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben ein Flugzeug und ein Hubschrauber gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sagt, dass beide Luftverkehrsmittel sind.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 29,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Auf welchem Kontinent lebst du?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Europa oder den korrekten Kontinent sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 29,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Gegenstände aus Metall.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Löffel, Schlüssel oder Nagel sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 29,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Sage diese Abfolge rückwärts: 2, 4, 6, 8.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer korrekt 8, 6, 4, 2 sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 29,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Geldbörse, Fluss, Hut]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: Der Nutzer soll \"Wasser — Feuer — Erde in beliebiger Reihenfolge\" sagen.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 30,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 28 in Viererschritten.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 28, 24, 20, 16, 12, 8, 4 sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 30,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben ein Brief und eine E-Mail gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sagt, dass beide zur Kommunikation oder zum Senden von Nachrichten dienen.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 30,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Minuten hat eine Stunde?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 60 Minuten sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 30,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei alkoholfreie Getränke.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Wasser, Saft oder Milch sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 30,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn ein Monat vier Wochen hat, wie viele Tage hat er ungefähr?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 28 Tage sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 30,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Tisch, Katze, Wolke]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer die drei Wörter in beliebiger Reihenfolge erinnert.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 31,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 9 bis 1.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer korrekt 9, 8, 7... bis 1 zählt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 31,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Körperteile des Menschen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Kopf, Hände oder Beine sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 31,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle die Zahlen von 1 bis 10, dabei die ungeraden überspringen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer korrekt 2, 4, 6, 8, 10 sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 31,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Radio, Banane, Lampe]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: Der Nutzer soll \"Tisch — Katze — Wolke in beliebiger Reihenfolge\" sagen.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 31,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 33 in Dreierschritten.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 33, 30, 27, 24, 21, 18, 15, 12, 9, 6, 3 sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 31,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben ein Stuhl und ein Sofa gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sagt, dass beide zum Sitzen dienen.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 31,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Tiere, die im Meer leben.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Delfin, Fisch oder Hai sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 32,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 22 bis 14.",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer korrekt 22, 21, 20… bis 14 zählt.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 32,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du 8 Äpfel hast und 3 isst, wie viele bleiben dir?",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer \"5\" sagt.",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 32,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "In welchem Teil des Hauses duschst du?",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer \"Bad\", Dusche oder Ähnliches sagt.",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 32,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei rote Früchte.",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer \"Apfel, Kirsche, Erdbeere\" oder Ähnliches sagt.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 32,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben ein Messer und eine Gabel gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer sagt, dass beide Essutensilien sind.",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 32,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Ellenbogen, Garten, Buch]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer die drei Wörter in beliebiger Reihenfolge erinnert.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 33,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Sage diese Abfolge rückwärts: 4, 7, 9.",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer \"9, 7, 4\" sagt.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 33,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn ein Zug 2 Stunden bis zum Ziel braucht und ein anderer 1 Stunde, welcher kommt zuerst an?",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer \"der, der 1 Stunde braucht\" sagt.",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 33,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Tag kommt nach Mittwoch?",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer \"Donnerstag\" sagt.",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 33,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Gegenstände, die man zum Schreiben verwendet.",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer \"Bleistift, Kugelschreiber, Marker\" oder Ähnliches sagt.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 33,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben ein Radio und ein Lautsprecher gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer sagt, dass beide Ton erzeugen.",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 33,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Berg, Schuh, Messer]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer die drei zuvor genannten Wörter (Ellenbogen, Garten und Buch) in beliebiger Reihenfolge nennt.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 34,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle die geraden Zahlen von 2 bis 12.",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer 2, 4, 6, 8, 10, 12 sagt.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": ""
+      }
+    ]
+  },
+  {
+    "session": 34,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn ein Zimmer vier Ecken hat, wie viele Ecken haben zwei Zimmer?",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer \"acht\" sagt.",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 34,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "In welchem Land lebst du?",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer sein aktuelles Land korrekt nennt.",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 34,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Berufe aus dem Gesundheitsbereich.",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer \"Arzt, Krankenpfleger, Zahnarzt\" oder Ähnliches sagt.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 34,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben eine Windmühle und ein Ventilator gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer sagt, dass beide sich drehen oder Luftbewegung erzeugen.",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 34,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Weg, Krug, Dach]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer die drei Wörter in beliebiger Reihenfolge erinnert.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 35,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zähle rückwärts von 31 in Dreierschritten.",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer 31, 28, 25, 22, 19, 16, 13, 10, 7, 4, 1 sagt.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 35,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du 20 Euro hast und etwas kaufst, das 12 Euro kostet, wie viel Geld bleibt dir?",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer \"8 Euro\" sagt.",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 35,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "In welchem Teil deines Hauses isst du normalerweise?",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer \"Esszimmer\" oder \"Küche\" sagt.",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 35,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei häufige Baumarten.",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer \"Eiche, Kiefer, Olive\" oder Ähnliches sagt.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 35,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was haben ein Rucksack und ein Koffer gemeinsam?",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer sagt, dass beide dazu dienen, Dinge aufzubewahren oder zu transportieren.",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 35,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Bett, Bleistift, Frucht]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer die drei Wörter (Weg, Krug und Dach) in beliebiger Reihenfolge erinnert.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 36,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Sage ein Wort, das mit \"Berg\" zu tun hat.",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer etwas wie \"Schnee\", \"Steine\", \"Höhe\" oder verwandte Wörter antwortet.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 36,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn eine Tür geschlossen ist, was musst du tun, um einzutreten?",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer 'die Tür öffnen' sagt.",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 36,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "In welcher Jahreszeit befinden wir uns gerade?",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer die korrekte Jahreszeit nennt.",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 36,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn heute Montag ist, was war gestern?",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer Sonntag sagt.",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 36,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei grüne Gemüsesorten.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Spinat, Salat, Brokkoli oder andere grüne Gemüsesorten nennt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 36,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: Himmel — Tasse — Berg.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer diese Wörter später wiederholen kann.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 37,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Sage ein Wort, das mit \"Meer\" zu tun hat.",
+        "expected_answer": "Die erwartete Antwort ist ein Wort wie \"Welle\", \"Strand\", \"Sand\", \"Schiff\" usw.",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 37,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Können Katzen Haustiere sein?",
+        "expected_answer": "Die erwartete Antwort ist ja, weil sie zur Gruppe der Haustiere gehören können.",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 37,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Monat kommt nach Juni?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Juli sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 37,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Zahl passt nicht in diese Gruppe: 2, 4, 6, 9, 8?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 9 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 37,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Wörter, die mit dem Buchstaben \"L\" beginnen.",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer ein beliebiges Wort nennt, das mit dem Buchstaben L beginnt, wie \"Lampe\", \"Löffel\", \"Licht\" oder Ähnliches.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 37,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Hemd, Zug, Lampe]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist, dass der Nutzer die drei Wörter (Himmel, Tasse und Berg) in beliebiger Reihenfolge erinnert.",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 38,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht zur Gruppe? (Zwei sind Objekte und eines nicht): Stuhl, Tisch, Hund.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Hund sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 38,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn ein Zug 2 Stunden bis zum Ziel braucht und ein anderer 4 Stunden, welcher kommt zuerst an?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer den Zug sagt, der 2 Stunden braucht.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 38,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Wochentag kommt nach Mittwoch?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Donnerstag sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 38,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Zahl folgt nicht der Sequenz: 10, 20, 30, 35, 40?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 35 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 38,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei gelbe Früchte.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Banane, Ananas, Mango (oder Ähnliches) sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 38,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: Blume — Zug — Fels. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sich die Wörter einprägt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 39,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Sage ein Wort, das mit \"Strand\" zu tun hat.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer etwas wie Sand, Meer, Sonne sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 39,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du 3 × 5 multiplizierst, was ist das Ergebnis?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 15 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 39,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Jahreszeit kommt nach dem Frühling?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Sommer sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 39,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Zahl passt nicht in: 1, 3, 5, 7, 12?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 12 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 39,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Tiere, die fliegen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Vogel, Adler, Fledermaus (oder Ähnliches) sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 39,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Rose, Wolke, Bär]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Blume — Zug — Fels sagt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 40,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht zur Gruppe? (Zwei sind Berufe und eines nicht): Arzt, Schreiner, Orange.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Orange sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 40,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du 15 − 6 subtrahierst, welche Zahl erhältst du?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 9 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 40,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ist der letzte Monat des Jahres?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Dezember sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 40,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Vervollständige das Muster: Sonne — Mond — Sonne — Mond — ___",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Sonne sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 40,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Gegenstände, die man in der Küche findet.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Teller, Glas, Löffel sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 40,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: Wolke — Tür — Fluss. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sich die Wörter einprägt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 41,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Sage ein Wort, das das Gegenteil von \"kalt\" ist.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer warm sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 41,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn ein Hund 4 Beine hat und zwei Hunde zusammen, wie viele Beine haben sie?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 8 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 41,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Tag kommt vor Sonntag?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Samstag sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 41,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Wort passt nicht in diese Gruppe: Salz, Zucker, Tisch, Pfeffer?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Tisch sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 41,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei gelbe Früchte.",
+        "expected_answer": "Eine Banane, eine Zitrone und eine Ananas.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 41,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Seil, Motor, Baum]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Wolke — Tür — Fluss sagt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 42,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Wort passt nicht in diese Gruppe (drei sind Tiere und eines nicht)? Katze, Hund, Stuhl, Pferd.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Stuhl sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 42,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du 6 Bonbons hast und 2 isst, wie viele bleiben dir?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 4 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 42,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Tag kommt vor Freitag?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Donnerstag sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 42,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Zahl passt nicht in diese Sequenz: 2, 4, 6, 9, 8?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 9 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 42,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Nutztiere.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Kuh, Schwein, Huhn (oder Ähnliches) sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 42,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: Papier — Schiff — Mond. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sich die Wörter einprägt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 43,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches davon ist kein Tier? Kuh, Pferd, Buch.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Buch sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 43,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn eine Stunde 60 Minuten hat, wie viele Minuten hat eine halbe Stunde?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 30 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 43,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Monat kommt nach August?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer September sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 43,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Erkenne das andere Objekt: Bleistift, Kugelschreiber, Schuh.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Schuh sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 43,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Dinge, die man zum Schreiben benutzt.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Bleistift, Kugelschreiber, Marker sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 43,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Wand, Stuhl, Papier]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Papier — Schiff — Mond sagt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 44,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht zur Gruppe? (Zwei sind Orte und eines nicht): Strand, Berg, Löffel.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Löffel sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 44,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn ein Kuchen in 8 Stücke geteilt wird und du 3 isst, wie viele Stücke bleiben?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 5 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 44,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Jahreszeit ist in den meisten Ländern die kälteste?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Winter sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 44,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Wort passt nicht in diese Gruppe: Rot, Blau, Dreieck, Grün?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Dreieck sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 44,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Gegenstände, die man in einem Badezimmer finden kann.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Seife, Handtuch, Zahnbürste sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 44,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: Lampe — Wolke — Garten. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sich die Wörter einprägt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 45,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht dazu? (Zwei sind Tiere und eines nicht): Pferd, Schwein, Hemd.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Hemd sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 45,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn eine Uhr 3:00 Uhr anzeigt und zwei Stunden vergehen, wie spät ist es dann?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 5:00 Uhr sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 45,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Tag kommt nach Montag?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Dienstag sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 45,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Zahl passt nicht in diese Reihe: 2, 4, 6, 9, 8?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 9 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 45,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Aktivitäten, die man als Hobby betreiben kann.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Lesen, Stricken, Malen oder Ähnliches sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 45,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Klavier, Strand, Tasse]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Lampe — Wolke — Garten sagt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 46,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht zur Gruppe? (Zwei sind Speisen und eines nicht): Suppe, Reis, Schuh.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Schuh sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 46,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn ein Baum 12 Äpfel hat und 5 herunterfallen, wie viele bleiben am Baum?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 7 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 46,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Tag ist der letzte der Woche?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Sonntag sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 46,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Wort passt nicht in die Gruppe: hoch, niedrig, Hund?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Hund sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 46,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Gegenstände, die man in einem Schlafzimmer findet.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Bett, Lampe, Kissen sagt oder Ähnliches.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 46,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: Fenster — Zug — Blatt. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sich die Wörter einprägt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 47,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht dazu? (Zwei sind Gefühle und eines nicht): Freude, Trauer, Tisch.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Tisch sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 47,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du 20 Euro hast und 7 ausgibst, wie viel Geld bleibt dir?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 13 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 47,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Monat kommt vor März?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Februar sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 47,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Wort passt nicht in diese Gruppe: Hund, Katze, Sofa?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Sofa sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 47,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Zitrusfrüchte.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Orange, Zitrone, Grapefruit (oder Ähnliches) sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 47,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Würfel, Meer, Geldbörse]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Fenster — Zug — Blatt in beliebiger Reihenfolge sagt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 48,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht zur Gruppe? (Zwei sind Farben und eines nicht): Rot, Blau, Tür.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Tür sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 48,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn ein Buch 8 Euro kostet und du 2 kaufst, wie viel zahlst du insgesamt?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 16 Euro sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 48,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Tag kommt vor Donnerstag?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Mittwoch sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 48,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Zahl passt nicht in: 5, 10, 15, 22, 20?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 22 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 48,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Tiere, die im Wald leben.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Bär, Wolf, Hirsch (oder Ähnliches) sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 48,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: Weg — Sonne — Tür. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sich die Wörter einprägt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 49,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht zur Gruppe? (Zwei sind Objekte und eines nicht): Tisch, Fenster, Elefant.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Elefant sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 49,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn ein Bus 30 Sitze hat und 18 belegt sind, wie viele sind noch frei?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 12 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 49,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Monat kommt nach November?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Dezember sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 49,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Wort passt nicht in diese Gruppe: laufen, springen, schreiben?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer schreiben sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 49,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei grüne Früchte.",
+        "expected_answer": "Ein grüner Apfel, eine Kiwi und eine grüne Traube.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 49,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [See, Sonne, Löffel]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Weg — Sonne — Tür sagt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 50,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht dazu? (Zwei sind Orte und eines nicht): Park, Schule, Messer.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Messer sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 50,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn wir 20 durch 5 teilen, was ist das Ergebnis?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 4 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 50,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Tag ist der erste der Woche?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Montag sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 50,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Wort passt nicht in die Gruppe: Kreis, Quadrat, Orange?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Orange sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 50,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Berufe, die im Freien ausgeübt werden.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Gärtner, Landwirt, Briefträger (oder Ähnliches) sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 50,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: Leuchtturm — Papier — Regen. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sich die Wörter einprägt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 51,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht zur Gruppe? (Zwei sind Wassertiere und eines nicht): Fisch, Tintenfisch, Tisch.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Tisch sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 51,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn 9 + 6 = 15 ist, wie viel ist 15 − 6?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 9 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 51,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ist der erste Monat des Jahres?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Januar sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 51,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Vervollständige die Sequenz: 2 — 4 — 6 — 8 — __",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 10 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 51,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Dinge, die man zum Reinigen benutzt.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Besen, Reinigungsmittel, Lappen sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 51,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Regen, Tisch, Blatt]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Leuchtturm — Papier — Regen sagt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 52,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht dazu? (Zwei sind Früchte und eines nicht): Mango, Erdbeere, Stuhl.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Stuhl sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 52,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du 30 minus 12 rechnest, was ist das Ergebnis?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 18 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 52,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Tag kommt zwei Tage nach Dienstag?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Donnerstag sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 52,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Wort passt nicht in diese Gruppe: Bett, Kissen, Hund?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Hund sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 52,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Aktivitäten, die man am Strand machen kann.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Schwimmen, Spazieren, Sonnenbaden oder Ähnliches sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 52,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: Hafen — Mond — Garten. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sich die Wörter einprägt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 53,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht dazu? (Zwei sind Körperteile und eines nicht): Hand, Knie, Fenster.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Fenster sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 53,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du 14 Bonbons hast und 5 verschenkst, wie viele bleiben dir?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 9 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 53,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Jahreszeit kommt nach dem Winter?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Frühling sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 53,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Zahl passt nicht in: 3, 6, 9, 11, 12?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 11 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 53,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Dinge, die man in einer Schule findet.",
+        "expected_answer": "Ein Klassenzimmer, einen Lehrer und eine Tafel.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 53,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Hut, Käse, Hund]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Hafen — Mond — Garten sagt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 54,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht dazu? (Zwei sind Transportmittel und eines nicht): Zug, Fahrrad, Löffel.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Löffel sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 54,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viel ist 25 geteilt durch 5?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 5 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 54,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Monat kommt vor April?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer März sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 54,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Wort passt nicht in: singen, tanzen, hämmern?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer hämmern sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 54,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei heiße Getränke.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Tee, Kaffee, heiße Schokolade oder Ähnliches sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 54,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: Stein — Wolke — Spiegel. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sich die Wörter einprägt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 55,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht dazu? (Zwei sind Gefühle und eines nicht): Freude, Angst, Schuh.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Schuh sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 55,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn wir 17 + 8 addieren, was ist das Ergebnis?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 25 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 55,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Tag kommt nach Samstag?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Sonntag sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 55,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Vervollständige die Sequenz: 10 — 20 — 30 — 40 — __",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 50 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 55,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Werkzeuge.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Hammer, Schraubenzieher, Schraubenschlüssel oder Ähnliches sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 55,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Teller, Wolke, Katze]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Stein — Wolke — Spiegel sagt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 56,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht dazu? (Zwei sind Landtiere und eines nicht): Pferd, Hund, Delfin.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Delfin sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 56,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du 50 Euro hast und 18 ausgibst, wie viel bleibt dir?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 32 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 56,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Tag kommt vor Montag?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Sonntag sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 56,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Vervollständige die Sequenz: 1 — 4 — 7 — 10 — __",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 13 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 56,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Dinge, die man in einer Küche findet.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Topf, Messer, Teller sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 56,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: Nest — Salz — Tür. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sich die Wörter einprägt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 57,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht dazu? (Zwei sind Farben und eines nicht): Rot, Blau, Schuh.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Schuh sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 57,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viel ist 12 × 2?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 24 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 57,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Monat kommt nach September?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Oktober sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 57,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Zahl passt nicht: 5, 10, 15, 22, 20?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 22 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 57,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Dinge, die man in einem Park findet.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Bäume, Bank, Schaukel oder Ähnliches sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 57,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Wind, Felsen, Geldbörse]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Nest — Salz — Tür sagt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 58,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht zur Gruppe? (Zwei sind Instrumente und eines nicht): Gitarre, Klavier, Apfel.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Apfel sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 58,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du 20 Münzen hast und 5 verschenkst, wie viele bleiben dir?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 15 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 58,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Tag kommt vor Dienstag?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Montag sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 58,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Zahl folgt nicht dem Muster: 4, 8, 12, 18, 16?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 18 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 58,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Getränke.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Wasser, Saft, Kaffee sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 58,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: Haus — Wolke — Zitrone. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sich die Wörter einprägt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 59,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht dazu? (Zwei sind Getränke und eines nicht): Saft, Limonade, Schuh.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Schuh sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 59,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du 12 Bonbons hast und 2 verschenkst, wie viele bleiben dir?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 10 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 59,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "In welcher Jahreszeit ist es üblicherweise am kältesten?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Winter sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 59,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Zahl passt nicht in diese Reihe: 4, 8, 12, 16, 15?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 15 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 59,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Dinge, die Licht erzeugen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Sonne, Taschenlampe, Glühbirne (oder Ähnliches) sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 59,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Wassermelone, Fluss, Schuh]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Haus — Wolke — Zitrone sagt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 60,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht dazu? (Zwei sind Fahrzeuge und eines nicht): Fahrrad, Auto, Fenster.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Fenster sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 60,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du 12 Äpfel hast und 3 gibst, wie viele bleiben dir?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 9 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 60,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Tag kommt nach Samstag?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Sonntag sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 60,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Zahl passt nicht in diese Liste: 4, 8, 12, 17, 16?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 17 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 60,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Dinge, die Geräusche machen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Motor, Hund, Regen (oder Ähnliches) sagt.\"",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 60,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: Leuchtturm — Feder — Brücke. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sich die Wörter einprägt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 61,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht dazu? (Zwei sind Lebensmittel und eines nicht): Käse, Brot, Heft.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Heft sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 61,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn eine Minute 60 Sekunden hat, wie viele Sekunden sind in 5 Minuten?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 300 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 61,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Zu welcher Tageszeit frühstückt man normalerweise?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer am Morgen sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 61,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Zahl folgt nicht der Sequenz: 5, 10, 15, 18, 20?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 18 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 61,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Tiere, die im Dschungel leben.",
+        "expected_answer": "Nenne drei Tiere, die im Dschungel leben.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 61,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: [Baum, Glocke, Kaffee]. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Leuchtturm — Feder — Brücke sagt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 62,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches dieser Wörter gehört nicht dazu? (Zwei sind Tiere und eines nicht): Pferd, Kuh, Teller.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Teller sagt.\"",
+        "question_type": "Aufmerksamkeit",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 62,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn du 12 Bonbons hast und 4 verschenkst, wie viele bleiben dir?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 8 sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 62,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Tage hat eine Woche?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer 7 Tage sagt.\"",
+        "question_type": "Orientierung",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 62,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Wort passt nicht in diese Gruppe: Löffel, Gabel, Kissen?",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer Kissen sagt.\"",
+        "question_type": "Denkvermögen",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 62,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Nenne drei Dinge, die man in einem Wohnzimmer findet.",
+        "expected_answer": "Ein Sofa, einen Fernseher und einen Tisch.",
+        "question_type": "Wortfluss",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  },
+  {
+    "session": 62,
+    "tier": 1,
+    "max_score": 1,
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Merke dir diese Wörter: Brücke — Schlüssel — Berg. Ich werde sie dir später abfragen.",
+        "expected_answer": "Die erwartete Antwort ist: \"Es wird erwartet, dass der Nutzer sich die Wörter einprägt.\"",
+        "question_type": "Gedächtnis",
+        "theme": "",
+        "scoring_logic": "\"Nur eine korrekte Antwort wird gewertet. In ganzen Zahlen\""
+      }
+    ]
+  }
+]

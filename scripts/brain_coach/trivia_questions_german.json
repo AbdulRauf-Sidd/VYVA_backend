@@ -1,0 +1,2972 @@
+[
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was verursacht Tag und Nacht auf der Erde?\n\nOptions: A) Die Umlaufbahn der Erde um die Sonne\nB) Die Rotation der Erde ✅\nC) Die Entfernung zwischen Erde und Mond",
+        "expected_answer": "Die richtige Antwort ist Option B, die Rotation der Erde",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Naturkraft hält die Planeten auf ihrer Umlaufbahn?\n\nOptions: A) Die Schwerkraft ✅\nB) Die Wärmeenergie\nC) Der Sonnenmagnetismus",
+        "expected_answer": "Die richtige Antwort ist Option A, die Schwerkraft",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was bedeckt den größten Teil der Erdoberfläche?\n\nOptions: A) Eis\nB) Festland\nC) Wasser ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Wasser",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was verursacht die Jahreszeiten auf der Erde?\n\nOptions: A) Die Entfernung zwischen Erde und Sonne\nB) Die tägliche Rotation der Erde\nC) Die Neigung der Erde und ihre Umlaufbahn um die Sonne ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, die Neigung der Erde und ihre Umlaufbahn um die Sonne",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Ozeane gibt es auf der Erde?\n\nOptions: A) Fünf ✅\nB) Vier\nC) Sechs",
+        "expected_answer": "Die richtige Antwort ist Option A, Fünf",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Gas brauchen Menschen zum Atmen und Überleben?\n\nOptions: A) Kohlendioxid\nB) Sauerstoff ✅\nC) Stickstoff",
+        "expected_answer": "Die richtige Antwort ist Option B, Sauerstoff",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Warum scheint der Mond seine Form zu verändern?\n\nOptions: A) Weil er seine tatsächliche Größe verändert\nB) Weil er sich der Erde nähert und entfernt\nC) Aufgrund seiner relativen Position zur Erde und Sonne ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, aufgrund seiner relativen Position zur Erde und Sonne",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Planet ist der größte im Sonnensystem?\n\nOptions: A) Saturn\nB) Jupiter ✅\nC) Neptun",
+        "expected_answer": "Die richtige Antwort ist Option B, Jupiter",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was verursacht die Gezeiten auf der Erde?\n\nOptions: A) Der Wind\nB) Die Rotation der Erde\nC) Die Schwerkraft des Mondes ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, die Schwerkraft des Mondes",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher natürliche Prozess verwandelt Wasser in Dampf?\n\nOptions: A) Kondensation\nB) Verdunstung ✅\nC) Verfestigung",
+        "expected_answer": "Die richtige Antwort ist Option B, Verdunstung",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie nennen wir gefrorenes Wasser?\n\nOptions: A) Dampf\nB) Eis ✅\nC) Nebel",
+        "expected_answer": "Die richtige Antwort ist Option B, Eis",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ist die Hauptenergiequelle für das Leben auf der Erde?\n\nOptions: A) Der Wind\nB) Das Wasser\nC) Die Sonne ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, die Sonne",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Schicht umgibt die Erde und enthält Luft?\n\nOptions: A) Die Hydrosphäre\nB) Die Atmosphäre ✅\nC) Die Lithosphäre",
+        "expected_answer": "Die richtige Antwort ist Option B, die Atmosphäre",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Planet ist für seine Ringe bekannt?\n\nOptions: A) Uranus\nB) Jupiter\nC) Saturn ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Saturn",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was brauchen Pflanzen aus dem Sonnenlicht zum Wachsen?\n\nOptions: A) Wärme\nB) Energie ✅\nC) Farbe",
+        "expected_answer": "Die richtige Antwort ist Option B, Energie",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Naturphänomen verursacht Blitze?\n\nOptions: A) Die Reibung des Windes\nB) Elektrische Entladungen in den Wolken ✅\nC) Der Zusammenstoß von Kaltluftmassen",
+        "expected_answer": "Die richtige Antwort ist Option B, elektrische Entladungen in den Wolken",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Planet ist der heißeste im Sonnensystem?\n\nOptions: A) Merkur\nB) Venus ✅\nC) Mars",
+        "expected_answer": "Die richtige Antwort ist Option B, Venus",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was verursacht Erdbeben?\n\nOptions: A) Oberflächliche Vulkanaktivität\nB) Plötzliche Temperaturwechsel\nC) Die Bewegung der tektonischen Platten ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, die Bewegung der tektonischen Platten",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie nennen wir geschmolzenes Gestein unterhalb der Erdoberfläche?\n\nOptions: A) Lava\nB) Magma ✅\nC) Basalt",
+        "expected_answer": "Die richtige Antwort ist Option B, Magma",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Naturkraft zieht Objekte zur Erde hin?\n\nOptions: A) Die Schwerkraft ✅\nB) Die Reibung\nC) Die Trägheit",
+        "expected_answer": "Die richtige Antwort ist Option A, die Schwerkraft",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was passiert, wenn Wasser kocht?\n\nOptions: A) Es gefriert\nB) Es wird fest\nC) Es wird zu Dampf ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, es wird zu Dampf",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Gas nehmen Pflanzen aus der Luft auf?\n\nOptions: A) Sauerstoff\nB) Kohlendioxid ✅\nC) Stickstoff",
+        "expected_answer": "Die richtige Antwort ist Option B, Kohlendioxid",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Kontinente gibt es?\n\nOptions: A) Sechs\nB) Sieben ✅\nC) Acht",
+        "expected_answer": "Die richtige Antwort ist Option B, Sieben",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was passiert mit Wasser, wenn es gefriert?\n\nOptions: A) Es verdunstet\nB) Es wird fest ✅\nC) Es wird gasförmig",
+        "expected_answer": "Die richtige Antwort ist Option B, es wird fest",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Planet ist der Sonne am nächsten?\n\nOptions: A) Merkur ✅\nB) Venus\nC) Mars",
+        "expected_answer": "Die richtige Antwort ist Option A, Merkur",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Warum ist es nicht in allen Ländern gleichzeitig die gleiche Uhrzeit?\n\nOptions: A) Weil jedes Land seine eigene Zeit wählt\nB) Weil die Sonne sich um die Erde dreht\nC) Weil die Erde rotiert und das Sonnenlicht zu verschiedenen Zeiten empfängt ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, weil die Erde rotiert und das Sonnenlicht zu verschiedenen Zeiten empfängt",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Tage hat ein Schaltjahr?\n\nOptions: A) 365\nB) 366 ✅\nC) 364",
+        "expected_answer": "Die richtige Antwort ist Option B, 366",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was verursacht ein Schaltjahr?\n\nOptions: A) Die tägliche Rotation der Erde\nB) Die Umlaufbahn der Erde dauert etwas mehr als 365 Tage ✅\nC) Änderungen im Kalender",
+        "expected_answer": "Die richtige Antwort ist Option B, die Umlaufbahn der Erde dauert etwas mehr als 365 Tage",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Einheit wird zur Messung der Temperatur verwendet?\n\nOptions: A) Grad ✅\nB) Meter\nC) Liter",
+        "expected_answer": "Die richtige Antwort ist Option A, Grad",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches System ermöglicht der Erde, die Sonne zu umkreisen?\n\nOptions: A) Das atmosphärische System\nB) Das Sonnensystem ✅\nC) Das Klimasystem",
+        "expected_answer": "Die richtige Antwort ist Option B, das Sonnensystem",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wo geht die Sonne auf?\n\nOptions: A) Im Norden\nB) Im Osten ✅\nC) Im Westen",
+        "expected_answer": "Die richtige Antwort ist Option B, im Osten",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Richtung ist dem Norden entgegengesetzt?\n\nOptions: A) Osten\nB) Westen\nC) Der Süden ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, der Süden",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Grad hat ein vollständiger Kreis?\n\nOptions: A) 180\nB) 360 ✅\nC) 270",
+        "expected_answer": "Die richtige Antwort ist Option B, 360",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher natürliche Zyklus definiert einen Monat?\n\nOptions: A) Die Umlaufbahn des Mondes ✅\nB) Die Rotation der Erde\nC) Die Umlaufbahn der Erde",
+        "expected_answer": "Die richtige Antwort ist Option A, die Umlaufbahn des Mondes",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was passiert, wenn das Angebot die Nachfrage übersteigt?\n\nOptions: A) Die Preise steigen\nB) Die Preise sinken tendenziell ✅\nC) Die Produkte verschwinden",
+        "expected_answer": "Die richtige Antwort ist Option B, die Preise sinken tendenziell",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Warum verwenden Karten einen Maßstab?\n\nOptions: A) Um Farben anzuzeigen\nB) Um Grenzen zu markieren\nC) Um tatsächliche Entfernungen präzise darzustellen ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, um tatsächliche Entfernungen präzise darzustellen",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches System reguliert das Klima der Erde?\n\nOptions: A) Das geologische System\nB) Das Sonnensystem\nC) Das atmosphärische System ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, das atmosphärische System",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was zeigt ein Kompass an?\n\nOptions: A) Die Geschwindigkeit\nB) Die Richtung ✅\nC) Die Temperatur",
+        "expected_answer": "Die richtige Antwort ist Option B, die Richtung",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was bewirkt, dass sich Schatten verschieben?\n\nOptions: A) Die Bewegung der Wolken\nB) Die Bewegung der Sonne am Himmel ✅\nC) Die Rotation des Mondes",
+        "expected_answer": "Die richtige Antwort ist Option B, die Bewegung der Sonne am Himmel",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was hält Satelliten auf ihrer Umlaufbahn um die Erde?\n\nOptions: A) Der Erdmagnetismus\nB) Die Schwerkraft ✅\nC) Der Luftdruck",
+        "expected_answer": "Die richtige Antwort ist Option B, die Schwerkraft",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was wird in Kilometern oder Meilen gemessen?\n\nOptions: A) Die Zeit\nB) Die Entfernung ✅\nC) Das Gewicht",
+        "expected_answer": "Die richtige Antwort ist Option B, die Entfernung",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches System transportiert das Blut durch den Körper?\n\nOptions: A) Das Nervensystem\nB) Das Kreislaufsystem ✅\nC) Das Verdauungssystem",
+        "expected_answer": "Die richtige Antwort ist Option B, das Kreislaufsystem",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher natürliche Zyklus wiederholt sich jedes Jahr?\n\nOptions: A) Die Rotation der Erde\nB) Die Umlaufbahn der Erde um die Sonne ✅\nC) Die Umlaufbahn des Mondes",
+        "expected_answer": "Die richtige Antwort ist Option B, die Umlaufbahn der Erde um die Sonne",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ist die kleinste Primzahl?\n\nOptions: A) 1\nB) 2 ✅\nC) 8",
+        "expected_answer": "Die richtige Antwort ist Option B, 2",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ist die Quadratwurzel von 64?\n\nOptions: A) 1\nB) 2\nC) 8 ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, 8",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Flächen hat ein Würfel?\n\nOptions: A) 8\nB) 6 ✅\nC) 4",
+        "expected_answer": "Die richtige Antwort ist Option B, 6",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Figur hat drei Seiten?\n\nOptions: A) Quadrat\nB) Dreieck ✅\nC) Kreis",
+        "expected_answer": "Die richtige Antwort ist Option B, Dreieck",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Figur hat sechs Seiten?\n\nOptions: A) Fünfeck\nB) Achteck\nC) Sechseck ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Sechseck",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wenn zwei gleiche Hälften ein Ganzes ergeben, wie viele Hälften gibt es?\n\nOptions: A) Zwei ✅\nB) Eine\nC) Drei",
+        "expected_answer": "Die richtige Antwort ist Option A, Zwei",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Zahl liegt genau in der Mitte zwischen 0 und 10?\n\nOptions: A) 4\nB) 5 ✅\nC) 6",
+        "expected_answer": "Die richtige Antwort ist Option B, 5",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was wiegt mehr: 1 kg Eisen oder 1 kg Federn?\n\nOptions: A) Das Eisen\nB) Die Federn\nC) Beide wiegen gleich viel ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, beide wiegen gleich viel",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Ecken hat ein Rechteck?\n\nOptions: A) 4 ✅\nB) 6\nC) 2",
+        "expected_answer": "Die richtige Antwort ist Option A, 4",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Form hat eine Kugel?\n\nOptions: A) Rund ✅\nB) Quadratisch\nC) Dreieckig",
+        "expected_answer": "Die richtige Antwort ist Option A, Rund",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Zahl kommt nach 999?\n\nOptions: A) 9999\nB) 100\nC) 1000 ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, 1000",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Seiten hat ein Quadrat?\n\nOptions: A) 4 ✅\nB) 3\nC) 5",
+        "expected_answer": "Die richtige Antwort ist Option A, 4",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was bedeutet 'gerade Zahl'?\n\nOptions: A) Dass sie größer als 10 ist\nB) Dass sie durch 2 teilbar ist ✅\nC) Dass sie auf 5 endet",
+        "expected_answer": "Die richtige Antwort ist Option B, durch 2 teilbar",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viel ist 100 geteilt durch 10?\n\nOptions: A) 5\nB) 10 ✅\nC) 20",
+        "expected_answer": "Die richtige Antwort ist Option B, 10",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was kommt vor der Null?\n\nOptions: A) Die Zahl Eins\nB) Die negativen Zahlen ✅\nC) Die positiven Zahlen",
+        "expected_answer": "Die richtige Antwort ist Option B, die negativen Zahlen",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Einheit wird zur Messung des Gewichts verwendet?\n\nOptions: A) Meter\nB) Liter\nC) Kilogramm / Pfund ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Kilogramm / Pfund",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ pumpt das Blut durch den Körper?\n\nOptions: A) Das Gehirn\nB) Das Herz ✅\nC) Die Lungen",
+        "expected_answer": "Die richtige Antwort ist Option B, das Herz",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ ist für die Atmung verantwortlich?\n\nOptions: A) Die Lungen ✅\nB) Die Leber\nC) Das Herz",
+        "expected_answer": "Die richtige Antwort ist Option A, die Lungen",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Körperteil kontrolliert das Gleichgewicht?\n\nOptions: A) Das Gehirn\nB) Das Innenohr ✅\nC) Die Augen",
+        "expected_answer": "Die richtige Antwort ist Option B, das Innenohr",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ filtert das Blut?\n\nOptions: A) Die Leber\nB) Das Herz\nC) Die Nieren ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, die Nieren",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ produziert Insulin?\n\nOptions: A) Der Magen\nB) Die Bauchspeicheldrüse ✅\nC) Die Leber",
+        "expected_answer": "Die richtige Antwort ist Option B, die Bauchspeicheldrüse",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Körperteil ermöglicht uns das Sehen?\n\nOptions: A) Die Augen ✅\nB) Die Ohren\nC) Das Gehirn",
+        "expected_answer": "Die richtige Antwort ist Option A, die Augen",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches System ermöglicht uns das Bewegen?\n\nOptions: A) Das Skelettsystem\nB) Das Nervensystem\nC) Das Muskelsystem ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, das Muskelsystem",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was transportiert den Sauerstoff im Blut?\n\nOptions: A) Das Plasma\nB) Die roten Blutkörperchen ✅\nC) Die Blutplättchen",
+        "expected_answer": "Die richtige Antwort ist Option B, die roten Blutkörperchen",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Körperteil schützt das Gehirn?\n\nOptions: A) Die Wirbelsäule\nB) Der Schädel ✅\nC) Die Haut",
+        "expected_answer": "Die richtige Antwort ist Option B, der Schädel",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ verarbeitet die Nährstoffe aus der Nahrung?\n\nOptions: A) Der Magen\nB) Die Leber ✅\nC) Die Bauchspeicheldrüse",
+        "expected_answer": "Die richtige Antwort ist Option B, die Leber",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches System kontrolliert Denken und Bewegung?\n\nOptions: A) Das Kreislaufsystem\nB) Das Nervensystem ✅\nC) Das Muskelsystem",
+        "expected_answer": "Die richtige Antwort ist Option B, das Nervensystem",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Körperteil speichert das Gedächtnis?\n\nOptions: A) Das Herz\nB) Das Gehirn ✅\nC) Die Lungen",
+        "expected_answer": "Die richtige Antwort ist Option B, das Gehirn",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was hilft dem Körper, Infektionen zu bekämpfen?\n\nOptions: A) Das Verdauungssystem\nB) Das Immunsystem ✅\nC) Das Atmungssystem",
+        "expected_answer": "Die richtige Antwort ist Option B, das Immunsystem",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ist der längste Knochen im Körper?\n\nOptions: A) Das Schienbein\nB) Der Oberschenkelknochen ✅\nC) Der Oberarmknochen",
+        "expected_answer": "Die richtige Antwort ist Option B, der Oberschenkelknochen",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was verbindet die Muskeln mit den Knochen?\n\nOptions: A) Die Bänder\nB) Die Sehnen ✅\nC) Die Gelenke",
+        "expected_answer": "Die richtige Antwort ist Option B, die Sehnen",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Kontinente sind bewohnt?\n\nOptions: A) Fünf\nB) Sechs ✅\nC) Sieben",
+        "expected_answer": "Die richtige Antwort ist Option B, Sechs",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ist der größte Ozean?\n\nOptions: A) Der Atlantische Ozean\nB) Der Indische Ozean\nC) Der Pazifische Ozean ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, der Pazifische Ozean",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Linie teilt die Erde in Hemisphären?\n\nOptions: A) Der Nullmeridian\nB) Der Äquator ✅\nC) Die Wendekreise",
+        "expected_answer": "Die richtige Antwort ist Option B, der Äquator",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche gedachte Linie teilt die östlichen und westlichen Längengrade?\n\nOptions: A) Der Nullmeridian (Greenwich) ✅\nB) Der Äquator\nC) Der Wendekreis des Krebses",
+        "expected_answer": "Die richtige Antwort ist Option A, der Nullmeridian (Greenwich)",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ist der höchste Berg der Erde?\n\nOptions: A) Der K2\nB) Der Aconcagua\nC) Der Mount Everest ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, der Mount Everest",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ist das am häufigsten verwendete System zur Zeitmessung?\n\nOptions: A) Der Mondkalender\nB) Stunden, Minuten und Sekunden ✅\nC) Das Dezimalsystem",
+        "expected_answer": "Die richtige Antwort ist Option B, Stunden, Minuten und Sekunden",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche natürliche Ressource erzeugt Strom in Windkraftanlagen?\n\nOptions: A) Das Wasser\nB) Das Sonnenlicht\nC) Der Wind ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, der Wind",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Gas schützt die Erde vor schädlicher Sonnenstrahlung?\n\nOptions: A) Sauerstoff\nB) Ozon ✅\nC) Kohlendioxid",
+        "expected_answer": "Die richtige Antwort ist Option B, Ozon",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Aus welchem natürlichen Material besteht Glas hauptsächlich?\n\nOptions: A) Ton\nB) Sand ✅\nC) Kalkstein",
+        "expected_answer": "Die richtige Antwort ist Option B, Sand",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Struktur verbindet Länder für Handel und Reisen?\n\nOptions: A) Die Ozeane\nB) Die Grenzen ✅\nC) Die Kontinente",
+        "expected_answer": "Die richtige Antwort ist Option B, die Grenzen",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches System ermöglicht es Ländern, Güter auszutauschen?\n\nOptions: A) Das politische System\nB) Das Finanzsystem\nC) Die Wirtschaft ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, die Wirtschaft",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Erfindung ermöglicht sofortige Kommunikation über große Entfernungen?\n\nOptions: A) Der Telegraph\nB) Die Telekommunikation ✅\nC) Die Post",
+        "expected_answer": "Die richtige Antwort ist Option B, die Telekommunikation",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches System organisiert Gesetze und öffentliche Dienstleistungen?\n\nOptions: A) Das Rechtssystem\nB) Die Regierung ✅\nC) Das Bildungssystem",
+        "expected_answer": "Die richtige Antwort ist Option B, die Regierung",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche globale Organisation fördert die Zusammenarbeit zwischen Ländern?\n\nOptions: A) Die Europäische Union\nB) Die Vereinten Nationen ✅\nC) Die NATO",
+        "expected_answer": "Die richtige Antwort ist Option B, die Vereinten Nationen",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche natürliche Ressource treibt die meisten Fahrzeuge an?\n\nOptions: A) Erdgas\nB) Elektrizität\nC) Erdöl / Kraftstoff ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Erdöl / Kraftstoff",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Prozess verwandelt Rohstoffe in Produkte?\n\nOptions: A) Das Recycling\nB) Die Herstellung ✅\nC) Der Vertrieb",
+        "expected_answer": "Die richtige Antwort ist Option B, die Herstellung",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Naturkraft wirkt der Bewegung zwischen Oberflächen entgegen?\n\nOptions: A) Die Schwerkraft\nB) Die Reibung ✅\nC) Der Druck",
+        "expected_answer": "Die richtige Antwort ist Option B, die Reibung",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie nennen wir eine Gruppe von Sternen, die ein Muster bilden?\n\nOptions: A) Ein Sonnensystem\nB) Ein Sternbild ✅\nC) Eine Galaxie",
+        "expected_answer": "Die richtige Antwort ist Option B, ein Sternbild",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ermöglicht Flugzeugen, in der Luft zu bleiben?\n\nOptions: A) Die Schwerkraft\nB) Der Triebwerksschub\nC) Der Auftrieb ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, der Auftrieb",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "In welchem Jahr erreichte der Mensch den Mond?\n\nOptions: A) 1972\nB) 1969 ✅\nC) 1959",
+        "expected_answer": "Die richtige Antwort ist Option B, 1969",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches ist das flächenmäßig größte Land der Welt?\n\nOptions: A) Kanada\nB) China\nC) Russland ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Russland",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ des menschlichen Körpers verbraucht am meisten Energie?\n\nOptions: A) Das Herz\nB) Das Gehirn ✅\nC) Die Muskeln",
+        "expected_answer": "Die richtige Antwort ist Option B, das Gehirn",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wer hat das Abendmahl gemalt?\n\nOptions: A) Michelangelo\nB) Leonardo da Vinci ✅\nC) Raffael",
+        "expected_answer": "Die richtige Antwort ist Option B, Leonardo da Vinci",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ist die weltweit meistgesprochene Muttersprache?\n\nOptions: A) Englisch\nB) Mandarin-Chinesisch ✅\nC) Portugiesisch",
+        "expected_answer": "Die richtige Antwort ist Option B, Mandarin-Chinesisch",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches ist das häufigste Metall in der Erdkruste?\n\nOptions: A) Eisen\nB) Aluminium ✅\nC) Kupfer",
+        "expected_answer": "Die richtige Antwort ist Option B, Aluminium",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ des menschlichen Körpers produziert Galle?\n\nOptions: A) Der Magen\nB) Die Leber ✅\nC) Die Bauchspeicheldrüse",
+        "expected_answer": "Die richtige Antwort ist Option B, die Leber",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Planet ist als der rote Planet bekannt?\n\nOptions: A) Jupiter\nB) Mars ✅\nC) Saturn",
+        "expected_answer": "Die richtige Antwort ist Option B, Mars",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ist der längste Fluss der Welt?\n\nOptions: A) Amazonas ✅\nB) Nil\nC) Jangtsekiang",
+        "expected_answer": "Die richtige Antwort ist Option A, Amazonas",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Instrument wird zur Messung von Erdbeben verwendet?\n\nOptions: A) Thermometer\nB) Seismograph ✅\nC) Barometer",
+        "expected_answer": "Die richtige Antwort ist Option B, Seismograph",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was für ein Tier ist ein Wal?\n\nOptions: A) Fisch\nB) Reptil\nC) Säugetier ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Säugetier",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Zähne hat ein Erwachsener normalerweise?\n\nOptions: A) 28\nB) 30\nC) 32 ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, 32",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches ist der größte Kontinent der Welt?\n\nOptions: A) Afrika\nB) Asien ✅\nC) Europa",
+        "expected_answer": "Die richtige Antwort ist Option B, Asien",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Gas atmen Menschen aus?\n\nOptions: A) Sauerstoff\nB) Stickstoff\nC) Kohlendioxid ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Kohlendioxid",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Art von Energie produziert die Sonne?\n\nOptions: A) Solarenergie ✅\nB) Kernenergie\nC) Windenergie",
+        "expected_answer": "Die richtige Antwort ist Option A, Solarenergie",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Land hat die Form eines Stiefels?\n\nOptions: A) Spanien\nB) Italien ✅\nC) Griechenland",
+        "expected_answer": "Richtige Antwort: B, Italien",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Seiten hat ein Fünfeck?\n\nOptions: A) Vier\nB) Fünf ✅\nC) Sechs",
+        "expected_answer": "Richtige Antwort: B, Fünf",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ ermöglicht das Hören?\n\nOptions: A) Augen\nB) Ohren ✅\nC) Nase",
+        "expected_answer": "Richtige Antwort: B, Ohren",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Tier ist als der König des Dschungels bekannt?\n\nOptions: A) Tiger\nB) Löwe ✅\nC) Elefant",
+        "expected_answer": "Richtige Antwort: B, Löwe",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ist die Amtssprache Brasiliens?\n\nOptions: A) Spanisch\nB) Portugiesisch ✅\nC) Französisch",
+        "expected_answer": "Richtige Antwort: B, Portugiesisch",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Instrument wird zur Messung der Körpertemperatur verwendet?\n\nOptions: A) Barometer\nB) Thermometer ✅\nC) Lineal",
+        "expected_answer": "Die richtige Antwort ist Option B, Thermometer",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Planet hat die meisten Monde im Sonnensystem?\n\nOptions: A) Mars\nB) Jupiter ✅\nC) Venus",
+        "expected_answer": "Die richtige Antwort ist Option B, Jupiter",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Tier ist ein Amphibium?\n\nOptions: A) Schlange\nB) Frosch ✅\nC) Adler",
+        "expected_answer": "Die richtige Antwort ist Option B, Frosch",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ist die Hauptstadt Frankreichs?\n\nOptions: A) Rom\nB) Madrid\nC) Paris ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Paris",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Blutgruppe gilt als Universalspender?\n\nOptions: A) O- ✅\nB) AB+\nC) A+",
+        "expected_answer": "Die richtige Antwort ist Option A, O negativ",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Wie viele Planeten gibt es im Sonnensystem?\n\nOptions: A) Acht ✅\nB) Neun\nC) Zehn",
+        "expected_answer": "Die richtige Antwort ist Option A, Acht",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Tier ist das schnellste an Land?\n\nOptions: A) Löwe\nB) Pferd\nC) Gepard ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Gepard",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Wissenschaft untersucht Karten?\n\nOptions: A) Geologie\nB) Kartografie ✅\nC) Astronomie",
+        "expected_answer": "Die richtige Antwort ist Option B, Kartografie",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ des menschlichen Körpers produziert Urin?\n\nOptions: A) Lungen\nB) Nieren ✅\nC) Darm",
+        "expected_answer": "Die richtige Antwort ist Option B, Nieren",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Land gilt als Wiege der Demokratie?\n\nOptions: A) Italien\nB) Griechenland ✅\nC) Ägypten",
+        "expected_answer": "Die richtige Antwort ist Option B, Griechenland",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Art von Energie nutzt ein Staudamm?\n\nOptions: A) Solarenergie\nB) Windenergie\nC) Wasserkraft ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Wasserkraft",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Teil der Pflanze führt die Fotosynthese durch?\n\nOptions: A) Die Wurzel\nB) Die Blüte\nC) Das Blatt ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, das Blatt",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ist die größte Wüste der Welt?\n\nOptions: A) Sahara ✅\nB) Gobi\nC) Atacama",
+        "expected_answer": "Die richtige Antwort ist Option A, Sahara",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Instrument dient zur Beobachtung von Sternen?\n\nOptions: A) Mikroskop\nB) Teleskop ✅\nC) Periskop",
+        "expected_answer": "Die richtige Antwort ist Option B, Teleskop",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Kontinent hat die meisten Länder?\n\nOptions: A) Europa\nB) Afrika ✅\nC) Asien",
+        "expected_answer": "Die richtige Antwort ist Option B, Afrika",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ kontrolliert die Hormone des Körpers?\n\nOptions: A) Das Gehirn\nB) Das endokrine System ✅\nC) Das Herz",
+        "expected_answer": "Die richtige Antwort ist Option B, das endokrine System",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Tier ist für seinen Farbwechsel bekannt?\n\nOptions: A) Chamäleon ✅\nB) Tintenfisch\nC) Leguan",
+        "expected_answer": "Die richtige Antwort ist Option A, Chamäleon",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ist das chemische Symbol für Wasser?\n\nOptions: A) CO₂\nB) H₂O ✅\nC) O₂",
+        "expected_answer": "Die richtige Antwort ist Option B, H₂O",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Land hat die größte Bevölkerung der Welt?\n\nOptions: A) Indien ✅\nB) China\nC) Vereinigte Staaten",
+        "expected_answer": "Die richtige Antwort ist Option A, Indien",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ des menschlichen Körpers produziert die roten Blutkörperchen?\n\nOptions: A) Das Herz\nB) Das Knochenmark ✅\nC) Die Leber",
+        "expected_answer": "Die richtige Antwort ist Option B, das Knochenmark",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Tier ist ein Symbol der Weisheit?\n\nOptions: A) Adler\nB) Eule ✅\nC) Rabe",
+        "expected_answer": "Die richtige Antwort ist Option B, Eule",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Kontinent ist vollständig von Eis bedeckt?\n\nOptions: A) Europa\nB) Antarktis ✅\nC) Ozeanien",
+        "expected_answer": "Die richtige Antwort ist Option B, Antarktis",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ist die Amtssprache Japans?\n\nOptions: A) Chinesisch\nB) Koreanisch\nC) Japanisch ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Japanisch",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Instrument misst den Luftdruck?\n\nOptions: A) Thermometer\nB) Barometer ✅\nC) Anemometer",
+        "expected_answer": "Die richtige Antwort ist Option B, Barometer",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Tier lebt sowohl im Wasser als auch an Land?\n\nOptions: A) Delfin\nB) Krokodil ✅\nC) Hai",
+        "expected_answer": "Die richtige Antwort ist Option B, Krokodil",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Planet dreht sich seitlich?\n\nOptions: A) Mars\nB) Uranus ✅\nC) Neptun",
+        "expected_answer": "Die richtige Antwort ist Option B, Uranus",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was ist das leichteste Metall?\n\nOptions: A) Eisen\nB) Aluminium\nC) Lithium ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Lithium",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Teil des Auges ermöglicht das Wahrnehmen von Licht?\n\nOptions: A) Netzhaut ✅\nB) Pupille\nC) Linse",
+        "expected_answer": "Die richtige Antwort ist Option A, Netzhaut",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Tier ist als bester Freund des Menschen bekannt?\n\nOptions: A) Katze\nB) Pferd\nC) Hund ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Hund",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Land hat das Schießpulver erfunden?\n\nOptions: A) China ✅\nB) Griechenland\nC) Rom",
+        "expected_answer": "Die richtige Antwort ist Option A, China",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ hilft bei der Verdauung der Nahrung?\n\nOptions: A) Der Magen ✅\nB) Die Lungen\nC) Das Herz",
+        "expected_answer": "Die richtige Antwort ist Option A, der Magen",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Gas ist für die Verbrennung unerlässlich?\n\nOptions: A) Stickstoff\nB) Sauerstoff ✅\nC) Wasserstoff",
+        "expected_answer": "Die richtige Antwort ist Option B, Sauerstoff",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "In welchem Land steht der Eiffelturm?\n\nOptions: A) Italien\nB) Frankreich ✅\nC) Belgien",
+        "expected_answer": "Die richtige Antwort ist Option B, Frankreich",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Instrument wird zur Zeitmessung verwendet?\n\nOptions: A) Uhr ✅\nB) Thermometer\nC) Kalender",
+        "expected_answer": "Die richtige Antwort ist Option A, Uhr",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Kontinent ist der kleinste der Welt?\n\nOptions: A) Europa\nB) Ozeanien ✅\nC) Amerika",
+        "expected_answer": "Die richtige Antwort ist Option B, Ozeanien",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches ist das größte Tier, das je auf der Erde existiert hat?\n\nOptions: A) Afrikanischer Elefant\nB) Blauwal ✅\nC) Dinosaurier T-Rex",
+        "expected_answer": "Die richtige Antwort ist Option B, Blauwal",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ des menschlichen Körpers ermöglicht das Riechen?\n\nOptions: A) Die Nase ✅\nB) Die Lungen\nC) Die Zunge",
+        "expected_answer": "Die richtige Antwort ist Option A, die Nase",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Planet hat den längsten Tag?\n\nOptions: A) Merkur\nB) Venus ✅\nC) Jupiter",
+        "expected_answer": "Die richtige Antwort ist Option B, Venus",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Was für ein Tier ist eine Biene?\n\nOptions: A) Spinnentier\nB) Insekt ✅\nC) Reptil",
+        "expected_answer": "Die richtige Antwort ist Option B, Insekt",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Land ist für den Schiefen Turm von Pisa bekannt?\n\nOptions: A) Griechenland\nB) Frankreich\nC) Italien ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Italien",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ des menschlichen Körpers kontrolliert den Herzrhythmus?\n\nOptions: A) Das Herz\nB) Das Gehirn ✅\nC) Die Lungen",
+        "expected_answer": "Die richtige Antwort ist Option B, das Gehirn",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Wissenschaft untersucht Erdbeben?\n\nOptions: A) Meteorologie\nB) Seismologie ✅\nC) Geografie",
+        "expected_answer": "Die richtige Antwort ist Option B, Seismologie",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Tier ist für sein Gedächtnis bekannt?\n\nOptions: A) Hund\nB) Elefant ✅\nC) Pferd",
+        "expected_answer": "Die richtige Antwort ist Option B, Elefant",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ des menschlichen Körpers reguliert die Temperatur?\n\nOptions: A) Die Haut ✅\nB) Die Leber\nC) Die Nieren",
+        "expected_answer": "Die richtige Antwort ist Option A, die Haut",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Land hat die meisten aktiven Vulkane?\n\nOptions: A) Japan\nB) Indonesien ✅\nC) Mexiko",
+        "expected_answer": "Die richtige Antwort ist Option B, Indonesien",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Gas ist in der Atmosphäre am häufigsten?\n\nOptions: A) Sauerstoff\nB) Kohlendioxid\nC) Stickstoff ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Stickstoff",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Instrument wird zur Messung der Windgeschwindigkeit verwendet?\n\nOptions: A) Barometer\nB) Anemometer ✅\nC) Thermometer",
+        "expected_answer": "Die richtige Antwort ist Option B, Anemometer",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ des menschlichen Körpers erzeugt die Stimme?\n\nOptions: A) Die Zunge\nB) Die Stimmbänder ✅\nC) Die Lungen",
+        "expected_answer": "Die richtige Antwort ist Option B, die Stimmbänder",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Kontinent hat die größte Bevölkerung?\n\nOptions: A) Afrika\nB) Amerika\nC) Asien ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Asien",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Tier kann im Stehen schlafen?\n\nOptions: A) Hund\nB) Pferd ✅\nC) Katze",
+        "expected_answer": "Die richtige Antwort ist Option B, Pferd",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Wissenschaft untersucht das Klima?\n\nOptions: A) Geologie\nB) Meteorologie ✅\nC) Astronomie",
+        "expected_answer": "Die richtige Antwort ist Option B, Meteorologie",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Körperteil ermöglicht das Schmecken?\n\nOptions: A) Die Zunge ✅\nB) Die Lippen\nC) Die Kehle",
+        "expected_answer": "Die richtige Antwort ist Option A, die Zunge",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Land ist für seine Pyramiden bekannt?\n\nOptions: A) Mexiko\nB) Peru\nC) Ägypten ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Ägypten",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Tier ist ein Symbol des Friedens?\n\nOptions: A) Taube ✅\nB) Adler\nC) Schwan",
+        "expected_answer": "Die richtige Antwort ist Option A, Taube",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Planet hat die meisten Ringe?\n\nOptions: A) Jupiter\nB) Uranus\nC) Saturn ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Saturn",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ des menschlichen Körpers ermöglicht das Tasten?\n\nOptions: A) Die Muskeln\nB) Die Haut ✅\nC) Die Knochen",
+        "expected_answer": "Die richtige Antwort ist Option B, die Haut",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "In welchem Land steht die Chinesische Mauer?\n\nOptions: A) Japan\nB) China ✅\nC) Korea",
+        "expected_answer": "Die richtige Antwort ist Option B, China",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Tier ist das schnellste im Wasser?\n\nOptions: A) Hai\nB) Delfin\nC) Segelfisch ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Segelfisch",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ des menschlichen Körpers kontrolliert die Atmung?\n\nOptions: A) Das Herz\nB) Das Gehirn ✅\nC) Der Magen",
+        "expected_answer": "Die richtige Antwort ist Option B, das Gehirn",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Kontinent liegt südlich von Europa?\n\nOptions: A) Afrika ✅\nB) Asien\nC) Ozeanien",
+        "expected_answer": "Die richtige Antwort ist Option A, Afrika",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Tier hat acht Beine?\n\nOptions: A) Ameise\nB) Spinne ✅\nC) Skorpion",
+        "expected_answer": "Die richtige Antwort ist Option B, Spinne",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Wissenschaft untersucht Pflanzen?\n\nOptions: A) Zoologie\nB) Botanik ✅\nC) Ökologie",
+        "expected_answer": "Die richtige Antwort ist Option B, Botanik",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "In welchem Land steht das Taj Mahal?\n\nOptions: A) Pakistan\nB) Indien ✅\nC) Nepal",
+        "expected_answer": "Die richtige Antwort ist Option B, Indien",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ des menschlichen Körpers ermöglicht das Hören?\n\nOptions: A) Die Augen\nB) Die Ohren ✅\nC) Die Nase",
+        "expected_answer": "Die richtige Antwort ist Option B, die Ohren",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Planet ist am weitesten von der Sonne entfernt?\n\nOptions: A) Uranus\nB) Neptun ✅\nC) Saturn",
+        "expected_answer": "Die richtige Antwort ist Option B, Neptun",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Tier ist für seinen Panzer bekannt?\n\nOptions: A) Schildkröte ✅\nB) Schlange\nC) Eidechse",
+        "expected_answer": "Die richtige Antwort ist Option A, Schildkröte",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Land ist für das Kolosseum bekannt?\n\nOptions: A) Griechenland\nB) Italien ✅\nC) Spanien",
+        "expected_answer": "Die richtige Antwort ist Option B, Italien",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ des menschlichen Körpers filtert Giftstoffe?\n\nOptions: A) Das Herz\nB) Die Leber ✅\nC) Die Lungen",
+        "expected_answer": "Die richtige Antwort ist Option B, die Leber",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Wissenschaft untersucht Tiere?\n\nOptions: A) Botanik\nB) Zoologie ✅\nC) Geologie",
+        "expected_answer": "Die richtige Antwort ist Option B, Zoologie",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Tier ist ein Symbol der Stärke?\n\nOptions: A) Löwe\nB) Stier ✅\nC) Hirsch",
+        "expected_answer": "Die richtige Antwort ist Option B, Stier",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Land ist für den Big Ben bekannt?\n\nOptions: A) Irland\nB) England ✅\nC) Schottland",
+        "expected_answer": "Die richtige Antwort ist Option B, England",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ des menschlichen Körpers ermöglicht das Kauen?\n\nOptions: A) Die Zähne ✅\nB) Die Zunge\nC) Das Zahnfleisch",
+        "expected_answer": "Die richtige Antwort ist Option A, die Zähne",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welcher Planet hat große Stürme wie den Großen Roten Fleck?\n\nOptions: A) Mars\nB) Jupiter ✅\nC) Saturn",
+        "expected_answer": "Die richtige Antwort ist Option B, Jupiter",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Tier lebt in Kolonien und arbeitet im Team?\n\nOptions: A) Tiger\nB) Biene ✅\nC) Bär",
+        "expected_answer": "Die richtige Antwort ist Option B, Biene",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Land ist für Machu Picchu bekannt?\n\nOptions: A) Chile\nB) Bolivien\nC) Peru ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Peru",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ des menschlichen Körpers reguliert den Blutzucker?\n\nOptions: A) Die Bauchspeicheldrüse ✅\nB) Die Leber\nC) Die Niere",
+        "expected_answer": "Die richtige Antwort ist Option A, die Bauchspeicheldrüse",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Wissenschaft untersucht den Weltraum?\n\nOptions: A) Astronomie ✅\nB) Astrologie\nC) Geologie",
+        "expected_answer": "Die richtige Antwort ist Option A, Astronomie",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Tier kann lange ohne Wasser überleben?\n\nOptions: A) Kamel ✅\nB) Pferd\nC) Hund",
+        "expected_answer": "Die richtige Antwort ist Option A, Kamel",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Land hat einen Drachen in seiner Flagge?\n\nOptions: A) China\nB) Wales ✅\nC) Japan",
+        "expected_answer": "Die richtige Antwort ist Option B, Wales",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ des menschlichen Körpers ermöglicht das Denken?\n\nOptions: A) Das Herz\nB) Das Gehirn ✅\nC) Die Leber",
+        "expected_answer": "Die richtige Antwort ist Option B, das Gehirn",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Tier ist nachtaktiv?\n\nOptions: A) Huhn\nB) Eule ✅\nC) Taube",
+        "expected_answer": "Die richtige Antwort ist Option B, Eule",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Land ist für seine Windmühlen bekannt?\n\nOptions: A) Belgien\nB) Niederlande ✅\nC) Schweiz",
+        "expected_answer": "Die richtige Antwort ist Option B, Niederlande",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches Organ des menschlichen Körpers produziert Speichel?\n\nOptions: A) Der Magen\nB) Die Speicheldrüsen ✅\nC) Die Leber",
+        "expected_answer": "Die richtige Antwort ist Option B, die Speicheldrüsen",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welche Wissenschaft untersucht die Erde und ihre Schichten?\n\nOptions: A) Biologie\nB) Geologie ✅\nC) Physik",
+        "expected_answer": "Die richtige Antwort ist Option B, Geologie",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  },
+  {
+    "session": 1,
+    "tier": 1,
+    "max_score": 1,
+    "category": "trivia",
+    "translations": [
+      {
+        "language": "de",
+        "question_text": "Welches der folgenden antiken Bauwerke wurde hauptsächlich als astronomisches Observatorium entworfen?\n\nOptions: A) Das Kolosseum\nB) Machu Picchu\nC) Stonehenge ✅",
+        "expected_answer": "Die richtige Antwort ist Option C, Stonehenge",
+        "question_type": "Trivia",
+        "scoring_logic": "richtige Antwort"
+      }
+    ]
+  }
+]
