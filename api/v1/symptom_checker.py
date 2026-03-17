@@ -637,17 +637,22 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
     # Use the conversation_id provided by the frontend
     conversation_id = payload.conversation_id
     payload_data = payload.model_dump(exclude_unset=True)
+    user_full_name: Optional[str] = None
 
     try:
         # Formulate comprehensive search query
         health_conditions = None
+        user: Optional[User] = None
         if payload.user_id:
             user_result = await db.execute(
                 select(User).where(User.id == payload.user_id)
             )
             user = user_result.scalar_one_or_none()
-            if user and user.health_conditions:
-                health_conditions = user.health_conditions.strip()
+            if user:
+                # Use persisted health conditions and full name from the User table
+                if user.health_conditions:
+                    health_conditions = user.health_conditions.strip()
+                user_full_name = user.full_name
 
         formulated_symptoms = _formulate_symptom_query(payload)
         if health_conditions:
@@ -722,8 +727,8 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
         # Detect emergency situations
         is_emergency = _is_emergency(email)
 
-        # Create structured breakdown
-        breakdown = _create_breakdown(email, payload.full_name)
+        # Create structured breakdown (use User table full name when available)
+        breakdown = _create_breakdown(email, user_full_name or payload.full_name)
 
         # Create clean summary without HTML tags, references, or numbering
         summary = _create_clean_summary(email)
@@ -761,6 +766,8 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
             existing_record.email = email
             existing_record.summary = summary
             existing_record.breakdown = breakdown
+            if user_full_name:
+                existing_record.full_name = user_full_name
             if vitals_ai_summary is not None:
                 existing_record.vitals_ai_summary = vitals_ai_summary
             if symptoms_ai_summary is not None:
@@ -782,6 +789,9 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
             for field in _OPTIONAL_USER_FIELDS:
                 if field in payload_data:
                     base_data[field] = payload_data[field]
+            if user_full_name:
+                # Ensure full_name is populated from User table when available
+                base_data.setdefault("full_name", user_full_name)
             if vitals_ai_summary is not None:
                 base_data["vitals_ai_summary"] = vitals_ai_summary
             if symptoms_ai_summary is not None:
