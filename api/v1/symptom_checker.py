@@ -581,6 +581,37 @@ def _clean_html_text(text: str) -> str:
     return text
 
 
+def _parse_numeric_value(value: Optional[Any]) -> Optional[float]:
+    """
+    Safely parse a numeric value from various formats like:
+    - 83
+    - "83"
+    - "83 bpm"
+    - "HR: 83"
+    Returns None if no numeric portion can be parsed.
+    """
+    if value is None:
+        return None
+
+    # If already numeric, cast directly
+    if isinstance(value, (int, float)):
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return None
+
+    # Handle strings with units or extra text
+    if isinstance(value, str):
+        match = re.search(r"[-+]?\d*\.?\d+", value)
+        if match:
+            try:
+                return float(match.group(0))
+            except (TypeError, ValueError):
+                return None
+
+    return None
+
+
 def _create_breakdown(email: str, full_name: str = None) -> Dict[str, str]:
     """
     Break down the medical response into structured format.
@@ -1059,15 +1090,15 @@ def _prepare_report_content(response_record: SymptomCheckerResponse, payload: Se
             content["articles"] = [{"url": url, "reference": ref}
                                    for url, ref in article_links]
 
-    # Include vitals if available
+    # Include vitals if available, parsing safely even when units are present
     content["vitals"] = {
         "heart_rate": {
-            "value": float(response_record.heart_rate) if response_record.heart_rate else None,
+            "value": _parse_numeric_value(response_record.heart_rate),
             "unit": "bpm",
             "confidence": None  # TODO: Add confidence field if needed
         },
         "respiratory_rate": {
-            "value": float(response_record.respiratory_rate) if response_record.respiratory_rate else None,
+            "value": _parse_numeric_value(response_record.respiratory_rate),
             "unit": "breaths/min",
             "confidence": None  # TODO: Add confidence field if needed
         }
@@ -1495,16 +1526,14 @@ async def get_caretaker_dashboard(
                 rr = interaction.vitals_data.get("respiratory_rate", {})
                 
                 if hr and "value" in hr:
-                    try:
-                        heart_rates.append(float(hr["value"]))
-                    except (ValueError, TypeError):
-                        pass
+                    parsed_hr = _parse_numeric_value(hr["value"])
+                    if parsed_hr is not None:
+                        heart_rates.append(parsed_hr)
                 
                 if rr and "value" in rr:
-                    try:
-                        respiratory_rates.append(float(rr["value"]))
-                    except (ValueError, TypeError):
-                        pass
+                    parsed_rr = _parse_numeric_value(rr["value"])
+                    if parsed_rr is not None:
+                        respiratory_rates.append(parsed_rr)
         
         average_heart_rate = sum(heart_rates) / len(heart_rates) if heart_rates else None
         average_respiratory_rate = sum(respiratory_rates) / len(respiratory_rates) if respiratory_rates else None
