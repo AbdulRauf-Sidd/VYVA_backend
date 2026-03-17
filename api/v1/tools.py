@@ -41,35 +41,58 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
+def _user_location_text(user: User) -> Optional[str]:
+    """Build a single location string from user address fields for search. Returns None if no usable address."""
+    parts = [
+        getattr(user, "street", None),
+        getattr(user, "city", None),
+        getattr(user, "postal_code", None),
+        getattr(user, "country", None),
+        getattr(user, "address", None),
+    ]
+    parts = [p.strip() for p in parts if p and str(p).strip()]
+    if not parts:
+        return None
+    return ", ".join(parts)
+
+
 @router.post("/find-places", response_model=FindPlacesResponse)
 async def find_places(req: FindPlacesRequest, db: AsyncSession = Depends(get_db)) -> FindPlacesResponse:
     try:
         logger.info(f"=====================> find-places called with request: {req}")
-        # Require either coords or a location_text; otherwise signal needs_location
-        has_coords = req.latitude is not None and req.longitude is not None
-        if not has_coords and not req.location_text:
-            return FindPlacesResponse(results=[], needs_location=True, message="Please provide a city or area.")
 
-        # Prefer coordinates when provided
-        location = None
-        if has_coords:
-            location = (req.latitude, req.longitude)
+        # Resolve user first so we can use stored address for location
+        user_result = await db.execute(
+            select(User).where(User.id == req.user_id)
+        )
+        user = user_result.scalar_one_or_none()
+        if not user:
+            raise HTTPException(
+                status_code=404,
+                detail=f"User not found for user_id: {req.user_id}"
+            )
 
+        location_text = _user_location_text(user)
+        if not location_text:
+            return FindPlacesResponse(
+                results=[],
+                needs_location=True,
+                message="User does not have accurate/correct address information available. Please update street, city, postal code, or country.",
+            )
+
+        # Search using only the user's stored address (no request coords/location)
         results_raw = await google_places.text_search(
             query=req.query,
-            location_text=req.location_text,
-            location=location,
-            radius_meters=req.radius_meters if location else None,
+            location_text=location_text,
+            location=None,
+            radius_meters=None,
             max_results=req.result_limit,
         )
 
-        # Map to schema and compute distance if coords provided
+        # Map to schema (distance not computed when we don't have user coords)
         results: List[PlaceSummary] = []
         for r in results_raw:
-            item = PlaceSummary(**r)
-            if has_coords and item.latitude is not None and item.longitude is not None:
-                item.distance_meters = int(_haversine_meters(req.latitude, req.longitude, item.latitude, item.longitude))
-            results.append(item)
+            results.append(PlaceSummary(**r))
 
         # Rank by proximity, contact readiness, open_now, rating
         def contact_score(x: PlaceSummary) -> int:
@@ -86,17 +109,7 @@ async def find_places(req: FindPlacesRequest, db: AsyncSession = Depends(get_db)
 
         results = results[: req.result_limit]
 
-        # Resolve preferred channel and send places to user
-        user_result = await db.execute(
-            select(User).where(User.id == req.user_id)
-        )
-        user = user_result.scalar_one_or_none()
-        if not user:
-            raise HTTPException(
-                status_code=404,
-                detail=f"User not found for user_id: {req.user_id}"
-            )
-
+        # Send places to user via preferred channel
         preferred_channel = (user.preferred_reports_channel or "").strip().lower() or "email"
         if preferred_channel not in ["email", "whatsapp"]:
             raise HTTPException(

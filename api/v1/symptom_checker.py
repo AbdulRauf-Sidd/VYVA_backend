@@ -237,7 +237,7 @@ class SymptomCheckRequest(BaseModel):
 class SendReportRequest(BaseModel):
     user_id: int  # Required - to fetch preferred reports channel
     conversation_id: str  # Required - to identify the specific report
-    action: Optional[str] = None  # Deprecated: use preferred_reports_channel
+    action: Optional[str] = None  # If "Doc", also send to fixed doctor contacts
     recipient_email: Optional[str] = None  # Deprecated: use user's email
     phone_number: Optional[str] = None  # Deprecated: use user's phone_number
     include_articles: Optional[bool] = True
@@ -637,17 +637,22 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
     # Use the conversation_id provided by the frontend
     conversation_id = payload.conversation_id
     payload_data = payload.model_dump(exclude_unset=True)
+    user_full_name: Optional[str] = None
 
     try:
         # Formulate comprehensive search query
         health_conditions = None
+        user: Optional[User] = None
         if payload.user_id:
             user_result = await db.execute(
                 select(User).where(User.id == payload.user_id)
             )
             user = user_result.scalar_one_or_none()
-            if user and user.health_conditions:
-                health_conditions = user.health_conditions.strip()
+            if user:
+                # Use persisted health conditions and full name from the User table
+                if user.health_conditions:
+                    health_conditions = user.health_conditions.strip()
+                user_full_name = user.full_name
 
         formulated_symptoms = _formulate_symptom_query(payload)
         if health_conditions:
@@ -722,8 +727,8 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
         # Detect emergency situations
         is_emergency = _is_emergency(email)
 
-        # Create structured breakdown
-        breakdown = _create_breakdown(email, payload.full_name)
+        # Create structured breakdown (use User table full name when available)
+        breakdown = _create_breakdown(email, user_full_name or payload.full_name)
 
         # Create clean summary without HTML tags, references, or numbering
         summary = _create_clean_summary(email)
@@ -761,6 +766,8 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
             existing_record.email = email
             existing_record.summary = summary
             existing_record.breakdown = breakdown
+            if user_full_name:
+                existing_record.full_name = user_full_name
             if vitals_ai_summary is not None:
                 existing_record.vitals_ai_summary = vitals_ai_summary
             if symptoms_ai_summary is not None:
@@ -782,6 +789,9 @@ async def analyze_symptoms(payload: SymptomCheckRequest, db: AsyncSession = Depe
             for field in _OPTIONAL_USER_FIELDS:
                 if field in payload_data:
                     base_data[field] = payload_data[field]
+            if user_full_name:
+                # Ensure full_name is populated from User table when available
+                base_data.setdefault("full_name", user_full_name)
             if vitals_ai_summary is not None:
                 base_data["vitals_ai_summary"] = vitals_ai_summary
             if symptoms_ai_summary is not None:
@@ -919,7 +929,7 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
         # Prepare report content
         report_content = _prepare_report_content(response_record, payload)
 
-        # Send report based on action
+        # Send report based on user's preferred channel
         send_result = None
         caregiver_results = {"email": None, "whatsapp": None}
 
@@ -956,18 +966,36 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
         #             patient_name=response_record.full_name or " "
         #         )
 
-        # Send report to doctor if symptoms are severe
+        # Optionally send report to fixed doctor contacts when explicitly requested
+        doctor_email_status = "not_requested"
+        doctor_whatsapp_status = "not_requested"
+
+        DOCTOR_EMAIL = "pablojrossi@hotmail.com"
+        DOCTOR_WHATSAPP_PHONE = "+34675060210"
+
+        if (payload.action or "").strip().lower() == "doc":
+            # Send to fixed doctor email
+            if DOCTOR_EMAIL:
+                doctor_email_status = await _send_email_report(
+                    recipient_email=DOCTOR_EMAIL,
+                    report_content=report_content,
+                    patient_name=response_record.full_name or " "
+                )
+            else:
+                doctor_email_status = "doctor_email_missing"
+
+            # Send to fixed doctor WhatsApp
+            if DOCTOR_WHATSAPP_PHONE:
+                doctor_whatsapp_status = await _send_whatsapp_report(
+                    phone_number=DOCTOR_WHATSAPP_PHONE,
+                    report_content=report_content,
+                    patient_name=response_record.full_name or " "
+                )
+            else:
+                doctor_whatsapp_status = "doctor_phone_missing"
+
+        # Keep legacy doctor_status shape for backward compatibility
         is_severe = (response_record.severity or "").strip().lower() == "severe"
-        # if is_severe:
-        #     doctor_email = ""  # TODO: Provide doctor email from client
-        #     if doctor_email:
-        #         doctor_result = await _send_email_report(
-        #             recipient_email=doctor_email,
-        #             report_content=report_content,
-        #             patient_name=response_record.full_name or " "
-        #         )
-        #     else:
-        #         doctor_result = "doctor_email_missing"
 
         logger.info(
             f"Report sent successfully for conversation_id: {response_record.conversation_id}")
@@ -979,6 +1007,8 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
             "status": send_result,
             "caregiver_status": caregiver_results,
             "doctor_status": "pending" if is_severe else "not_applicable",
+            "doctor_status_email": doctor_email_status,
+            "doctor_status_whatsapp": doctor_whatsapp_status,
             "success": True
         }
 
