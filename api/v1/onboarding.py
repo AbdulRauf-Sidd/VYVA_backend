@@ -279,7 +279,7 @@ async def onboard_user(
             caretaker_id=caregiver.id if caregiver_phone else None,
             caretaker_consent=caretaker_consent,
             caretaker=caregiver if caregiver_phone else None,
-            preferred_reminder_channel=payload.preferred_reminder_channel,
+            preferred_reminder_channel="phone",
             preferred_reports_channel=payload.preferred_reports_channel,
             timezone=timezone,
             organization_id=organization.id,

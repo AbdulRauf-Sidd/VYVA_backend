@@ -186,7 +186,7 @@ def schedule_medication_reminders_for_day(db, today: datetime.date):
             except Exception as e:
                 logger.error(f"Error processing medication {med.id}: {e}")
                 continue
-
+        print(user_reminders)
         schedule_reminder_messages_for_users(user_reminders)
 
         logger.info(f"Scheduled medication reminders for {len(active_medications)} active medications.")
