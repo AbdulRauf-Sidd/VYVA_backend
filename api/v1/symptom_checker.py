@@ -581,6 +581,37 @@ def _clean_html_text(text: str) -> str:
     return text
 
 
+def _parse_numeric_value(value: Optional[Any]) -> Optional[float]:
+    """
+    Safely parse a numeric value from various formats like:
+    - 83
+    - "83"
+    - "83 bpm"
+    - "HR: 83"
+    Returns None if no numeric portion can be parsed.
+    """
+    if value is None:
+        return None
+
+    # If already numeric, cast directly
+    if isinstance(value, (int, float)):
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return None
+
+    # Handle strings with units or extra text
+    if isinstance(value, str):
+        match = re.search(r"[-+]?\d*\.?\d+", value)
+        if match:
+            try:
+                return float(match.group(0))
+            except (TypeError, ValueError):
+                return None
+
+    return None
+
+
 def _create_breakdown(email: str, full_name: str = None) -> Dict[str, str]:
     """
     Break down the medical response into structured format.
@@ -904,47 +935,53 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
                 detail="User does not match the requested report."
             )
 
-        preferred_reports_channel = (user.preferred_reports_channel or "").strip().lower()
-        if preferred_reports_channel not in ["email", "whatsapp"]:
-            raise HTTPException(
-                status_code=400,
-                detail="Invalid preferred reports channel. Must be 'email' or 'whatsapp'."
-            )
+        action_norm = (payload.action or "").strip().lower()
+        send_to_doctor_only = action_norm == "doc"
 
+        preferred_reports_channel = (user.preferred_reports_channel or "").strip().lower()
         recipient_email = (user.email or "").strip()
         phone_number = (user.phone_number or "").strip()
 
-        if preferred_reports_channel == "email" and not recipient_email:
-            raise HTTPException(
-                status_code=400,
-                detail="User email is required to send report via email."
-            )
+        # Only validate user delivery settings when we are actually sending to the user
+        if not send_to_doctor_only:
+            if preferred_reports_channel not in ["email", "whatsapp"]:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Invalid preferred reports channel. Must be 'email' or 'whatsapp'."
+                )
 
-        if preferred_reports_channel == "whatsapp" and not phone_number:
-            raise HTTPException(
-                status_code=400,
-                detail="User phone_number is required to send report via WhatsApp."
-            )
+            if preferred_reports_channel == "email" and not recipient_email:
+                raise HTTPException(
+                    status_code=400,
+                    detail="User email is required to send report via email."
+                )
+
+            if preferred_reports_channel == "whatsapp" and not phone_number:
+                raise HTTPException(
+                    status_code=400,
+                    detail="User phone_number is required to send report via WhatsApp."
+                )
 
         # Prepare report content
         report_content = _prepare_report_content(response_record, payload)
 
-        # Send report based on user's preferred channel
-        send_result = None
+        # Send report based on user's preferred channel (skipped if action == "Doc")
+        send_result = "skipped"
         caregiver_results = {"email": None, "whatsapp": None}
 
-        if preferred_reports_channel == "email":
-            send_result = await _send_email_report(
-                recipient_email=recipient_email,
-                report_content=report_content,
-                patient_name=response_record.full_name or " "
-            )
-        elif preferred_reports_channel == "whatsapp":
-            send_result = await _send_whatsapp_report(
-                phone_number=phone_number,
-                report_content=report_content,
-                patient_name=response_record.full_name or " "
-            )
+        if not send_to_doctor_only:
+            if preferred_reports_channel == "email":
+                send_result = await _send_email_report(
+                    recipient_email=recipient_email,
+                    report_content=report_content,
+                    patient_name=response_record.full_name or " "
+                )
+            elif preferred_reports_channel == "whatsapp":
+                send_result = await _send_whatsapp_report(
+                    phone_number=phone_number,
+                    report_content=report_content,
+                    patient_name=response_record.full_name or " "
+                )
 
         # Send report to caregiver/caretaker if available
         # caretaker = user.caretaker
@@ -973,7 +1010,7 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
         DOCTOR_EMAIL = "pablojrossi@hotmail.com"
         DOCTOR_WHATSAPP_PHONE = "+34675060210"
 
-        if (payload.action or "").strip().lower() == "doc":
+        if send_to_doctor_only:
             # Send to fixed doctor email
             if DOCTOR_EMAIL:
                 doctor_email_status = await _send_email_report(
@@ -1003,7 +1040,7 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
         return {
             "message": "Report sent successfully",
             "conversation_id": response_record.conversation_id,
-            "action": preferred_reports_channel,
+            "action": "doc" if send_to_doctor_only else preferred_reports_channel,
             "status": send_result,
             "caregiver_status": caregiver_results,
             "doctor_status": "pending" if is_severe else "not_applicable",
@@ -1053,15 +1090,15 @@ def _prepare_report_content(response_record: SymptomCheckerResponse, payload: Se
             content["articles"] = [{"url": url, "reference": ref}
                                    for url, ref in article_links]
 
-    # Include vitals if available
+    # Include vitals if available, parsing safely even when units are present
     content["vitals"] = {
         "heart_rate": {
-            "value": float(response_record.heart_rate) if response_record.heart_rate else None,
+            "value": _parse_numeric_value(response_record.heart_rate),
             "unit": "bpm",
             "confidence": None  # TODO: Add confidence field if needed
         },
         "respiratory_rate": {
-            "value": float(response_record.respiratory_rate) if response_record.respiratory_rate else None,
+            "value": _parse_numeric_value(response_record.respiratory_rate),
             "unit": "breaths/min",
             "confidence": None  # TODO: Add confidence field if needed
         }
@@ -1489,16 +1526,14 @@ async def get_caretaker_dashboard(
                 rr = interaction.vitals_data.get("respiratory_rate", {})
                 
                 if hr and "value" in hr:
-                    try:
-                        heart_rates.append(float(hr["value"]))
-                    except (ValueError, TypeError):
-                        pass
+                    parsed_hr = _parse_numeric_value(hr["value"])
+                    if parsed_hr is not None:
+                        heart_rates.append(parsed_hr)
                 
                 if rr and "value" in rr:
-                    try:
-                        respiratory_rates.append(float(rr["value"]))
-                    except (ValueError, TypeError):
-                        pass
+                    parsed_rr = _parse_numeric_value(rr["value"])
+                    if parsed_rr is not None:
+                        respiratory_rates.append(parsed_rr)
         
         average_heart_rate = sum(heart_rates) / len(heart_rates) if heart_rates else None
         average_respiratory_rate = sum(respiratory_rates) / len(respiratory_rates) if respiratory_rates else None
