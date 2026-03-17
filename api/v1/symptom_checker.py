@@ -904,47 +904,53 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
                 detail="User does not match the requested report."
             )
 
-        preferred_reports_channel = (user.preferred_reports_channel or "").strip().lower()
-        if preferred_reports_channel not in ["email", "whatsapp"]:
-            raise HTTPException(
-                status_code=400,
-                detail="Invalid preferred reports channel. Must be 'email' or 'whatsapp'."
-            )
+        action_norm = (payload.action or "").strip().lower()
+        send_to_doctor_only = action_norm == "doc"
 
+        preferred_reports_channel = (user.preferred_reports_channel or "").strip().lower()
         recipient_email = (user.email or "").strip()
         phone_number = (user.phone_number or "").strip()
 
-        if preferred_reports_channel == "email" and not recipient_email:
-            raise HTTPException(
-                status_code=400,
-                detail="User email is required to send report via email."
-            )
+        # Only validate user delivery settings when we are actually sending to the user
+        if not send_to_doctor_only:
+            if preferred_reports_channel not in ["email", "whatsapp"]:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Invalid preferred reports channel. Must be 'email' or 'whatsapp'."
+                )
 
-        if preferred_reports_channel == "whatsapp" and not phone_number:
-            raise HTTPException(
-                status_code=400,
-                detail="User phone_number is required to send report via WhatsApp."
-            )
+            if preferred_reports_channel == "email" and not recipient_email:
+                raise HTTPException(
+                    status_code=400,
+                    detail="User email is required to send report via email."
+                )
+
+            if preferred_reports_channel == "whatsapp" and not phone_number:
+                raise HTTPException(
+                    status_code=400,
+                    detail="User phone_number is required to send report via WhatsApp."
+                )
 
         # Prepare report content
         report_content = _prepare_report_content(response_record, payload)
 
-        # Send report based on user's preferred channel
-        send_result = None
+        # Send report based on user's preferred channel (skipped if action == "Doc")
+        send_result = "skipped"
         caregiver_results = {"email": None, "whatsapp": None}
 
-        if preferred_reports_channel == "email":
-            send_result = await _send_email_report(
-                recipient_email=recipient_email,
-                report_content=report_content,
-                patient_name=response_record.full_name or " "
-            )
-        elif preferred_reports_channel == "whatsapp":
-            send_result = await _send_whatsapp_report(
-                phone_number=phone_number,
-                report_content=report_content,
-                patient_name=response_record.full_name or " "
-            )
+        if not send_to_doctor_only:
+            if preferred_reports_channel == "email":
+                send_result = await _send_email_report(
+                    recipient_email=recipient_email,
+                    report_content=report_content,
+                    patient_name=response_record.full_name or " "
+                )
+            elif preferred_reports_channel == "whatsapp":
+                send_result = await _send_whatsapp_report(
+                    phone_number=phone_number,
+                    report_content=report_content,
+                    patient_name=response_record.full_name or " "
+                )
 
         # Send report to caregiver/caretaker if available
         # caretaker = user.caretaker
@@ -973,7 +979,7 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
         DOCTOR_EMAIL = "pablojrossi@hotmail.com"
         DOCTOR_WHATSAPP_PHONE = "+34675060210"
 
-        if (payload.action or "").strip().lower() == "doc":
+        if send_to_doctor_only:
             # Send to fixed doctor email
             if DOCTOR_EMAIL:
                 doctor_email_status = await _send_email_report(
@@ -1003,7 +1009,7 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
         return {
             "message": "Report sent successfully",
             "conversation_id": response_record.conversation_id,
-            "action": preferred_reports_channel,
+            "action": "doc" if send_to_doctor_only else preferred_reports_channel,
             "status": send_result,
             "caregiver_status": caregiver_results,
             "doctor_status": "pending" if is_severe else "not_applicable",
