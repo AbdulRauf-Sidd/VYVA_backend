@@ -629,6 +629,82 @@ def _create_breakdown(email: str, full_name: str = None) -> Dict[str, str]:
     return breakdown
 
 
+# Twilio WhatsApp body limit is ~1600 "characters" with emoji/surrogates counting as multiple.
+# We approximate using UTF-16 code units and cap template variables below the full body limit
+# so fixed template text still fits.
+_WHATSAPP_CONTENT_VARIABLES_MAX_UNITS = 1200
+
+
+def _twilio_whatsapp_text_units(text: str) -> int:
+    if not text:
+        return 0
+    return len(text.encode("utf-16-le")) // 2
+
+
+def _truncate_to_twilio_whatsapp_units(
+    text: str, max_units: int, ellipsis: str = "..."
+) -> str:
+    if max_units <= 0:
+        return ""
+    if _twilio_whatsapp_text_units(text) <= max_units:
+        return text
+    ell_u = _twilio_whatsapp_text_units(ellipsis)
+    budget = max_units
+    if budget <= ell_u:
+        ellipsis = ""
+        ell_u = 0
+    budget -= ell_u
+    out: List[str] = []
+    total = 0
+    for ch in text:
+        u = _twilio_whatsapp_text_units(ch)
+        if total + u > budget:
+            break
+        out.append(ch)
+        total += u
+    return "".join(out) + ellipsis
+
+
+def _fit_breakdown_for_twilio_whatsapp(breakdown: Dict[str, Any]) -> Dict[str, str]:
+    """
+    Shrink breakdown string values so Twilio-rendered template body stays under limits.
+    Does not mutate the original dict. Prefers trimming medical lines (keys 5→2) before name (1).
+    """
+    strings: Dict[str, str] = {
+        str(k): "" if v is None else str(v)
+        for k, v in breakdown.items()
+    }
+
+    def total_units() -> int:
+        return sum(_twilio_whatsapp_text_units(s) for s in strings.values())
+
+    limit = _WHATSAPP_CONTENT_VARIABLES_MAX_UNITS
+    trim_order = ["5", "4", "3", "2", "1"]
+    iterations = 0
+    while total_units() > limit and iterations < 20000:
+        iterations += 1
+        over_by = total_units() - limit
+        trimmed = False
+        for k in trim_order:
+            if k not in strings:
+                continue
+            s = strings[k]
+            if not s:
+                continue
+            u = _twilio_whatsapp_text_units(s)
+            if u == 0:
+                continue
+            step = max(1, min(u, over_by + 5))
+            new_s = _truncate_to_twilio_whatsapp_units(s, u - step)
+            if new_s != s:
+                strings[k] = new_s
+                trimmed = True
+                break
+        if not trimmed:
+            break
+    return strings
+
+
 def _create_clean_summary(email: str) -> str:
     """
     Create a clean summary without HTML tags, references, or numbering.
@@ -1148,7 +1224,12 @@ async def _send_whatsapp_report(phone_number: str, report_content: Dict[str, Any
         whatsapp_service = WhatsAppService()
         
         # Get the breakdown data and ensure it's properly formatted
-        breakdown_data = report_content.get('breakdown', {})
+        raw_breakdown = report_content.get("breakdown", {})
+        breakdown_data = (
+            _fit_breakdown_for_twilio_whatsapp(dict(raw_breakdown))
+            if isinstance(raw_breakdown, dict)
+            else raw_breakdown
+        )
         logger.info(f"ContentVariableData: {breakdown_data}")
         
         # Convert breakdown dict to the format expected by WhatsApp template
