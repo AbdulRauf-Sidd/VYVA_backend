@@ -632,6 +632,13 @@ def _create_breakdown(email: str, full_name: str = None) -> Dict[str, str]:
 # Twilio WhatsApp body limit is ~1600 "characters" with emoji/surrogates counting as multiple.
 # We approximate using UTF-16 code units and cap template variables so fixed template text still fits.
 _WHATSAPP_CONTENT_VARIABLES_MAX_UNITS = 1200
+_WHATSAPP_CONTENT_VARIABLE_MAX_UNITS = {
+    "1": 80,   # patient name
+    "2": 420,  # main assessment
+    "3": 420,  # warning signs
+    "4": 260,  # heading/section
+    "5": 260,  # practical advice
+}
 
 
 def _twilio_whatsapp_text_units(text: str) -> int:
@@ -689,6 +696,12 @@ def _fit_breakdown_for_twilio_whatsapp(breakdown: Dict[str, Any]) -> Dict[str, s
     for k in extra_keys:
         v = breakdown.get(k)
         normalized[k] = "" if v is None else (v if isinstance(v, str) else str(v))
+
+    # First, cap each variable individually. Twilio may reject very large single
+    # placeholders as invalid ContentVariables even when the JSON is valid.
+    for k, max_units in _WHATSAPP_CONTENT_VARIABLE_MAX_UNITS.items():
+        if k in normalized:
+            normalized[k] = _truncate_to_twilio_whatsapp_units(normalized[k], max_units)
 
     limit = _WHATSAPP_CONTENT_VARIABLES_MAX_UNITS
     total = sum(_twilio_whatsapp_text_units(s) for s in normalized.values())
