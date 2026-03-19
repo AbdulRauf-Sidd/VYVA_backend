@@ -630,8 +630,7 @@ def _create_breakdown(email: str, full_name: str = None) -> Dict[str, str]:
 
 
 # Twilio WhatsApp body limit is ~1600 "characters" with emoji/surrogates counting as multiple.
-# We approximate using UTF-16 code units and cap template variables below the full body limit
-# so fixed template text still fits.
+# We approximate using UTF-16 code units and cap template variables so fixed template text still fits.
 _WHATSAPP_CONTENT_VARIABLES_MAX_UNITS = 1200
 
 
@@ -642,7 +641,7 @@ def _twilio_whatsapp_text_units(text: str) -> int:
 
 
 def _truncate_to_twilio_whatsapp_units(
-    text: str, max_units: int, ellipsis: str = "..."
+    text: str, max_units: int, ellipsis: str = ""
 ) -> str:
     if max_units <= 0:
         return ""
@@ -668,41 +667,56 @@ def _truncate_to_twilio_whatsapp_units(
 def _fit_breakdown_for_twilio_whatsapp(breakdown: Dict[str, Any]) -> Dict[str, str]:
     """
     Shrink breakdown string values so Twilio-rendered template body stays under limits.
-    Does not mutate the original dict. Prefers trimming medical lines (keys 5→2) before name (1).
+    - Preserves keys/structure (still a flat object with the same variable names).
+    - Trims only from the end (keys 5→1) and only as much as required.
+    - Avoids adding extra characters (no ellipsis) to preserve formatting.
     """
-    strings: Dict[str, str] = {
-        str(k): "" if v is None else str(v)
-        for k, v in breakdown.items()
-    }
+    # Normalize values to strings first, but keep deterministic key insertion order.
+    # Twilio templates are sensitive to the exact `ContentVariables` shape.
+    expected_keys = ["1", "2", "3", "4", "5"]
+    normalized: Dict[str, str] = {}
+    for k in expected_keys:
+        if k in breakdown:
+            v = breakdown.get(k)
+            normalized[k] = "" if v is None else (v if isinstance(v, str) else str(v))
+        else:
+            # Preserve shape: always return all expected keys.
+            normalized[k] = ""
 
-    def total_units() -> int:
-        return sum(_twilio_whatsapp_text_units(s) for s in strings.values())
+    # If there are unexpected extra keys, preserve them after 1..5 in original order.
+    # (Breakdown normally only contains 1..5.)
+    extra_keys = [str(k) for k in breakdown.keys() if str(k) not in expected_keys]
+    for k in extra_keys:
+        v = breakdown.get(k)
+        normalized[k] = "" if v is None else (v if isinstance(v, str) else str(v))
 
     limit = _WHATSAPP_CONTENT_VARIABLES_MAX_UNITS
+    total = sum(_twilio_whatsapp_text_units(s) for s in normalized.values())
+    if total <= limit:
+        return normalized
+
+    # Trim only from the end to preserve formatting in earlier sections.
     trim_order = ["5", "4", "3", "2", "1"]
-    iterations = 0
-    while total_units() > limit and iterations < 20000:
-        iterations += 1
-        over_by = total_units() - limit
-        trimmed = False
-        for k in trim_order:
-            if k not in strings:
-                continue
-            s = strings[k]
-            if not s:
-                continue
-            u = _twilio_whatsapp_text_units(s)
-            if u == 0:
-                continue
-            step = max(1, min(u, over_by + 5))
-            new_s = _truncate_to_twilio_whatsapp_units(s, u - step)
-            if new_s != s:
-                strings[k] = new_s
-                trimmed = True
-                break
-        if not trimmed:
+    for k in trim_order:
+        if total <= limit:
             break
-    return strings
+        s = normalized.get(k, "")
+        u = _twilio_whatsapp_text_units(s)
+        if u <= 0:
+            continue
+
+        excess = total - limit
+        if excess >= u:
+            # Remove the whole section (only if we still need to shrink).
+            normalized[k] = ""
+            total -= u
+        else:
+            # Truncate just enough on this field.
+            normalized[k] = _truncate_to_twilio_whatsapp_units(s, u - excess)
+            total = limit
+            break
+
+    return normalized
 
 
 def _create_clean_summary(email: str) -> str:
