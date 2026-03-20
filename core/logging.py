@@ -7,7 +7,7 @@ Uses structlog for structured logging with JSON output and file-based logging.
 import logging
 import sys
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict
 import structlog
 from structlog.stdlib import LoggerFactory
@@ -66,14 +66,14 @@ def setup_logging() -> structlog.stdlib.BoundLogger:
     # File handlers (only if enabled in settings)
     if getattr(settings, 'ENABLE_FILE_LOGGING', True):
         # General application log
-        app_log_file = os.path.join(logs_dir, f"app_{datetime.now().strftime('%Y%m%d')}.log")
+        app_log_file = os.path.join(logs_dir, f"app_{datetime.now(timezone.utc).strftime('%Y%m%d')}.log")
         app_file_handler = logging.FileHandler(app_log_file, encoding='utf-8')
         app_file_handler.setFormatter(file_formatter)
         app_file_handler.setLevel(logging.INFO)
         root_logger.addHandler(app_file_handler)
         
         # Error log
-        error_log_file = os.path.join(logs_dir, f"error_{datetime.now().strftime('%Y%m%d')}.log")
+        error_log_file = os.path.join(logs_dir, f"error_{datetime.now(timezone.utc).strftime('%Y%m%d')}.log")
         error_file_handler = logging.FileHandler(error_log_file, encoding='utf-8')
         error_file_handler.setFormatter(file_formatter)
         error_file_handler.setLevel(logging.ERROR)
@@ -81,7 +81,7 @@ def setup_logging() -> structlog.stdlib.BoundLogger:
     
     # Request/Response logging (only if enabled in settings)
     if getattr(settings, 'ENABLE_REQUEST_LOGGING', True):
-        request_log_file = os.path.join(logs_dir, f"requests_{datetime.now().strftime('%Y%m%d')}.log")
+        request_log_file = os.path.join(logs_dir, f"requests_{datetime.now(timezone.utc).strftime('%Y%m%d')}.log")
         request_logger = logging.getLogger("requests")
         request_logger.setLevel(logging.INFO)
         

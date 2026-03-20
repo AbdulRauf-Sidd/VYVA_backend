@@ -6,7 +6,7 @@ from sqlalchemy import select, delete, update
 from models.user import User
 from scripts.authentication_helpers import generate_otp, hash_otp, is_expired, get_current_user_from_session
 from models.authentication import OtpSession, UserSession, CaretakerOtpSession, CaretakerSession
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from core.config import settings
 
 
@@ -67,7 +67,7 @@ async def delete_otp_session(db: AsyncSession, session_id: str):
 
 
 async def create_user_session(db: AsyncSession, user_id: int, user_type: str, user_agent: str = "", ip_address: str = ""):
-    expires_at = datetime.now() + timedelta(minutes=settings.SESSION_DURATION)
+    expires_at = datetime.now(timezone.utc) + timedelta(minutes=settings.SESSION_DURATION)
     if user_type == "user":
         session = UserSession(user_id=user_id, expires_at=expires_at, user_agent=user_agent, ip_address=ip_address)
     else:

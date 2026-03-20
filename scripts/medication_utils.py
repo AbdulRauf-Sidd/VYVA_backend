@@ -1,17 +1,16 @@
 import logging
 from datetime import datetime, timezone
-from zoneinfo import ZoneInfo
-from sqlalchemy import or_
+from sqlalchemy import Time, or_
 from sqlalchemy import update
-from models.user import Caretaker, User
+from sqlalchemy.exc import IntegrityError
+from models.user import User
 from models.organization import TwilioWhatsappTemplates, TemplateTypeEnum
-from models.medication import Medication, MedicationStatus, MedicationLog
+from models.medication import Medication, MedicationStatus, MedicationLog, MedicationTime
 from core.database import SessionLocal
 from sqlalchemy.orm import selectinload
 from services.whatsapp_service import whatsapp_service
 from tasks.utils import schedule_reminder_message
 from models.organization import OrganizationAgents, AgentTypeEnum
-from scripts.utils import convert_to_utc_datetime
 from tasks.utils import schedule_reminder_message
 
 logger = logging.getLogger(__name__)
@@ -117,15 +116,19 @@ def construct_medication_string_for_whatsapp(medications):
     )
 
 
-def schedule_medication_reminders_for_day(db, today: datetime.date):
+def schedule_medication_reminders_for_hour(db, today: datetime.date, hour_start: Time, hour_end: Time):
     try:
         active_medications = (
             db.query(Medication)
+            .join(MedicationTime)
             .options(
                 selectinload(Medication.times_of_day),
                 selectinload(Medication.user),
             )
             .filter(
+                MedicationTime.time_of_day >= hour_start,
+                MedicationTime.time_of_day < hour_end,
+                Medication.is_active.is_(True),
                 or_(
                     Medication.start_date == None,
                     Medication.start_date <= today,
@@ -137,12 +140,14 @@ def schedule_medication_reminders_for_day(db, today: datetime.date):
             )
             .all()
         )
+        count = 0
         user_reminders = {}
         agent_id_cache = {}
         for med in active_medications:
             try:
+                scheduled_for_med = False
                 user = med.user
-                timezone = user.timezone
+                # timezone = user.timezone
                 preferred_reminder_channel = user.preferred_reminder_channel
                 
                 # Cache agent_id for organization to avoid redundant DB queries
@@ -171,9 +176,9 @@ def schedule_medication_reminders_for_day(db, today: datetime.date):
 
                 for time in med.times_of_day:
                     med_time = time.time_of_day
-                    dt_utc = convert_to_utc_datetime(tz_name = timezone, date=today, time=med_time)
-                    if not dt_utc:
-                        logger.error(f"Failed to convert time to UTC for user {user.id}, medication {med.id}, time {med_time}")
+                    dt_utc = datetime.combine(today, med_time)
+                    if time.scheduled_at and time.scheduled_at == dt_utc:
+                        logger.info(f"Medication {med.id} for user {user.id} at time {med_time} has already been scheduled. Skipping duplicate scheduling.")
                         continue
 
                     med_payload = build_medication_payload(med, time)
@@ -183,13 +188,27 @@ def schedule_medication_reminders_for_day(db, today: datetime.date):
 
                     else:
                         user_reminders[user.id]["medication_info"][dt_utc].append(med_payload)
+                    
+                    time.scheduled_at = dt_utc
+                    db.add(time)
+                    try:
+                        db.commit()
+                    except IntegrityError:
+                        db.rollback()
+                        logger.warning(f"MedicationTime with id {time.id} and scheduled_at {dt_utc} already exists.")
+                        continue
+                    scheduled_for_med = True
+
+                if scheduled_for_med:
+                    count += 1
+                
             except Exception as e:
                 logger.error(f"Error processing medication {med.id}: {e}")
                 continue
-        print(user_reminders)
+
         schedule_reminder_messages_for_users(user_reminders)
 
-        logger.info(f"Scheduled medication reminders for {len(active_medications)} active medications.")
+        logger.info(f"Scheduled medication reminders for {count} medications at {hour_start}-{hour_end}.")
     except Exception as e:
         logger.error(f"Error scheduling medication reminders: {e}")
 

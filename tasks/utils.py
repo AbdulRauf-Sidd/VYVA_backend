@@ -6,8 +6,7 @@ from core.database import SessionLocal
 from models.user_check_ins import ScheduledSession, UserCheckin, CheckInType
 from sqlalchemy.orm import selectinload
 from sqlalchemy import desc
-from datetime import datetime, date, time
-from scripts.utils import convert_to_utc_datetime, convert_utc_time_to_local_time
+from datetime import datetime, date, time, timezone
 
 logger = logging.getLogger(__name__)
 
@@ -90,13 +89,16 @@ def update_medication_status(payload, status):
     finally:
         db.close()
 
-def schedule_check_in_calls_for_day(db, today): 
+def schedule_check_in_calls_for_hour(db, today, hour_start, hour_end):
     try:
         checkins = (
             db.query(UserCheckin)
             .options(selectinload(UserCheckin.user),
                      selectinload(UserCheckin.scheduled_sessions))
-            .filter(UserCheckin.is_active == True)
+            .filter(UserCheckin.is_active == True,
+                    UserCheckin.check_in_time >= hour_start,
+                    UserCheckin.check_in_time < hour_end
+                    )
             .all()
         )
 
@@ -123,15 +125,7 @@ def schedule_check_in_calls_for_day(db, today):
                 if not should_schedule:
                     continue
 
-                # --- compute schedule time ---
-                check_time = checkin.check_in_time
-                if not check_time:
-                    check_time = get_default_time_obj(check_in_type=checkin.check_in_type)  # default to 12 PM if no time set
-                else:
-                    check_time = convert_utc_time_to_local_time(check_time, checkin.user.timezone) #converting to local time to convert to utc later on
-                
-
-                scheduled_dt = convert_to_utc_datetime(tz_name=checkin.user.timezone, date=today, time=check_time)
+                scheduled_dt = datetime.combine(today, checkin.check_in_time)
                 if checkin.check_in_type == CheckInType.brain_coach.value:
                     task_name = "initiate_brain_coach_session"
                 elif checkin.check_in_type == CheckInType.check_up_call.value:
@@ -164,7 +158,7 @@ def schedule_check_in_calls_for_day(db, today):
                 continue
 
         db.commit()
-        logger.info(f"Scheduled {scheduled_count} check-in sessions")
+        logger.info(f"Scheduled {scheduled_count} check-in sessions at {hour_start}-{hour_end}.")
 
     except Exception as e:
         db.rollback()

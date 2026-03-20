@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest import result
 from sqlalchemy import select, func
 from fastapi import APIRouter, Depends, HTTPException
@@ -46,7 +46,7 @@ async def get_call_queues_status(
         for user, logs_count in rows
     ]
     
-    now_time = datetime.now().time()
+    now_time = datetime.now(timezone.utc).time()
 
     next_today_stmt = (
         select(OnboardingUser)

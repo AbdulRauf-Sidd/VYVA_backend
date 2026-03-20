@@ -7,7 +7,7 @@ from models.onboarding import OnboardingUser, OnboardingLogs
 from models.organization import Organization, OrganizationAgents, AgentTypeEnum, TwilioWhatsappTemplates, TemplateTypeEnum
 import logging
 from sqlalchemy.orm import selectinload, with_loader_criteria
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from datetime import datetime, date, timezone
 from zoneinfo import ZoneInfo
@@ -15,9 +15,9 @@ from models.medication import MedicationStatus
 from sqlalchemy import or_, select
 from models.eleven_labs_sessions import ElevenLabsSessions
 from models.user_check_ins import ScheduledSession
-from scripts.medication_utils import schedule_medication_reminders_for_day 
+from scripts.medication_utils import schedule_medication_reminders_for_hour
 from models.user_check_ins import UserCheckin, CheckInType
-from tasks.utils import schedule_celery_task_for_call_status_check, update_medication_status, schedule_check_in_calls_for_day, schedule_celery_task_for_scheduled_session_status_check
+from tasks.utils import schedule_celery_task_for_call_status_check, update_medication_status, schedule_check_in_calls_for_hour, schedule_celery_task_for_scheduled_session_status_check
 
 from scripts.onboarding_utils import construct_onboarding_user_payload
 from scripts.utils import date_now_in_timezone, get_iso_language
@@ -68,12 +68,12 @@ def initiate_onboarding_call(payload: dict):
         onboarding_record = db.query(OnboardingUser).filter(OnboardingUser.id == payload.get("user_id")).first()
         onboarding_record.onboarding_call_scheduled = False
         onboarding_record.call_attempts += 1
-        onboarding_record.called_at = datetime.now()
+        onboarding_record.called_at = datetime.now(timezone.utc)
         if not response:
             logger.error(f"Failed to initiate onboarding call for payload: {payload}")
 
         onboarding_log = OnboardingLogs(
-            call_at=datetime.now(),
+            call_at=datetime.now(timezone.utc),
             call_id=response.get('callSid'),
             onboarding_user_id=onboarding_record.id,
             status="in_progress",
@@ -92,10 +92,19 @@ def initiate_onboarding_call(payload: dict):
 def process_pending_onboarding_users():
     db = SessionLocal()
     try:
+        now = datetime.now(timezone.utc)
+        hour_start = now.replace(minute=0, second=0, microsecond=0)
+        hour_end = hour_start + timedelta(hours=1)
+        hour_start = hour_start.time()
+        hour_end = hour_end.time()
+        count = 0
         pending_users = (
             db.query(OnboardingUser)
             .options(selectinload(OnboardingUser.organization))
-            .filter(OnboardingUser.onboarding_status == False, OnboardingUser.onboarding_call_scheduled == False, OnboardingUser.call_attempts < 3, OnboardingUser.consent_given.is_not(False))
+            .filter(OnboardingUser.onboarding_status == False, 
+                    OnboardingUser.onboarding_call_scheduled == False, 
+                    OnboardingUser.call_attempts < 3, 
+                    OnboardingUser.consent_given.is_not(False))
             .all()
         )
 
@@ -110,17 +119,18 @@ def process_pending_onboarding_users():
 
                 if callback_local_date > user_today:
                     continue
-                
-                dt_today_utc = call_back_date_time
+
+                if callback_local_date == user_today:
+                    call_back_time = call_back_date_time.time()
+                    if call_back_time >= hour_start and call_back_time < hour_end:
+                        dt_today_utc = call_back_date_time
 
             if not dt_today_utc:
                 preferred_time = user.preferred_time
-                if preferred_time:
-                    dt_today_utc = datetime.combine(date.today(), preferred_time, tzinfo=ZoneInfo("UTC"))
-                else:
-                    default_time = datetime.strptime("09:00", "%H:%M").time()
-                    local_dt = datetime.combine(date.today(), default_time, tzinfo=ZoneInfo(user.timezone))
-                    dt_today_utc = local_dt.astimezone(ZoneInfo("UTC"))
+                if preferred_time < hour_start or preferred_time >= hour_end:
+                    continue
+
+                dt_today_utc = preferred_time
 
             payload = construct_onboarding_user_payload(user, user.organization.onboarding_agent_id)
 
@@ -133,8 +143,9 @@ def process_pending_onboarding_users():
             user.onboarding_call_scheduled = True
             db.add(user)
             db.commit()
+            count += 1
 
-        return {"status": 200, "count": len(pending_users)}
+        return {"status": 200, "count": count}
 
     except Exception as e:
         db.rollback()
@@ -143,16 +154,21 @@ def process_pending_onboarding_users():
         db.close()
 
 
-@celery_app.task(name="schedule_calls_for_day", max_retries=0)
-def schedule_calls_for_day():
+@celery_app.task(name="schedule_calls_for_hour", max_retries=3)
+def schedule_calls_for_hour():
     try:
         db = SessionLocal()
-        today = date.today()
-        schedule_medication_reminders_for_day(db, today)
-        schedule_check_in_calls_for_day(db, today)
+        now = datetime.now(timezone.utc)
+        today = now.date()
+        hour_start = now.replace(minute=0, second=0, microsecond=0)
+        hour_end = hour_start + timedelta(hours=1)
+        hour_start = hour_start.time()
+        hour_end = hour_end.time()
+        schedule_medication_reminders_for_hour(db, today, hour_start, hour_end)
+        schedule_check_in_calls_for_hour(db, today, hour_start, hour_end)
 
     except Exception as e:
-        logger.error(f"Error scheduling calls for the day: {e}")
+        logger.error(f"Error scheduling calls for the hour: {e}")
     finally:
         db.close()
 
