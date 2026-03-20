@@ -7,7 +7,7 @@ from models.onboarding import OnboardingUser, OnboardingLogs
 from models.organization import Organization, OrganizationAgents, AgentTypeEnum, TwilioWhatsappTemplates, TemplateTypeEnum
 import logging
 from sqlalchemy.orm import selectinload, with_loader_criteria
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from datetime import datetime, date, timezone
 from zoneinfo import ZoneInfo
@@ -148,8 +148,11 @@ def schedule_calls_for_day():
     try:
         db = SessionLocal()
         today = date.today()
-        schedule_medication_reminders_for_day(db, today)
-        schedule_check_in_calls_for_day(db, today)
+        now = datetime.now()
+        hour_start = now.replace(minute=0, second=0, microsecond=0)
+        hour_end = hour_start + timedelta(hours=1)
+        schedule_medication_reminders_for_day(db, today, hour_start, hour_end)
+        schedule_check_in_calls_for_day(db, today, hour_start, hour_end)
 
     except Exception as e:
         logger.error(f"Error scheduling calls for the day: {e}")

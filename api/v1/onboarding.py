@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Body, Response
 from sqlalchemy.ext.asyncio import AsyncSession
+from models.medication import Medication, MedicationTime
 from models.user import User, Caretaker
 from models.onboarding import OnboardingUser
 from datetime import datetime, timedelta
@@ -122,7 +123,7 @@ async def onboard_user(
             preferred_reminder_channel=payload.preferred_reminder_channel,
             preferred_reports_channel=payload.preferred_reports_channel,
             timezone=record.timezone,
-            organization_id=record.organization_id,
+            organization_id=record.organization_id
         )
 
         db.add(user)
@@ -137,6 +138,9 @@ async def onboard_user(
         frequency_in_days = brain_coach.get("frequency_in_days", None)
         time_of_day = brain_coach.get("time_of_day", None)
         if wants_brain_coach:
+            if not time_of_day:
+                time_of_day = "12:00" #defaulting to 12 PM if no time provided
+
             time_obj = parse_time_string(time_of_day)
             utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
             check_in = UserCheckin(
@@ -150,6 +154,9 @@ async def onboard_user(
         wants_daily_check_ins = check_in_details.get("wants_check_ins", False)
         check_in_frequency = check_in_details.get("frequency_in_days", None)
         if wants_daily_check_ins:
+            if not time_of_day:
+                time_of_day = "09:00" #defaulting to 9 AM if no time provided
+
             time_obj = parse_time_string(time_of_day)
             utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
             check_in = UserCheckin(
@@ -160,14 +167,53 @@ async def onboard_user(
             )
             db.add(check_in)
 
+        # if medication_details:
+        #     medication_request = BulkMedicationSchema(
+        #         medication_details=medication_details,
+        #         user_id=user.id,
+        #     )
+        #     medication_repo = MedicationRepository(db)
+        #     medication_service = MedicationService(medication_repo)
+        #     await medication_service.process_bulk_medication_request(medication_request)
+
         if medication_details:
-            medication_request = BulkMedicationSchema(
-                medication_details=medication_details,
-                user_id=user.id,
-            )
-            medication_repo = MedicationRepository(db)
-            medication_service = MedicationService(medication_repo)
-            await medication_service.process_bulk_medication_request(medication_request)
+            for med_input in medication_details:
+                # Start date
+                if med_input.start_date:
+                    start_date = datetime.strptime(
+                        str(med_input.start_date), "%Y-%m-%d"
+                    ).date()
+                else:
+                    start_date = datetime.now().date()
+
+                # End date
+                if med_input.end_date:
+                    end_date = datetime.strptime(
+                        str(med_input.end_date), "%Y-%m-%d"
+                    ).date()
+                else:
+                    end_date = None
+
+                med = Medication(
+                    user_id=user.id,
+                    name=med_input.name,
+                    dosage=med_input.dosage,
+                    start_date=start_date,
+                    end_date=end_date,
+                    purpose=med_input.purpose
+                )
+                db.add(med)
+                await db.flush()
+
+                for time_str in med_input.times:
+                    time_obj = parse_time_string(time_str)
+                    utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
+
+                    med_time = MedicationTime(
+                        medication_id=med.id,
+                        time_of_day=utc_time
+                    )
+                    db.add(med_time)
 
 
         mem0_payload = []
@@ -300,6 +346,8 @@ async def onboard_user(
         frequency_in_days = brain_coach.get("frequency_in_days", None)
         time_of_day = brain_coach.get("time_of_day", None)
         if wants_brain_coach:
+            if not time_of_day:
+                time_of_day = "12:00" #defaulting to 12 PM if no time provided
             time_obj = parse_time_string(time_of_day)
             utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
             check_in = UserCheckin(
@@ -314,6 +362,8 @@ async def onboard_user(
         check_in_frequency = check_in_details.get("frequency_in_days", None)
         time_of_day = check_in_details.get("time_of_day", None)
         if wants_daily_check_ins:
+            if not time_of_day:
+                time_of_day = "09:00" #defaulting to 9 AM if no time provided
             time_obj = parse_time_string(time_of_day)
             utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
             check_in = UserCheckin(

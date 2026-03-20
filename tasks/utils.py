@@ -90,13 +90,16 @@ def update_medication_status(payload, status):
     finally:
         db.close()
 
-def schedule_check_in_calls_for_day(db, today): 
+def schedule_check_in_calls_for_day(db, today, hour_start, hour_end):
     try:
         checkins = (
             db.query(UserCheckin)
             .options(selectinload(UserCheckin.user),
                      selectinload(UserCheckin.scheduled_sessions))
-            .filter(UserCheckin.is_active == True)
+            .filter(UserCheckin.is_active == True,
+                    UserCheckin.check_in_time >= hour_start,
+                    UserCheckin.check_in_time < hour_end
+                    )
             .all()
         )
 

@@ -3,7 +3,7 @@ Medication model for medication management.
 """
 
 import enum
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean, Float, Enum as SQLEnum, Date
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean, Float, Enum as SQLEnum, Date, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from sqlalchemy import Time
@@ -43,7 +43,7 @@ class Medication(Base):
     )
 
     def __repr__(self):
-        return f"<Medication(id={self.id}, name={self.name}>"
+        return f"id: {self.id}, name: {self.name}"
 
 class MedicationTime(Base):
     """Medication time model for tracking when medications should be taken."""
@@ -54,6 +54,7 @@ class MedicationTime(Base):
     medication_id = Column(Integer, ForeignKey("medications.id", ondelete="CASCADE"), nullable=False)
     time_of_day = Column(Time, nullable=True) 
     notes = Column(String(150), nullable=True)
+    scheduled_at = Column(DateTime, nullable=True)  # This is to implement idempotency for scheduling reminders. 
     created_at = Column(DateTime, default=datetime.now())
     updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
 
@@ -68,7 +69,14 @@ class MedicationTime(Base):
     )
     
     def __repr__(self):
-        return f"<MedicationTime(id={self.id}, medication_id={self.medication_id}, time_of_day={self.time_of_day})>"
+        return f"id: {self.id}, time_of_day: {self.time_of_day}"
+    
+    __table_args__ = (
+        UniqueConstraint(
+            "id", "scheduled_at",
+            name="uq_medication_time_scheduled_at"
+        ),
+    )
 
 
 class MedicationStatus(enum.Enum):
@@ -107,3 +115,6 @@ class MedicationLog(Base):
     medication = relationship("Medication", back_populates="logs")
     medication_time = relationship("MedicationTime", back_populates="logs")
     user = relationship("User", back_populates="medication_logs")
+
+    def __repr__(self):
+        return f"user_id: {self.user_id}, status: {self.status}"
