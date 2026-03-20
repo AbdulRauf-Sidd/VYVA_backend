@@ -140,7 +140,7 @@ class User(Base):
 
 
     def __repr__(self):
-        return f"<User(id={self.id}, email='{self.email}')>"
+        return f"id: {self.id}, Name: {self.full_name}"
     
     @property
     def full_name(self) -> str:

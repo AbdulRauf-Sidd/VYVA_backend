@@ -6,7 +6,7 @@ import httpx
 from typing import List, Dict, Any, Optional
 import logging
 from core.config import settings
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import re
 
 
@@ -196,7 +196,7 @@ class SerpAPIService:
                     value = int(match.group(1))
                     unit = match.group(2)
                     
-                    now = datetime.now()
+                    now = datetime.now(timezone.utc)
                     
                     if unit in ['minute', 'min']:
                         return now - timedelta(minutes=value)

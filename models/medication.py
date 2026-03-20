@@ -29,6 +29,8 @@ class Medication(Base):
     purpose = Column(Text, nullable=True)  # e.g., "Blood pressure control"
     side_effects = Column(Text, nullable=True)
     notes = Column(Text, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=True)
+    disabled_at = Column(DateTime(timezone=True), nullable=True)
 
     is_active = Column(Boolean, nullable=True, default=True)
 
@@ -55,8 +57,8 @@ class MedicationTime(Base):
     time_of_day = Column(Time, nullable=True) 
     notes = Column(String(150), nullable=True)
     scheduled_at = Column(DateTime, nullable=True)  # This is to implement idempotency for scheduling reminders. 
-    created_at = Column(DateTime, default=datetime.now())
-    updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now())
+    created_at = Column(DateTime(timezone=True), default=datetime.now(timezone.utc))
+    updated_at = Column(DateTime(timezone=True), default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
     # Relationships
     medication = relationship("Medication", back_populates="times_of_day")

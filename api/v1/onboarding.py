@@ -108,8 +108,6 @@ async def onboard_user(
             first_name=record.first_name,
             last_name=record.last_name,
             phone_number=phone_number,
-            emergency_contact_phone=caregiver_phone,
-            emergency_contact_name=record.caregiver_name if record.caregiver_name else caretaker_name,
             address=address,
             city=city,
             postal_code=postal_code,
@@ -167,45 +165,36 @@ async def onboard_user(
             )
             db.add(check_in)
 
-        # if medication_details:
-        #     medication_request = BulkMedicationSchema(
-        #         medication_details=medication_details,
-        #         user_id=user.id,
-        #     )
-        #     medication_repo = MedicationRepository(db)
-        #     medication_service = MedicationService(medication_repo)
-        #     await medication_service.process_bulk_medication_request(medication_request)
-
         if medication_details:
             for med_input in medication_details:
                 # Start date
-                if med_input.start_date:
+                if med_input.get("start_date"):
                     start_date = datetime.strptime(
-                        str(med_input.start_date), "%Y-%m-%d"
+                        str(med_input.get("start_date")), "%Y-%m-%d"
                     ).date()
                 else:
-                    start_date = datetime.now().date()
+                    start_date = datetime.now(timezone.utc).date()
 
                 # End date
-                if med_input.end_date:
+                if med_input.get("end_date"):
                     end_date = datetime.strptime(
-                        str(med_input.end_date), "%Y-%m-%d"
+                        str(med_input.get("end_date")), "%Y-%m-%d"
                     ).date()
                 else:
                     end_date = None
 
                 med = Medication(
                     user_id=user.id,
-                    name=med_input.name,
-                    dosage=med_input.dosage,
+                    name=med_input.get("name"),
+                    dosage=med_input.get("dosage"),
                     start_date=start_date,
                     end_date=end_date,
-                    purpose=med_input.purpose
+                    purpose=med_input.get("purpose")
                 )
                 db.add(med)
                 await db.flush()
 
-                for time_str in med_input.times:
+                for time_str in med_input.get("times", []):
                     time_obj = parse_time_string(time_str)
                     utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
 
@@ -213,20 +202,22 @@ async def onboard_user(
                         medication_id=med.id,
                         time_of_day=utc_time
                     )
-                    db.add(med_time)
+                    db.add(med_time)        
 
+        try:
+            mem0_payload = []
 
-        mem0_payload = []
-
-        if mobility:
-            mem0_payload += construct_mem0_memory_onboarding(", ".join(mobility), "mobility")
-            await add_conversation(user.id, mem0_payload)
-        if health_conditions:
-            mem0_payload += construct_mem0_memory_onboarding(", ".join(health_conditions), "health_conditions")
-            await add_conversation(user.id, mem0_payload)
-        if preferences:
-            mem0_payload += construct_mem0_memory_onboarding(", ".join(preferences), "preferences")
-            await add_conversation(user.id, mem0_payload)
+            if mobility:
+                mem0_payload += construct_mem0_memory_onboarding(", ".join(mobility), "mobility")
+                await add_conversation(user.id, mem0_payload)
+            if health_conditions:
+                mem0_payload += construct_mem0_memory_onboarding(", ".join(health_conditions), "health_conditions")
+                await add_conversation(user.id, mem0_payload)
+            if preferences:
+                mem0_payload += construct_mem0_memory_onboarding(", ".join(preferences), "preferences")
+                await add_conversation(user.id, mem0_payload)
+        except Exception as e:
+            logger.error(f"Error adding onboarding details to mem0: {e}")
         
         await db.commit()
         send_onboarding_sms(user=user, send_to_caregiver=True)
@@ -247,7 +238,7 @@ async def onboard_user(
     summary="Create a new onboarding user",
     description="Create a new onboarding user with the provided details"
 )
-async def onboard_user(
+async def onboard_user_red_cross(
     payload: OnboardingRequestBodyRedCross = Body(...),
     db: AsyncSession = Depends(get_db)
 ):
@@ -315,8 +306,6 @@ async def onboard_user(
             first_name=first_name,
             last_name=last_name,
             phone_number=phone_number,
-            emergency_contact_phone=caregiver_phone,
-            emergency_contact_name=caretaker_name,
             address=street_address,
             city=city,
             postal_code=post_code,
@@ -329,7 +318,7 @@ async def onboard_user(
             caretaker_consent=caretaker_consent,
             caretaker=caregiver if caregiver_phone else None,
             preferred_reminder_channel="phone",
-            preferred_reports_channel=payload.preferred_reports_channel,
+            preferred_reports_channel=payload.preferred_reports_channel if payload.preferred_reports_channel else "whatsapp",
             timezone=timezone,
             organization_id=organization.id,
         )
@@ -338,16 +327,13 @@ async def onboard_user(
         await db.flush()
         await db.refresh(user)
 
-        # record.onboarding_status = True
-        # record.onboarded_at = datetime.now(timezone.utc)
-        # db.add(record)        
-
         wants_brain_coach = brain_coach.get("wants_brain_coach_sessions", False)
         frequency_in_days = brain_coach.get("frequency_in_days", None)
         time_of_day = brain_coach.get("time_of_day", None)
         if wants_brain_coach:
             if not time_of_day:
                 time_of_day = "12:00" #defaulting to 12 PM if no time provided
+
             time_obj = parse_time_string(time_of_day)
             utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
             check_in = UserCheckin(
@@ -360,10 +346,10 @@ async def onboard_user(
 
         wants_daily_check_ins = check_in_details.get("wants_check_ins", False)
         check_in_frequency = check_in_details.get("frequency_in_days", None)
-        time_of_day = check_in_details.get("time_of_day", None)
         if wants_daily_check_ins:
             if not time_of_day:
                 time_of_day = "09:00" #defaulting to 9 AM if no time provided
+
             time_obj = parse_time_string(time_of_day)
             utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
             check_in = UserCheckin(
@@ -375,27 +361,60 @@ async def onboard_user(
             db.add(check_in)
 
         if medication_details:
-            medication_request = BulkMedicationSchema(
-                medication_details=medication_details,
-                user_id=user.id,
-            )
-            medication_repo = MedicationRepository(db)
-            medication_service = MedicationService(medication_repo)
-            await medication_service.process_bulk_medication_request(medication_request)
+            for med_input in medication_details:
+                # Start date
+                if med_input.get("start_date"):
+                    start_date = datetime.strptime(
+                        str(med_input.get("start_date")), "%Y-%m-%d"
+                    ).date()
+                else:
+                    start_date = datetime.now(timezone.utc).date()
+
+                # End date
+                if med_input.get("end_date"):
+                    end_date = datetime.strptime(
+                        str(med_input.get("end_date")), "%Y-%m-%d"
+                    ).date()
+                else:
+                    end_date = None
+
+                med = Medication(
+                    user_id=user.id,
+                    name=med_input.get("name"),
+                    dosage=med_input.get("dosage"),
+                    start_date=start_date,
+                    end_date=end_date,
+                    purpose=med_input.get("purpose")
+                )
+                db.add(med)
+                await db.flush()
+
+                for time_str in med_input.get("times", []):
+                    time_obj = parse_time_string(time_str)
+                    utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
+
+                    med_time = MedicationTime(
+                        medication_id=med.id,
+                        time_of_day=utc_time
+                    )
+                    db.add(med_time)
 
 
-        mem0_payload = []
+        try:
+            mem0_payload = []
 
-        if mobility:
-            mem0_payload += construct_mem0_memory_onboarding(", ".join(mobility), "mobility")
-            await add_conversation(user.id, mem0_payload)
-        if health_conditions:
-            mem0_payload += construct_mem0_memory_onboarding(", ".join(health_conditions), "health_conditions")
-            await add_conversation(user.id, mem0_payload)
-        if preferences:
-            mem0_payload += construct_mem0_memory_onboarding(", ".join(preferences), "preferences")
-            await add_conversation(user.id, mem0_payload)
-        
+            if mobility:
+                mem0_payload += construct_mem0_memory_onboarding(", ".join(mobility), "mobility")
+                await add_conversation(user.id, mem0_payload)
+            if health_conditions:
+                mem0_payload += construct_mem0_memory_onboarding(", ".join(health_conditions), "health_conditions")
+                await add_conversation(user.id, mem0_payload)
+            if preferences:
+                mem0_payload += construct_mem0_memory_onboarding(", ".join(preferences), "preferences")
+                await add_conversation(user.id, mem0_payload)
+        except Exception as e:
+            logger.error(f"Error adding onboarding details to mem0: {e}")
+
         await db.commit()
         # send_onboarding_sms(user=user, send_to_caregiver=True) 
             

@@ -116,7 +116,7 @@ def construct_medication_string_for_whatsapp(medications):
     )
 
 
-def schedule_medication_reminders_for_day(db, today: datetime.date, hour_start: Time, hour_end: Time):
+def schedule_medication_reminders_for_hour(db, today: datetime.date, hour_start: Time, hour_end: Time):
     try:
         active_medications = (
             db.query(Medication)
@@ -140,10 +140,12 @@ def schedule_medication_reminders_for_day(db, today: datetime.date, hour_start: 
             )
             .all()
         )
+        count = 0
         user_reminders = {}
         agent_id_cache = {}
         for med in active_medications:
             try:
+                scheduled_for_med = False
                 user = med.user
                 # timezone = user.timezone
                 preferred_reminder_channel = user.preferred_reminder_channel
@@ -174,12 +176,8 @@ def schedule_medication_reminders_for_day(db, today: datetime.date, hour_start: 
 
                 for time in med.times_of_day:
                     med_time = time.time_of_day
-                    # dt_utc = convert_to_utc_datetime(tz_name = timezone, date=today, time=med_time)
-                    # if not dt_utc:
-                    #     logger.error(f"Failed to convert time to UTC for user {user.id}, medication {med.id}, time {med_time}")
-                    #     continue
                     dt_utc = datetime.combine(today, med_time)
-                    if med_time.scheduled_at and med_time.scheduled_at == dt_utc:
+                    if time.scheduled_at and time.scheduled_at == dt_utc:
                         logger.info(f"Medication {med.id} for user {user.id} at time {med_time} has already been scheduled. Skipping duplicate scheduling.")
                         continue
 
@@ -190,13 +188,27 @@ def schedule_medication_reminders_for_day(db, today: datetime.date, hour_start: 
 
                     else:
                         user_reminders[user.id]["medication_info"][dt_utc].append(med_payload)
+                    
+                    time.scheduled_at = dt_utc
+                    db.add(time)
+                    try:
+                        db.commit()
+                    except IntegrityError:
+                        db.rollback()
+                        logger.warning(f"MedicationTime with id {time.id} and scheduled_at {dt_utc} already exists.")
+                        continue
+                    scheduled_for_med = True
+
+                if scheduled_for_med:
+                    count += 1
+                
             except Exception as e:
                 logger.error(f"Error processing medication {med.id}: {e}")
                 continue
 
         schedule_reminder_messages_for_users(user_reminders)
 
-        logger.info(f"Scheduled medication reminders for {len(active_medications)} active medications.")
+        logger.info(f"Scheduled medication reminders for {count} medications at {hour_start}-{hour_end}.")
     except Exception as e:
         logger.error(f"Error scheduling medication reminders: {e}")
 
