@@ -89,6 +89,9 @@ async def onboard_user(
         city = record.city_state_province if record.city_state_province else ""
         postal_code = record.postal_zip_code if record.postal_zip_code else ""
         address = record.address if record.address else address
+        preferred_reports_channel = payload.preferred_reports_channel
+        if not preferred_reports_channel:
+            preferred_reports_channel = 'whatsapp'
 
         caregiver_phone = record.caregiver_contact_number if record.caregiver_contact_number else caretaker_phone
         
@@ -98,7 +101,7 @@ async def onboard_user(
         else:
             caregiver = None
 
-        language = record.language.lower() if record.language else "english"
+        language = record.language.lower() if record.language else "spanish"
 
         user = User(
             first_name=record.first_name,
