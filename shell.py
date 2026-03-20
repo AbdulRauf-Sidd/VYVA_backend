@@ -120,8 +120,14 @@ def main():
 ║  Available: app, settings, User, Medication, repositories...  ║
 ╚════════════════════════════════════════════════════════════════╝
 """
-    
-    code.interact(banner=banner, local=local_vars, exitmsg="Goodbye!")
+    from IPython import embed
+    print(banner)
+    embed(
+            header="",
+            user_ns=globals(),
+            colors="neutral"
+        )
+    # code.interact(banner=banner, local=local_vars, exitmsg="Goodbye!")
 
 if __name__ == "__main__":
     main()

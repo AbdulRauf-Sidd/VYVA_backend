@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from models.brain_coach import BrainCoachQuestions, BrainCoachResponses, QuestionTranslations
 from models.user import User
 from sqlalchemy.orm import selectinload
-from sqlalchemy import select, func
+from sqlalchemy import distinct, select, func
 from core.database import get_async_session
 from enum import Enum
 import uuid
@@ -32,7 +32,6 @@ class Language(str, Enum):
 class RetrieveQuestionsInput(BaseModel):
     user_id: int
     questions_type: QuestionType
-    language: Language
 
 class RetrieveQuestionsOutput(BaseModel):
     session_id: str
@@ -43,7 +42,6 @@ class RetrieveQuestionsOutput(BaseModel):
     description=(
         "You will use this tool to retrieve the questions for a brain coach session."
         "You will call this tool when You're about to start the brain coach session."
-        'You will pass the language the user is speaking in full form. if the user is speaking in english, you will pass english (all lower case)'
         "the question type will always be enum. if the user wants cognitive excersices then question_type will be cognitive_assessment."
         "if the user wants trivia then question_type will be trivia"
     )
@@ -63,6 +61,15 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
             target_session = session_count + 1
         else:
             target_session = 1
+
+        stmt = (
+            select(distinct(BrainCoachResponses.question_id))
+            .where(BrainCoachResponses.user_id == input.user_id)
+            .order_by(BrainCoachResponses.question_id)
+        )
+        
+        result = await db.execute(stmt)
+        answered_question_ids = result.scalars().all()
 
         user_result = await db.execute(
             select(User).where(User.id == input.user_id)
@@ -96,7 +103,7 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
                 BrainCoachQuestions.category == input.questions_type.value,
                 QuestionTranslations.language == iso_language,
                 BrainCoachQuestions.session == target_session,
-                # BrainCoachQuestions.id.not_in(answered_question_ids)
+                BrainCoachQuestions.id.not_in(answered_question_ids)
                 # if answered_question_ids else True
             )
             .order_by(BrainCoachQuestions.id)
@@ -110,7 +117,7 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
         other_rows = []
         
         for row in rows:
-            if row.question_type in ("Memory", "Memoria"):
+            if row.question_type in ("Memory", "Memoria", ""):
                 memory_row = row
             else:
                 other_rows.append(row)
