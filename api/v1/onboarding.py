@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Body, Response
+from fastapi import APIRouter, Depends, HTTPException, status, Body, Response, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from models.user import User, Caretaker
 from models.onboarding import OnboardingUser
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from sqlalchemy.sql import func
-from sqlalchemy import select
+from sqlalchemy import select, union_all, literal
 from sqlalchemy.orm import selectinload
 from core.database import get_db
 import logging
@@ -25,6 +25,20 @@ from celery_app import celery_app
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+
+def _parse_positive_int(value: Optional[str], field_name: str, default: Optional[int] = None) -> int:
+    if value is None:
+        if default is not None:
+            return default
+        raise HTTPException(status_code=400, detail=f"{field_name} is required")
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError):
+        raise HTTPException(status_code=400, detail=f"{field_name} must be an integer")
+    if parsed <= 0:
+        raise HTTPException(status_code=400, detail=f"{field_name} must be greater than 0")
+    return parsed
 
 @router.post(
     "/",
@@ -409,6 +423,130 @@ async def get_onboarding_users(
         logger.error(f"Error retrieving onboarding users: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
        
+
+@router.get(
+    "/onboarding-users/trend",
+    status_code=status.HTTP_200_OK,
+    summary="Get onboarding users trend",
+    description=(
+        "Returns daily onboarding metrics for a UTC calendar window ending today. "
+        "Definitions: users = count of onboarding user rows created on that UTC day "
+        "(from created_at). completed = count of rows that were completed on that UTC day "
+        "(onboarding_status = true and onboarded_at falls on that day). failed = count of rows "
+        "that reached failed state on that UTC day (onboarding_status = false, call_attempts >= 3, "
+        "and called_at falls on that day)."
+    ),
+)
+async def get_onboarding_users_trend(
+    db: AsyncSession = Depends(get_db),
+    organization_id: Optional[str] = Query(default=None),
+    days: Optional[str] = Query(default="30"),
+):
+    organization_id_int = _parse_positive_int(organization_id, "organization_id")
+    days_int = _parse_positive_int(days, "days", default=30)
+
+    now_utc = datetime.now(timezone.utc)
+    end_day = now_utc.date()
+    start_day = end_day - timedelta(days=days_int - 1)
+
+    start_dt = datetime.combine(start_day, time.min, tzinfo=timezone.utc)
+    end_dt = datetime.combine(end_day + timedelta(days=1), time.min, tzinfo=timezone.utc)
+
+    try:
+        created_events = (
+            select(
+                func.date(OnboardingUser.created_at).label("day"),
+                func.count().label("users"),
+                literal(0).label("completed"),
+                literal(0).label("failed"),
+            )
+            .where(
+                OnboardingUser.organization_id == organization_id_int,
+                OnboardingUser.created_at.isnot(None),
+                OnboardingUser.created_at >= start_dt,
+                OnboardingUser.created_at < end_dt,
+            )
+            .group_by(func.date(OnboardingUser.created_at))
+        )
+
+        completed_events = (
+            select(
+                func.date(OnboardingUser.onboarded_at).label("day"),
+                literal(0).label("users"),
+                func.count().label("completed"),
+                literal(0).label("failed"),
+            )
+            .where(
+                OnboardingUser.organization_id == organization_id_int,
+                OnboardingUser.onboarding_status.is_(True),
+                OnboardingUser.onboarded_at.isnot(None),
+                OnboardingUser.onboarded_at >= start_dt,
+                OnboardingUser.onboarded_at < end_dt,
+            )
+            .group_by(func.date(OnboardingUser.onboarded_at))
+        )
+
+        failed_events = (
+            select(
+                func.date(OnboardingUser.called_at).label("day"),
+                literal(0).label("users"),
+                literal(0).label("completed"),
+                func.count().label("failed"),
+            )
+            .where(
+                OnboardingUser.organization_id == organization_id_int,
+                OnboardingUser.onboarding_status.is_(False),
+                OnboardingUser.call_attempts >= 3,
+                OnboardingUser.called_at.isnot(None),
+                OnboardingUser.called_at >= start_dt,
+                OnboardingUser.called_at < end_dt,
+            )
+            .group_by(func.date(OnboardingUser.called_at))
+        )
+
+        union_subquery = union_all(
+            created_events, completed_events, failed_events
+        ).subquery()
+
+        query = (
+            select(
+                union_subquery.c.day,
+                func.sum(union_subquery.c.users).label("users"),
+                func.sum(union_subquery.c.completed).label("completed"),
+                func.sum(union_subquery.c.failed).label("failed"),
+            )
+            .group_by(union_subquery.c.day)
+            .order_by(union_subquery.c.day.asc())
+        )
+
+        result = await db.execute(query)
+        rows = result.mappings().all()
+        rows_by_day = {row["day"].isoformat(): row for row in rows}
+
+        data = []
+        for i in range(days_int):
+            day = start_day + timedelta(days=i)
+            day_key = day.isoformat()
+            row = rows_by_day.get(day_key)
+            data.append(
+                {
+                    "day": day_key,
+                    "users": int(row["users"]) if row else 0,
+                    "completed": int(row["completed"]) if row else 0,
+                    "failed": int(row["failed"]) if row else 0,
+                }
+            )
+
+        return {
+            "data": data,
+            "timestamp": now_utc.isoformat(),
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error retrieving onboarding trend: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
 
 @router.delete(
     "/onboarding-users/{user_id}",
