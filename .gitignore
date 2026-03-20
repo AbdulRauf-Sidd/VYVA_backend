@@ -68,6 +68,7 @@ target/
 .pdm.toml
 
 alembic/versions/
+!alembic/versions/
 
 # Celery stuff
 celerybeat-schedule
@@ -113,5 +114,6 @@ nginx.conf
 gunicorn.conf.py
 
 alembic/versions/*
+!alembic/versions/*.py
 
 celerybeat*
