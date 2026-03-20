@@ -1,7 +1,7 @@
 from core.database import get_sync_session
 from models import User
 from models.authentication import UserTempToken, CaretakerTempToken
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from services.sms_service import sms_service
 from scripts.utils import get_iso_language
 
@@ -75,7 +75,7 @@ def send_onboarding_sms(phone_number: str = None, user: User = None, send_to_car
 
         temp_token = UserTempToken(
             user_id=user.id,
-            expires_at=datetime.now() + timedelta(hours=96),
+            expires_at=datetime.now(timezone.utc) + timedelta(hours=96),
             used=False
         )
         db.add(temp_token)
@@ -85,7 +85,7 @@ def send_onboarding_sms(phone_number: str = None, user: User = None, send_to_car
         if send_to_caregiver and user.caretaker:
             temp_token_caregiver = CaretakerTempToken(
                 caretaker_id=user.caretaker.id,
-                expires_at=datetime.now() + timedelta(hours=96),
+                expires_at=datetime.now(timezone.utc) + timedelta(hours=96),
                 used=False
             )
             db.add(temp_token_caregiver)

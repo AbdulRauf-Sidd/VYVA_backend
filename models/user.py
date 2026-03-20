@@ -72,9 +72,7 @@ class User(Base):
     #Medications
     medications = relationship("Medication", back_populates="user", cascade="all, delete-orphan", passive_deletes=True)
     wants_caretaker_alerts = Column(Boolean, nullable=True, default = True)
-    wants_reminders = Column(Boolean, nullable=True)
-    takes_medication = Column(Boolean, nullable=True)
-    missed_dose_alerts = Column(Boolean, nullable=True)
+    wants_reminders = Column(Boolean, nullable=True, default=True)
     preferred_reminder_channel = Column(String(50), nullable=True)
     medication_logs = relationship(
         "MedicationLog",
@@ -86,23 +84,13 @@ class User(Base):
     brain_responses = relationship("BrainCoachResponses", back_populates="user", cascade="all, delete-orphan", passive_deletes=True)
 
     #Reminders
-    # preferred_channel = Column(String(50), nullable=True)
-    whatsapp_reports = Column(Boolean, nullable=True, default=False)
-    email_reports = Column(Boolean, nullable=True, default=False)
     preferred_reports_channel = Column(String(20), default='whatsapp', nullable=True)
 
     
     #Care taker
     caretaker_id = Column(Integer, ForeignKey("caretakers.id", ondelete="CASCADE"), nullable=True, index=True) 
     caretaker = relationship("Caretaker", back_populates="assigned_users")
-    caretaker_consent = Column(Boolean, nullable=True)
-    
-    emergency_contact_name = Column(String(80), nullable=True)
-    emergency_contact_email = Column(String(255), nullable=True)
-    emergency_contact_phone = Column(String(20), nullable=True)
-
-    emergency_line_phone = Column(String(20), nullable=True)
-    
+    caretaker_consent = Column(Boolean, nullable=True) 
 
     #First Time agents
     medication_manager_first_time = Column(Boolean, nullable=True, default=True)
@@ -126,17 +114,17 @@ class User(Base):
     address = Column(Text, nullable=True)
     house_number = Column(String(40), nullable=True)
 
-    #Brain Coach
-    brain_coach_complexity = Column(String(50), nullable=True)  
+    # #Brain Coach
+    # brain_coach_complexity = Column(String(50), nullable=True)  
     
-    #Nutrition Services
-    nutrition_services_activation = Column(Boolean, nullable=True)
+    # #Nutrition Services
+    # nutrition_services_activation = Column(Boolean, nullable=True)
 
-    #Concierge Services
-    concierge_services_activation = Column(Boolean, nullable=True)
+    # #Concierge Services
+    # concierge_services_activation = Column(Boolean, nullable=True)
 
-    #Scam Protection
-    scam_protection_activation = Column(Boolean, nullable=True)
+    # #Scam Protection
+    # scam_protection_activation = Column(Boolean, nullable=True)
 
 
     #Fall Detection
@@ -152,7 +140,7 @@ class User(Base):
 
 
     def __repr__(self):
-        return f"<User(id={self.id}, email='{self.email}')>"
+        return f"id: {self.id}, Name: {self.full_name}"
     
     @property
     def full_name(self) -> str:
@@ -179,7 +167,7 @@ class User(Base):
         # Filter out None / empty / whitespace-only values
         parts = [p.strip() for p in parts if p and p.strip()]
     
-        return ", ".join(parts) if parts else "No address provided"
+        return ", ".join(parts) if parts else "Not Available"
 
     
 

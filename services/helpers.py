@@ -1,7 +1,7 @@
 import random
 import string
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 # from passlib.context import CryptContext
 
 logger = logging.getLogger(__name__)
@@ -74,7 +74,7 @@ def construct_whatsapp_brain_coach_message(
     total_max_score = 6
     lines = []
 
-    current_date = datetime.now().strftime("%A, %B %d, %Y")
+    current_date = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
 
     for rep in report_content:
         score = rep.get("score", 0)

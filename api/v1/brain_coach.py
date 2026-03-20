@@ -16,7 +16,7 @@ from typing import Optional
 # from services.whatsapp_service import whatsapp
 from scripts.utils import calculate_streak
 from services.email_service import EmailService
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 logger = logging.getLogger(__name__)
 
@@ -262,7 +262,7 @@ async def get_brain_coach_info(
     db: AsyncSession = Depends(get_db),
 ):
     try:
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         begin_date = now - timedelta(days=days)
 
         base_filter = (

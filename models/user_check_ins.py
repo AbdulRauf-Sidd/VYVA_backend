@@ -21,9 +21,10 @@ class UserCheckin(Base):
     check_in_frequency_days = Column(Integer, nullable=False)
     check_in_time = Column(Time, nullable=True)
     is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     def __repr__(self):
-        return f"<UserCheckin(id={self.id}, check_in_type='{self.check_in_type}')>"  
+        return f"id: {self.id}, check_in_type: '{self.check_in_type}"  
     
     __table_args__ = (
         UniqueConstraint("user_id", "check_in_type", name="uq_user_checkin_type"),
@@ -42,9 +43,10 @@ class ScheduledSession(Base):
     attempts = Column(Integer, default=0)
     call_sid = Column(String(100), nullable=True)
     status = Column(String(20), nullable=True) # completed, missed, voicemail, etc.
+    created_at = Column(DateTime(timezone=True), server_default=func.now()) 
     
     user_checkin = relationship("UserCheckin", passive_deletes=True)
     user_checkin_id = Column(Integer, ForeignKey("user_checkins.id", ondelete="CASCADE"), nullable=False)
     
     def __repr__(self):
-        return f"<ScheduledSession(id={self.id}, scheduled_at='{self.scheduled_at}', is_completed={self.is_completed})>"
+        return f"id: {self.id}, scheduled_at: {self.scheduled_at}, is_completed: {self.is_completed}"

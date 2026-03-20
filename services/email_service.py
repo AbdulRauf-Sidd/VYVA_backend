@@ -8,7 +8,7 @@ from typing import List, Optional, Dict, Union
 from core.config import settings
 from core.logging import get_logger
 from services.helpers import generate_random_string
-from datetime import datetime
+from datetime import datetime, timezone
 
 logger = get_logger(__name__)
 
@@ -269,7 +269,7 @@ class EmailService:
         tier = report_content[0].get(
             'tier', 'N/A') if report_content else 'N/A'
         session_id = generate_random_string(6)
-        current_date = datetime.now().strftime("%A, %B %d, %Y")
+        current_date = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
 
         table_rows = ""
         user_score = 0

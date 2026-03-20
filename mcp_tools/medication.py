@@ -7,7 +7,7 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 from core.database import get_async_session
 from datetime import datetime, timezone, date, timedelta
-from scripts.utils import get_zoneinfo_safe
+from scripts.utils import get_zoneinfo_safe, convert_utc_time_to_local_time, convert_local_time_to_utc_time
 from tasks.medication_tasks import notify_caregiver_on_missed_medication_task
 
 class RetrieveMedicationInput(BaseModel):
@@ -24,31 +24,35 @@ async def retrieve_user_medications(user_id: int) -> list[dict]:
         stmt = (
             select(Medication)
             .where(Medication.user_id == user_id, Medication.is_active == True)
-            .options(selectinload(Medication.times_of_day))
+            .options(
+                selectinload(Medication.times_of_day),
+                selectinload(Medication.user)
+            )
             .order_by(Medication.id)
         )
 
         result = await db.execute(stmt)
         medications = result.scalars().all()
 
-        return [
-            {
-                "id": med.id,
-                "name": med.name,
-                "dosage": med.dosage,
-                "purpose": med.purpose,
-                # "start_date": med.start_date.isoformat() if med.start_date else None,
-                # "end_date": med.end_date.isoformat() if med.end_date else None,
-                "times": [
-                    t.time_of_day.strftime("%H:%M")
-                    for t in med.times_of_day
-                    if t.time_of_day
-                ],
-                # "notes": med.notes,
-                # "side_effects": med.side_effects,
-            }
-            for med in medications
-        ]
+        meds = []
+        for med in medications:
+            times = []
+            for time in med.times_of_day:
+                local_time = convert_utc_time_to_local_time(time.time_of_day, med.user.timezone)
+                times.append(local_time)
+
+            meds.append(
+                {
+                    "id": med.id,
+                    "name": med.name,
+                    "dosage": med.dosage,
+                    "purpose": med.purpose,
+                    # "start_date": med.start_date.isoformat() if med.start_date else None,
+                    # "end_date": med.end_date.isoformat() if med.end_date else None,
+                    "times": times
+                }
+            )
+        return meds
         
 class AddMedication(BaseModel):
     user_id: int
@@ -79,7 +83,7 @@ async def add_user_medication(user_id: int, name: str, dosage: str, purpose: str
         user_now = now_utc.astimezone(tz)
         user_today = user_now.date()
 
-        start_date = user_today + timedelta(days=1)
+        start_date = user_today
         new_med = Medication(
             user_id=user_id,
             name=name,
@@ -93,10 +97,12 @@ async def add_user_medication(user_id: int, name: str, dosage: str, purpose: str
 
         for time_str in times:
             hours, minutes = map(int, time_str.split(":"))
+            time_obj = time(hour=hours, minute=minutes)
+            utc_time = convert_local_time_to_utc_time(time_obj, user_timezone)
             db.add(
                 MedicationTime(
                     medication=new_med,
-                    time_of_day=time(hour=hours, minute=minutes)
+                    time_of_day=utc_time
                 )
             )
 
@@ -156,18 +162,19 @@ async def update_user_medication(
         user_today = user_now.date()
         old_med.end_date = user_today
         old_med.is_active = False
+        old_med.disabled_at = now_utc
 
         await db.flush()
 
         # 🔹 2️⃣ Create new medication starting tomorrow
-        tomorrow = user_today + timedelta(days=1)
+        today = user_today
 
         new_med = Medication(
             user_id=old_med.user_id,
             name=name if name is not None else old_med.name,
             dosage=dosage if dosage is not None else old_med.dosage,
             purpose=purpose if purpose is not None else old_med.purpose,
-            start_date=tomorrow,
+            start_date=today,
             end_date=None,
             notes=old_med.notes,
             side_effects=old_med.side_effects,
@@ -177,8 +184,10 @@ async def update_user_medication(
         db.add(new_med)
         await db.flush()
         if times is not None:
+            convert=True
             time_strings = times
         else:
+            convert=False
             time_strings = [
                 t.time_of_day.strftime("%H:%M")
                 for t in old_med.times_of_day
@@ -187,11 +196,14 @@ async def update_user_medication(
 
         for time_str in time_strings:
             hours, minutes = map(int, time_str.split(":"))
+            time_obj = time(hour=hours, minute=minutes)
+            if convert:
+                time_obj = convert_local_time_to_utc_time(time_obj, old_med.user.timezone)
 
             db.add(
                 MedicationTime(
                     medication_id=new_med.id,
-                    time_of_day=time(hour=hours, minute=minutes),
+                    time_of_day=time_obj
                 )
             )
 
