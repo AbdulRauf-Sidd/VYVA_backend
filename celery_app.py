@@ -16,13 +16,13 @@ celery_app.conf.update(
     timezone="UTC",
     enable_utc=True,
     beat_schedule={
-        "daily-process-pending-onboarding-users": {
+        "hourly-process-pending-onboarding-users": {
         "task": "process_pending_onboarding_users",
-        "schedule": crontab(minute=0),  # runs daily at 12 AM
+        "schedule": crontab(minute=0),  # runs every hour
         },
         "hourly-medication-reminder-scheduler": {
             "task": "schedule_calls_for_hour",
-            "schedule": crontab(minute=0),  # runs every hour at the start of the hour
+            "schedule": crontab(minute=0),  # runs every hour
         }
     }
 )
