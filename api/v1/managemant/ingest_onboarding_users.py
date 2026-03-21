@@ -413,15 +413,15 @@ async def ingest_user(payload: IngestUserRequest, organization: str, db=Depends(
     db.add(user)
     await db.flush()
     
-    task_payload = construct_onboarding_user_payload(user, exists.onboarding_agent_id)
+    # task_payload = construct_onboarding_user_payload(user, exists.onboarding_agent_id)
     
-    task = initiate_onboarding_call.apply_async(
-                args=[task_payload,],
-                eta=final_utc_dt
-            )
+    # task = initiate_onboarding_call.apply_async(
+    #             args=[task_payload,],
+    #             eta=final_utc_dt
+    #         )
     
-    user.onboarding_call_scheduled = True
-    user.onboarding_call_task_id = task.id
+    # user.onboarding_call_scheduled = True
+    # user.onboarding_call_task_id = task.id
     
     await db.commit()
     logger.info(f"Scheduled onboarding call task {task.id} for user {full_phone} at {final_utc_dt} UTC")
