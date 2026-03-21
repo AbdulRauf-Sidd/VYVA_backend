@@ -196,8 +196,6 @@ async def update_user_medication(
                 if t.time_of_day
             ]
 
-        print(time_strings)
-
         for time_str in time_strings:
             hours, minutes = map(int, time_str.split(":"))
             time_obj = time(hour=hours, minute=minutes)
