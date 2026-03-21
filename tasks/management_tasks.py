@@ -107,7 +107,7 @@ def process_pending_onboarding_users():
                     OnboardingUser.consent_given.is_not(False))
             .all()
         )
-
+        print(pending_users, hour_start, hour_end)
         for user in pending_users:
             dt_today_utc = None
             call_back_date_time = user.call_back_date_time
