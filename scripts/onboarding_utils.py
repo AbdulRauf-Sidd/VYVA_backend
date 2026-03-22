@@ -42,7 +42,12 @@ def construct_onboarding_message_for_caretaker(iso_language, link):
 
 def construct_onboarding_user_payload(user, agent_id) -> dict:
     if user.address or user.city_state_province or user.postal_zip_code:
-        combined_address = f"{user.address}, {user.city_state_province}, {user.postal_zip_code}"
+        parts = [
+            user.address,
+            user.city_state_province,
+            user.postal_zip_code
+        ]
+        combined_address = ", ".join([p for p in parts if p])
     else:
         combined_address = "not available"
 

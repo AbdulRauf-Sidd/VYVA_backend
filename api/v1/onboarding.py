@@ -109,9 +109,10 @@ async def onboard_user(
         preferred_reports_channel = payload.preferred_reports_channel
         if not preferred_reports_channel:
             preferred_reports_channel = 'whatsapp'
+        elif preferred_reports_channel not in ['whatsapp', 'email']:
+            preferred_reports_channel = 'whatsapp'
 
         caregiver_phone = record.caregiver_contact_number if record.caregiver_contact_number else caretaker_phone
-        
 
         if caregiver_phone:
             caregiver, created = await get_or_create_caregiver(db, caregiver_phone, caretaker_name)

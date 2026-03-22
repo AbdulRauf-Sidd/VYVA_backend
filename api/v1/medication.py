@@ -419,10 +419,10 @@ async def get_weekly_medication_schedule(
                         
                         # total_scheduled += 1
 
-                        # local_time = convert_utc_time_to_local_time(
-                        #     time_entry.time_of_day,
-                        #     user_timezone
-                        # )
+                        local_time = convert_utc_time_to_local_time(
+                            time_entry.time_of_day,
+                            user_timezone
+                        )
 
                         # Check if log exists for that date
                         log = next(
@@ -454,7 +454,7 @@ async def get_weekly_medication_schedule(
                         weekly_schedule[day_name].append({
                             "medication_name": med.name,
                             "dosage": med.dosage,
-                            "time": medication_time.strftime("%H:%M"),
+                            "time": local_time.strftime("%H:%M"),
                             "notes": time_entry.notes,
                             "status": status_value
                         })
@@ -500,7 +500,7 @@ async def get_weekly_medication_schedule(
                             weekly_schedule[day_name].append({
                                 "medication_name": med.name,
                                 "dosage": med.dosage,
-                                "time": time_entry.time_of_day.strftime("%H:%M"),
+                                "time": local_time.strftime("%H:%M"),
                                 "notes": time_entry.notes,
                                 "status": status_value
                             })
