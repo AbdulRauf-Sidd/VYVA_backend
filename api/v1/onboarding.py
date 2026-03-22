@@ -107,9 +107,7 @@ async def onboard_user(
         postal_code = record.postal_zip_code if record.postal_zip_code else ""
         address = record.address if record.address else address
         preferred_reports_channel = payload.preferred_reports_channel
-        if not preferred_reports_channel:
-            preferred_reports_channel = 'whatsapp'
-        elif preferred_reports_channel not in ['whatsapp', 'email']:
+        if preferred_reports_channel not in ['whatsapp', 'email']:
             preferred_reports_channel = 'whatsapp'
 
         caregiver_phone = record.caregiver_contact_number if record.caregiver_contact_number else caretaker_phone

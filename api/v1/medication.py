@@ -538,8 +538,8 @@ async def get_weekly_overview(
 
     now_utc = datetime.now(timezone.utc)
     user_now = now_utc.astimezone(tz)
-    today = user_now.date()
-    current_time = user_now.time()
+    today = now_utc.date()
+    current_time = now_utc.time()
 
     monday = today - timedelta(days=today.weekday())
     sunday = monday + timedelta(days=6)
@@ -587,7 +587,10 @@ async def get_weekly_overview(
                 if not medication_time:
                     continue
 
-                
+                local_time = convert_utc_time_to_local_time(
+                            medication_time,
+                            user_timezone
+                        )
 
                 log = log_lookup.get((time_entry.id, current_date))
                 if log and log.status == MedicationStatus.taken.value:
@@ -612,16 +615,16 @@ async def get_weekly_overview(
                     if med.is_active:
                         upcoming_medicines_today.append({
                             "name": med.name,
-                            "time": medication_time.strftime("%H:%M"),
+                            "time": local_time.strftime("%H:%M"),
                             "status": status
                         })
 
-                if dose_datetime > user_now and med.is_active:
+                if dose_datetime > now_utc and med.is_active:
                     if upcoming_datetime is None or dose_datetime < upcoming_datetime:
                         upcoming_datetime = dose_datetime
                         upcoming_medicine = {
                             "name": med.name,
-                            "time": medication_time.strftime("%H:%M")
+                            "time": local_time.strftime("%H:%M")
                         }
 
         current_date += timedelta(days=1)
@@ -654,7 +657,7 @@ async def get_all_medications_with_times(
         stmt = (
             select(Medication)
             .where(Medication.user_id == user_id, Medication.is_active == True)
-            .options(selectinload(Medication.times_of_day))
+            .options(selectinload(Medication.times_of_day), selectinload(Medication.user))
         )
         result = await db.execute(stmt)
         medications = result.scalars().all()
@@ -677,7 +680,7 @@ async def get_all_medications_with_times(
                         {
                             "id": t.id,
                             "medication_id": t.medication_id,
-                            "time_of_day": t.time_of_day,
+                            "time_of_day": convert_utc_time_to_local_time(t.time_of_day, med.user.timezone),
                             "notes": t.notes,
                         }
                         for t in med.times_of_day
@@ -728,7 +731,8 @@ async def get_detailed_medication_info(
             select(Medication)
             .options(
                 selectinload(Medication.times_of_day),
-                selectinload(Medication.logs)
+                selectinload(Medication.logs),
+                selectinload()
             )
             .where(Medication.user_id == user_id)
         )
@@ -756,23 +760,20 @@ async def get_detailed_medication_info(
                 user_tz = ZoneInfo(user.timezone)
             except Exception:
                 user_tz = timezone.utc
-
-        now_local = now_utc.astimezone(user_tz)
-
         # Upcoming doses
         upcoming_doses = []
         for med in medications:
             for t in med.times_of_day:
                 if not t.time_of_day:
                     continue
-                candidate_dt = datetime.combine(now_local.date(), t.time_of_day, tzinfo=user_tz)
-                if candidate_dt >= now_local:
+                candidate_dt = datetime.combine(now_utc.date(), t.time_of_day, timezone.utc)
+                if candidate_dt >= now_utc.time():
                     upcoming_doses.append((candidate_dt, med.name))
 
         next_dose = None
         if upcoming_doses:
             next_time, med_name = min(upcoming_doses, key=lambda x: x[0])
-            next_dose = NextDoseOut(medication_name=med_name, time=next_time)
+            next_dose = NextDoseOut(medication_name=med_name, time=convert_utc_time_to_local_time(next_time, user_tz))
 
         return MedicationInfoOut(
             weekly_adherence_percentage=adherence_percentage,
@@ -852,7 +853,9 @@ async def get_adherence_history(
             taken_map = set()
             
             for med_id, taken_at, created_at in logs_result:
-                log_date = (taken_at or created_at).date()
+                if not taken_at:
+                    continue
+                log_date = (taken_at).date()
                 taken_map.add((med_id, log_date))
             
             total_taken = len(taken_map)

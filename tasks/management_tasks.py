@@ -190,7 +190,7 @@ def initiate_medication_reminder_call(payload):
             db.add(session_record)
             db.commit()
             # db.refresh(session_record)
-            schedule_celery_task_for_call_status_check(payload)
+            schedule_celery_task_for_call_status_check(payload, agent_type=AgentTypeEnum.medication_reminder.value)
         
         except Exception as e:
             logger.error(f"error creating eleven labs session record: {e}")
@@ -267,7 +267,7 @@ def update_scheduled_call_status(self):
                         # session.is_completed = True
                         session.completed_at = datetime.now(timezone.utc)
                     else:
-                        initiate_check_up_call.apply_async(args=[session.user_checkin_id], countdown=60) #reschedule call after 5 minutes
+                        initiate_check_up_call.apply_async(args=[session.user_checkin_id], countdown=60) #reschedule call after 1 minute
             else:
                 session.is_completed = True
                 session.completed_at = datetime.now(timezone.utc)

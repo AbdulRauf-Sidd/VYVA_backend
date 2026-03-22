@@ -52,12 +52,12 @@ def schedule_celery_task_for_call_status_check(payload=None, agent_type=None):
             return
     else:
         exists = conn.get(ONBOARDING_CALL_STATUS_CHECK_REDIS_KEY)
-    if not exists:
-        celery_app.send_task(
-            "check_onboarding_call_status",
-            countdown=300  # 5 minutes
-        )
-        conn.set(ONBOARDING_CALL_STATUS_CHECK_REDIS_KEY, 1, ex=300)  # Key expires in 5 minutes
+        if not exists:
+            celery_app.send_task(
+                "check_onboarding_call_status",
+                countdown=300  # 5 minutes
+            )
+            conn.set(ONBOARDING_CALL_STATUS_CHECK_REDIS_KEY, 1, ex=300)  # Key expires in 5 minutes
 
 def schedule_celery_task_for_scheduled_session_status_check():
     exists = conn.get(SCHEDULED_SESSION_STATUS_CHECK_REDIS_KEY)
