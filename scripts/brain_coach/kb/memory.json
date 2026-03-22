@@ -168,17 +168,17 @@
     "translations": [
       {
         "language": "es",
-        "question": "Voy a decir palabras. Cuando oigas un animal di sí: árbol, gato, mesa, elefante, libro, perro. ¿Cuántos animales había?",
+        "question": "Voy a decir una lista de palabras. Escucha con atención y recuerda los animales: árbol, gato, mesa, elefante, libro, perro. ¿Cuántos animales había y puedes nombrarlos?",
         "answer": "3 animales: gato, elefante, perro"
       },
       {
         "language": "de",
-        "question": "Ich nenne Wörter. Wenn du ein Tier hörst sag ja: Baum, Katze, Tisch, Elefant, Buch, Hund. Wie viele Tiere gab es?",
+        "question": "Ich nenne eine Wortliste. Hör gut zu und merk dir die Tiere: Baum, Katze, Tisch, Elefant, Buch, Hund. Wie viele Tiere gab es und kannst du sie nennen?",
         "answer": "3 Tiere: Katze, Elefant, Hund"
       },
       {
         "language": "en",
-        "question": "I will say words. When you hear an animal say yes: tree, cat, table, elephant, book, dog. How many animals were there?",
+        "question": "I will say a list of words. Listen carefully and remember the animals: tree, cat, table, elephant, book, dog. How many animals were there and can you name them?",
         "answer": "3 animals: cat, elephant, dog"
       }
     ]
@@ -467,17 +467,17 @@
     "translations": [
       {
         "language": "es",
-        "question": "Voy a decir números. Di ahora cuando oigas un número par: tres, ocho, cinco, dos, siete, cuatro. ¿Cuáles eran pares?",
+        "question": "Voy a decir unos números. Escucha con atención y recuerda los números pares: tres, ocho, cinco, dos, siete, cuatro. ¿Cuáles eran los números pares?",
         "answer": "ocho, dos, cuatro"
       },
       {
         "language": "de",
-        "question": "Ich nenne Zahlen. Sag jetzt wenn du eine gerade Zahl hörst: drei, acht, fünf, zwei, sieben, vier. Welche waren gerade?",
+        "question": "Ich nenne ein paar Zahlen. Hör gut zu und merk dir die geraden Zahlen: drei, acht, fünf, zwei, sieben, vier. Welche Zahlen waren gerade?",
         "answer": "acht, zwei, vier"
       },
       {
         "language": "en",
-        "question": "I will say numbers. Say now when you hear an even number: three, eight, five, two, seven, four. Which were even?",
+        "question": "I will say some numbers. Listen carefully and remember the even ones: three, eight, five, two, seven, four. Which numbers were even?",
         "answer": "eight, two, four"
       }
     ]
