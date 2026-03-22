@@ -66,7 +66,8 @@ class AddMedication(BaseModel):
     description=(
         "You will use this tool to add a new medication for a user."
         "You will call this when the user wants to add a new medication."
-        "Times should be in 24-hour format."
+        "Times should be in 24-hour format. example HH:MM"
+        "if the user says 6 in the evening, send 18:00"
     )
 )
 async def add_user_medication(user_id: int, name: str, dosage: str, purpose: str, times: list[str]) -> AddMedication:
@@ -129,7 +130,8 @@ class UpdateUserMedication(BaseModel):
     description=(
         "You will use this tool to update an existing medication for a user."
         "You will call this when the user wants to update their medication details."
-        "Times should be in 24-hour format."
+        "Times should be in 24-hour format. Format: HH:MM"
+        "Example: if the user says 6 in the evening, send 18:00"
     )
 )
 async def update_user_medication(

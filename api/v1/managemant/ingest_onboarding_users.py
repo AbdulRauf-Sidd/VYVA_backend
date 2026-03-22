@@ -424,7 +424,7 @@ async def ingest_user(payload: IngestUserRequest, organization: str, db=Depends(
     # user.onboarding_call_task_id = task.id
     
     await db.commit()
-    logger.info(f"Scheduled onboarding call task {task.id} for user {full_phone} at {final_utc_dt} UTC")
+    logger.info(f"added onboarding user {full_phone} at {final_utc_dt} UTC")
         
     return {
         'success': True,

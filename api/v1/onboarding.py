@@ -66,21 +66,23 @@ async def onboard_user(
         if data.get("call_back_date_time"):
             callback_date = data["call_back_date_time"].date()
             user_today = date_now_in_timezone(record.timezone)
-            record.call_back_date_time = data["call_back_date_time"]
+            dt_utc = convert_to_utc_datetime(tz_name=record.timezone, dt=data["call_back_date_time"])
             if callback_date == user_today:
                 onboarding_payload = construct_onboarding_user_payload(record, record.organization.onboarding_agent_id)
 
-                dt_utc = convert_to_utc_datetime(tz_name=record.timezone, dt=data["call_back_date_time"])
-                celery_app.send_task(
+                task = celery_app.send_task(
                     "initiate_onboarding_call",
                     args=[onboarding_payload,],
                     eta=dt_utc
                 )
-
+                
                 record.onboarding_call_scheduled = True
-            
+                record.onboarding_call_task_id = task.id
+                logger.info('celery call back task scheduled for user {record.first_name}, {task.id}')
+            record.call_back_date_time = dt_utc
             db.add(record)
             await db.commit()
+            logger.info('call back time added to user')
             return
         
         # --- check consent ---

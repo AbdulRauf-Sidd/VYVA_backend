@@ -25,7 +25,7 @@ from core.logging import setup_logging
 from core.database import engine, Base
 from api.v1 import onboarding, users, social, brain_coach, medication, fall_detection, tts, symptom_checker, post_call, ai_assistant, news, tools, organization, authentication, twilio
 from api.v1 import webhooks
-from api.v1.managemant import ingest_onboarding_users, call_queues
+from api.v1.managemant import admin, ingest_onboarding_users
 from api.v1.managemant import ingest_onboarding_users
 # from apscheduler.schedulers.background import BackgroundScheduler
 # from tasks import check_medication_time, run_async_job
@@ -198,7 +198,7 @@ app.include_router(onboarding.router, prefix="/api/v1/onboarding", tags=["Onboar
 app.include_router(authentication.router, prefix="/api/v1/auth", tags=["Authentication"])
 app.include_router(organization.router, prefix="/api/v1/organizations", tags=["Organizations"])
 app.include_router(ingest_onboarding_users.router, prefix="/api/v1/admin", tags=["Management"])
-app.include_router(call_queues.router, prefix="/api/v1/admin", tags=["Management"])
+app.include_router(admin.router, prefix="/api/v1/admin", tags=["Management"])
 app.include_router(social.router, prefix="/api/v1/social", tags=["Social"])
 app.include_router(brain_coach.router, prefix="/api/v1/brain-coach", tags=["Brain Coach"])
 app.include_router(medication.router, prefix="/api/v1/medications", tags=["Medications"])
