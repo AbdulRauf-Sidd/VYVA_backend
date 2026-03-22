@@ -23,11 +23,15 @@ logger = logging.getLogger(__name__)
 class QuestionType(str, Enum):
     trivia = "trivia"
     cognitive_assessment = "cognitive_assessment"
+    chess = "chess"
+    memory = 'memory'
+    games = 'games' 
 
 class Language(str, Enum):
     egnlish = 'english'
     spanish = 'spanish'
     german = 'german'
+
 
 class RetrieveQuestionsInput(BaseModel):
     user_id: int
@@ -64,7 +68,11 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
 
         stmt = (
             select(distinct(BrainCoachResponses.question_id))
-            .where(BrainCoachResponses.user_id == input.user_id)
+            .join(BrainCoachQuestions, BrainCoachResponses.question_id == BrainCoachQuestions.id)
+            .where(
+                BrainCoachResponses.user_id == input.user_id,
+                BrainCoachQuestions.category == input.questions_type.value
+            )
             .order_by(BrainCoachResponses.question_id)
         )
         
@@ -103,12 +111,16 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
                 BrainCoachQuestions.category == input.questions_type.value,
                 QuestionTranslations.language == iso_language,
                 BrainCoachQuestions.session == target_session,
-                BrainCoachQuestions.id.not_in(answered_question_ids)
-                # if answered_question_ids else True
+                # BrainCoachQuestions.id.not_in(answered_question_ids)
             )
             .order_by(BrainCoachQuestions.id)
             .limit(6)
         )
+        
+        if answered_question_ids:
+            stmt = stmt.where(
+                BrainCoachQuestions.id.not_in(answered_question_ids)
+            )
 
         result = await db.execute(stmt)
         rows = result.all()
@@ -178,7 +190,6 @@ class StoreSessionAnswersInput(BaseModel):
 )
 async def store_session_answers(input: StoreSessionAnswersInput) -> dict:
     try:
-        print(input.answers)
         async with get_async_session() as db:
             responses = [
                 BrainCoachResponses(

@@ -12,9 +12,12 @@ class BrainCoachQuestions(Base):
     __tablename__ = "brain_coach_questions"
 
     id = Column(Integer, primary_key=True, index=True)
+    code = Column(String(20),nullable=True)
     session = Column(Integer, nullable=False)
     tier = Column(Integer, nullable=False)
     max_score = Column(Integer, nullable=True, default=1)
+    difficulty = Column(String(20),nullable=True)
+    type = Column(String(20),nullable=True)
     category = Column(String(100), nullable=True)
     responses = relationship("BrainCoachResponses", back_populates="question", cascade="all, delete-orphan", passive_deletes=True)
 

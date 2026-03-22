@@ -1,0 +1,4602 @@
+[
+  {
+    "id": "games_001",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Tengo hojas pero no soy un árbol. Tengo lomo pero no soy un animal. ¿Qué soy?",
+        "answer": "Un libro"
+      },
+      {
+        "language": "de",
+        "question": "Ich habe Blätter aber ich bin kein Baum. Ich habe einen Rücken aber ich bin kein Tier. Was bin ich?",
+        "answer": "Ein Buch"
+      },
+      {
+        "language": "en",
+        "question": "I have leaves but I am not a tree. I have a spine but I am not an animal. What am I?",
+        "answer": "A book"
+      }
+    ]
+  },
+  {
+    "id": "games_002",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Cuanto más grande soy, menos se me ve. ¿Qué soy?",
+        "answer": "La oscuridad"
+      },
+      {
+        "language": "de",
+        "question": "Je größer ich bin, desto weniger sieht man mich. Was bin ich?",
+        "answer": "Die Dunkelheit"
+      },
+      {
+        "language": "en",
+        "question": "The bigger I am, the less you can see me. What am I?",
+        "answer": "Darkness"
+      }
+    ]
+  },
+  {
+    "id": "games_003",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Tengo ciudades sin casas, montañas sin árboles y ríos sin agua. ¿Qué soy?",
+        "answer": "Un mapa"
+      },
+      {
+        "language": "de",
+        "question": "Ich habe Städte ohne Häuser, Berge ohne Bäume und Flüsse ohne Wasser. Was bin ich?",
+        "answer": "Eine Landkarte"
+      },
+      {
+        "language": "en",
+        "question": "I have cities without houses, mountains without trees and rivers without water. What am I?",
+        "answer": "A map"
+      }
+    ]
+  },
+  {
+    "id": "games_004",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Me miras y te miro. Ríes y río. Lloras y lloro. ¿Qué soy?",
+        "answer": "Un espejo"
+      },
+      {
+        "language": "de",
+        "question": "Du schaust mich an und ich schaue dich an. Du lachst und ich lache. Du weinst und ich weine. Was bin ich?",
+        "answer": "Ein Spiegel"
+      },
+      {
+        "language": "en",
+        "question": "You look at me and I look at you. You laugh and I laugh. You cry and I cry. What am I?",
+        "answer": "A mirror"
+      }
+    ]
+  },
+  {
+    "id": "games_005",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Soy larga y delgada, entro en agujeros oscuros y doy luz. ¿Qué soy?",
+        "answer": "Una vela o una cerilla"
+      },
+      {
+        "language": "de",
+        "question": "Ich bin lang und dünn, tauche in dunkle Löcher ein und gebe Licht. Was bin ich?",
+        "answer": "Eine Kerze oder ein Streichholz"
+      },
+      {
+        "language": "en",
+        "question": "I am long and thin, I enter dark holes and give light. What am I?",
+        "answer": "A candle or a match"
+      }
+    ]
+  },
+  {
+    "id": "games_006",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Cuanto más me lavas, más sucia quedo. ¿Qué soy?",
+        "answer": "El agua"
+      },
+      {
+        "language": "de",
+        "question": "Je mehr du mich wäschst, desto schmutziger werde ich. Was bin ich?",
+        "answer": "Das Wasser"
+      },
+      {
+        "language": "en",
+        "question": "The more you wash me, the dirtier I get. What am I?",
+        "answer": "Water"
+      }
+    ]
+  },
+  {
+    "id": "games_007",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Tengo muchos dientes pero no muerdo. ¿Qué soy?",
+        "answer": "Un peine o un tenedor"
+      },
+      {
+        "language": "de",
+        "question": "Ich habe viele Zähne aber ich beiße nicht. Was bin ich?",
+        "answer": "Ein Kamm oder eine Gabel"
+      },
+      {
+        "language": "en",
+        "question": "I have many teeth but I do not bite. What am I?",
+        "answer": "A comb or a fork"
+      }
+    ]
+  },
+  {
+    "id": "games_008",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Un hombre vive en el décimo piso. Cada mañana baja en ascensor hasta la planta baja. Cuando vuelve solo sube hasta el séptimo y sube el resto a pie. ¿Por qué?",
+        "answer": "Porque es muy bajito y solo puede llegar al botón del séptimo piso"
+      },
+      {
+        "language": "de",
+        "question": "Ein Mann wohnt im zehnten Stock. Jeden Morgen fährt er mit dem Aufzug in die Erdgeschoss. Wenn er zurückkommt fährt er nur bis zum siebten Stock und geht den Rest zu Fuß. Warum?",
+        "answer": "Weil er sehr klein ist und nur den Knopf für den siebten Stock erreichen kann"
+      },
+      {
+        "language": "en",
+        "question": "A man lives on the tenth floor. Every morning he takes the lift to the ground floor. When he returns he only goes up to the seventh floor and walks the rest. Why?",
+        "answer": "Because he is very short and can only reach the button for the seventh floor"
+      }
+    ]
+  },
+  {
+    "id": "games_009",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Un gallo está en el tejado de una iglesia. Sopla viento del norte. ¿Hacia qué lado caen los huevos?",
+        "answer": "Los gallos no ponen huevos. Solo las gallinas ponen huevos."
+      },
+      {
+        "language": "de",
+        "question": "Ein Hahn sitzt auf dem Kirchturm. Der Wind kommt von Norden. Auf welche Seite fallen die Eier?",
+        "answer": "Hähne legen keine Eier. Nur Hennen legen Eier."
+      },
+      {
+        "language": "en",
+        "question": "A rooster is sitting on a church roof. The wind is blowing from the north. Which way do the eggs fall?",
+        "answer": "Roosters do not lay eggs. Only hens lay eggs."
+      }
+    ]
+  },
+  {
+    "id": "games_010",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Qué es lo que cuanto más se seca más mojada está?",
+        "answer": "Una toalla"
+      },
+      {
+        "language": "de",
+        "question": "Was wird nasser je mehr es trocknet?",
+        "answer": "Ein Handtuch"
+      },
+      {
+        "language": "en",
+        "question": "What gets wetter the more it dries?",
+        "answer": "A towel"
+      }
+    ]
+  },
+  {
+    "id": "games_011",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "En el campo me crié, atada con verdes lazos, y aquel que llora por mí me está partiendo en pedazos. ¿Qué soy?",
+        "answer": "La cebolla"
+      },
+      {
+        "language": "de",
+        "question": "Auf dem Feld wuchs ich auf, gebunden mit grünen Fäden, und wer um mich weint, der schneidet mich in Stücke. Was bin ich?",
+        "answer": "Die Zwiebel"
+      },
+      {
+        "language": "en",
+        "question": "I grew up in the field, tied with green ribbons, and whoever cries for me is cutting me to pieces. What am I?",
+        "answer": "An onion"
+      }
+    ]
+  },
+  {
+    "id": "games_012",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Soy pequeña como un ratón y guardo la casa como un león. ¿Qué soy?",
+        "answer": "Una llave"
+      },
+      {
+        "language": "de",
+        "question": "Ich bin klein wie eine Maus und bewache das Haus wie ein Löwe. Was bin ich?",
+        "answer": "Ein Schlüssel"
+      },
+      {
+        "language": "en",
+        "question": "I am small as a mouse and guard the house like a lion. What am I?",
+        "answer": "A key"
+      }
+    ]
+  },
+  {
+    "id": "games_013",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Oro no es, plata no es. ¿Qué es?",
+        "answer": "El plátano"
+      },
+      {
+        "language": "de",
+        "question": "Gold ist es nicht, Silber ist es nicht. Was ist es dann?",
+        "answer": "Die Banane"
+      },
+      {
+        "language": "en",
+        "question": "It is not gold, it is not silver. What is it?",
+        "answer": "A banana"
+      }
+    ]
+  },
+  {
+    "id": "games_014",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Agua pasa por mi casa, cate de mi corazón. El que no lo adivine será un burro cabezón. ¿Qué es?",
+        "answer": "El aguacate"
+      },
+      {
+        "language": "de",
+        "question": "Wasser fließt durch mein Haus, kat ist mein Herz. Wer es nicht errät ist ein Dummkopf. Was ist es?",
+        "answer": "Die Avocado"
+      },
+      {
+        "language": "en",
+        "question": "Water passes through my house, cate of my heart. Whoever cannot guess it is a stubborn donkey. What is it?",
+        "answer": "Avocado"
+      }
+    ]
+  },
+  {
+    "id": "games_015",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Todos me tienen, pocos me valoran, muchos me pierden y nunca más me recuperan. ¿Qué soy?",
+        "answer": "El tiempo"
+      },
+      {
+        "language": "de",
+        "question": "Alle haben mich, wenige schätzen mich, viele verlieren mich und erholen sich nie wieder. Was bin ich?",
+        "answer": "Die Zeit"
+      },
+      {
+        "language": "en",
+        "question": "Everyone has me, few value me, many lose me and never recover me. What am I?",
+        "answer": "Time"
+      }
+    ]
+  },
+  {
+    "id": "games_016",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Soy tuya pero los demás la usan más que tú. ¿Qué soy?",
+        "answer": "Tu nombre"
+      },
+      {
+        "language": "de",
+        "question": "Ich gehöre dir aber andere benutzen mich öfter als du. Was bin ich?",
+        "answer": "Dein Name"
+      },
+      {
+        "language": "en",
+        "question": "I belong to you but others use me more than you do. What am I?",
+        "answer": "Your name"
+      }
+    ]
+  },
+  {
+    "id": "games_017",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Llevo muertos que nunca murieron y vivos que nunca vivieron. ¿Qué soy?",
+        "answer": "Un libro"
+      },
+      {
+        "language": "de",
+        "question": "Ich trage Tote die nie gestorben sind und Lebende die nie gelebt haben. Was bin ich?",
+        "answer": "Ein Buch"
+      },
+      {
+        "language": "en",
+        "question": "I carry the dead who never died and the living who never lived. What am I?",
+        "answer": "A book"
+      }
+    ]
+  },
+  {
+    "id": "games_018",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Qué hace una vaca cuando está parada?",
+        "answer": "La sombra"
+      },
+      {
+        "language": "de",
+        "question": "Was macht eine Kuh wenn sie steht?",
+        "answer": "Den Schatten"
+      },
+      {
+        "language": "en",
+        "question": "What does a cow make when it stands still?",
+        "answer": "A shadow"
+      }
+    ]
+  },
+  {
+    "id": "games_019",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Un granjero tiene diecisiete ovejas. Todas menos nueve mueren. ¿Cuántas le quedan?",
+        "answer": "Nueve, porque todas menos nueve significa que las nueve siguen vivas"
+      },
+      {
+        "language": "de",
+        "question": "Ein Bauer hat siebzehn Schafe. Alle bis auf neun sterben. Wie viele hat er noch?",
+        "answer": "Neun, denn alle bis auf neun bedeutet dass die neun noch am Leben sind"
+      },
+      {
+        "language": "en",
+        "question": "A farmer has seventeen sheep. All but nine die. How many does he have left?",
+        "answer": "Nine, because all but nine means those nine are still alive"
+      }
+    ]
+  },
+  {
+    "id": "games_020",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántos meses tienen veintiocho días?",
+        "answer": "Todos los meses tienen al menos veintiocho días"
+      },
+      {
+        "language": "de",
+        "question": "Wie viele Monate haben achtundzwanzig Tage?",
+        "answer": "Alle Monate haben mindestens achtundzwanzig Tage"
+      },
+      {
+        "language": "en",
+        "question": "How many months have twenty-eight days?",
+        "answer": "All months have at least twenty-eight days"
+      }
+    ]
+  },
+  {
+    "id": "games_021",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Tengo ojos y no veo, tengo boca y no hablo, tengo manos y no toco. ¿Qué soy?",
+        "answer": "Una cara en un cuadro o una fotografía"
+      },
+      {
+        "language": "de",
+        "question": "Ich habe Augen und sehe nicht, ich habe einen Mund und spreche nicht, ich habe Hände und greife nicht. Was bin ich?",
+        "answer": "Ein Gesicht auf einem Gemälde oder Foto"
+      },
+      {
+        "language": "en",
+        "question": "I have eyes and cannot see, I have a mouth and cannot speak, I have hands and cannot touch. What am I?",
+        "answer": "A face in a painting or photograph"
+      }
+    ]
+  },
+  {
+    "id": "games_022",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Por las mañanas vengo, por las tardes me voy, dejo el suelo mojado y a todos refresco. ¿Qué soy?",
+        "answer": "El rocío o la lluvia de la mañana"
+      },
+      {
+        "language": "de",
+        "question": "Morgens komme ich, nachmittags gehe ich, ich hinterlasse den Boden nass und erfrische alle. Was bin ich?",
+        "answer": "Der Tau oder der Morgenregen"
+      },
+      {
+        "language": "en",
+        "question": "In the mornings I come, in the afternoons I leave, I wet the ground and refresh everyone. What am I?",
+        "answer": "Dew or morning rain"
+      }
+    ]
+  },
+  {
+    "id": "games_023",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Puedo volar sin tener alas. Puedo llorar sin tener ojos. Dondequiera que voy, la oscuridad sigue. ¿Qué soy?",
+        "answer": "Una nube"
+      },
+      {
+        "language": "de",
+        "question": "Ich kann fliegen ohne Flügel. Ich kann weinen ohne Augen. Wohin ich auch gehe, die Dunkelheit folgt mir. Was bin ich?",
+        "answer": "Eine Wolke"
+      },
+      {
+        "language": "en",
+        "question": "I can fly without wings. I can cry without eyes. Wherever I go darkness follows. What am I?",
+        "answer": "A cloud"
+      }
+    ]
+  },
+  {
+    "id": "games_024",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Tengo escaleras pero no soy un edificio. Tengo agua pero no soy un río. Tengo cascadas pero no soy una montaña. ¿Qué soy?",
+        "answer": "Una fuente"
+      },
+      {
+        "language": "de",
+        "question": "Ich habe Stufen aber ich bin kein Gebäude. Ich habe Wasser aber ich bin kein Fluss. Ich habe Wasserfälle aber ich bin kein Berg. Was bin ich?",
+        "answer": "Ein Brunnen"
+      },
+      {
+        "language": "en",
+        "question": "I have steps but I am not a building. I have water but I am not a river. I have waterfalls but I am not a mountain. What am I?",
+        "answer": "A fountain"
+      }
+    ]
+  },
+  {
+    "id": "games_025",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Cuatro patas tiene y no puede caminar, tiene lomo y no es animal. ¿Qué es?",
+        "answer": "Una mesa"
+      },
+      {
+        "language": "de",
+        "question": "Es hat vier Beine und kann nicht laufen, hat einen Rücken und ist kein Tier. Was ist es?",
+        "answer": "Ein Tisch"
+      },
+      {
+        "language": "en",
+        "question": "It has four legs and cannot walk, it has a back and is not an animal. What is it?",
+        "answer": "A table"
+      }
+    ]
+  },
+  {
+    "id": "games_026",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Intenta decir este trabalenguas: Tres tristes tigres tragaban trigo en un trigal.",
+        "answer": "Tres tristes tigres tragaban trigo en un trigal"
+      },
+      {
+        "language": "de",
+        "question": "Versuche diesen Zungenbrecher zu sagen: Fischers Fritz fischt frische Fische, frische Fische fischt Fischers Fritz.",
+        "answer": "Fischers Fritz fischt frische Fische, frische Fische fischt Fischers Fritz"
+      },
+      {
+        "language": "en",
+        "question": "Try to say this tongue twister: She sells seashells by the seashore.",
+        "answer": "She sells seashells by the seashore"
+      }
+    ]
+  },
+  {
+    "id": "games_027",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Repite este trabalenguas: Pablito clavó un clavito. ¿Qué clavito clavó Pablito?",
+        "answer": "Pablito clavó un clavito. ¿Qué clavito clavó Pablito?"
+      },
+      {
+        "language": "de",
+        "question": "Wiederhole diesen Zungenbrecher: Blaukraut bleibt Blaukraut und Brautkleid bleibt Brautkleid.",
+        "answer": "Blaukraut bleibt Blaukraut und Brautkleid bleibt Brautkleid"
+      },
+      {
+        "language": "en",
+        "question": "Repeat this tongue twister: How much wood would a woodchuck chuck if a woodchuck could chuck wood?",
+        "answer": "How much wood would a woodchuck chuck if a woodchuck could chuck wood?"
+      }
+    ]
+  },
+  {
+    "id": "games_028",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Intenta decir este trabalenguas: Compadre, cómpreme un coco. Compadre, no compro coco porque el que poco coco come, poco coco compra.",
+        "answer": "Compadre, cómpreme un coco. Compadre, no compro coco porque el que poco coco come, poco coco compra."
+      },
+      {
+        "language": "de",
+        "question": "Versuche diesen Zungenbrecher: Wenn Fliegen hinter Fliegen fliegen, fliegen Fliegen Fliegen nach.",
+        "answer": "Wenn Fliegen hinter Fliegen fliegen, fliegen Fliegen Fliegen nach"
+      },
+      {
+        "language": "en",
+        "question": "Try this tongue twister: Red lorry, yellow lorry. Red lorry, yellow lorry. Red lorry, yellow lorry.",
+        "answer": "Red lorry, yellow lorry. Red lorry, yellow lorry. Red lorry, yellow lorry."
+      }
+    ]
+  },
+  {
+    "id": "games_029",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di este trabalenguas: Erre con erre cigarro, erre con erre barril. Rápido corren los carros del ferrocarril.",
+        "answer": "Erre con erre cigarro, erre con erre barril. Rápido corren los carros del ferrocarril."
+      },
+      {
+        "language": "de",
+        "question": "Sag diesen Zungenbrecher: Der Potsdamer Postkutscher putzt den Potsdamer Postkutschkasten.",
+        "answer": "Der Potsdamer Postkutscher putzt den Potsdamer Postkutschkasten"
+      },
+      {
+        "language": "en",
+        "question": "Say this tongue twister: Betty Botter bought some butter but the butter was bitter so Betty Botter bought some better butter.",
+        "answer": "Betty Botter bought some butter but the butter was bitter so Betty Botter bought some better butter"
+      }
+    ]
+  },
+  {
+    "id": "games_030",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Intenta este trabalenguas difícil: Si Sansón no sazona su salsa con sal, le sale sosa. Le sale sosa su salsa a Sansón si no la sazona con sal.",
+        "answer": "Si Sansón no sazona su salsa con sal, le sale sosa. Le sale sosa su salsa a Sansón si no la sazona con sal."
+      },
+      {
+        "language": "de",
+        "question": "Versuche diesen schwierigen Zungenbrecher: Zwischen zwei Zwetschgenzweigen zwitschern zwei Schwalben.",
+        "answer": "Zwischen zwei Zwetschgenzweigen zwitschern zwei Schwalben"
+      },
+      {
+        "language": "en",
+        "question": "Try this difficult tongue twister: Peter Piper picked a peck of pickled peppers. How many pickled peppers did Peter Piper pick?",
+        "answer": "Peter Piper picked a peck of pickled peppers. A peck of pickled peppers Peter Piper picked."
+      }
+    ]
+  },
+  {
+    "id": "games_031",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di este trabalenguas: El cielo está enladrillado. ¿Quién lo desenladrillará? El desenladrillador que lo desenladrille, buen desenladrillador será.",
+        "answer": "El cielo está enladrillado. El desenladrillador que lo desenladrille, buen desenladrillador será."
+      },
+      {
+        "language": "de",
+        "question": "Sag diesen Zungenbrecher: Acht alte Ameisen essen am Abend Ananas.",
+        "answer": "Acht alte Ameisen essen am Abend Ananas"
+      },
+      {
+        "language": "en",
+        "question": "Say this tongue twister: I scream, you scream, we all scream for ice cream.",
+        "answer": "I scream, you scream, we all scream for ice cream"
+      }
+    ]
+  },
+  {
+    "id": "games_032",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di este trabalenguas: Pedro Pérez Pereira, pobre pintor portugués, pinta pinturas por poco precio.",
+        "answer": "Pedro Pérez Pereira, pobre pintor portugués, pinta pinturas por poco precio"
+      },
+      {
+        "language": "de",
+        "question": "Sag diesen Zungenbrecher: Esel essen Nesseln nicht, Nesseln essen Esel nicht.",
+        "answer": "Esel essen Nesseln nicht, Nesseln essen Esel nicht"
+      },
+      {
+        "language": "en",
+        "question": "Say this tongue twister: Unique New York, unique New York, you know you need unique New York.",
+        "answer": "Unique New York, unique New York, you know you need unique New York"
+      }
+    ]
+  },
+  {
+    "id": "games_033",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Intenta este trabalenguas: Digas lo que digas, digo yo lo que digo. Yo digo lo que digo porque lo digo yo. ¿Dices lo que digo o dices lo que dices?",
+        "answer": "Digas lo que digas, digo yo lo que digo."
+      },
+      {
+        "language": "de",
+        "question": "Versuche diesen Zungenbrecher: Sieben Schwaben saßen oben, sieben Säbel auf dem Sofa.",
+        "answer": "Sieben Schwaben saßen oben, sieben Säbel auf dem Sofa"
+      },
+      {
+        "language": "en",
+        "question": "Try this tongue twister: How can a clam cram in a clean cream can?",
+        "answer": "How can a clam cram in a clean cream can?"
+      }
+    ]
+  },
+  {
+    "id": "games_034",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di este trabalenguas: La pítima que le han pitimado al pitimado no es la pítima que le dan al que lo ha pitimado.",
+        "answer": "La pítima que le han pitimado al pitimado no es la pítima que le dan al que lo ha pitimado"
+      },
+      {
+        "language": "de",
+        "question": "Sag diesen Zungenbrecher: Die Katze tritt die Treppe krumm. Krumm tritt die Katze die Treppe.",
+        "answer": "Die Katze tritt die Treppe krumm. Krumm tritt die Katze die Treppe."
+      },
+      {
+        "language": "en",
+        "question": "Say this tongue twister: Which witch switched the Swiss wristwatches?",
+        "answer": "Which witch switched the Swiss wristwatches?"
+      }
+    ]
+  },
+  {
+    "id": "games_035",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di este trabalenguas: El perro de san Roque no tiene rabo porque Ramón Ramírez se lo ha robado.",
+        "answer": "El perro de san Roque no tiene rabo porque Ramón Ramírez se lo ha robado"
+      },
+      {
+        "language": "de",
+        "question": "Sag diesen Zungenbrecher: Klaus kauft kurze Kniestrümpfe, kurze Kniestrümpfe kauft Klaus.",
+        "answer": "Klaus kauft kurze Kniestrümpfe, kurze Kniestrümpfe kauft Klaus"
+      },
+      {
+        "language": "en",
+        "question": "Say this tongue twister: Fuzzy Wuzzy was a bear. Fuzzy Wuzzy had no hair. Fuzzy Wuzzy wasn't fuzzy, was he?",
+        "answer": "Fuzzy Wuzzy was a bear. Fuzzy Wuzzy had no hair. Fuzzy Wuzzy wasn't fuzzy, was he?"
+      }
+    ]
+  },
+  {
+    "id": "games_036",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Completa este refrán: A quien madruga...",
+        "answer": "Dios le ayuda"
+      },
+      {
+        "language": "de",
+        "question": "Vervollständige dieses Sprichwort: Der frühe Vogel...",
+        "answer": "fängt den Wurm"
+      },
+      {
+        "language": "en",
+        "question": "Complete this proverb: The early bird...",
+        "answer": "catches the worm"
+      }
+    ]
+  },
+  {
+    "id": "games_037",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Completa este refrán: Más vale pájaro en mano...",
+        "answer": "que ciento volando"
+      },
+      {
+        "language": "de",
+        "question": "Vervollständige dieses Sprichwort: Ein Spatz in der Hand...",
+        "answer": "ist besser als die Taube auf dem Dach"
+      },
+      {
+        "language": "en",
+        "question": "Complete this proverb: A bird in the hand...",
+        "answer": "is worth two in the bush"
+      }
+    ]
+  },
+  {
+    "id": "games_038",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Completa este refrán: No hay mal...",
+        "answer": "que por bien no venga"
+      },
+      {
+        "language": "de",
+        "question": "Vervollständige dieses Sprichwort: Was dich nicht umbringt...",
+        "answer": "macht dich stärker"
+      },
+      {
+        "language": "en",
+        "question": "Complete this proverb: Every cloud...",
+        "answer": "has a silver lining"
+      }
+    ]
+  },
+  {
+    "id": "games_039",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Completa este refrán: Dime con quién andas...",
+        "answer": "y te diré quién eres"
+      },
+      {
+        "language": "de",
+        "question": "Vervollständige dieses Sprichwort: Wer anderen eine Grube gräbt...",
+        "answer": "fällt selbst hinein"
+      },
+      {
+        "language": "en",
+        "question": "Complete this proverb: Tell me who your friends are...",
+        "answer": "and I will tell you who you are"
+      }
+    ]
+  },
+  {
+    "id": "games_040",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Completa este refrán: Más vale tarde...",
+        "answer": "que nunca"
+      },
+      {
+        "language": "de",
+        "question": "Vervollständige dieses Sprichwort: Besser spät...",
+        "answer": "als nie"
+      },
+      {
+        "language": "en",
+        "question": "Complete this proverb: Better late...",
+        "answer": "than never"
+      }
+    ]
+  },
+  {
+    "id": "games_041",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Completa este refrán: Camarón que se duerme...",
+        "answer": "se lo lleva la corriente"
+      },
+      {
+        "language": "de",
+        "question": "Vervollständige dieses Sprichwort: Morgenstund hat...",
+        "answer": "Gold im Mund"
+      },
+      {
+        "language": "en",
+        "question": "Complete this proverb: Strike while...",
+        "answer": "the iron is hot"
+      }
+    ]
+  },
+  {
+    "id": "games_042",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Completa este refrán: A caballo regalado...",
+        "answer": "no le mires el diente"
+      },
+      {
+        "language": "de",
+        "question": "Vervollständige dieses Sprichwort: Viele Köche...",
+        "answer": "verderben den Brei"
+      },
+      {
+        "language": "en",
+        "question": "Complete this proverb: Too many cooks...",
+        "answer": "spoil the broth"
+      }
+    ]
+  },
+  {
+    "id": "games_043",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Completa este refrán: Más vale tarde que nunca, pero más vale...",
+        "answer": "nunca tarde"
+      },
+      {
+        "language": "de",
+        "question": "Vervollständige dieses Sprichwort: Wie man in den Wald hineinruft...",
+        "answer": "so schallt es heraus"
+      },
+      {
+        "language": "en",
+        "question": "Complete this proverb: What goes around...",
+        "answer": "comes around"
+      }
+    ]
+  },
+  {
+    "id": "games_044",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di todas las frutas que se te ocurran en treinta segundos. ¿Cuántas puedes nombrar?",
+        "answer": "Manzana, pera, naranja, plátano, uva, fresa, melocotón, cereza, sandía, melón, kiwi, limón, mandarina, ciruela y muchas más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne so viele Früchte wie möglich in dreißig Sekunden. Wie viele kannst du nennen?",
+        "answer": "Apfel, Birne, Orange, Banane, Traube, Erdbeere, Pfirsich, Kirsche, Wassermelone, Melone, Kiwi, Zitrone, Mandarine, Pflaume und viele mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name all the fruits you can think of in thirty seconds. How many can you name?",
+        "answer": "Apple, pear, orange, banana, grape, strawberry, peach, cherry, watermelon, melon, kiwi, lemon, mandarin, plum and many more"
+      }
+    ]
+  },
+  {
+    "id": "games_045",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di cinco nombres de mujer que empiecen por M.",
+        "answer": "María, Mercedes, Marta, Manuela, Montserrat, Miriam, Mónica y muchos más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne fünf Frauennamen die mit M beginnen.",
+        "answer": "Maria, Monika, Martina, Magdalena, Mechthild, Monika, Melanie und viele mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name five women's names that start with M.",
+        "answer": "Mary, Margaret, Martha, Monica, Mia, Michelle, Melissa and many more"
+      }
+    ]
+  },
+  {
+    "id": "games_046",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di todo lo que se te ocurra que sea rojo.",
+        "answer": "Tomate, manzana roja, amapola, semáforo en rojo, labios, sangre, pimiento rojo, cereza, fresa y más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne alles was dir einfällt das rot ist.",
+        "answer": "Tomate, roter Apfel, Mohn, rote Ampel, Lippen, Blut, roter Pfeffer, Kirsche, Erdbeere und mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name everything you can think of that is red.",
+        "answer": "Tomato, red apple, poppy, red traffic light, lips, blood, red pepper, cherry, strawberry and more"
+      }
+    ]
+  },
+  {
+    "id": "games_047",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di cinco ciudades o pueblos de Castilla y León.",
+        "answer": "Zamora, Salamanca, Valladolid, Burgos, León, Ávila, Segovia, Soria, Palencia y muchos más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne fünf Städte in Deutschland die mit B beginnen.",
+        "answer": "Berlin, Bremen, Bonn, Braunschweig, Bielefeld, Bayreuth, Bochum und mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name five cities or towns in England.",
+        "answer": "London, Manchester, Birmingham, Leeds, Liverpool, Bristol, Sheffield and many more"
+      }
+    ]
+  },
+  {
+    "id": "games_048",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "El intruso: perro, gato, caballo, silla, gallina. ¿Cuál no encaja?",
+        "answer": "La silla. Las demás son animales."
+      },
+      {
+        "language": "de",
+        "question": "Das Eindringling-Spiel: Hund, Katze, Pferd, Stuhl, Huhn. Welches passt nicht?",
+        "answer": "Der Stuhl. Die anderen sind alle Tiere."
+      },
+      {
+        "language": "en",
+        "question": "Find the odd one out: dog, cat, horse, chair, hen. Which does not belong?",
+        "answer": "The chair. The others are all animals."
+      }
+    ]
+  },
+  {
+    "id": "games_049",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "El intruso: enero, marzo, verano, julio, octubre. ¿Cuál no encaja?",
+        "answer": "Verano. Los demás son meses y verano es una estación."
+      },
+      {
+        "language": "de",
+        "question": "Das Eindringling-Spiel: Januar, März, Sommer, Juli, Oktober. Welches passt nicht?",
+        "answer": "Sommer. Die anderen sind Monate und Sommer ist eine Jahreszeit."
+      },
+      {
+        "language": "en",
+        "question": "Find the odd one out: January, March, summer, July, October. Which does not belong?",
+        "answer": "Summer. The others are months and summer is a season."
+      }
+    ]
+  },
+  {
+    "id": "games_050",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "El intruso: rojo, azul, redondo, verde, amarillo. ¿Cuál no encaja?",
+        "answer": "Redondo. Los demás son colores y redondo es una forma."
+      },
+      {
+        "language": "de",
+        "question": "Das Eindringling-Spiel: rot, blau, rund, grün, gelb. Welches passt nicht?",
+        "answer": "Rund. Die anderen sind Farben und rund ist eine Form."
+      },
+      {
+        "language": "en",
+        "question": "Find the odd one out: red, blue, round, green, yellow. Which does not belong?",
+        "answer": "Round. The others are colours and round is a shape."
+      }
+    ]
+  },
+  {
+    "id": "games_051",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "El intruso: Madrid, Sevilla, Zamora, España, Barcelona. ¿Cuál no encaja?",
+        "answer": "España. Las demás son ciudades y España es un país."
+      },
+      {
+        "language": "de",
+        "question": "Das Eindringling-Spiel: Berlin, Hamburg, München, Deutschland, Frankfurt. Welches passt nicht?",
+        "answer": "Deutschland. Die anderen sind Städte und Deutschland ist ein Land."
+      },
+      {
+        "language": "en",
+        "question": "Find the odd one out: Paris, Lyon, Marseille, France, Bordeaux. Which does not belong?",
+        "answer": "France. The others are cities and France is a country."
+      }
+    ]
+  },
+  {
+    "id": "games_052",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "El intruso: nadar, correr, saltar, pensar, bailar. ¿Cuál no encaja?",
+        "answer": "Pensar. Las demás son actividades físicas y pensar es mental."
+      },
+      {
+        "language": "de",
+        "question": "Das Eindringling-Spiel: schwimmen, laufen, springen, denken, tanzen. Welches passt nicht?",
+        "answer": "Denken. Die anderen sind körperliche Aktivitäten und Denken ist geistig."
+      },
+      {
+        "language": "en",
+        "question": "Find the odd one out: swim, run, jump, think, dance. Which does not belong?",
+        "answer": "Think. The others are physical activities and thinking is mental."
+      }
+    ]
+  },
+  {
+    "id": "games_053",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuánto es cinco más tres?",
+        "answer": "Ocho"
+      },
+      {
+        "language": "de",
+        "question": "Wie viel ist fünf plus drei?",
+        "answer": "Acht"
+      },
+      {
+        "language": "en",
+        "question": "How much is five plus three?",
+        "answer": "Eight"
+      }
+    ]
+  },
+  {
+    "id": "games_054",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuánto es doce más siete?",
+        "answer": "Diecinueve"
+      },
+      {
+        "language": "de",
+        "question": "Wie viel ist zwölf plus sieben?",
+        "answer": "Neunzehn"
+      },
+      {
+        "language": "en",
+        "question": "How much is twelve plus seven?",
+        "answer": "Nineteen"
+      }
+    ]
+  },
+  {
+    "id": "games_055",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuánto es veinte menos ocho?",
+        "answer": "Doce"
+      },
+      {
+        "language": "de",
+        "question": "Wie viel ist zwanzig minus acht?",
+        "answer": "Zwölf"
+      },
+      {
+        "language": "en",
+        "question": "How much is twenty minus eight?",
+        "answer": "Twelve"
+      }
+    ]
+  },
+  {
+    "id": "games_056",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuánto es cuatro por tres?",
+        "answer": "Doce"
+      },
+      {
+        "language": "de",
+        "question": "Wie viel ist vier mal drei?",
+        "answer": "Zwölf"
+      },
+      {
+        "language": "en",
+        "question": "How much is four times three?",
+        "answer": "Twelve"
+      }
+    ]
+  },
+  {
+    "id": "games_057",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuánto es la mitad de treinta?",
+        "answer": "Quince"
+      },
+      {
+        "language": "de",
+        "question": "Wie viel ist die Hälfte von dreißig?",
+        "answer": "Fünfzehn"
+      },
+      {
+        "language": "en",
+        "question": "How much is half of thirty?",
+        "answer": "Fifteen"
+      }
+    ]
+  },
+  {
+    "id": "games_058",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuánto es el doble de catorce?",
+        "answer": "Veintiocho"
+      },
+      {
+        "language": "de",
+        "question": "Wie viel ist das Doppelte von vierzehn?",
+        "answer": "Achtundzwanzig"
+      },
+      {
+        "language": "en",
+        "question": "How much is double fourteen?",
+        "answer": "Twenty-eight"
+      }
+    ]
+  },
+  {
+    "id": "games_059",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuánto es el triple de nueve?",
+        "answer": "Veintisiete"
+      },
+      {
+        "language": "de",
+        "question": "Wie viel ist das Dreifache von neun?",
+        "answer": "Siebenundzwanzig"
+      },
+      {
+        "language": "en",
+        "question": "How much is triple nine?",
+        "answer": "Twenty-seven"
+      }
+    ]
+  },
+  {
+    "id": "games_060",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuánto es cuarenta dividido entre ocho?",
+        "answer": "Cinco"
+      },
+      {
+        "language": "de",
+        "question": "Wie viel ist vierzig geteilt durch acht?",
+        "answer": "Fünf"
+      },
+      {
+        "language": "en",
+        "question": "How much is forty divided by eight?",
+        "answer": "Five"
+      }
+    ]
+  },
+  {
+    "id": "games_061",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Dos, cuatro, seis, ocho. ¿Cuál es el siguiente número?",
+        "answer": "Diez. Son los números pares."
+      },
+      {
+        "language": "de",
+        "question": "Zwei, vier, sechs, acht. Welche Zahl kommt als nächstes?",
+        "answer": "Zehn. Es sind die geraden Zahlen."
+      },
+      {
+        "language": "en",
+        "question": "Two, four, six, eight. What is the next number?",
+        "answer": "Ten. They are even numbers."
+      }
+    ]
+  },
+  {
+    "id": "games_062",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Cinco, diez, quince, veinte. ¿Cuál es el siguiente número?",
+        "answer": "Veinticinco. Se va de cinco en cinco."
+      },
+      {
+        "language": "de",
+        "question": "Fünf, zehn, fünfzehn, zwanzig. Welche Zahl kommt als nächstes?",
+        "answer": "Fünfundzwanzig. Man zählt in Fünferschritten."
+      },
+      {
+        "language": "en",
+        "question": "Five, ten, fifteen, twenty. What is the next number?",
+        "answer": "Twenty-five. The pattern goes up by five."
+      }
+    ]
+  },
+  {
+    "id": "games_063",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Uno, dos, cuatro, ocho. ¿Cuál es el siguiente número?",
+        "answer": "Dieciséis. Cada número se multiplica por dos."
+      },
+      {
+        "language": "de",
+        "question": "Eins, zwei, vier, acht. Welche Zahl kommt als nächstes?",
+        "answer": "Sechzehn. Jede Zahl wird mit zwei multipliziert."
+      },
+      {
+        "language": "en",
+        "question": "One, two, four, eight. What is the next number?",
+        "answer": "Sixteen. Each number is multiplied by two."
+      }
+    ]
+  },
+  {
+    "id": "games_064",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Uno, uno, dos, tres, cinco, ocho. ¿Cuál es el siguiente número?",
+        "answer": "Trece. Es la serie de Fibonacci. Cada número es la suma de los dos anteriores."
+      },
+      {
+        "language": "de",
+        "question": "Eins, eins, zwei, drei, fünf, acht. Welche Zahl kommt als nächstes?",
+        "answer": "Dreizehn. Es ist die Fibonacci-Folge. Jede Zahl ist die Summe der zwei vorherigen."
+      },
+      {
+        "language": "en",
+        "question": "One, one, two, three, five, eight. What is the next number?",
+        "answer": "Thirteen. It is the Fibonacci sequence. Each number is the sum of the two before it."
+      }
+    ]
+  },
+  {
+    "id": "games_065",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Si tienes cien euros y gastas treinta y siete, ¿cuánto te queda?",
+        "answer": "Sesenta y tres euros"
+      },
+      {
+        "language": "de",
+        "question": "Wenn du hundert Euro hast und siebenunddreißig ausgibst, wie viel bleibt dir?",
+        "answer": "Dreiundsiebzig Euro"
+      },
+      {
+        "language": "en",
+        "question": "If you have one hundred euros and spend thirty-seven, how much do you have left?",
+        "answer": "Sixty-three euros"
+      }
+    ]
+  },
+  {
+    "id": "games_066",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Una madre es el doble de mayor que su hija. La hija tiene veinticinco años. ¿Cuántos años tiene la madre?",
+        "answer": "Cincuenta años"
+      },
+      {
+        "language": "de",
+        "question": "Eine Mutter ist doppelt so alt wie ihre Tochter. Die Tochter ist fünfundzwanzig Jahre alt. Wie alt ist die Mutter?",
+        "answer": "Fünfzig Jahre alt"
+      },
+      {
+        "language": "en",
+        "question": "A mother is twice as old as her daughter. The daughter is twenty-five. How old is the mother?",
+        "answer": "Fifty years old"
+      }
+    ]
+  },
+  {
+    "id": "games_067",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Dos amigas juntas tienen cien años. Una tiene diez años más que la otra. ¿Cuántos años tiene cada una?",
+        "answer": "Una tiene cincuenta y cinco y la otra cuarenta y cinco"
+      },
+      {
+        "language": "de",
+        "question": "Zwei Freundinnen sind zusammen hundert Jahre alt. Eine ist zehn Jahre älter als die andere. Wie alt ist jede?",
+        "answer": "Eine ist fünfundfünfzig und die andere fünfundvierzig"
+      },
+      {
+        "language": "en",
+        "question": "Two friends together are one hundred years old. One is ten years older than the other. How old is each?",
+        "answer": "One is fifty-five and the other is forty-five"
+      }
+    ]
+  },
+  {
+    "id": "games_068",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Cuenta hacia atrás desde diez hasta cero.",
+        "answer": "Diez, nueve, ocho, siete, seis, cinco, cuatro, tres, dos, uno, cero"
+      },
+      {
+        "language": "de",
+        "question": "Zähle rückwärts von zehn bis null.",
+        "answer": "Zehn, neun, acht, sieben, sechs, fünf, vier, drei, zwei, eins, null"
+      },
+      {
+        "language": "en",
+        "question": "Count backwards from ten to zero.",
+        "answer": "Ten, nine, eight, seven, six, five, four, three, two, one, zero"
+      }
+    ]
+  },
+  {
+    "id": "games_069",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Cuenta de diez en diez hacia atrás desde cien hasta cero.",
+        "answer": "Cien, noventa, ochenta, setenta, sesenta, cincuenta, cuarenta, treinta, veinte, diez, cero"
+      },
+      {
+        "language": "de",
+        "question": "Zähle in Zehnerschritten rückwärts von hundert bis null.",
+        "answer": "Hundert, neunzig, achtzig, siebzig, sechzig, fünfzig, vierzig, dreißig, zwanzig, zehn, null"
+      },
+      {
+        "language": "en",
+        "question": "Count backwards in tens from one hundred to zero.",
+        "answer": "One hundred, ninety, eighty, seventy, sixty, fifty, forty, thirty, twenty, ten, zero"
+      }
+    ]
+  },
+  {
+    "id": "games_070",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "El resultado es diez. ¿De cuántas maneras puedes llegar a diez con una suma o resta?",
+        "answer": "Cinco más cinco, ocho más dos, nueve más uno, doce menos dos, quince menos cinco y muchas más"
+      },
+      {
+        "language": "de",
+        "question": "Das Ergebnis ist zehn. Auf wie viele Arten kannst du mit einer Addition oder Subtraktion zu zehn kommen?",
+        "answer": "Fünf plus fünf, acht plus zwei, neun plus eins, zwölf minus zwei, fünfzehn minus fünf und viele mehr"
+      },
+      {
+        "language": "en",
+        "question": "The answer is ten. How many ways can you make ten using addition or subtraction?",
+        "answer": "Five plus five, eight plus two, nine plus one, twelve minus two, fifteen minus five and many more"
+      }
+    ]
+  },
+  {
+    "id": "games_071",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Empiezo una historia. Tú la continúas: Había una vez una señora mayor que vivía sola en un pueblo tranquilo. Un día, mientras regaba sus flores, encontró algo muy extraño en el jardín. ¿Qué encontró?",
+        "answer": "Respuesta libre. Cualquier idea es válida."
+      },
+      {
+        "language": "de",
+        "question": "Ich beginne eine Geschichte. Du machst weiter: Es war einmal eine ältere Dame die allein in einem ruhigen Dorf lebte. Eines Tages als sie ihre Blumen goss fand sie etwas sehr Seltsames im Garten. Was fand sie?",
+        "answer": "Freie Antwort. Jede Idee ist gültig."
+      },
+      {
+        "language": "en",
+        "question": "I start a story. You continue it: Once upon a time there was an elderly lady who lived alone in a quiet village. One day while watering her flowers she found something very strange in the garden. What did she find?",
+        "answer": "Free answer. Any idea is valid."
+      }
+    ]
+  },
+  {
+    "id": "games_072",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Continúa esta historia: El cartero llamó a la puerta y entregó un paquete misterioso. No había nombre del remitente. Cuando lo abrieron, dentro había... ¿Qué había dentro del paquete?",
+        "answer": "Respuesta libre. Cualquier idea es válida."
+      },
+      {
+        "language": "de",
+        "question": "Setze diese Geschichte fort: Der Briefträger klingelte und übergab ein geheimnisvolles Paket. Es gab keinen Absendernamen. Als sie es öffneten war darin... Was war im Paket?",
+        "answer": "Freie Antwort. Jede Idee ist gültig."
+      },
+      {
+        "language": "en",
+        "question": "Continue this story: The postman knocked and delivered a mysterious package. There was no sender's name. When they opened it, inside there was... What was inside the package?",
+        "answer": "Free answer. Any idea is valid."
+      }
+    ]
+  },
+  {
+    "id": "games_073",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Continúa: Dos amigas que no se veían desde hacía veinte años se encontraron por casualidad en el mercado. Cuando se vieron se quedaron sin palabras porque... ¿Por qué se quedaron sin palabras?",
+        "answer": "Respuesta libre. Cualquier idea es válida."
+      },
+      {
+        "language": "de",
+        "question": "Setze fort: Zwei Freundinnen die sich seit zwanzig Jahren nicht gesehen hatten trafen sich zufällig auf dem Markt. Als sie sich sahen verschlug es ihnen die Sprache weil... Warum verschlug es ihnen die Sprache?",
+        "answer": "Freie Antwort. Jede Idee ist gültig."
+      },
+      {
+        "language": "en",
+        "question": "Continue: Two friends who had not seen each other for twenty years met by chance at the market. When they saw each other they were speechless because... Why were they speechless?",
+        "answer": "Free answer. Any idea is valid."
+      }
+    ]
+  },
+  {
+    "id": "games_074",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Continúa esta historia: Era una noche de invierno y el viejo reloj del pueblo dio doce campanadas. En ese momento algo extraordinario ocurrió en la plaza. ¿Qué ocurrió?",
+        "answer": "Respuesta libre. Cualquier idea es válida."
+      },
+      {
+        "language": "de",
+        "question": "Setze diese Geschichte fort: Es war eine Winternacht und die alte Dorfuhr schlug zwölf Mal. In diesem Moment geschah etwas Außergewöhnliches auf dem Dorfplatz. Was geschah?",
+        "answer": "Freie Antwort. Jede Idee ist gültig."
+      },
+      {
+        "language": "en",
+        "question": "Continue this story: It was a winter night and the old village clock struck twelve. At that moment something extraordinary happened in the square. What happened?",
+        "answer": "Free answer. Any idea is valid."
+      }
+    ]
+  },
+  {
+    "id": "games_075",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Continúa: El nieto llegó a visitar a su abuelo y lo encontró en el jardín con una sonrisa enorme. El abuelo le dijo: acabo de descubrir un secreto que llevo guardando durante cincuenta años. ¿Cuál era el secreto?",
+        "answer": "Respuesta libre. Cualquier idea es válida."
+      },
+      {
+        "language": "de",
+        "question": "Setze fort: Der Enkel kam seinen Großvater besuchen und fand ihn mit einem riesigen Lächeln im Garten. Der Großvater sagte ihm: Ich habe gerade ein Geheimnis entdeckt das ich seit fünfzig Jahren bewahre. Was war das Geheimnis?",
+        "answer": "Freie Antwort. Jede Idee ist gültig."
+      },
+      {
+        "language": "en",
+        "question": "Continue: The grandson came to visit his grandfather and found him in the garden with an enormous smile. The grandfather told him: I have just discovered a secret I have been keeping for fifty years. What was the secret?",
+        "answer": "Free answer. Any idea is valid."
+      }
+    ]
+  },
+  {
+    "id": "games_076",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Inventa el final de esta historia: El tren iba lleno de gente cuando de repente se detuvo en medio del campo. El maquinista salió y anunció algo que nadie esperaba escuchar. ¿Qué anunció?",
+        "answer": "Respuesta libre. Cualquier idea es válida."
+      },
+      {
+        "language": "de",
+        "question": "Erfinde das Ende dieser Geschichte: Der Zug war voller Menschen als er plötzlich mitten auf dem Feld anhielt. Der Zugführer trat heraus und verkündete etwas das niemand zu hören erwartet hatte. Was verkündete er?",
+        "answer": "Freie Antwort. Jede Idee ist gültig."
+      },
+      {
+        "language": "en",
+        "question": "Invent the ending: The train was full of people when suddenly it stopped in the middle of the countryside. The driver came out and announced something nobody expected to hear. What did he announce?",
+        "answer": "Free answer. Any idea is valid."
+      }
+    ]
+  },
+  {
+    "id": "games_077",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Continúa: Una anciana encontró una carta vieja en el desván. Estaba dirigida a ella pero nunca la había recibido. La había escrito alguien muy especial hace cuarenta años. ¿Quién la había escrito y qué decía?",
+        "answer": "Respuesta libre. Cualquier idea es válida."
+      },
+      {
+        "language": "de",
+        "question": "Setze fort: Eine alte Frau fand einen alten Brief auf dem Dachboden. Er war an sie adressiert aber sie hatte ihn nie erhalten. Jemand sehr Besonderes hatte ihn vor vierzig Jahren geschrieben. Wer hatte ihn geschrieben und was stand darin?",
+        "answer": "Freie Antwort. Jede Idee ist gültig."
+      },
+      {
+        "language": "en",
+        "question": "Continue: An elderly woman found an old letter in the attic. It was addressed to her but she had never received it. Someone very special had written it forty years ago. Who had written it and what did it say?",
+        "answer": "Free answer. Any idea is valid."
+      }
+    ]
+  },
+  {
+    "id": "games_078",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Cuéntame una historia corta. Puede ser real o inventada. Corta o larga. Tuya o de alguien que conociste. Lo que quieras.",
+        "answer": "Respuesta libre. Cualquier historia es válida y bienvenida."
+      },
+      {
+        "language": "de",
+        "question": "Erzähl mir eine kurze Geschichte. Sie kann real oder erfunden sein. Kurz oder lang. Deine eigene oder die von jemandem den du kanntest. Was auch immer du möchtest.",
+        "answer": "Freie Antwort. Jede Geschichte ist gültig und willkommen."
+      },
+      {
+        "language": "en",
+        "question": "Tell me a short story. It can be real or invented. Short or long. Your own or someone you knew. Whatever you like.",
+        "answer": "Free answer. Any story is valid and welcome."
+      }
+    ]
+  },
+  {
+    "id": "games_079",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Continúa esta historia: El músico tocaba cada tarde en el parque sin que nadie le prestara atención. Pero un día una persona se detuvo, escuchó y se le llenaron los ojos de lágrimas. ¿Por qué lloró esa persona?",
+        "answer": "Respuesta libre. Cualquier idea es válida."
+      },
+      {
+        "language": "de",
+        "question": "Setze fort: Der Musiker spielte jeden Nachmittag im Park ohne dass ihm jemand Aufmerksamkeit schenkte. Aber eines Tages blieb jemand stehen hörte zu und bekam Tränen in den Augen. Warum weinte diese Person?",
+        "answer": "Freie Antwort. Jede Idee ist gültig."
+      },
+      {
+        "language": "en",
+        "question": "Continue this story: The musician played every afternoon in the park without anyone paying attention. But one day a person stopped, listened and their eyes filled with tears. Why did that person cry?",
+        "answer": "Free answer. Any idea is valid."
+      }
+    ]
+  },
+  {
+    "id": "games_080",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Inventa qué pasó después: Dos vecinos que llevaban diez años sin hablarse se encontraron en el ascensor. El ascensor se quedó atrapado entre pisos durante una hora. ¿Qué pasó durante esa hora?",
+        "answer": "Respuesta libre. Cualquier idea es válida."
+      },
+      {
+        "language": "de",
+        "question": "Erfinde was danach passierte: Zwei Nachbarn die sich seit zehn Jahren nicht gesprochen hatten trafen sich im Aufzug. Der Aufzug blieb eine Stunde lang zwischen zwei Etagen stecken. Was passierte während dieser Stunde?",
+        "answer": "Freie Antwort. Jede Idee ist gültig."
+      },
+      {
+        "language": "en",
+        "question": "Invent what happened next: Two neighbours who had not spoken for ten years met in the lift. The lift got stuck between floors for an hour. What happened during that hour?",
+        "answer": "Free answer. Any idea is valid."
+      }
+    ]
+  },
+  {
+    "id": "games_081",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Lo que sube y nunca baja. ¿Qué es?",
+        "answer": "La edad"
+      },
+      {
+        "language": "de",
+        "question": "Was steigt und fällt nie. Was ist es?",
+        "answer": "Das Alter"
+      },
+      {
+        "language": "en",
+        "question": "What goes up and never comes down?",
+        "answer": "Age"
+      }
+    ]
+  },
+  {
+    "id": "games_082",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Siempre delante de ti y nunca lo puedes ver. ¿Qué es?",
+        "answer": "El futuro"
+      },
+      {
+        "language": "de",
+        "question": "Immer vor dir und du kannst es nie sehen. Was ist es?",
+        "answer": "Die Zukunft"
+      },
+      {
+        "language": "en",
+        "question": "Always in front of you and you can never see it. What is it?",
+        "answer": "The future"
+      }
+    ]
+  },
+  {
+    "id": "games_083",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Tiene patas pero no camina, tiene espalda pero no se duele, tiene brazos pero no abraza. ¿Qué es?",
+        "answer": "Una silla"
+      },
+      {
+        "language": "de",
+        "question": "Es hat Beine aber kann nicht laufen, hat einen Rücken aber hat keine Schmerzen, hat Arme aber umarmt nicht. Was ist es?",
+        "answer": "Ein Stuhl"
+      },
+      {
+        "language": "en",
+        "question": "It has legs but cannot walk, has a back but feels no pain, has arms but cannot hug. What is it?",
+        "answer": "A chair"
+      }
+    ]
+  },
+  {
+    "id": "games_084",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "No tengo boca pero hablo. No tengo pies pero camino. No tengo cuerpo pero me llevas a todas partes. ¿Qué soy?",
+        "answer": "El pensamiento o la voz"
+      },
+      {
+        "language": "de",
+        "question": "Ich habe keinen Mund aber ich spreche. Ich habe keine Füße aber ich gehe. Ich habe keinen Körper aber du trägst mich überall hin. Was bin ich?",
+        "answer": "Der Gedanke oder die Stimme"
+      },
+      {
+        "language": "en",
+        "question": "I have no mouth but I speak. I have no feet but I walk. I have no body but you carry me everywhere. What am I?",
+        "answer": "Thought or voice"
+      }
+    ]
+  },
+  {
+    "id": "games_085",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Me metes en agua fría y salgo caliente. Me metes en agua caliente y salgo blando. ¿Qué soy?",
+        "answer": "El garbanzo o cualquier legumbre"
+      },
+      {
+        "language": "de",
+        "question": "Du gibst mich in kaltes Wasser und ich komme heiß heraus. Du gibst mich in heißes Wasser und ich komme weich heraus. Was bin ich?",
+        "answer": "Die Kichererbse oder eine andere Hülsenfrucht"
+      },
+      {
+        "language": "en",
+        "question": "You put me in cold water and I come out hot. You put me in hot water and I come out soft. What am I?",
+        "answer": "A chickpea or any legume"
+      }
+    ]
+  },
+  {
+    "id": "games_086",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Soy redonda como el sol, blanca como la nieve, y me puedes comer. ¿Qué soy?",
+        "answer": "Un huevo"
+      },
+      {
+        "language": "de",
+        "question": "Ich bin rund wie die Sonne, weiß wie Schnee und man kann mich essen. Was bin ich?",
+        "answer": "Ein Ei"
+      },
+      {
+        "language": "en",
+        "question": "I am round like the sun, white as snow, and you can eat me. What am I?",
+        "answer": "An egg"
+      }
+    ]
+  },
+  {
+    "id": "games_087",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "De día me quitas, de noche me pones. ¿Qué soy?",
+        "answer": "Las sábanas o la ropa de cama"
+      },
+      {
+        "language": "de",
+        "question": "Tagsüber nimmst du mich weg, nachts legst du mich hin. Was bin ich?",
+        "answer": "Das Bettlaken oder die Bettwäsche"
+      },
+      {
+        "language": "en",
+        "question": "In the day you take me off, at night you put me on. What am I?",
+        "answer": "Bedsheets or bed linen"
+      }
+    ]
+  },
+  {
+    "id": "games_088",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Soy verde por fuera, roja por dentro, tengo pepitas y en verano me como. ¿Qué soy?",
+        "answer": "La sandía"
+      },
+      {
+        "language": "de",
+        "question": "Ich bin grün außen, rot innen, habe Kerne und wird im Sommer gegessen. Was bin ich?",
+        "answer": "Die Wassermelone"
+      },
+      {
+        "language": "en",
+        "question": "I am green on the outside, red on the inside, I have seeds and I am eaten in summer. What am I?",
+        "answer": "A watermelon"
+      }
+    ]
+  },
+  {
+    "id": "games_089",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Lana sobre lana, lana bajo lana. Adivina quién es esta dama.",
+        "answer": "La oveja"
+      },
+      {
+        "language": "de",
+        "question": "Wolle über Wolle, Wolle unter Wolle. Rate wer diese Dame ist.",
+        "answer": "Das Schaf"
+      },
+      {
+        "language": "en",
+        "question": "Wool above wool, wool below wool. Guess who this lady is.",
+        "answer": "A sheep"
+      }
+    ]
+  },
+  {
+    "id": "games_090",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Soy blanca cuando nací, verde cuando crecí, roja cuando maduré y negra cuando me morí. ¿Qué soy?",
+        "answer": "La mora o la zarzamora"
+      },
+      {
+        "language": "de",
+        "question": "Ich war weiß als ich geboren wurde, grün als ich wuchs, rot als ich reifte und schwarz als ich starb. Was bin ich?",
+        "answer": "Die Brombeere"
+      },
+      {
+        "language": "en",
+        "question": "I was white when I was born, green as I grew, red when I ripened and black when I died. What am I?",
+        "answer": "A blackberry"
+      }
+    ]
+  },
+  {
+    "id": "games_091",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántos lustros son cien años?",
+        "answer": "Veinte lustros. Un lustro son cinco años."
+      },
+      {
+        "language": "de",
+        "question": "Wie viele Lustren sind hundert Jahre?",
+        "answer": "Zwanzig Lustren. Ein Lustrum sind fünf Jahre."
+      },
+      {
+        "language": "en",
+        "question": "How many lustrums are one hundred years?",
+        "answer": "Twenty lustrums. A lustrum is five years."
+      }
+    ]
+  },
+  {
+    "id": "games_092",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántas décadas son cien años?",
+        "answer": "Diez décadas. Una década son diez años."
+      },
+      {
+        "language": "de",
+        "question": "Wie viele Jahrzehnte sind hundert Jahre?",
+        "answer": "Zehn Jahrzehnte. Ein Jahrzehnt sind zehn Jahre."
+      },
+      {
+        "language": "en",
+        "question": "How many decades are one hundred years?",
+        "answer": "Ten decades. A decade is ten years."
+      }
+    ]
+  },
+  {
+    "id": "games_093",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di todas las palabras que rimen con corazón.",
+        "answer": "Canción, razón, camión, tazón, melón, sillón, balcón y muchas más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne alle Wörter die sich auf Herz reimen.",
+        "answer": "Schmerz, Scherz, Kerze, Lenz und mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name all the words you can think of that rhyme with heart.",
+        "answer": "Start, part, art, cart, chart, dart, smart and many more"
+      }
+    ]
+  },
+  {
+    "id": "games_094",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di palabras que rimen con casa.",
+        "answer": "Masa, taza, plaza, raza, danza, panza y muchas más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne Wörter die sich auf Haus reimen.",
+        "answer": "Maus, Strauß, raus, Graus, Schmaus und mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name words that rhyme with house.",
+        "answer": "Mouse, louse, grouse, spouse, blouse and more"
+      }
+    ]
+  },
+  {
+    "id": "games_095",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di palabras que rimen con mañana.",
+        "answer": "Campana, banana, ventana, lozana, gana, Americana y muchas más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne Wörter die sich auf Sonne reimen.",
+        "answer": "Wonne, Tonne, Ronne, Bronne und mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name words that rhyme with morning.",
+        "answer": "Warning, dawning, yawning, fawning and more"
+      }
+    ]
+  },
+  {
+    "id": "games_096",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di todos los animales que se te ocurran que vuelen.",
+        "answer": "Águila, paloma, gorrión, golondrina, mariposa, murciélago, abeja, mosca y muchos más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne alle Tiere die dir einfallen die fliegen können.",
+        "answer": "Adler, Taube, Spatze, Schwalbe, Schmetterling, Fledermaus, Biene, Fliege und viele mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name all the animals you can think of that fly.",
+        "answer": "Eagle, dove, sparrow, swallow, butterfly, bat, bee, fly and many more"
+      }
+    ]
+  },
+  {
+    "id": "games_097",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di todas las cosas que se te ocurran que son redondas.",
+        "answer": "Pelota, naranja, luna llena, rueda, moneda, globo, plato, sol y muchas más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne alle Dinge die dir einfallen die rund sind.",
+        "answer": "Ball, Orange, Vollmond, Rad, Münze, Ballon, Teller, Sonne und viele mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name all the things you can think of that are round.",
+        "answer": "Ball, orange, full moon, wheel, coin, balloon, plate, sun and many more"
+      }
+    ]
+  },
+  {
+    "id": "games_098",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Cuanto más tienes, menos ves. ¿Qué soy?",
+        "answer": "La oscuridad"
+      },
+      {
+        "language": "de",
+        "question": "Je mehr du hast, desto weniger siehst du. Was bin ich?",
+        "answer": "Die Dunkelheit"
+      },
+      {
+        "language": "en",
+        "question": "The more you have of me the less you see. What am I?",
+        "answer": "Darkness"
+      }
+    ]
+  },
+  {
+    "id": "games_099",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Intenta decir este trabalenguas tres veces rápido: Cómeme esta col con caldo. Caldo con col y col con caldo.",
+        "answer": "Cómeme esta col con caldo. Caldo con col y col con caldo."
+      },
+      {
+        "language": "de",
+        "question": "Versuche diesen Zungenbrecher dreimal schnell zu sagen: Der Schweizer Käse-Käser käst weißen Käse.",
+        "answer": "Der Schweizer Käse-Käser käst weißen Käse"
+      },
+      {
+        "language": "en",
+        "question": "Try to say this tongue twister three times fast: Which wristwatches are Swiss wristwatches?",
+        "answer": "Which wristwatches are Swiss wristwatches?"
+      }
+    ]
+  },
+  {
+    "id": "games_100",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "La suma de las edades de un padre y su hijo es sesenta años. El padre tiene el triple de años que el hijo. ¿Cuántos años tiene cada uno?",
+        "answer": "El hijo tiene quince años y el padre tiene cuarenta y cinco años"
+      },
+      {
+        "language": "de",
+        "question": "Die Summe der Alter eines Vaters und seines Sohnes beträgt sechzig Jahre. Der Vater ist dreimal so alt wie der Sohn. Wie alt ist jeder?",
+        "answer": "Der Sohn ist fünfzehn Jahre alt und der Vater ist fünfundvierzig Jahre alt"
+      },
+      {
+        "language": "en",
+        "question": "The sum of a father and son's ages is sixty years. The father is three times older than the son. How old is each?",
+        "answer": "The son is fifteen years old and the father is forty-five years old"
+      }
+    ]
+  },
+  {
+    "id": "games_101",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Soy blanca por el día y negra por la noche. Todo el mundo me pisa pero nadie me lleva puesta. ¿Qué soy?",
+        "answer": "La calle o el camino"
+      },
+      {
+        "language": "de",
+        "question": "Ich bin weiß am Tag und schwarz in der Nacht. Alle treten auf mich aber niemand trägt mich. Was bin ich?",
+        "answer": "Die Straße oder der Weg"
+      },
+      {
+        "language": "en",
+        "question": "I am white by day and black by night. Everyone steps on me but nobody wears me. What am I?",
+        "answer": "The street or road"
+      }
+    ]
+  },
+  {
+    "id": "games_102",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Mientras más me seques más mojado quedas tú. ¿Qué soy?",
+        "answer": "Una toalla"
+      },
+      {
+        "language": "de",
+        "question": "Je mehr du mich trocknest desto nasser wirst du. Was bin ich?",
+        "answer": "Ein Handtuch"
+      },
+      {
+        "language": "en",
+        "question": "The more you dry me the wetter you get. What am I?",
+        "answer": "A towel"
+      }
+    ]
+  },
+  {
+    "id": "games_103",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Soy un cuarto sin ventanas ni puertas. ¿Qué soy?",
+        "answer": "Un huevo"
+      },
+      {
+        "language": "de",
+        "question": "Ich bin ein Zimmer ohne Fenster und Türen. Was bin ich?",
+        "answer": "Ein Ei"
+      },
+      {
+        "language": "en",
+        "question": "I am a room with no windows or doors. What am I?",
+        "answer": "An egg"
+      }
+    ]
+  },
+  {
+    "id": "games_104",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Siempre corriendo pero nunca me muevo de casa. ¿Qué soy?",
+        "answer": "El reloj"
+      },
+      {
+        "language": "de",
+        "question": "Immer laufend aber ich bewege mich nie von zu Hause weg. Was bin ich?",
+        "answer": "Die Uhr"
+      },
+      {
+        "language": "en",
+        "question": "Always running but I never leave home. What am I?",
+        "answer": "A clock"
+      }
+    ]
+  },
+  {
+    "id": "games_105",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Me puedes atrapar pero no me puedes lanzar. ¿Qué soy?",
+        "answer": "Un resfriado o una enfermedad"
+      },
+      {
+        "language": "de",
+        "question": "Du kannst mich fangen aber nicht werfen. Was bin ich?",
+        "answer": "Eine Erkältung oder Krankheit"
+      },
+      {
+        "language": "en",
+        "question": "You can catch me but you cannot throw me. What am I?",
+        "answer": "A cold or illness"
+      }
+    ]
+  },
+  {
+    "id": "games_106",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Soy la niña de tus ojos. ¿Qué soy?",
+        "answer": "La pupila"
+      },
+      {
+        "language": "de",
+        "question": "Ich bin der Augapfel. Was bin ich?",
+        "answer": "Die Pupille"
+      },
+      {
+        "language": "en",
+        "question": "I am the apple of your eye. What am I?",
+        "answer": "The pupil"
+      }
+    ]
+  },
+  {
+    "id": "games_107",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Vivo en invierno, muero en verano y crezco con las raíces hacia arriba. ¿Qué soy?",
+        "answer": "El carámbano de hielo"
+      },
+      {
+        "language": "de",
+        "question": "Ich lebe im Winter, sterbe im Sommer und wachse mit den Wurzeln nach oben. Was bin ich?",
+        "answer": "Der Eiszapfen"
+      },
+      {
+        "language": "en",
+        "question": "I live in winter, die in summer and grow with my roots pointing up. What am I?",
+        "answer": "An icicle"
+      }
+    ]
+  },
+  {
+    "id": "games_108",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Tengo dos manos pero no puedo aplaudir. ¿Qué soy?",
+        "answer": "Un reloj"
+      },
+      {
+        "language": "de",
+        "question": "Ich habe zwei Hände aber kann nicht klatschen. Was bin ich?",
+        "answer": "Eine Uhr"
+      },
+      {
+        "language": "en",
+        "question": "I have two hands but cannot clap. What am I?",
+        "answer": "A clock"
+      }
+    ]
+  },
+  {
+    "id": "games_109",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Subo y bajo las escaleras sin moverme. ¿Qué soy?",
+        "answer": "La alfombra o la moqueta"
+      },
+      {
+        "language": "de",
+        "question": "Ich gehe die Treppe hoch und runter ohne mich zu bewegen. Was bin ich?",
+        "answer": "Der Teppich"
+      },
+      {
+        "language": "en",
+        "question": "I go up and down the stairs without moving. What am I?",
+        "answer": "A carpet or rug"
+      }
+    ]
+  },
+  {
+    "id": "games_110",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Hay una cosa que se rompe en cuanto la nombras. ¿Qué es?",
+        "answer": "El silencio"
+      },
+      {
+        "language": "de",
+        "question": "Es gibt eine Sache die bricht sobald man sie nennt. Was ist es?",
+        "answer": "Die Stille"
+      },
+      {
+        "language": "en",
+        "question": "There is one thing that breaks as soon as you name it. What is it?",
+        "answer": "Silence"
+      }
+    ]
+  },
+  {
+    "id": "games_111",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Qué tiene un rey en el pecho que no tiene un plebeyo?",
+        "answer": "La letra R de Rey"
+      },
+      {
+        "language": "de",
+        "question": "Was hat ein König auf der Brust das ein Bürger nicht hat?",
+        "answer": "Den Buchstaben K von König"
+      },
+      {
+        "language": "en",
+        "question": "What does a king have on his chest that a commoner does not?",
+        "answer": "The letter K of King"
+      }
+    ]
+  },
+  {
+    "id": "games_112",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Cuanto más rápido corres, más difícil es alcanzarme. Sin embargo, nunca me muevo del sitio. ¿Qué soy?",
+        "answer": "Tu sombra"
+      },
+      {
+        "language": "de",
+        "question": "Je schneller du läufst desto schwerer bin ich zu fangen. Trotzdem bewege ich mich nie von der Stelle. Was bin ich?",
+        "answer": "Dein Schatten"
+      },
+      {
+        "language": "en",
+        "question": "The faster you run the harder I am to catch. Yet I never move from the spot. What am I?",
+        "answer": "Your shadow"
+      }
+    ]
+  },
+  {
+    "id": "games_113",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Qué cosa redonda, redonda, pasa el río y no se moja?",
+        "answer": "La sombra"
+      },
+      {
+        "language": "de",
+        "question": "Was ist rund und rund, überquert den Fluss und wird nicht nass?",
+        "answer": "Der Schatten"
+      },
+      {
+        "language": "en",
+        "question": "What is round and round, crosses the river and does not get wet?",
+        "answer": "The shadow"
+      }
+    ]
+  },
+  {
+    "id": "games_114",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Cuanto más grande, menos pesas. ¿Qué soy?",
+        "answer": "Un agujero"
+      },
+      {
+        "language": "de",
+        "question": "Je größer ich bin desto weniger wiegst du. Was bin ich?",
+        "answer": "Ein Loch"
+      },
+      {
+        "language": "en",
+        "question": "The bigger I am the less you weigh. What am I?",
+        "answer": "A hole"
+      }
+    ]
+  },
+  {
+    "id": "games_115",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Tengo un corazón que no late, tengo un hogar que no tiene calor, tengo memoria pero no tengo cerebro. ¿Qué soy?",
+        "answer": "Un ordenador"
+      },
+      {
+        "language": "de",
+        "question": "Ich habe ein Herz das nicht schlägt, ein Zuhause ohne Wärme und ein Gedächtnis ohne Gehirn. Was bin ich?",
+        "answer": "Ein Computer"
+      },
+      {
+        "language": "en",
+        "question": "I have a heart that does not beat, a home with no warmth, and a memory but no brain. What am I?",
+        "answer": "A computer"
+      }
+    ]
+  },
+  {
+    "id": "games_116",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Nace en el monte, crece en el campo, se hace en casa y se come en el puchero. ¿Qué es?",
+        "answer": "La leña o las verduras"
+      },
+      {
+        "language": "de",
+        "question": "Es wird im Gebirge geboren, wächst auf dem Feld, wird zu Hause gemacht und im Topf gegessen. Was ist es?",
+        "answer": "Das Holz oder das Gemüse"
+      },
+      {
+        "language": "en",
+        "question": "Born on the hillside, grown in the field, made at home and eaten from the pot. What is it?",
+        "answer": "Firewood or vegetables"
+      }
+    ]
+  },
+  {
+    "id": "games_117",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Soy invisible pero me puedes escuchar. Te rodeo pero no me puedes tocar. ¿Qué soy?",
+        "answer": "El viento o el aire"
+      },
+      {
+        "language": "de",
+        "question": "Ich bin unsichtbar aber du kannst mich hören. Ich umgebe dich aber du kannst mich nicht berühren. Was bin ich?",
+        "answer": "Der Wind oder die Luft"
+      },
+      {
+        "language": "en",
+        "question": "I am invisible but you can hear me. I surround you but you cannot touch me. What am I?",
+        "answer": "The wind or air"
+      }
+    ]
+  },
+  {
+    "id": "games_118",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuál es el colmo de un electricista?",
+        "answer": "Que su mujer lo deje y él no pueda dar crédito"
+      },
+      {
+        "language": "de",
+        "question": "Was ist das Schlimmste das einem Elektriker passieren kann?",
+        "answer": "Dass seine Frau ihn verlässt und er es nicht fassen kann"
+      },
+      {
+        "language": "en",
+        "question": "What is the worst thing that can happen to an electrician?",
+        "answer": "His wife leaves him and he cannot believe it"
+      }
+    ]
+  },
+  {
+    "id": "games_119",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuál es el colmo de un jardinero?",
+        "answer": "Que le digan que su hijo ha echado raíces en otro país"
+      },
+      {
+        "language": "de",
+        "question": "Was ist das Schlimmste für einen Gärtner?",
+        "answer": "Wenn man ihm sagt dass sein Sohn in einem anderen Land Wurzeln geschlagen hat"
+      },
+      {
+        "language": "en",
+        "question": "What is the worst thing for a gardener?",
+        "answer": "Being told his son has put down roots in another country"
+      }
+    ]
+  },
+  {
+    "id": "games_120",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuál es el colmo de un carpintero?",
+        "answer": "Que su hijo sea un clavo y su mujer una tabla"
+      },
+      {
+        "language": "de",
+        "question": "Was ist das Schlimmste für einen Tischler?",
+        "answer": "Dass sein Sohn ein Nagel ist und seine Frau ein Brett"
+      },
+      {
+        "language": "en",
+        "question": "What is the worst thing for a carpenter?",
+        "answer": "That his son is a nail and his wife is a plank"
+      }
+    ]
+  },
+  {
+    "id": "games_121",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di este trabalenguas: Pepe Pecas pica papas con un pico. Con un pico pica papas Pepe Pecas.",
+        "answer": "Pepe Pecas pica papas con un pico. Con un pico pica papas Pepe Pecas."
+      },
+      {
+        "language": "de",
+        "question": "Sag diesen Zungenbrecher: Schnecken erschrecken wenn Schnecken an Schnecken schlecken.",
+        "answer": "Schnecken erschrecken wenn Schnecken an Schnecken schlecken"
+      },
+      {
+        "language": "en",
+        "question": "Say this tongue twister: Around the rugged rocks the ragged rascal ran.",
+        "answer": "Around the rugged rocks the ragged rascal ran"
+      }
+    ]
+  },
+  {
+    "id": "games_122",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Intenta este trabalenguas: Cuando cuentes cuentos, cuenta cuántos cuentos cuentas, porque si no cuentas cuántos cuentos cuentas nunca sabrás cuántos cuentos cuentas.",
+        "answer": "Cuando cuentes cuentos, cuenta cuántos cuentos cuentas."
+      },
+      {
+        "language": "de",
+        "question": "Versuche diesen Zungenbrecher: Brautkleid bleibt Brautkleid und Blaukraut bleibt Blaukraut.",
+        "answer": "Brautkleid bleibt Brautkleid und Blaukraut bleibt Blaukraut"
+      },
+      {
+        "language": "en",
+        "question": "Try this tongue twister: Toy boat, toy boat, toy boat.",
+        "answer": "Toy boat, toy boat, toy boat"
+      }
+    ]
+  },
+  {
+    "id": "games_123",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Intenta este trabalenguas difícil: Yo poco a poco me desaperezco y tú poco a poco te desaperezces también.",
+        "answer": "Yo poco a poco me desaperezco y tú poco a poco te desaperezces también"
+      },
+      {
+        "language": "de",
+        "question": "Versuche diesen schwierigen Zungenbrecher: Hinter Herrmanns Herberge hängen hundert Hemden, hundert Hemden hängen hinter Herrmanns Herberge.",
+        "answer": "Hinter Herrmanns Herberge hängen hundert Hemden"
+      },
+      {
+        "language": "en",
+        "question": "Try this tongue twister: Six sleek swans swam swiftly southwards.",
+        "answer": "Six sleek swans swam swiftly southwards"
+      }
+    ]
+  },
+  {
+    "id": "games_124",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di este trabalenguas: Pancha plancha con cuatro planchas. ¿Con cuántas planchas plancha Pancha?",
+        "answer": "Pancha plancha con cuatro planchas"
+      },
+      {
+        "language": "de",
+        "question": "Sag diesen Zungenbrecher: Wenn Hunde hinter Hunden her sind sind Hunde hinter Hunden her.",
+        "answer": "Wenn Hunde hinter Hunden her sind sind Hunde hinter Hunden her"
+      },
+      {
+        "language": "en",
+        "question": "Say this tongue twister: Lesser leather never weathered wetter weather better.",
+        "answer": "Lesser leather never weathered wetter weather better"
+      }
+    ]
+  },
+  {
+    "id": "games_125",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Intenta este trabalenguas: Me han dicho que has dicho un dicho que he dicho yo. Ese dicho que te han dicho que yo he dicho, no lo he dicho.",
+        "answer": "Me han dicho que has dicho un dicho que he dicho yo."
+      },
+      {
+        "language": "de",
+        "question": "Versuche diesen Zungenbrecher: Wir Wiener Waschweiber würden weiße Wäsche waschen wenn wir wüssten wo warmes Wasser wäre.",
+        "answer": "Wir Wiener Waschweiber würden weiße Wäsche waschen"
+      },
+      {
+        "language": "en",
+        "question": "Try this tongue twister: I saw Susie sitting in a shoe shine shop where she shines she sits and where she sits she shines.",
+        "answer": "I saw Susie sitting in a shoe shine shop"
+      }
+    ]
+  },
+  {
+    "id": "games_126",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Completa este refrán: En casa del herrero...",
+        "answer": "Cuchillo de palo"
+      },
+      {
+        "language": "de",
+        "question": "Vervollständige dieses Sprichwort: Bei den Schustern...",
+        "answer": "hat man die schlechtesten Schuhe"
+      },
+      {
+        "language": "en",
+        "question": "Complete this proverb: The cobbler's children...",
+        "answer": "have no shoes"
+      }
+    ]
+  },
+  {
+    "id": "games_127",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Completa este refrán: Ojos que no ven...",
+        "answer": "Corazón que no siente"
+      },
+      {
+        "language": "de",
+        "question": "Vervollständige dieses Sprichwort: Aus den Augen...",
+        "answer": "aus dem Sinn"
+      },
+      {
+        "language": "en",
+        "question": "Complete this proverb: Out of sight...",
+        "answer": "out of mind"
+      }
+    ]
+  },
+  {
+    "id": "games_128",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Completa este refrán: Quien ríe el último...",
+        "answer": "Ríe mejor"
+      },
+      {
+        "language": "de",
+        "question": "Vervollständige dieses Sprichwort: Wer zuletzt lacht...",
+        "answer": "lacht am besten"
+      },
+      {
+        "language": "en",
+        "question": "Complete this proverb: He who laughs last...",
+        "answer": "laughs longest"
+      }
+    ]
+  },
+  {
+    "id": "games_129",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Completa este refrán: Después de la tormenta...",
+        "answer": "Viene la calma"
+      },
+      {
+        "language": "de",
+        "question": "Vervollständige dieses Sprichwort: Nach dem Regen...",
+        "answer": "kommt Sonnenschein"
+      },
+      {
+        "language": "en",
+        "question": "Complete this proverb: After the storm...",
+        "answer": "comes the calm"
+      }
+    ]
+  },
+  {
+    "id": "games_130",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Completa este refrán: Ande yo caliente...",
+        "answer": "Y ríase la gente"
+      },
+      {
+        "language": "de",
+        "question": "Vervollständige dieses Sprichwort: Jedem das...",
+        "answer": "Seine"
+      },
+      {
+        "language": "en",
+        "question": "Complete this proverb: Actions speak louder...",
+        "answer": "than words"
+      }
+    ]
+  },
+  {
+    "id": "games_131",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Completa este refrán: De tal palo...",
+        "answer": "Tal astilla"
+      },
+      {
+        "language": "de",
+        "question": "Vervollständige dieses Sprichwort: Der Apfel fällt nicht weit...",
+        "answer": "vom Stamm"
+      },
+      {
+        "language": "en",
+        "question": "Complete this proverb: The apple doesn't fall far...",
+        "answer": "from the tree"
+      }
+    ]
+  },
+  {
+    "id": "games_132",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Completa este refrán: No todo lo que brilla...",
+        "answer": "Es oro"
+      },
+      {
+        "language": "de",
+        "question": "Vervollständige dieses Sprichwort: Es ist nicht alles Gold...",
+        "answer": "was glänzt"
+      },
+      {
+        "language": "en",
+        "question": "Complete this proverb: All that glitters...",
+        "answer": "is not gold"
+      }
+    ]
+  },
+  {
+    "id": "games_133",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Completa este refrán: Más sabe el diablo por viejo...",
+        "answer": "Que por diablo"
+      },
+      {
+        "language": "de",
+        "question": "Vervollständige dieses Sprichwort: Alter schützt vor...",
+        "answer": "Torheit nicht"
+      },
+      {
+        "language": "en",
+        "question": "Complete this proverb: With age comes...",
+        "answer": "wisdom"
+      }
+    ]
+  },
+  {
+    "id": "games_134",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Completa este refrán: Barriga llena...",
+        "answer": "Corazón contento"
+      },
+      {
+        "language": "de",
+        "question": "Vervollständige dieses Sprichwort: Ein voller Bauch...",
+        "answer": "studiert nicht gern"
+      },
+      {
+        "language": "en",
+        "question": "Complete this proverb: A hungry man...",
+        "answer": "is an angry man"
+      }
+    ]
+  },
+  {
+    "id": "games_135",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Completa este refrán: Una manzana al día...",
+        "answer": "Del médico me libraría"
+      },
+      {
+        "language": "de",
+        "question": "Vervollständige dieses Sprichwort: Ein Apfel am Tag...",
+        "answer": "hält den Doktor fern"
+      },
+      {
+        "language": "en",
+        "question": "Complete this proverb: An apple a day...",
+        "answer": "keeps the doctor away"
+      }
+    ]
+  },
+  {
+    "id": "games_136",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di cinco oficios o profesiones.",
+        "answer": "Médico, carpintero, maestro, cocinero, electricista, fontanero, agricultor y muchos más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne fünf Berufe oder Tätigkeiten.",
+        "answer": "Arzt, Tischler, Lehrer, Koch, Elektriker, Klempner, Landwirt und viele mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name five jobs or professions.",
+        "answer": "Doctor, carpenter, teacher, cook, electrician, plumber, farmer and many more"
+      }
+    ]
+  },
+  {
+    "id": "games_137",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di todas las verduras que puedas en veinte segundos.",
+        "answer": "Tomate, lechuga, zanahoria, pepino, pimiento, cebolla, calabacín, berenjena, espinaca y muchas más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne so viele Gemüsesorten wie möglich in zwanzig Sekunden.",
+        "answer": "Tomate, Salat, Karotte, Gurke, Paprika, Zwiebel, Zucchini, Aubergine, Spinat und viele mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name as many vegetables as you can in twenty seconds.",
+        "answer": "Tomato, lettuce, carrot, cucumber, pepper, onion, courgette, aubergine, spinach and many more"
+      }
+    ]
+  },
+  {
+    "id": "games_138",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di todas las flores que conozcas.",
+        "answer": "Rosa, clavel, girasol, margarita, tulipán, geranio, lavanda, orquídea y muchas más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne alle Blumen die du kennst.",
+        "answer": "Rose, Nelke, Sonnenblume, Gänseblümchen, Tulpe, Geranie, Lavendel, Orchidee und viele mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name all the flowers you know.",
+        "answer": "Rose, carnation, sunflower, daisy, tulip, geranium, lavender, orchid and many more"
+      }
+    ]
+  },
+  {
+    "id": "games_139",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di todo lo que se te ocurra relacionado con el mar.",
+        "answer": "Ola, arena, pez, sal, maré, concha, faro, barco, gaviota, coral y muchas más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne alles was dir zum Meer einfällt.",
+        "answer": "Welle, Sand, Fisch, Salz, Tide, Muschel, Leuchtturm, Schiff, Möwe, Koralle und viele mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name everything you can think of related to the sea.",
+        "answer": "Wave, sand, fish, salt, tide, shell, lighthouse, ship, seagull, coral and many more"
+      }
+    ]
+  },
+  {
+    "id": "games_140",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "El intruso: guitarra, piano, violín, pincel, trompeta. ¿Cuál no encaja?",
+        "answer": "El pincel. Los demás son instrumentos musicales y el pincel es una herramienta de pintura."
+      },
+      {
+        "language": "de",
+        "question": "Das Eindringling-Spiel: Gitarre, Klavier, Geige, Pinsel, Trompete. Welches passt nicht?",
+        "answer": "Der Pinsel. Die anderen sind Musikinstrumente und der Pinsel ist ein Malwerkzeug."
+      },
+      {
+        "language": "en",
+        "question": "Find the odd one out: guitar, piano, violin, paintbrush, trumpet. Which does not belong?",
+        "answer": "The paintbrush. The others are musical instruments and the paintbrush is a painting tool."
+      }
+    ]
+  },
+  {
+    "id": "games_141",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "El intruso: lluvia, nieve, granizo, viento, jabón. ¿Cuál no encaja?",
+        "answer": "El jabón. Los demás son fenómenos meteorológicos y el jabón es un producto de limpieza."
+      },
+      {
+        "language": "de",
+        "question": "Das Eindringling-Spiel: Regen, Schnee, Hagel, Wind, Seife. Welches passt nicht?",
+        "answer": "Die Seife. Die anderen sind Wetterphänomene und die Seife ist ein Reinigungsprodukt."
+      },
+      {
+        "language": "en",
+        "question": "Find the odd one out: rain, snow, hail, wind, soap. Which does not belong?",
+        "answer": "Soap. The others are weather phenomena and soap is a cleaning product."
+      }
+    ]
+  },
+  {
+    "id": "games_142",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "El intruso: cuchillo, tenedor, cuchara, silla, servilleta. ¿Cuál no encaja?",
+        "answer": "La silla. Los demás son elementos de un servicio de mesa y la silla es un mueble."
+      },
+      {
+        "language": "de",
+        "question": "Das Eindringling-Spiel: Messer, Gabel, Löffel, Stuhl, Serviette. Welches passt nicht?",
+        "answer": "Der Stuhl. Die anderen sind Elemente des Gedeck und der Stuhl ist ein Möbelstück."
+      },
+      {
+        "language": "en",
+        "question": "Find the odd one out: knife, fork, spoon, chair, napkin. Which does not belong?",
+        "answer": "The chair. The others are table setting items and the chair is a piece of furniture."
+      }
+    ]
+  },
+  {
+    "id": "games_143",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "El intruso: nadar, caminar, volar, dormir, correr. ¿Cuál no encaja?",
+        "answer": "Dormir. Los demás son formas de desplazarse y dormir es un estado de reposo."
+      },
+      {
+        "language": "de",
+        "question": "Das Eindringling-Spiel: schwimmen, gehen, fliegen, schlafen, rennen. Welches passt nicht?",
+        "answer": "Schlafen. Die anderen sind Fortbewegungsarten und Schlafen ist ein Ruhezustand."
+      },
+      {
+        "language": "en",
+        "question": "Find the odd one out: swim, walk, fly, sleep, run. Which does not belong?",
+        "answer": "Sleep. The others are ways of moving and sleep is a resting state."
+      }
+    ]
+  },
+  {
+    "id": "games_144",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di cinco nombres de hombre que empiecen por J.",
+        "answer": "José, Juan, Joaquín, Jorge, Jesús, Javier, Julio y muchos más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne fünf Männernamen die mit J beginnen.",
+        "answer": "Johann, Josef, Jürgen, Jan, Jonas, Jakob, Jochen und viele mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name five men's names that start with J.",
+        "answer": "John, James, Joseph, Jack, Jacob, Jason, Jonathan and many more"
+      }
+    ]
+  },
+  {
+    "id": "games_145",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di palabras que empiecen y terminen por la misma letra.",
+        "answer": "Ala, ama, ana, asa, ata, ava, aca, ada y muchas más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne Wörter die mit demselben Buchstaben beginnen und enden.",
+        "answer": "Abba, Anita, Anna, Arara, Arka und viele mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name words that start and end with the same letter.",
+        "answer": "Aha, ere, eye, pup, pop, dad, mum, nun and many more"
+      }
+    ]
+  },
+  {
+    "id": "games_146",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuánto es cien menos cincuenta y cinco?",
+        "answer": "Cuarenta y cinco"
+      },
+      {
+        "language": "de",
+        "question": "Wie viel ist hundert minus fünfundfünfzig?",
+        "answer": "Fünfundvierzig"
+      },
+      {
+        "language": "en",
+        "question": "How much is one hundred minus fifty-five?",
+        "answer": "Forty-five"
+      }
+    ]
+  },
+  {
+    "id": "games_147",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuánto es siete por siete?",
+        "answer": "Cuarenta y nueve"
+      },
+      {
+        "language": "de",
+        "question": "Wie viel ist sieben mal sieben?",
+        "answer": "Neunundvierzig"
+      },
+      {
+        "language": "en",
+        "question": "How much is seven times seven?",
+        "answer": "Forty-nine"
+      }
+    ]
+  },
+  {
+    "id": "games_148",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuánto es el cuadrado de cinco?",
+        "answer": "Veinticinco. Cinco por cinco es veinticinco."
+      },
+      {
+        "language": "de",
+        "question": "Wie viel ist die Quadratzahl von fünf?",
+        "answer": "Fünfundzwanzig. Fünf mal fünf ist fünfundzwanzig."
+      },
+      {
+        "language": "en",
+        "question": "How much is five squared?",
+        "answer": "Twenty-five. Five times five is twenty-five."
+      }
+    ]
+  },
+  {
+    "id": "games_149",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántos son tres docenas?",
+        "answer": "Treinta y seis. Una docena son doce."
+      },
+      {
+        "language": "de",
+        "question": "Wie viel sind drei Dutzend?",
+        "answer": "Sechsunddreißig. Ein Dutzend sind zwölf."
+      },
+      {
+        "language": "en",
+        "question": "How many are three dozen?",
+        "answer": "Thirty-six. One dozen is twelve."
+      }
+    ]
+  },
+  {
+    "id": "games_150",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántos minutos hay en dos horas y media?",
+        "answer": "Ciento cincuenta minutos"
+      },
+      {
+        "language": "de",
+        "question": "Wie viele Minuten hat zweieinhalb Stunden?",
+        "answer": "Hundertfünfzig Minuten"
+      },
+      {
+        "language": "en",
+        "question": "How many minutes are in two and a half hours?",
+        "answer": "One hundred and fifty minutes"
+      }
+    ]
+  },
+  {
+    "id": "games_151",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Si hoy es lunes y quedan cinco días para el fin de semana, ¿qué día es el fin de semana?",
+        "answer": "Sábado. Lunes más cinco días es sábado."
+      },
+      {
+        "language": "de",
+        "question": "Wenn heute Montag ist und es noch fünf Tage bis zum Wochenende sind, welcher Tag ist das Wochenende?",
+        "answer": "Samstag. Montag plus fünf Tage ist Samstag."
+      },
+      {
+        "language": "en",
+        "question": "If today is Monday and there are five days until the weekend, what day is the weekend?",
+        "answer": "Saturday. Monday plus five days is Saturday."
+      }
+    ]
+  },
+  {
+    "id": "games_152",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Un tren va a cien kilómetros por hora. ¿Cuánto tarda en recorrer doscientos cincuenta kilómetros?",
+        "answer": "Dos horas y media"
+      },
+      {
+        "language": "de",
+        "question": "Ein Zug fährt hundert Kilometer pro Stunde. Wie lange braucht er für zweihundertfünfzig Kilometer?",
+        "answer": "Zweieinhalb Stunden"
+      },
+      {
+        "language": "en",
+        "question": "A train travels at one hundred kilometres per hour. How long does it take to cover two hundred and fifty kilometres?",
+        "answer": "Two and a half hours"
+      }
+    ]
+  },
+  {
+    "id": "games_153",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántos días tiene un año normal, sin contar los años bisiestos?",
+        "answer": "Trescientos sesenta y cinco días"
+      },
+      {
+        "language": "de",
+        "question": "Wie viele Tage hat ein normales Jahr ohne Schaltjahr?",
+        "answer": "Dreihundertfünfundsechzig Tage"
+      },
+      {
+        "language": "en",
+        "question": "How many days does a normal year have, not counting leap years?",
+        "answer": "Three hundred and sixty-five days"
+      }
+    ]
+  },
+  {
+    "id": "games_154",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di los múltiplos de tres del uno al treinta.",
+        "answer": "Tres, seis, nueve, doce, quince, dieciocho, veintiuno, veinticuatro, veintisiete, treinta"
+      },
+      {
+        "language": "de",
+        "question": "Nenne die Vielfachen von drei von eins bis dreißig.",
+        "answer": "Drei, sechs, neun, zwölf, fünfzehn, achtzehn, einundzwanzig, vierundzwanzig, siebenundzwanzig, dreißig"
+      },
+      {
+        "language": "en",
+        "question": "Say the multiples of three from one to thirty.",
+        "answer": "Three, six, nine, twelve, fifteen, eighteen, twenty-one, twenty-four, twenty-seven, thirty"
+      }
+    ]
+  },
+  {
+    "id": "games_155",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuánto es la mitad de la mitad de cien?",
+        "answer": "Veinticinco. La mitad de cien es cincuenta y la mitad de cincuenta es veinticinco."
+      },
+      {
+        "language": "de",
+        "question": "Wie viel ist die Hälfte der Hälfte von hundert?",
+        "answer": "Fünfundzwanzig. Die Hälfte von hundert ist fünfzig und die Hälfte von fünfzig ist fünfundzwanzig."
+      },
+      {
+        "language": "en",
+        "question": "How much is half of half of one hundred?",
+        "answer": "Twenty-five. Half of one hundred is fifty and half of fifty is twenty-five."
+      }
+    ]
+  },
+  {
+    "id": "games_156",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Continúa esta historia: La señora Petra tenía noventa años y nunca había salido de su pueblo. Un día su nieta le compró un billete de avión como sorpresa. ¿Adónde fue y qué pasó?",
+        "answer": "Respuesta libre. Cualquier idea es válida."
+      },
+      {
+        "language": "de",
+        "question": "Setze fort: Frau Petra war neunzig Jahre alt und hatte ihr Dorf nie verlassen. Eines Tages kaufte ihr ihre Enkelin als Überraschung ein Flugticket. Wohin fuhr sie und was passierte?",
+        "answer": "Freie Antwort. Jede Idee ist gültig."
+      },
+      {
+        "language": "en",
+        "question": "Continue this story: Mrs Petra was ninety years old and had never left her village. One day her granddaughter bought her a plane ticket as a surprise. Where did she go and what happened?",
+        "answer": "Free answer. Any idea is valid."
+      }
+    ]
+  },
+  {
+    "id": "games_157",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Continúa: Un gato entró por la ventana abierta y se quedó dormido en el sillón favorito del abuelo. Cuando el abuelo llegó a casa... ¿qué pasó?",
+        "answer": "Respuesta libre. Cualquier idea es válida."
+      },
+      {
+        "language": "de",
+        "question": "Setze fort: Eine Katze kam durch das offene Fenster herein und schlief im Lieblingssessel des Großvaters ein. Als der Großvater nach Hause kam... was passierte?",
+        "answer": "Freie Antwort. Jede Idee ist gültig."
+      },
+      {
+        "language": "en",
+        "question": "Continue: A cat came in through the open window and fell asleep in grandfather's favourite armchair. When grandfather arrived home... what happened?",
+        "answer": "Free answer. Any idea is valid."
+      }
+    ]
+  },
+  {
+    "id": "games_158",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Cuéntame el momento más feliz de tu vida. Puede ser grande o pequeño. No importa la época.",
+        "answer": "Respuesta libre. Cualquier recuerdo es válido y bienvenido."
+      },
+      {
+        "language": "de",
+        "question": "Erzähl mir den glücklichsten Moment deines Lebens. Er kann groß oder klein sein. Die Zeit spielt keine Rolle.",
+        "answer": "Freie Antwort. Jede Erinnerung ist gültig und willkommen."
+      },
+      {
+        "language": "en",
+        "question": "Tell me the happiest moment of your life. It can be big or small. The time does not matter.",
+        "answer": "Free answer. Any memory is valid and welcome."
+      }
+    ]
+  },
+  {
+    "id": "games_159",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Si pudieras cenar con cualquier persona de la historia, ¿con quién cenarías y de qué hablarías?",
+        "answer": "Respuesta libre. Cualquier elección y razón es válida."
+      },
+      {
+        "language": "de",
+        "question": "Wenn du mit einer beliebigen Person aus der Geschichte zu Abend essen könntest, mit wem würdest du essen und worüber würdest du sprechen?",
+        "answer": "Freie Antwort. Jede Wahl und Begründung ist gültig."
+      },
+      {
+        "language": "en",
+        "question": "If you could have dinner with anyone from history, who would you choose and what would you talk about?",
+        "answer": "Free answer. Any choice and reason is valid."
+      }
+    ]
+  },
+  {
+    "id": "games_160",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Cuéntame algo que hacías de pequeño que ya no haces de adulto.",
+        "answer": "Respuesta libre. Cualquier recuerdo de infancia es válido."
+      },
+      {
+        "language": "de",
+        "question": "Erzähl mir etwas das du als Kind gemacht hast das du als Erwachsener nicht mehr machst.",
+        "answer": "Freie Antwort. Jede Kindheitserinnerung ist gültig."
+      },
+      {
+        "language": "en",
+        "question": "Tell me something you used to do as a child that you no longer do as an adult.",
+        "answer": "Free answer. Any childhood memory is valid."
+      }
+    ]
+  },
+  {
+    "id": "games_161",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Inventa el nombre y la historia de una persona que vivió hace cien años en tu pueblo.",
+        "answer": "Respuesta libre. Cualquier nombre e historia es válida."
+      },
+      {
+        "language": "de",
+        "question": "Erfinde den Namen und die Geschichte einer Person die vor hundert Jahren in deinem Dorf lebte.",
+        "answer": "Freie Antwort. Jeder Name und jede Geschichte ist gültig."
+      },
+      {
+        "language": "en",
+        "question": "Invent the name and story of a person who lived one hundred years ago in your village.",
+        "answer": "Free answer. Any name and story is valid."
+      }
+    ]
+  },
+  {
+    "id": "games_162",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Si tuvieras que describir tu pueblo o ciudad a alguien que nunca ha estado allí, ¿qué le dirías?",
+        "answer": "Respuesta libre. Cualquier descripción es válida."
+      },
+      {
+        "language": "de",
+        "question": "Wenn du dein Dorf oder deine Stadt jemandem beschreiben müsstest der noch nie dort war, was würdest du sagen?",
+        "answer": "Freie Antwort. Jede Beschreibung ist gültig."
+      },
+      {
+        "language": "en",
+        "question": "If you had to describe your village or town to someone who had never been there, what would you say?",
+        "answer": "Free answer. Any description is valid."
+      }
+    ]
+  },
+  {
+    "id": "games_163",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Continúa esta historia: Dos hermanos se repartieron una herencia. Uno recibió dinero y el otro recibió una caja misteriosa cerrada con llave. El que tenía la caja tardó cuarenta años en abrirla porque... ¿por qué tardó tanto?",
+        "answer": "Respuesta libre. Cualquier idea es válida."
+      },
+      {
+        "language": "de",
+        "question": "Setze fort: Zwei Brüder teilten ein Erbe. Einer bekam Geld und der andere eine mysteriöse Box die mit einem Schloss verschlossen war. Derjenige mit der Box wartete vierzig Jahre um sie zu öffnen weil... warum wartete er so lange?",
+        "answer": "Freie Antwort. Jede Idee ist gültig."
+      },
+      {
+        "language": "en",
+        "question": "Continue: Two brothers divided an inheritance. One received money and the other received a mysterious locked box. The one with the box waited forty years to open it because... why did he wait so long?",
+        "answer": "Free answer. Any idea is valid."
+      }
+    ]
+  },
+  {
+    "id": "games_164",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuál es el plato de comida que más recuerdas de tu infancia y quién lo cocinaba?",
+        "answer": "Respuesta libre. Cualquier recuerdo es válido."
+      },
+      {
+        "language": "de",
+        "question": "Was ist das Gericht das du aus deiner Kindheit am meisten in Erinnerung hast und wer hat es gekocht?",
+        "answer": "Freie Antwort. Jede Erinnerung ist gültig."
+      },
+      {
+        "language": "en",
+        "question": "What is the food dish you remember most from your childhood and who used to cook it?",
+        "answer": "Free answer. Any memory is valid."
+      }
+    ]
+  },
+  {
+    "id": "games_165",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Continúa: Un anciano de noventa años se apuntó a clases de baile. El primer día llegó al salón y todos se quedaron mirándolo porque... ¿por qué se quedaron mirándolo?",
+        "answer": "Respuesta libre. Cualquier idea es válida."
+      },
+      {
+        "language": "de",
+        "question": "Setze fort: Ein neunzigjähriger Mann meldete sich für Tanzstunden an. Am ersten Tag betrat er den Saal und alle schauten ihn an weil... warum schauten alle ihn an?",
+        "answer": "Freie Antwort. Jede Idee ist gültig."
+      },
+      {
+        "language": "en",
+        "question": "Continue: A ninety-year-old man signed up for dance lessons. On the first day he arrived at the hall and everyone stared at him because... why did everyone stare?",
+        "answer": "Free answer. Any idea is valid."
+      }
+    ]
+  },
+  {
+    "id": "games_166",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Qué tiene una sola rueda y puede llevar muchas cosas?",
+        "answer": "Una carretilla"
+      },
+      {
+        "language": "de",
+        "question": "Was hat ein einziges Rad und kann viele Dinge tragen?",
+        "answer": "Eine Schubkarre"
+      },
+      {
+        "language": "en",
+        "question": "What has only one wheel and can carry many things?",
+        "answer": "A wheelbarrow"
+      }
+    ]
+  },
+  {
+    "id": "games_167",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Qué cosa tiene teclas pero no abre ninguna puerta?",
+        "answer": "Un piano o un ordenador"
+      },
+      {
+        "language": "de",
+        "question": "Was hat Tasten aber öffnet keine Tür?",
+        "answer": "Ein Klavier oder ein Computer"
+      },
+      {
+        "language": "en",
+        "question": "What has keys but opens no doors?",
+        "answer": "A piano or a computer"
+      }
+    ]
+  },
+  {
+    "id": "games_168",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Siempre en el mismo sitio y sin embargo viaja por el mundo entero. ¿Qué es?",
+        "answer": "Un sello de correos"
+      },
+      {
+        "language": "de",
+        "question": "Immer am gleichen Ort und trotzdem bereist es die ganze Welt. Was ist es?",
+        "answer": "Eine Briefmarke"
+      },
+      {
+        "language": "en",
+        "question": "Always in the same place and yet it travels the whole world. What is it?",
+        "answer": "A postage stamp"
+      }
+    ]
+  },
+  {
+    "id": "games_169",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Qué cosa cuanto más grande más pequeño es su peso?",
+        "answer": "Un agujero"
+      },
+      {
+        "language": "de",
+        "question": "Was ist schwerer desto kleiner es ist?",
+        "answer": "Ein Loch"
+      },
+      {
+        "language": "en",
+        "question": "What weighs less the bigger it gets?",
+        "answer": "A hole"
+      }
+    ]
+  },
+  {
+    "id": "games_170",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Soy más fuerte que el hierro, más suave que el agua, pero el fuego me destruye. ¿Qué soy?",
+        "answer": "El hielo"
+      },
+      {
+        "language": "de",
+        "question": "Ich bin stärker als Eisen, weicher als Wasser aber Feuer zerstört mich. Was bin ich?",
+        "answer": "Das Eis"
+      },
+      {
+        "language": "en",
+        "question": "I am stronger than iron, softer than water, but fire destroys me. What am I?",
+        "answer": "Ice"
+      }
+    ]
+  },
+  {
+    "id": "games_171",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "La más pequeña del mundo y de todos conocida. Sin ella no puede vivir ningún ser de la vida. ¿Qué es?",
+        "answer": "El agua"
+      },
+      {
+        "language": "de",
+        "question": "Die kleinste der Welt und allen bekannt. Ohne sie kann kein Lebewesen existieren. Was ist es?",
+        "answer": "Das Wasser"
+      },
+      {
+        "language": "en",
+        "question": "The smallest in the world and known by all. Without it no living being can survive. What is it?",
+        "answer": "Water"
+      }
+    ]
+  },
+  {
+    "id": "games_172",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Soy negro pero parezco blanco, soy frío pero doy calor, soy pequeño pero puedo ser enorme. ¿Qué soy?",
+        "answer": "El carbón"
+      },
+      {
+        "language": "de",
+        "question": "Ich bin schwarz aber sehe weiß aus, bin kalt aber gebe Wärme, bin klein aber kann riesig sein. Was bin ich?",
+        "answer": "Die Kohle"
+      },
+      {
+        "language": "en",
+        "question": "I am black but appear white, I am cold but give warmth, I am small but can be enormous. What am I?",
+        "answer": "Coal"
+      }
+    ]
+  },
+  {
+    "id": "games_173",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Me metes en un barril y sale más ligero. ¿Qué soy?",
+        "answer": "Un agujero"
+      },
+      {
+        "language": "de",
+        "question": "Man steckt mich in ein Fass und es wird leichter. Was bin ich?",
+        "answer": "Ein Loch"
+      },
+      {
+        "language": "en",
+        "question": "You put me in a barrel and it becomes lighter. What am I?",
+        "answer": "A hole"
+      }
+    ]
+  },
+  {
+    "id": "games_174",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Qué tiene el río que nunca puede beber?",
+        "answer": "El pez o la sed"
+      },
+      {
+        "language": "de",
+        "question": "Was hat der Fluss der nie trinken kann?",
+        "answer": "Den Durst oder den Fisch"
+      },
+      {
+        "language": "en",
+        "question": "What does the river have that can never drink?",
+        "answer": "Fish or thirst"
+      }
+    ]
+  },
+  {
+    "id": "games_175",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Tengo boca pero no como, tengo ojos pero no veo, tengo un corazón pero no late. ¿Qué soy?",
+        "answer": "Una muñeca o una figura decorativa"
+      },
+      {
+        "language": "de",
+        "question": "Ich habe einen Mund aber esse nicht, ich habe Augen aber sehe nicht, ich habe ein Herz aber es schlägt nicht. Was bin ich?",
+        "answer": "Eine Puppe oder eine Dekorfigur"
+      },
+      {
+        "language": "en",
+        "question": "I have a mouth but do not eat, I have eyes but do not see, I have a heart but it does not beat. What am I?",
+        "answer": "A doll or decorative figure"
+      }
+    ]
+  },
+  {
+    "id": "games_176",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di este trabalenguas: Tres tristes tigres comen trigo en un trigal. ¿Cuánto trigo comen tres tristes tigres?",
+        "answer": "Tres tristes tigres comen trigo en un trigal"
+      },
+      {
+        "language": "de",
+        "question": "Sag diesen Zungenbrecher: Mit Mut und Macht macht Mama Marmelade.",
+        "answer": "Mit Mut und Macht macht Mama Marmelade"
+      },
+      {
+        "language": "en",
+        "question": "Say this tongue twister: Give papa a cup of proper coffee in a copper coffee cup.",
+        "answer": "Give papa a cup of proper coffee in a copper coffee cup"
+      }
+    ]
+  },
+  {
+    "id": "games_177",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Intenta este trabalenguas: En este empedrado, ¿quién lo desempedraré? El desempedrador que lo desempedrase, buen desempedrador sería.",
+        "answer": "En este empedrado, el desempedrador que lo desempedrase, buen desempedrador sería"
+      },
+      {
+        "language": "de",
+        "question": "Versuche diesen Zungenbrecher: Hinter Hannovers Hauptbahnhof hängen hundert Hemden.",
+        "answer": "Hinter Hannovers Hauptbahnhof hängen hundert Hemden"
+      },
+      {
+        "language": "en",
+        "question": "Try this tongue twister: Whether the weather be fine or whether the weather be not, whether the weather be cold or whether the weather be hot.",
+        "answer": "Whether the weather be fine or whether the weather be not"
+      }
+    ]
+  },
+  {
+    "id": "games_178",
+    "category": "games",
+    "type": "tongue_twister",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Intenta este trabalenguas muy difícil: Vino el vino a verme, si el vino que vine a ver vino viene a verme vino a verme.",
+        "answer": "Vino el vino a verme, si el vino que vine a ver vino viene a verme"
+      },
+      {
+        "language": "de",
+        "question": "Versuche diesen sehr schwierigen Zungenbrecher: Wenn Schwarze Schwarzwälder Schwarzwäldertorten schweigen schweigen Schwarze Schwarzwälder Schwarzwäldertorten.",
+        "answer": "Wenn Schwarze Schwarzwälder Schwarzwäldertorten schweigen"
+      },
+      {
+        "language": "en",
+        "question": "Try this very difficult tongue twister: The thirty-three thieves thought that they thrilled the throne throughout Thursday.",
+        "answer": "The thirty-three thieves thought that they thrilled the throne throughout Thursday"
+      }
+    ]
+  },
+  {
+    "id": "games_179",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di una palabra que empiece con la última letra de la palabra siguiente: TREN.",
+        "answer": "Una palabra que empiece por N, como noche, nube, nuez o naranja"
+      },
+      {
+        "language": "de",
+        "question": "Sage ein Wort das mit dem letzten Buchstaben des Wortes ZUG beginnt.",
+        "answer": "Ein Wort das mit G beginnt, wie Garten, Glocke, Gitarre oder Gabel"
+      },
+      {
+        "language": "en",
+        "question": "Say a word that starts with the last letter of the word TRAIN.",
+        "answer": "A word that starts with N, like night, nose, nut or nest"
+      }
+    ]
+  },
+  {
+    "id": "games_180",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di una palabra que empiece con la última letra de la palabra ÁRBOL.",
+        "answer": "Una palabra que empiece por L, como luna, libro, lámpara o leche"
+      },
+      {
+        "language": "de",
+        "question": "Sage ein Wort das mit dem letzten Buchstaben des Wortes BAUM beginnt.",
+        "answer": "Ein Wort das mit M beginnt, wie Mond, Mutter, Milch oder Musik"
+      },
+      {
+        "language": "en",
+        "question": "Say a word that starts with the last letter of the word TREE.",
+        "answer": "A word that starts with E, like ear, eagle, egg or elephant"
+      }
+    ]
+  },
+  {
+    "id": "games_181",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di cinco cosas que se puedan encontrar en una cocina.",
+        "answer": "Sartén, olla, cuchillo, nevera, microondas, plato, vaso, cucharón y muchas más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne fünf Dinge die man in einer Küche finden kann.",
+        "answer": "Pfanne, Topf, Messer, Kühlschrank, Mikrowelle, Teller, Glas, Schöpflöffel und viele mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name five things you can find in a kitchen.",
+        "answer": "Pan, pot, knife, fridge, microwave, plate, glass, ladle and many more"
+      }
+    ]
+  },
+  {
+    "id": "games_182",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di cinco cosas que uses todos los días.",
+        "answer": "Gafas, teléfono, llave, zapatos, cepillo de dientes, toalla, cama y muchas más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne fünf Dinge die du jeden Tag benutzt.",
+        "answer": "Brille, Telefon, Schlüssel, Schuhe, Zahnbürste, Handtuch, Bett und viele mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name five things you use every day.",
+        "answer": "Glasses, phone, key, shoes, toothbrush, towel, bed and many more"
+      }
+    ]
+  },
+  {
+    "id": "games_183",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di todo lo que se te ocurra que sea amarillo.",
+        "answer": "Sol, plátano, limón, girasol, canario, yema de huevo, mantequilla, oro y más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne alles was dir einfällt das gelb ist.",
+        "answer": "Sonne, Banane, Zitrone, Sonnenblume, Kanarienvogel, Eigelb, Butter, Gold und mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name everything you can think of that is yellow.",
+        "answer": "Sun, banana, lemon, sunflower, canary, egg yolk, butter, gold and more"
+      }
+    ]
+  },
+  {
+    "id": "games_184",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di todo lo que se te ocurra que sea azul.",
+        "answer": "Cielo, mar, arándano, iris, añil, zafiro, piscina, bandera y más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne alles was dir einfällt das blau ist.",
+        "answer": "Himmel, Meer, Heidelbeere, Iris, Indigo, Saphir, Schwimmbad, Fahne und mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name everything you can think of that is blue.",
+        "answer": "Sky, sea, blueberry, iris, indigo, sapphire, swimming pool, flag and more"
+      }
+    ]
+  },
+  {
+    "id": "games_185",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Si tengo quince monedas de euro y las divido en tres grupos iguales, ¿cuántas monedas hay en cada grupo?",
+        "answer": "Cinco monedas en cada grupo"
+      },
+      {
+        "language": "de",
+        "question": "Wenn ich fünfzehn Euromünzen habe und sie in drei gleiche Gruppen teile wie viele Münzen sind in jeder Gruppe?",
+        "answer": "Fünf Münzen in jeder Gruppe"
+      },
+      {
+        "language": "en",
+        "question": "If I have fifteen euro coins and divide them into three equal groups, how many coins are in each group?",
+        "answer": "Five coins in each group"
+      }
+    ]
+  },
+  {
+    "id": "games_186",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántos segundos hay en un minuto? ¿Y en una hora?",
+        "answer": "Sesenta segundos en un minuto y tres mil seiscientos segundos en una hora"
+      },
+      {
+        "language": "de",
+        "question": "Wie viele Sekunden hat eine Minute? Und eine Stunde?",
+        "answer": "Sechzig Sekunden in einer Minute und dreitausendsechshundert Sekunden in einer Stunde"
+      },
+      {
+        "language": "en",
+        "question": "How many seconds are in a minute? And in an hour?",
+        "answer": "Sixty seconds in a minute and three thousand six hundred seconds in an hour"
+      }
+    ]
+  },
+  {
+    "id": "games_187",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Diez, veinte, treinta, cuarenta, cincuenta. ¿Cuál es el siguiente?",
+        "answer": "Sesenta. Se va de diez en diez."
+      },
+      {
+        "language": "de",
+        "question": "Zehn, zwanzig, dreißig, vierzig, fünfzig. Was kommt als nächstes?",
+        "answer": "Sechzig. Man zählt in Zehnerschritten."
+      },
+      {
+        "language": "en",
+        "question": "Ten, twenty, thirty, forty, fifty. What comes next?",
+        "answer": "Sixty. The pattern goes up by ten."
+      }
+    ]
+  },
+  {
+    "id": "games_188",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuánto es el quince por ciento de doscientos?",
+        "answer": "Treinta. El quince por ciento de doscientos son treinta."
+      },
+      {
+        "language": "de",
+        "question": "Wie viel ist fünfzehn Prozent von zweihundert?",
+        "answer": "Dreißig. Fünfzehn Prozent von zweihundert sind dreißig."
+      },
+      {
+        "language": "en",
+        "question": "How much is fifteen percent of two hundred?",
+        "answer": "Thirty. Fifteen percent of two hundred is thirty."
+      }
+    ]
+  },
+  {
+    "id": "games_189",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Una receta necesita cuatro huevos para cuatro personas. ¿Cuántos huevos necesitas para doce personas?",
+        "answer": "Doce huevos"
+      },
+      {
+        "language": "de",
+        "question": "Ein Rezept braucht vier Eier für vier Personen. Wie viele Eier brauchst du für zwölf Personen?",
+        "answer": "Zwölf Eier"
+      },
+      {
+        "language": "en",
+        "question": "A recipe needs four eggs for four people. How many eggs do you need for twelve people?",
+        "answer": "Twelve eggs"
+      }
+    ]
+  },
+  {
+    "id": "games_190",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántos lados tiene un triángulo? ¿Y un cuadrado? ¿Y un hexágono?",
+        "answer": "El triángulo tiene tres lados, el cuadrado cuatro y el hexágono seis"
+      },
+      {
+        "language": "de",
+        "question": "Wie viele Seiten hat ein Dreieck? Ein Quadrat? Ein Sechseck?",
+        "answer": "Das Dreieck hat drei Seiten, das Quadrat vier und das Sechseck sechs"
+      },
+      {
+        "language": "en",
+        "question": "How many sides does a triangle have? A square? A hexagon?",
+        "answer": "A triangle has three sides, a square four and a hexagon six"
+      }
+    ]
+  },
+  {
+    "id": "games_191",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Qué tiene cuatro patas por la mañana, dos por la tarde y tres por la noche?",
+        "answer": "El ser humano. De bebé gatea, de adulto camina y de mayor usa bastón."
+      },
+      {
+        "language": "de",
+        "question": "Was hat morgens vier Beine, mittags zwei und abends drei?",
+        "answer": "Der Mensch. Als Baby krabbelt er, als Erwachsener geht er und als alter Mensch benutzt er einen Stock."
+      },
+      {
+        "language": "en",
+        "question": "What has four legs in the morning, two in the afternoon and three in the evening?",
+        "answer": "A human being. As a baby it crawls, as an adult it walks and when old it uses a walking stick."
+      }
+    ]
+  },
+  {
+    "id": "games_192",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Qué es lo primero que hace el sol al levantarse?",
+        "answer": "Sombra"
+      },
+      {
+        "language": "de",
+        "question": "Was macht die Sonne als erstes wenn sie aufgeht?",
+        "answer": "Schatten"
+      },
+      {
+        "language": "en",
+        "question": "What is the first thing the sun does when it rises?",
+        "answer": "Makes a shadow"
+      }
+    ]
+  },
+  {
+    "id": "games_193",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Me llevo todo lo que te sobra sin pedir permiso. Con el tiempo soy tu peor enemigo pero sin mí no puedes vivir. ¿Qué soy?",
+        "answer": "El tiempo"
+      },
+      {
+        "language": "de",
+        "question": "Ich nehme alles was dir übrig bleibt ohne zu fragen. Mit der Zeit bin ich dein schlimmster Feind aber ohne mich kannst du nicht leben. Was bin ich?",
+        "answer": "Die Zeit"
+      },
+      {
+        "language": "en",
+        "question": "I take everything you have left without asking. Over time I am your worst enemy but without me you cannot live. What am I?",
+        "answer": "Time"
+      }
+    ]
+  },
+  {
+    "id": "games_194",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Qué palabra tiene todas las vocales?",
+        "answer": "Hay muchas: murciélago, autorización, ecuación, euforia, educación y muchas más"
+      },
+      {
+        "language": "de",
+        "question": "Welches Wort enthält alle Vokale?",
+        "answer": "Es gibt viele: Mauritius, Eukaryoten, Automation und mehr"
+      },
+      {
+        "language": "en",
+        "question": "What word contains all the vowels?",
+        "answer": "There are many: education, cauliflower, sequoia, euphoria and more"
+      }
+    ]
+  },
+  {
+    "id": "games_195",
+    "category": "games",
+    "type": "riddle",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Qué palabra en español tiene la letra E cinco veces?",
+        "answer": "Entretenerse o independiente por ejemplo"
+      },
+      {
+        "language": "de",
+        "question": "Welches deutsche Wort hat den Buchstaben E fünf Mal?",
+        "answer": "Regenerierend oder Entlehntes zum Beispiel"
+      },
+      {
+        "language": "en",
+        "question": "What English word has the letter E five times?",
+        "answer": "Independence, excellence or elsewhere for example"
+      }
+    ]
+  },
+  {
+    "id": "games_196",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di todos los instrumentos musicales que conozcas.",
+        "answer": "Piano, guitarra, violín, flauta, trompeta, tambor, cello, arpa, saxofón y muchos más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne alle Musikinstrumente die du kennst.",
+        "answer": "Klavier, Gitarre, Geige, Flöte, Trompete, Trommel, Cello, Harfe, Saxophon und viele mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name all the musical instruments you know.",
+        "answer": "Piano, guitar, violin, flute, trumpet, drum, cello, harp, saxophone and many more"
+      }
+    ]
+  },
+  {
+    "id": "games_197",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di palabras que se escriban igual al revés, como ojo o ama.",
+        "answer": "Ojo, ama, oro, ana, ala, asa, osa y más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne Wörter die man rückwärts genauso schreibt, wie Kajak oder Radar.",
+        "answer": "Kajak, Radar, Regen, Neben, Level und mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name words that read the same backwards, like racecar or level.",
+        "answer": "Racecar, level, radar, noon, civic, refer and more"
+      }
+    ]
+  },
+  {
+    "id": "games_198",
+    "category": "games",
+    "type": "word_game",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di todo lo que se te ocurra que sea silencioso.",
+        "answer": "Nieve cayendo, la luna, una biblioteca, una noche tranquila, el pensamiento y más"
+      },
+      {
+        "language": "de",
+        "question": "Nenne alles was dir einfällt das lautlos ist.",
+        "answer": "Fallender Schnee, der Mond, eine Bibliothek, eine ruhige Nacht, der Gedanke und mehr"
+      },
+      {
+        "language": "en",
+        "question": "Name everything you can think of that is silent.",
+        "answer": "Falling snow, the moon, a library, a quiet night, a thought and more"
+      }
+    ]
+  },
+  {
+    "id": "games_199",
+    "category": "games",
+    "type": "number_game",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Un reloj se retrasa dos minutos cada día. Si lo pongo en hora hoy, ¿cuántos minutos se habrá retrasado en un mes de treinta días?",
+        "answer": "Sesenta minutos, es decir una hora exacta"
+      },
+      {
+        "language": "de",
+        "question": "Eine Uhr geht jeden Tag zwei Minuten nach. Wenn ich sie heute stelle wie viele Minuten wird sie in einem Monat mit dreißig Tagen nachgehen?",
+        "answer": "Sechzig Minuten also genau eine Stunde"
+      },
+      {
+        "language": "en",
+        "question": "A clock loses two minutes every day. If I set it correctly today how many minutes will it have lost in a month of thirty days?",
+        "answer": "Sixty minutes, that is exactly one hour"
+      }
+    ]
+  },
+  {
+    "id": "games_200",
+    "category": "games",
+    "type": "storytelling",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Cuenta la historia más memorable de tu familia. Algo que se haya contado de generación en generación. Si no tienes una, invéntate una como si fuera real.",
+        "answer": "Respuesta libre. Cualquier historia familiar o inventada es válida y muy bienvenida."
+      },
+      {
+        "language": "de",
+        "question": "Erzähl die denkwürdigste Geschichte deiner Familie. Etwas das von Generation zu Generation erzählt wurde. Wenn du keine hast erfinde eine als ob sie wahr wäre.",
+        "answer": "Freie Antwort. Jede Familien- oder erfundene Geschichte ist gültig und sehr willkommen."
+      },
+      {
+        "language": "en",
+        "question": "Tell the most memorable story from your family. Something that has been passed down through generations. If you do not have one, invent one as if it were real.",
+        "answer": "Free answer. Any family story or invented one is valid and very welcome."
+      }
+    ]
+  }
+]

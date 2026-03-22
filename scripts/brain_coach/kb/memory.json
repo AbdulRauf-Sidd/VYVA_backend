@@ -1,0 +1,4602 @@
+[
+  {
+    "id": "memory_001",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha estas cinco palabras: manzana, silla, río, zapato, nube. Ahora dime todas las que recuerdes.",
+        "answer": "manzana, silla, río, zapato, nube"
+      },
+      {
+        "language": "de",
+        "question": "Hör dir diese fünf Wörter an: Apfel, Stuhl, Fluss, Schuh, Wolke. Nenn mir jetzt alle die du erinnerst.",
+        "answer": "Apfel, Stuhl, Fluss, Schuh, Wolke"
+      },
+      {
+        "language": "en",
+        "question": "Listen to these five words: apple, chair, river, shoe, cloud. Now tell me all the ones you remember.",
+        "answer": "apple, chair, river, shoe, cloud"
+      }
+    ]
+  },
+  {
+    "id": "memory_002",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha esta secuencia y repítela: tres, siete, dos, cinco.",
+        "answer": "3, 7, 2, 5"
+      },
+      {
+        "language": "de",
+        "question": "Hör dir diese Zahlenfolge an und wiederhole sie: drei, sieben, zwei, fünf.",
+        "answer": "3, 7, 2, 5"
+      },
+      {
+        "language": "en",
+        "question": "Listen to this number sequence and repeat it: three, seven, two, five.",
+        "answer": "3, 7, 2, 5"
+      }
+    ]
+  },
+  {
+    "id": "memory_003",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha estas siete palabras: paloma, mesa, cielo, libro, naranja, puerta, jardín. Dime cuántas recuerdas.",
+        "answer": "paloma, mesa, cielo, libro, naranja, puerta, jardín"
+      },
+      {
+        "language": "de",
+        "question": "Hör dir diese sieben Wörter an: Taube, Tisch, Himmel, Buch, Orange, Tür, Garten. Nenn mir so viele wie möglich.",
+        "answer": "Taube, Tisch, Himmel, Buch, Orange, Tür, Garten"
+      },
+      {
+        "language": "en",
+        "question": "Listen to these seven words: dove, table, sky, book, orange, door, garden. Tell me how many you remember.",
+        "answer": "dove, table, sky, book, orange, door, garden"
+      }
+    ]
+  },
+  {
+    "id": "memory_004",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: nueve, cuatro, uno, seis, ocho.",
+        "answer": "9, 4, 1, 6, 8"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: neun, vier, eins, sechs, acht.",
+        "answer": "9, 4, 1, 6, 8"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: nine, four, one, six, eight.",
+        "answer": "9, 4, 1, 6, 8"
+      }
+    ]
+  },
+  {
+    "id": "memory_005",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende estos tres pares: perro-luna, pan-verde, coche-música. ¿Qué palabra iba con pan?",
+        "answer": "verde"
+      },
+      {
+        "language": "de",
+        "question": "Lern diese drei Wortpaare: Hund-Mond, Brot-grün, Auto-Musik. Welches Wort gehörte zu Brot?",
+        "answer": "grün"
+      },
+      {
+        "language": "en",
+        "question": "Learn these three word pairs: dog-moon, bread-green, car-music. What word went with bread?",
+        "answer": "green"
+      }
+    ]
+  },
+  {
+    "id": "memory_006",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: María salió de casa a las nueve, fue al mercado y compró tres naranjas. Al volver encontró a su vecina en la puerta. ¿A qué hora salió María?",
+        "answer": "A las nueve"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Maria verließ das Haus um neun Uhr, ging zum Markt und kaufte drei Orangen. Als sie zurückkam traf sie ihre Nachbarin an der Tür. Um wie viel Uhr verließ Maria das Haus?",
+        "answer": "Um neun Uhr"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Maria left home at nine o'clock, went to the market and bought three oranges. On her way back she met her neighbour at the door. What time did Maria leave?",
+        "answer": "At nine o'clock"
+      }
+    ]
+  },
+  {
+    "id": "memory_007",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Pedro tiene dos hijos, un perro llamado Bruno y vive en una casa azul. ¿Cómo se llama el perro de Pedro?",
+        "answer": "Bruno"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Pedro hat zwei Kinder, einen Hund namens Bruno und wohnt in einem blauen Haus. Wie heißt Pedros Hund?",
+        "answer": "Bruno"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Pedro has two children, a dog called Bruno and lives in a blue house. What is Pedro's dog called?",
+        "answer": "Bruno"
+      }
+    ]
+  },
+  {
+    "id": "memory_008",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Voy a decir palabras. Cuando oigas un animal di sí: árbol, gato, mesa, elefante, libro, perro. ¿Cuántos animales había?",
+        "answer": "3 animales: gato, elefante, perro"
+      },
+      {
+        "language": "de",
+        "question": "Ich nenne Wörter. Wenn du ein Tier hörst sag ja: Baum, Katze, Tisch, Elefant, Buch, Hund. Wie viele Tiere gab es?",
+        "answer": "3 Tiere: Katze, Elefant, Hund"
+      },
+      {
+        "language": "en",
+        "question": "I will say words. When you hear an animal say yes: tree, cat, table, elephant, book, dog. How many animals were there?",
+        "answer": "3 animals: cat, elephant, dog"
+      }
+    ]
+  },
+  {
+    "id": "memory_009",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite al revés: dos, ocho, cinco, tres.",
+        "answer": "3, 5, 8, 2"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole rückwärts: zwei, acht, fünf, drei.",
+        "answer": "3, 5, 8, 2"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat backwards: two, eight, five, three.",
+        "answer": "3, 5, 8, 2"
+      }
+    ]
+  },
+  {
+    "id": "memory_010",
+    "category": "memory",
+    "type": "orientation",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿En qué estación del año estamos ahora mismo?",
+        "answer": "Depende del momento actual. Primavera: marzo a mayo. Verano: junio a agosto. Otoño: septiembre a noviembre. Invierno: diciembre a febrero."
+      },
+      {
+        "language": "de",
+        "question": "In welcher Jahreszeit befinden wir uns gerade?",
+        "answer": "Abhängig vom aktuellen Zeitpunkt. Frühling: März bis Mai. Sommer: Juni bis August. Herbst: September bis November. Winter: Dezember bis Februar."
+      },
+      {
+        "language": "en",
+        "question": "What season of the year are we in right now?",
+        "answer": "Depends on the current time. Spring: March to May. Summer: June to August. Autumn: September to November. Winter: December to February."
+      }
+    ]
+  },
+  {
+    "id": "memory_011",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha estas cuatro palabras: tren, rosa, espejo, pan. ¿Cuál era la segunda?",
+        "answer": "rosa"
+      },
+      {
+        "language": "de",
+        "question": "Hör dir diese vier Wörter an: Zug, Rose, Spiegel, Brot. Was war das zweite Wort?",
+        "answer": "Rose"
+      },
+      {
+        "language": "en",
+        "question": "Listen to these four words: train, rose, mirror, bread. What was the second word?",
+        "answer": "rose"
+      }
+    ]
+  },
+  {
+    "id": "memory_012",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende estos pares: cielo-amarillo, mar-frío, montaña-silencio. ¿Qué iba con montaña?",
+        "answer": "silencio"
+      },
+      {
+        "language": "de",
+        "question": "Lern diese Paare: Himmel-gelb, Meer-kalt, Berg-Stille. Was gehörte zu Berg?",
+        "answer": "Stille"
+      },
+      {
+        "language": "en",
+        "question": "Learn these pairs: sky-yellow, sea-cold, mountain-silence. What went with mountain?",
+        "answer": "silence"
+      }
+    ]
+  },
+  {
+    "id": "memory_013",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Ana fue al banco el martes, retiró doscientos euros y luego fue a la farmacia. ¿Qué día fue Ana al banco?",
+        "answer": "El martes"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Ana ging am Dienstag zur Bank, hob zweihundert Euro ab und ging dann in die Apotheke. An welchem Tag ging Ana zur Bank?",
+        "answer": "Am Dienstag"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Ana went to the bank on Tuesday, withdrew two hundred euros and then went to the pharmacy. What day did Ana go to the bank?",
+        "answer": "Tuesday"
+      }
+    ]
+  },
+  {
+    "id": "memory_014",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y cuenta cuántas frutas hay: plátano, coche, manzana, ventana, uva, teléfono, pera, reloj.",
+        "answer": "4 frutas: plátano, manzana, uva, pera"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und zähle wie viele Früchte es gibt: Banane, Auto, Apfel, Fenster, Traube, Telefon, Birne, Uhr.",
+        "answer": "4 Früchte: Banane, Apfel, Traube, Birne"
+      },
+      {
+        "language": "en",
+        "question": "Listen and count how many fruits there are: banana, car, apple, window, grape, telephone, pear, clock.",
+        "answer": "4 fruits: banana, apple, grape, pear"
+      }
+    ]
+  },
+  {
+    "id": "memory_015",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: seis, uno, cuatro.",
+        "answer": "6, 1, 4"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: sechs, eins, vier.",
+        "answer": "6, 1, 4"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: six, one, four.",
+        "answer": "6, 1, 4"
+      }
+    ]
+  },
+  {
+    "id": "memory_016",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Te digo seis palabras: camino, lámpara, verano, caballo, estrella, ventana. ¿Cuál era la cuarta?",
+        "answer": "caballo"
+      },
+      {
+        "language": "de",
+        "question": "Ich sage dir sechs Wörter: Weg, Lampe, Sommer, Pferd, Stern, Fenster. Was war das vierte?",
+        "answer": "Pferd"
+      },
+      {
+        "language": "en",
+        "question": "I say six words: path, lamp, summer, horse, star, window. What was the fourth?",
+        "answer": "horse"
+      }
+    ]
+  },
+  {
+    "id": "memory_017",
+    "category": "memory",
+    "type": "orientation",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿En qué mes estamos ahora?",
+        "answer": "La respuesta depende del momento actual. Los meses van de enero a diciembre."
+      },
+      {
+        "language": "de",
+        "question": "In welchem Monat befinden wir uns?",
+        "answer": "Die Antwort hängt vom aktuellen Zeitpunkt ab. Die Monate gehen von Januar bis Dezember."
+      },
+      {
+        "language": "en",
+        "question": "What month are we in?",
+        "answer": "The answer depends on the current time. The months run from January to December."
+      }
+    ]
+  },
+  {
+    "id": "memory_018",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende estos cinco pares: sol-música, lluvia-libro, viento-café, nieve-risa, tormenta-silencio. ¿Qué iba con viento?",
+        "answer": "café"
+      },
+      {
+        "language": "de",
+        "question": "Lern diese fünf Paare: Sonne-Musik, Regen-Buch, Wind-Kaffee, Schnee-Lachen, Sturm-Stille. Was gehörte zu Wind?",
+        "answer": "Kaffee"
+      },
+      {
+        "language": "en",
+        "question": "Learn these five pairs: sun-music, rain-book, wind-coffee, snow-laughter, storm-silence. What went with wind?",
+        "answer": "coffee"
+      }
+    ]
+  },
+  {
+    "id": "memory_019",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: El señor Rodríguez tiene setenta y tres años, vive en la calle Mayor número cinco y tiene tres nietos. ¿Cuántos nietos tiene?",
+        "answer": "Tres nietos"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Herr Rodríguez ist dreiundsiebzig Jahre alt, wohnt in der Hauptstraße Nummer fünf und hat drei Enkelkinder. Wie viele Enkelkinder hat er?",
+        "answer": "Drei Enkelkinder"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Mr Rodriguez is seventy-three years old, lives at number five Main Street and has three grandchildren. How many grandchildren does he have?",
+        "answer": "Three grandchildren"
+      }
+    ]
+  },
+  {
+    "id": "memory_020",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha diez palabras: barco, flor, teléfono, pan, luna, sombrero, agua, puente, canción, piedra. Dime todas las que puedas.",
+        "answer": "barco, flor, teléfono, pan, luna, sombrero, agua, puente, canción, piedra"
+      },
+      {
+        "language": "de",
+        "question": "Hör dir zehn Wörter an: Schiff, Blume, Telefon, Brot, Mond, Hut, Wasser, Brücke, Lied, Stein. Nenn mir so viele wie möglich.",
+        "answer": "Schiff, Blume, Telefon, Brot, Mond, Hut, Wasser, Brücke, Lied, Stein"
+      },
+      {
+        "language": "en",
+        "question": "Listen to ten words: ship, flower, telephone, bread, moon, hat, water, bridge, song, stone. Tell me all you can.",
+        "answer": "ship, flower, telephone, bread, moon, hat, water, bridge, song, stone"
+      }
+    ]
+  },
+  {
+    "id": "memory_021",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Voy a decir números. Di ahora cuando oigas un número par: tres, ocho, cinco, dos, siete, cuatro. ¿Cuáles eran pares?",
+        "answer": "ocho, dos, cuatro"
+      },
+      {
+        "language": "de",
+        "question": "Ich nenne Zahlen. Sag jetzt wenn du eine gerade Zahl hörst: drei, acht, fünf, zwei, sieben, vier. Welche waren gerade?",
+        "answer": "acht, zwei, vier"
+      },
+      {
+        "language": "en",
+        "question": "I will say numbers. Say now when you hear an even number: three, eight, five, two, seven, four. Which were even?",
+        "answer": "eight, two, four"
+      }
+    ]
+  },
+  {
+    "id": "memory_022",
+    "category": "memory",
+    "type": "orientation",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Qué día de la semana es hoy?",
+        "answer": "La respuesta depende del día actual. Los días son lunes, martes, miércoles, jueves, viernes, sábado, domingo."
+      },
+      {
+        "language": "de",
+        "question": "Welcher Wochentag ist heute?",
+        "answer": "Die Antwort hängt vom aktuellen Tag ab. Die Tage sind Montag, Dienstag, Mittwoch, Donnerstag, Freitag, Samstag, Sonntag."
+      },
+      {
+        "language": "en",
+        "question": "What day of the week is today?",
+        "answer": "The answer depends on the current day. The days are Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday."
+      }
+    ]
+  },
+  {
+    "id": "memory_023",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: árbol, cuchara, montaña, reloj, mar, alfombra. ¿Cuál era la última palabra?",
+        "answer": "alfombra"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Baum, Löffel, Berg, Uhr, Meer, Teppich. Was war das letzte Wort?",
+        "answer": "Teppich"
+      },
+      {
+        "language": "en",
+        "question": "Listen: tree, spoon, mountain, clock, sea, carpet. What was the last word?",
+        "answer": "carpet"
+      }
+    ]
+  },
+  {
+    "id": "memory_024",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite al revés: cinco, tres, ocho, dos, siete.",
+        "answer": "7, 2, 8, 3, 5"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole rückwärts: fünf, drei, acht, zwei, sieben.",
+        "answer": "7, 2, 8, 3, 5"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat backwards: five, three, eight, two, seven.",
+        "answer": "7, 2, 8, 3, 5"
+      }
+    ]
+  },
+  {
+    "id": "memory_025",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Carmen salió de Zamora a las ocho y media, cogió el autobús número doce, bajó en la plaza y fue a visitar a su amiga Dolores en el tercer piso. ¿En qué autobús fue Carmen?",
+        "answer": "El número doce"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Carmen verließ Zamora um halb neun, nahm den Bus Nummer zwölf, stieg am Platz aus und besuchte ihre Freundin Dolores im dritten Stock. Mit welchem Bus fuhr Carmen?",
+        "answer": "Nummer zwölf"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Carmen left Zamora at half past eight, took bus number twelve, got off at the square and went to visit her friend Dolores on the third floor. What bus did Carmen take?",
+        "answer": "Number twelve"
+      }
+    ]
+  },
+  {
+    "id": "memory_026",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha estas tres palabras: gato, lluvia, sopa. ¿Cuál era la primera?",
+        "answer": "gato"
+      },
+      {
+        "language": "de",
+        "question": "Hör dir diese drei Wörter an: Katze, Regen, Suppe. Was war das erste?",
+        "answer": "Katze"
+      },
+      {
+        "language": "en",
+        "question": "Listen to these three words: cat, rain, soup. What was the first?",
+        "answer": "cat"
+      }
+    ]
+  },
+  {
+    "id": "memory_027",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha. Cuenta colores y animales por separado: azul, perro, rojo, pájaro, verde, gato, amarillo, pez, blanco. ¿Cuántos colores y cuántos animales?",
+        "answer": "5 colores: azul, rojo, verde, amarillo, blanco. 4 animales: perro, pájaro, gato, pez."
+      },
+      {
+        "language": "de",
+        "question": "Hör zu. Zähle Farben und Tiere getrennt: blau, Hund, rot, Vogel, grün, Katze, gelb, Fisch, weiß. Wie viele Farben und Tiere?",
+        "answer": "5 Farben: blau, rot, grün, gelb, weiß. 4 Tiere: Hund, Vogel, Katze, Fisch."
+      },
+      {
+        "language": "en",
+        "question": "Listen. Count colours and animals separately: blue, dog, red, bird, green, cat, yellow, fish, white. How many colours and animals?",
+        "answer": "5 colours: blue, red, green, yellow, white. 4 animals: dog, bird, cat, fish."
+      }
+    ]
+  },
+  {
+    "id": "memory_028",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende estos pares: casa-blanca, río-frío. ¿Qué iba con río?",
+        "answer": "frío"
+      },
+      {
+        "language": "de",
+        "question": "Lern diese Paare: Haus-weiß, Fluss-kalt. Was gehörte zu Fluss?",
+        "answer": "kalt"
+      },
+      {
+        "language": "en",
+        "question": "Learn these pairs: house-white, river-cold. What went with river?",
+        "answer": "cold"
+      }
+    ]
+  },
+  {
+    "id": "memory_029",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Luis compró un paraguas rojo en la tienda del centro. ¿De qué color era el paraguas?",
+        "answer": "Rojo"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Luis kaufte einen roten Regenschirm im Geschäft in der Innenstadt. Welche Farbe hatte der Regenschirm?",
+        "answer": "Rot"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Luis bought a red umbrella in the shop in the centre. What colour was the umbrella?",
+        "answer": "Red"
+      }
+    ]
+  },
+  {
+    "id": "memory_030",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: cuatro, nueve, dos, siete, uno.",
+        "answer": "4, 9, 2, 7, 1"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: vier, neun, zwei, sieben, eins.",
+        "answer": "4, 9, 2, 7, 1"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: four, nine, two, seven, one.",
+        "answer": "4, 9, 2, 7, 1"
+      }
+    ]
+  },
+  {
+    "id": "memory_031",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: sol, mesa, perro, agua, libro. ¿Cuántas recuerdas?",
+        "answer": "sol, mesa, perro, agua, libro"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Sonne, Tisch, Hund, Wasser, Buch. Wie viele erinnerst du?",
+        "answer": "Sonne, Tisch, Hund, Wasser, Buch"
+      },
+      {
+        "language": "en",
+        "question": "Listen: sun, table, dog, water, book. How many do you remember?",
+        "answer": "sun, table, dog, water, book"
+      }
+    ]
+  },
+  {
+    "id": "memory_032",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Di largo cada vez que oigas una palabra de más de seis letras: paz, mariposa, sol, chocolate, luz, teléfono, mar. ¿Cuáles eran largas?",
+        "answer": "mariposa, chocolate, teléfono"
+      },
+      {
+        "language": "de",
+        "question": "Sag lang jedes Mal wenn du ein Wort mit mehr als sechs Buchstaben hörst: Frieden, Schmetterling, Sonne, Schokolade, Licht, Telefon, Meer. Welche waren lang?",
+        "answer": "Schmetterling, Schokolade, Telefon"
+      },
+      {
+        "language": "en",
+        "question": "Say long every time you hear a word with more than six letters: peace, butterfly, sun, chocolate, light, telephone, sea. Which were long?",
+        "answer": "butterfly, chocolate, telephone"
+      }
+    ]
+  },
+  {
+    "id": "memory_033",
+    "category": "memory",
+    "type": "orientation",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿En qué año naciste? Ahora dime cuántos años tienes este año.",
+        "answer": "Depende del usuario. Resta el año de nacimiento del año actual para calcular la edad."
+      },
+      {
+        "language": "de",
+        "question": "In welchem Jahr wurdest du geboren? Sag mir jetzt wie alt du dieses Jahr bist.",
+        "answer": "Hängt vom Nutzer ab. Das Geburtsjahr vom aktuellen Jahr abziehen."
+      },
+      {
+        "language": "en",
+        "question": "What year were you born? Now tell me how old you are this year.",
+        "answer": "Depends on the user. Subtract the birth year from the current year to calculate the age."
+      }
+    ]
+  },
+  {
+    "id": "memory_034",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha ocho palabras: niebla, piano, zapato, río, campana, aceite, puerta, cielo. Dime las que recuerdes.",
+        "answer": "niebla, piano, zapato, río, campana, aceite, puerta, cielo"
+      },
+      {
+        "language": "de",
+        "question": "Hör dir acht Wörter an: Nebel, Klavier, Schuh, Fluss, Glocke, Öl, Tür, Himmel. Nenn mir die du erinnerst.",
+        "answer": "Nebel, Klavier, Schuh, Fluss, Glocke, Öl, Tür, Himmel"
+      },
+      {
+        "language": "en",
+        "question": "Listen to eight words: fog, piano, shoe, river, bell, oil, door, sky. Tell me the ones you remember.",
+        "answer": "fog, piano, shoe, river, bell, oil, door, sky"
+      }
+    ]
+  },
+  {
+    "id": "memory_035",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: La abuela Pilar cocinó paella para doce personas el domingo. ¿Para cuántas personas cocinó?",
+        "answer": "Para doce personas"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Großmutter Pilar kochte am Sonntag Paella für zwölf Personen. Für wie viele Personen kochte sie?",
+        "answer": "Für zwölf Personen"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Grandma Pilar cooked paella for twelve people on Sunday. For how many people did she cook?",
+        "answer": "For twelve people"
+      }
+    ]
+  },
+  {
+    "id": "memory_036",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: ocho, tres.",
+        "answer": "8, 3"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: acht, drei.",
+        "answer": "8, 3"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: eight, three.",
+        "answer": "8, 3"
+      }
+    ]
+  },
+  {
+    "id": "memory_037",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende: noche-estrella, día-trabajo, tarde-paseo, mañana-café. ¿Qué iba con tarde?",
+        "answer": "paseo"
+      },
+      {
+        "language": "de",
+        "question": "Lern: Nacht-Stern, Tag-Arbeit, Nachmittag-Spaziergang, Morgen-Kaffee. Was gehörte zu Nachmittag?",
+        "answer": "Spaziergang"
+      },
+      {
+        "language": "en",
+        "question": "Learn: night-star, day-work, afternoon-walk, morning-coffee. What went with afternoon?",
+        "answer": "walk"
+      }
+    ]
+  },
+  {
+    "id": "memory_038",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Del uno al diez me salto algunos. ¿Cuáles faltan? uno, dos, cuatro, cinco, siete, ocho, diez.",
+        "answer": "Faltan el tres, el seis y el nueve"
+      },
+      {
+        "language": "de",
+        "question": "Von eins bis zehn lasse ich einige aus. Welche fehlen? eins, zwei, vier, fünf, sieben, acht, zehn.",
+        "answer": "Es fehlen drei, sechs und neun"
+      },
+      {
+        "language": "en",
+        "question": "From one to ten I skip some. Which are missing? one, two, four, five, seven, eight, ten.",
+        "answer": "Three, six and nine are missing"
+      }
+    ]
+  },
+  {
+    "id": "memory_039",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: faro, mantequilla, serpiente, nube, tambor, arena. ¿Cuál era la tercera?",
+        "answer": "serpiente"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Leuchtturm, Butter, Schlange, Wolke, Trommel, Sand. Was war das dritte Wort?",
+        "answer": "Schlange"
+      },
+      {
+        "language": "en",
+        "question": "Listen: lighthouse, butter, snake, cloud, drum, sand. What was the third word?",
+        "answer": "snake"
+      }
+    ]
+  },
+  {
+    "id": "memory_040",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Don Emilio, carpintero, fue el miércoles al mercado con su hija Lucía. Compraron tomates, arroz y manzanas. Al volver Lucía se olvidó el monedero en el puesto de fruta. ¿Qué dejó olvidado Lucía?",
+        "answer": "El monedero"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Don Emilio, Tischler, ging am Mittwoch mit seiner Tochter Lucía auf den Markt. Sie kauften Tomaten, Reis und Äpfel. Auf dem Rückweg vergaß Lucía ihr Portemonnaie am Obststand. Was ließ Lucía vergessen?",
+        "answer": "Das Portemonnaie"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Don Emilio, a carpenter, went to the market on Wednesday with his daughter Lucía. They bought tomatoes, rice and apples. On the way home Lucía forgot her purse at the fruit stall. What did Lucía leave behind?",
+        "answer": "Her purse"
+      }
+    ]
+  },
+  {
+    "id": "memory_041",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: siete, dos, cinco, nueve.",
+        "answer": "7, 2, 5, 9"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: sieben, zwei, fünf, neun.",
+        "answer": "7, 2, 5, 9"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: seven, two, five, nine.",
+        "answer": "7, 2, 5, 9"
+      }
+    ]
+  },
+  {
+    "id": "memory_042",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: nieve, guitarra, zapato. ¿Cuáles recuerdas?",
+        "answer": "nieve, guitarra, zapato"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Schnee, Gitarre, Schuh. Welche erinnerst du?",
+        "answer": "Schnee, Gitarre, Schuh"
+      },
+      {
+        "language": "en",
+        "question": "Listen: snow, guitar, shoe. Which do you remember?",
+        "answer": "snow, guitar, shoe"
+      }
+    ]
+  },
+  {
+    "id": "memory_043",
+    "category": "memory",
+    "type": "orientation",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cómo se llama la ciudad o pueblo donde vives?",
+        "answer": "Depende del usuario. Es el lugar donde tiene su casa."
+      },
+      {
+        "language": "de",
+        "question": "Wie heißt die Stadt oder das Dorf in dem du wohnst?",
+        "answer": "Hängt vom Nutzer ab. Es ist der Ort wo sein Zuhause ist."
+      },
+      {
+        "language": "en",
+        "question": "What is the name of the city or village where you live?",
+        "answer": "Depends on the user. It is the place where they have their home."
+      }
+    ]
+  },
+  {
+    "id": "memory_044",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende seis pares: rosa-amargo, piedra-suave, fuego-frío, agua-seco, aire-pesado, tierra-ligera. ¿Qué iba con fuego?",
+        "answer": "frío"
+      },
+      {
+        "language": "de",
+        "question": "Lern sechs Paare: Rose-bitter, Stein-weich, Feuer-kalt, Wasser-trocken, Luft-schwer, Erde-leicht. Was gehörte zu Feuer?",
+        "answer": "kalt"
+      },
+      {
+        "language": "en",
+        "question": "Learn six pairs: rose-bitter, stone-soft, fire-cold, water-dry, air-heavy, earth-light. What went with fire?",
+        "answer": "cold"
+      }
+    ]
+  },
+  {
+    "id": "memory_045",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántas veces oyes la palabra sol?: el sol brillaba, el girasol miraba al sol y el parasol daba sombra bajo el sol.",
+        "answer": "Sol aparece 4 veces. Girasol y parasol no cuentan."
+      },
+      {
+        "language": "de",
+        "question": "Wie oft hörst du das Wort Sonne?: Die Sonne schien, die Sonnenblume sah zur Sonne und der Sonnenschirm spendete Schatten unter der Sonne.",
+        "answer": "Sonne erscheint 4 Mal. Sonnenblume und Sonnenschirm zählen nicht."
+      },
+      {
+        "language": "en",
+        "question": "How many times do you hear the word sun?: the sun was shining, the sunflower looked at the sun and the parasol gave shade under the sun.",
+        "answer": "Sun appears 4 times. Sunflower and parasol do not count."
+      }
+    ]
+  },
+  {
+    "id": "memory_046",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: mercado, tormenta, espejo, camión, flores, botella. ¿Cuál era la quinta?",
+        "answer": "flores"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Markt, Sturm, Spiegel, LKW, Blumen, Flasche. Was war das fünfte?",
+        "answer": "Blumen"
+      },
+      {
+        "language": "en",
+        "question": "Listen: market, storm, mirror, truck, flowers, bottle. What was the fifth?",
+        "answer": "flowers"
+      }
+    ]
+  },
+  {
+    "id": "memory_047",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: uno, siete, tres, nueve, dos, cuatro.",
+        "answer": "1, 7, 3, 9, 2, 4"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: eins, sieben, drei, neun, zwei, vier.",
+        "answer": "1, 7, 3, 9, 2, 4"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: one, seven, three, nine, two, four.",
+        "answer": "1, 7, 3, 9, 2, 4"
+      }
+    ]
+  },
+  {
+    "id": "memory_048",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Marcos fue al médico y le recetaron antibióticos. ¿A quién le recetaron antibióticos?",
+        "answer": "A Marcos"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Marcos ging zum Arzt und bekam Antibiotika verschrieben. Wem wurden Antibiotika verschrieben?",
+        "answer": "Marcos"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Marcos went to the doctor and was prescribed antibiotics. Who was prescribed antibiotics?",
+        "answer": "Marcos"
+      }
+    ]
+  },
+  {
+    "id": "memory_049",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha nueve palabras: vela, puente, aceite, cabra, techo, nuez, río, sombra, fuego. Dime todas las que puedas.",
+        "answer": "vela, puente, aceite, cabra, techo, nuez, río, sombra, fuego"
+      },
+      {
+        "language": "de",
+        "question": "Hör dir neun Wörter an: Kerze, Brücke, Öl, Ziege, Dach, Nuss, Fluss, Schatten, Feuer. Nenn mir so viele wie möglich.",
+        "answer": "Kerze, Brücke, Öl, Ziege, Dach, Nuss, Fluss, Schatten, Feuer"
+      },
+      {
+        "language": "en",
+        "question": "Listen to nine words: candle, bridge, oil, goat, roof, nut, river, shadow, fire. Tell me all you can.",
+        "answer": "candle, bridge, oil, goat, roof, nut, river, shadow, fire"
+      }
+    ]
+  },
+  {
+    "id": "memory_050",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende: verano-helado, invierno-abrigo, primavera-flor. ¿Qué iba con invierno?",
+        "answer": "abrigo"
+      },
+      {
+        "language": "de",
+        "question": "Lern: Sommer-Eis, Winter-Mantel, Frühling-Blume. Was gehörte zu Winter?",
+        "answer": "Mantel"
+      },
+      {
+        "language": "en",
+        "question": "Learn: summer-ice cream, winter-coat, spring-flower. What went with winter?",
+        "answer": "coat"
+      }
+    ]
+  },
+  {
+    "id": "memory_051",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: caballo, ventana, naranja. ¿Cuáles recuerdas?",
+        "answer": "caballo, ventana, naranja"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Pferd, Fenster, Orange. Welche erinnerst du?",
+        "answer": "Pferd, Fenster, Orange"
+      },
+      {
+        "language": "en",
+        "question": "Listen: horse, window, orange. Which do you remember?",
+        "answer": "horse, window, orange"
+      }
+    ]
+  },
+  {
+    "id": "memory_052",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántas palabras empiezan por consonante?: luna, pino, uva, tren, isla.",
+        "answer": "3 empiezan por consonante: luna (L), pino (P), tren (T). Uva e isla empiezan por vocal."
+      },
+      {
+        "language": "de",
+        "question": "Wie viele Wörter beginnen mit einem Konsonanten?: Mond, Kiefer, Traube, Zug, Insel.",
+        "answer": "4 beginnen mit Konsonant: Mond (M), Kiefer (K), Traube (T), Zug (Z). Insel beginnt mit Vokal."
+      },
+      {
+        "language": "en",
+        "question": "How many words start with a consonant?: moon, pine, grape, train, island.",
+        "answer": "4 start with a consonant: moon (m), pine (p), grape (g), train (t). Island starts with a vowel."
+      }
+    ]
+  },
+  {
+    "id": "memory_053",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Rosa fue al cine con su nieto el sábado. La película duró dos horas y después tomaron chocolate con churros. ¿Con quién fue Rosa al cine?",
+        "answer": "Con su nieto"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Rosa ging am Samstag mit ihrem Enkel ins Kino. Der Film dauerte zwei Stunden und danach tranken sie Schokolade mit Churros. Mit wem ging Rosa ins Kino?",
+        "answer": "Mit ihrem Enkel"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Rosa went to the cinema with her grandson on Saturday. The film lasted two hours and afterwards they had hot chocolate with churros. Who did Rosa go to the cinema with?",
+        "answer": "Her grandson"
+      }
+    ]
+  },
+  {
+    "id": "memory_054",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: cinco, nueve, dos.",
+        "answer": "5, 9, 2"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: fünf, neun, zwei.",
+        "answer": "5, 9, 2"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: five, nine, two.",
+        "answer": "5, 9, 2"
+      }
+    ]
+  },
+  {
+    "id": "memory_055",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha en orden: pájaro, espada, balcón, leche, volcán, tierra. ¿Cuáles recuerdas en orden?",
+        "answer": "pájaro, espada, balcón, leche, volcán, tierra"
+      },
+      {
+        "language": "de",
+        "question": "Hör der Reihe nach zu: Vogel, Schwert, Balkon, Milch, Vulkan, Erde. Welche erinnerst du in der Reihenfolge?",
+        "answer": "Vogel, Schwert, Balkon, Milch, Vulkan, Erde"
+      },
+      {
+        "language": "en",
+        "question": "Listen in order: bird, sword, balcony, milk, volcano, earth. Which do you remember in order?",
+        "answer": "bird, sword, balcony, milk, volcano, earth"
+      }
+    ]
+  },
+  {
+    "id": "memory_056",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende este par: luna-plata. ¿Qué iba con luna?",
+        "answer": "plata"
+      },
+      {
+        "language": "de",
+        "question": "Lern dieses Paar: Mond-Silber. Was gehörte zum Mond?",
+        "answer": "Silber"
+      },
+      {
+        "language": "en",
+        "question": "Learn this pair: moon-silver. What went with moon?",
+        "answer": "silver"
+      }
+    ]
+  },
+  {
+    "id": "memory_057",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántas palabras hay en total?: sol, luna, estrella, nube.",
+        "answer": "Cuatro palabras"
+      },
+      {
+        "language": "de",
+        "question": "Wie viele Wörter gibt es insgesamt?: Sonne, Mond, Stern, Wolke.",
+        "answer": "Vier Wörter"
+      },
+      {
+        "language": "en",
+        "question": "How many words are there in total?: sun, moon, star, cloud.",
+        "answer": "Four words"
+      }
+    ]
+  },
+  {
+    "id": "memory_058",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: El tren de las siete y veinte llegó con quince minutos de retraso a Salamanca. ¿Con cuántos minutos de retraso llegó?",
+        "answer": "Con quince minutos de retraso"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Der Zug um sieben Uhr zwanzig kam mit fünfzehn Minuten Verspätung in Salamanca an. Mit wie viel Minuten Verspätung kam er an?",
+        "answer": "Mit fünfzehn Minuten Verspätung"
+      },
+      {
+        "language": "en",
+        "question": "Listen: The seven twenty train arrived at Salamanca fifteen minutes late. How many minutes late did it arrive?",
+        "answer": "Fifteen minutes late"
+      }
+    ]
+  },
+  {
+    "id": "memory_059",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite al revés: tres, seis, uno.",
+        "answer": "1, 6, 3"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole rückwärts: drei, sechs, eins.",
+        "answer": "1, 6, 3"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat backwards: three, six, one.",
+        "answer": "1, 6, 3"
+      }
+    ]
+  },
+  {
+    "id": "memory_060",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: cama, sol, pan. ¿Cuáles recuerdas?",
+        "answer": "cama, sol, pan"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Bett, Sonne, Brot. Welche erinnerst du?",
+        "answer": "Bett, Sonne, Brot"
+      },
+      {
+        "language": "en",
+        "question": "Listen: bed, sun, bread. Which do you remember?",
+        "answer": "bed, sun, bread"
+      }
+    ]
+  },
+  {
+    "id": "memory_061",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: fábrica, cisne, tormenta, escalera, coral. ¿Cuál era la segunda?",
+        "answer": "cisne"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Fabrik, Schwan, Sturm, Treppe, Koralle. Was war das zweite?",
+        "answer": "Schwan"
+      },
+      {
+        "language": "en",
+        "question": "Listen: factory, swan, storm, staircase, coral. What was the second?",
+        "answer": "swan"
+      }
+    ]
+  },
+  {
+    "id": "memory_062",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: El niño se llamaba Pablo y tenía ocho años. ¿Cuántos años tenía Pablo?",
+        "answer": "Ocho años"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Der Junge hieß Pablo und war acht Jahre alt. Wie alt war Pablo?",
+        "answer": "Acht Jahre alt"
+      },
+      {
+        "language": "en",
+        "question": "Listen: The boy's name was Pablo and he was eight years old. How old was Pablo?",
+        "answer": "Eight years old"
+      }
+    ]
+  },
+  {
+    "id": "memory_063",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite al revés: cuatro, ocho, dos, seis.",
+        "answer": "6, 2, 8, 4"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole rückwärts: vier, acht, zwei, sechs.",
+        "answer": "6, 2, 8, 4"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat backwards: four, eight, two, six.",
+        "answer": "6, 2, 8, 4"
+      }
+    ]
+  },
+  {
+    "id": "memory_064",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende: rosa-canción, árbol-número, mar-sueño. ¿Qué iba con árbol?",
+        "answer": "número"
+      },
+      {
+        "language": "de",
+        "question": "Lern: Rose-Lied, Baum-Zahl, Meer-Traum. Was gehörte zum Baum?",
+        "answer": "Zahl"
+      },
+      {
+        "language": "en",
+        "question": "Learn: rose-song, tree-number, sea-dream. What went with tree?",
+        "answer": "number"
+      }
+    ]
+  },
+  {
+    "id": "memory_065",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha nueve palabras: balsa, horno, corona, pez, viento, escalón, miel, torre, pluma. Dime las que puedas.",
+        "answer": "balsa, horno, corona, pez, viento, escalón, miel, torre, pluma"
+      },
+      {
+        "language": "de",
+        "question": "Hör neun Wörter: Floß, Ofen, Krone, Fisch, Wind, Stufe, Honig, Turm, Feder. Nenn mir so viele wie möglich.",
+        "answer": "Floß, Ofen, Krone, Fisch, Wind, Stufe, Honig, Turm, Feder"
+      },
+      {
+        "language": "en",
+        "question": "Listen to nine words: raft, oven, crown, fish, wind, step, honey, tower, feather. Tell me as many as you can.",
+        "answer": "raft, oven, crown, fish, wind, step, honey, tower, feather"
+      }
+    ]
+  },
+  {
+    "id": "memory_066",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántas palabras riman con sol?: col, montaña, caracol, árbol, rol, ciudad.",
+        "answer": "3 riman con sol: col, caracol, rol"
+      },
+      {
+        "language": "de",
+        "question": "Wie viele Wörter reimen sich auf Sonne?: Wonne, Berg, Tonne, Baum, Ronne, Stadt.",
+        "answer": "3 reimen sich auf Sonne: Wonne, Tonne, Ronne"
+      },
+      {
+        "language": "en",
+        "question": "How many words rhyme with sun?: bun, mountain, fun, tree, run, city.",
+        "answer": "3 rhyme with sun: bun, fun, run"
+      }
+    ]
+  },
+  {
+    "id": "memory_067",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Doña Remedios, viuda desde hace diez años, vivía en el segundo piso de un edificio de Benavente con su gata Perla y dos macetas de geranios. ¿Cómo se llamaba la gata?",
+        "answer": "Perla"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Doña Remedios, seit zehn Jahren verwitwet, wohnte im zweiten Stock in Benavente mit ihrer Katze Perla und zwei Geranientöpfen. Wie hieß die Katze?",
+        "answer": "Perla"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Doña Remedios, widowed for ten years, lived on the second floor of a building in Benavente with her cat Perla and two geranium pots. What was the cat called?",
+        "answer": "Perla"
+      }
+    ]
+  },
+  {
+    "id": "memory_068",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: dos, cinco, ocho.",
+        "answer": "2, 5, 8"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: zwei, fünf, acht.",
+        "answer": "2, 5, 8"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: two, five, eight.",
+        "answer": "2, 5, 8"
+      }
+    ]
+  },
+  {
+    "id": "memory_069",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: corneta, almohada, delfín, carretera, antorcha. ¿Cuál era la primera y cuál era la última?",
+        "answer": "La primera era corneta y la última era antorcha"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Trompete, Kissen, Delfin, Straße, Fackel. Was war das erste und was war das letzte?",
+        "answer": "Das erste war Trompete und das letzte war Fackel"
+      },
+      {
+        "language": "en",
+        "question": "Listen: trumpet, pillow, dolphin, road, torch. What was the first and what was the last?",
+        "answer": "The first was trumpet and the last was torch"
+      }
+    ]
+  },
+  {
+    "id": "memory_070",
+    "category": "memory",
+    "type": "orientation",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuál es la capital de España y cuál es la capital de Alemania?",
+        "answer": "La capital de España es Madrid y la capital de Alemania es Berlín."
+      },
+      {
+        "language": "de",
+        "question": "Was ist die Hauptstadt Spaniens und was ist die Hauptstadt Deutschlands?",
+        "answer": "Die Hauptstadt Spaniens ist Madrid und die Hauptstadt Deutschlands ist Berlin."
+      },
+      {
+        "language": "en",
+        "question": "What is the capital of Spain and what is the capital of Germany?",
+        "answer": "The capital of Spain is Madrid and the capital of Germany is Berlin."
+      }
+    ]
+  },
+  {
+    "id": "memory_071",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: agua, fuego, tierra, aire. ¿Cuáles recuerdas?",
+        "answer": "agua, fuego, tierra, aire"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Wasser, Feuer, Erde, Luft. Welche erinnerst du?",
+        "answer": "Wasser, Feuer, Erde, Luft"
+      },
+      {
+        "language": "en",
+        "question": "Listen: water, fire, earth, air. Which do you remember?",
+        "answer": "water, fire, earth, air"
+      }
+    ]
+  },
+  {
+    "id": "memory_072",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántas palabras se relacionan con el agua?: lluvia, árbol, río, sol, mar, montaña, lago.",
+        "answer": "4 relacionadas con el agua: lluvia, río, mar, lago"
+      },
+      {
+        "language": "de",
+        "question": "Wie viele Wörter haben mit Wasser zu tun?: Regen, Baum, Fluss, Sonne, Meer, Berg, See.",
+        "answer": "4 mit Wasser verbunden: Regen, Fluss, Meer, See"
+      },
+      {
+        "language": "en",
+        "question": "How many words are related to water?: rain, tree, river, sun, sea, mountain, lake.",
+        "answer": "4 related to water: rain, river, sea, lake"
+      }
+    ]
+  },
+  {
+    "id": "memory_073",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende: gato-negro, perro-grande. ¿Qué iba con gato?",
+        "answer": "negro"
+      },
+      {
+        "language": "de",
+        "question": "Lern: Katze-schwarz, Hund-groß. Was gehörte zur Katze?",
+        "answer": "schwarz"
+      },
+      {
+        "language": "en",
+        "question": "Learn: cat-black, dog-big. What went with cat?",
+        "answer": "black"
+      }
+    ]
+  },
+  {
+    "id": "memory_074",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: uno, cinco, tres, siete.",
+        "answer": "1, 5, 3, 7"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: eins, fünf, drei, sieben.",
+        "answer": "1, 5, 3, 7"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: one, five, three, seven.",
+        "answer": "1, 5, 3, 7"
+      }
+    ]
+  },
+  {
+    "id": "memory_075",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Juanita y su hermano fueron al Duero el jueves. Llevaron bocadillos de jamón y limonada. ¿Qué llevaron de beber?",
+        "answer": "Limonada"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Juanita und ihr Bruder fuhren am Donnerstag zum Duero. Sie nahmen Schinkenbrote und Limonade mit. Was nahmen sie zu trinken mit?",
+        "answer": "Limonade"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Juanita and her brother went to the Duero on Thursday. They brought ham sandwiches and lemonade. What did they bring to drink?",
+        "answer": "Lemonade"
+      }
+    ]
+  },
+  {
+    "id": "memory_076",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: globo, sierra, calcetín, relámpago, cuchillo. ¿Cuál era la cuarta?",
+        "answer": "relámpago"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Ballon, Gebirge, Socke, Blitz, Messer. Was war das vierte?",
+        "answer": "Blitz"
+      },
+      {
+        "language": "en",
+        "question": "Listen: balloon, mountain range, sock, lightning, knife. What was the fourth?",
+        "answer": "lightning"
+      }
+    ]
+  },
+  {
+    "id": "memory_077",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántos son nombres de personas?: mesa, Carmen, libro, Luis, ventana, María, silla, Pedro.",
+        "answer": "4 nombres: Carmen, Luis, María, Pedro"
+      },
+      {
+        "language": "de",
+        "question": "Wie viele sind Personennamen?: Tisch, Carmen, Buch, Luis, Fenster, María, Stuhl, Pedro.",
+        "answer": "4 Personennamen: Carmen, Luis, María, Pedro"
+      },
+      {
+        "language": "en",
+        "question": "How many are people's names?: table, Carmen, book, Luis, window, Maria, chair, Pedro.",
+        "answer": "4 names: Carmen, Luis, Maria, Pedro"
+      }
+    ]
+  },
+  {
+    "id": "memory_078",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha diez palabras: hormiga, cuadro, nieve, timbre, plátano, castillo, ola, tijeras, niebla, campana. Dime todas las que puedas.",
+        "answer": "hormiga, cuadro, nieve, timbre, plátano, castillo, ola, tijeras, niebla, campana"
+      },
+      {
+        "language": "de",
+        "question": "Hör zehn Wörter: Ameise, Bild, Schnee, Klingel, Banane, Schloss, Welle, Schere, Nebel, Glocke. Nenn mir so viele wie möglich.",
+        "answer": "Ameise, Bild, Schnee, Klingel, Banane, Schloss, Welle, Schere, Nebel, Glocke"
+      },
+      {
+        "language": "en",
+        "question": "Listen to ten words: ant, picture, snow, doorbell, banana, castle, wave, scissors, fog, bell. Tell me as many as you can.",
+        "answer": "ant, picture, snow, doorbell, banana, castle, wave, scissors, fog, bell"
+      }
+    ]
+  },
+  {
+    "id": "memory_079",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: El gato de Josefa se llamaba Manchas y era de color naranja. ¿De qué color era el gato?",
+        "answer": "Naranja"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Josefas Katze hieß Manchas und war orange. Welche Farbe hatte die Katze?",
+        "answer": "Orange"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Josefa's cat was called Manchas and was orange. What colour was the cat?",
+        "answer": "Orange"
+      }
+    ]
+  },
+  {
+    "id": "memory_080",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite al revés: siete, uno, cuatro.",
+        "answer": "4, 1, 7"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole rückwärts: sieben, eins, vier.",
+        "answer": "4, 1, 7"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat backwards: seven, one, four.",
+        "answer": "4, 1, 7"
+      }
+    ]
+  },
+  {
+    "id": "memory_081",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: río, estrella, pan. ¿Cuál era la del medio?",
+        "answer": "estrella"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Fluss, Stern, Brot. Was war das mittlere?",
+        "answer": "Stern"
+      },
+      {
+        "language": "en",
+        "question": "Listen: river, star, bread. What was the middle one?",
+        "answer": "star"
+      }
+    ]
+  },
+  {
+    "id": "memory_082",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántos verbos hay?: correr, mesa, saltar, azul, dormir, montaña, reír, pan, cantar, silla.",
+        "answer": "5 verbos: correr, saltar, dormir, reír, cantar"
+      },
+      {
+        "language": "de",
+        "question": "Wie viele Verben gibt es?: laufen, Tisch, springen, blau, schlafen, Berg, lachen, Brot, singen, Stuhl.",
+        "answer": "5 Verben: laufen, springen, schlafen, lachen, singen"
+      },
+      {
+        "language": "en",
+        "question": "How many verbs are there?: run, table, jump, blue, sleep, mountain, laugh, bread, sing, chair.",
+        "answer": "5 verbs: run, jump, sleep, laugh, sing"
+      }
+    ]
+  },
+  {
+    "id": "memory_083",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: El mercado de Zamora abre los martes y sábados. Hoy es jueves. ¿Cuántos días faltan para el próximo mercado?",
+        "answer": "Dos días, porque el sábado es en dos días desde el jueves."
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Der Markt in Zamora ist dienstags und samstags geöffnet. Heute ist Donnerstag. Wie viele Tage bis zum nächsten Markt?",
+        "answer": "Zwei Tage, weil Samstag in zwei Tagen nach Donnerstag ist."
+      },
+      {
+        "language": "en",
+        "question": "Listen: The market in Zamora opens Tuesdays and Saturdays. Today is Thursday. How many days until the next market?",
+        "answer": "Two days because Saturday is two days from Thursday."
+      }
+    ]
+  },
+  {
+    "id": "memory_084",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha colores y formas: rojo, cuadrado, azul, redondo, verde, triangular. ¿Cuáles eran los colores?",
+        "answer": "Los colores eran: rojo, azul, verde"
+      },
+      {
+        "language": "de",
+        "question": "Hör Farben und Formen: rot, Quadrat, blau, rund, grün, dreieckig. Welche waren die Farben?",
+        "answer": "Die Farben waren: rot, blau, grün"
+      },
+      {
+        "language": "en",
+        "question": "Listen to colours and shapes: red, square, blue, round, green, triangular. Which were the colours?",
+        "answer": "The colours were: red, blue, green"
+      }
+    ]
+  },
+  {
+    "id": "memory_085",
+    "category": "memory",
+    "type": "orientation",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántos meses tiene un año y cuántos días tiene una semana?",
+        "answer": "Un año tiene doce meses y una semana tiene siete días."
+      },
+      {
+        "language": "de",
+        "question": "Wie viele Monate hat ein Jahr und wie viele Tage hat eine Woche?",
+        "answer": "Ein Jahr hat zwölf Monate und eine Woche hat sieben Tage."
+      },
+      {
+        "language": "en",
+        "question": "How many months does a year have and how many days does a week have?",
+        "answer": "A year has twelve months and a week has seven days."
+      }
+    ]
+  },
+  {
+    "id": "memory_086",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: ocho, tres, seis, uno, cuatro, siete, dos.",
+        "answer": "8, 3, 6, 1, 4, 7, 2"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: acht, drei, sechs, eins, vier, sieben, zwei.",
+        "answer": "8, 3, 6, 1, 4, 7, 2"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: eight, three, six, one, four, seven, two.",
+        "answer": "8, 3, 6, 1, 4, 7, 2"
+      }
+    ]
+  },
+  {
+    "id": "memory_087",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende: lunes-trabajo, miércoles-mercado, viernes-visita. ¿Qué iba con miércoles?",
+        "answer": "mercado"
+      },
+      {
+        "language": "de",
+        "question": "Lern: Montag-Arbeit, Mittwoch-Markt, Freitag-Besuch. Was gehörte zu Mittwoch?",
+        "answer": "Markt"
+      },
+      {
+        "language": "en",
+        "question": "Learn: Monday-work, Wednesday-market, Friday-visit. What went with Wednesday?",
+        "answer": "market"
+      }
+    ]
+  },
+  {
+    "id": "memory_088",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: El señor Félix, zapatero, fue el viernes a visitar a su hermana Elena en Toro. Elena tenía preparado cocido zamorano y flan de postre. ¿Qué comieron de postre?",
+        "answer": "Flan"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Herr Félix, Schuhmacher, besuchte am Freitag seine Schwester Elena in Toro. Elena hatte Cocido Zamorano und Flan als Nachspeise vorbereitet. Was aßen sie als Nachspeise?",
+        "answer": "Flan"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Mr Félix, a shoemaker, went on Friday to visit his sister Elena in Toro. Elena had prepared Zamora stew and flan for dessert. What did they have for dessert?",
+        "answer": "Flan"
+      }
+    ]
+  },
+  {
+    "id": "memory_089",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: salmón, columpio, llave, paraguas, taza. ¿Cuál era la del medio?",
+        "answer": "llave"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Lachs, Schaukel, Schlüssel, Regenschirm, Tasse. Was war das mittlere?",
+        "answer": "Schlüssel"
+      },
+      {
+        "language": "en",
+        "question": "Listen: salmon, swing, key, umbrella, cup. What was the middle one?",
+        "answer": "key"
+      }
+    ]
+  },
+  {
+    "id": "memory_090",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántas palabras se refieren a personas?: mesa, madre, árbol, abuelo, coche, niña, piedra, vecino, flor.",
+        "answer": "4 personas: madre, abuelo, niña, vecino"
+      },
+      {
+        "language": "de",
+        "question": "Wie viele Wörter beziehen sich auf Personen?: Tisch, Mutter, Baum, Großvater, Auto, Mädchen, Stein, Nachbar, Blume.",
+        "answer": "4 Personen: Mutter, Großvater, Mädchen, Nachbar"
+      },
+      {
+        "language": "en",
+        "question": "How many words refer to people?: table, mother, tree, grandfather, car, girl, stone, neighbour, flower.",
+        "answer": "4 people: mother, grandfather, girl, neighbour"
+      }
+    ]
+  },
+  {
+    "id": "memory_091",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Teresa tiene tres hijos. ¿Cuántos hijos tiene Teresa?",
+        "answer": "Tres hijos"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Teresa hat drei Kinder. Wie viele Kinder hat Teresa?",
+        "answer": "Drei Kinder"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Teresa has three children. How many children does Teresa have?",
+        "answer": "Three children"
+      }
+    ]
+  },
+  {
+    "id": "memory_092",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: seis, dos, nueve, cuatro.",
+        "answer": "6, 2, 9, 4"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: sechs, zwei, neun, vier.",
+        "answer": "6, 2, 9, 4"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: six, two, nine, four.",
+        "answer": "6, 2, 9, 4"
+      }
+    ]
+  },
+  {
+    "id": "memory_093",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende: libro-rojo, mesa-redonda. ¿Qué iba con libro?",
+        "answer": "rojo"
+      },
+      {
+        "language": "de",
+        "question": "Lern: Buch-rot, Tisch-rund. Was gehörte zum Buch?",
+        "answer": "rot"
+      },
+      {
+        "language": "en",
+        "question": "Learn: book-red, table-round. What went with book?",
+        "answer": "red"
+      }
+    ]
+  },
+  {
+    "id": "memory_094",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha ocho palabras: cebolla, palacio, trueno, espejo, bisturí, hambre, camino, estación. ¿Cuáles recuerdas?",
+        "answer": "cebolla, palacio, trueno, espejo, bisturí, hambre, camino, estación"
+      },
+      {
+        "language": "de",
+        "question": "Hör acht Wörter: Zwiebel, Palast, Donner, Spiegel, Skalpell, Hunger, Weg, Bahnhof. Welche erinnerst du?",
+        "answer": "Zwiebel, Palast, Donner, Spiegel, Skalpell, Hunger, Weg, Bahnhof"
+      },
+      {
+        "language": "en",
+        "question": "Listen to eight words: onion, palace, thunder, mirror, scalpel, hunger, road, station. Which do you remember?",
+        "answer": "onion, palace, thunder, mirror, scalpel, hunger, road, station"
+      }
+    ]
+  },
+  {
+    "id": "memory_095",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántas palabras escuchas en total?: cielo, nube, lluvia.",
+        "answer": "Tres palabras"
+      },
+      {
+        "language": "de",
+        "question": "Wie viele Wörter hörst du insgesamt?: Himmel, Wolke, Regen.",
+        "answer": "Drei Wörter"
+      },
+      {
+        "language": "en",
+        "question": "How many words do you hear in total?: sky, cloud, rain.",
+        "answer": "Three words"
+      }
+    ]
+  },
+  {
+    "id": "memory_096",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: El tío Bernardo tiene setenta años y cultiva su huerto cada mañana. Este año plantó tomates, pimientos y calabacines. ¿Cuántas verduras diferentes plantó?",
+        "answer": "Tres verduras: tomates, pimientos y calabacines"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Onkel Bernardo ist siebzig Jahre alt und pflegt jeden Morgen seinen Garten. Dieses Jahr pflanzte er Tomaten, Paprika und Zucchini. Wie viele verschiedene Gemüsesorten pflanzte er?",
+        "answer": "Drei Gemüsesorten: Tomaten, Paprika und Zucchini"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Uncle Bernardo is seventy and tends his vegetable garden every morning. This year he planted tomatoes, peppers and courgettes. How many different vegetables did he plant?",
+        "answer": "Three vegetables: tomatoes, peppers and courgettes"
+      }
+    ]
+  },
+  {
+    "id": "memory_097",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: mariposa, piedra, sal. ¿Cuáles recuerdas en orden?",
+        "answer": "mariposa, piedra, sal"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Schmetterling, Stein, Salz. Welche erinnerst du in der Reihenfolge?",
+        "answer": "Schmetterling, Stein, Salz"
+      },
+      {
+        "language": "en",
+        "question": "Listen: butterfly, stone, salt. Which do you remember in order?",
+        "answer": "butterfly, stone, salt"
+      }
+    ]
+  },
+  {
+    "id": "memory_098",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: dos, siete.",
+        "answer": "2, 7"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: zwei, sieben.",
+        "answer": "2, 7"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: two, seven.",
+        "answer": "2, 7"
+      }
+    ]
+  },
+  {
+    "id": "memory_099",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende siete pares: sol-verde, luna-salado, estrella-suave, nube-duro, viento-amargo, lluvia-áspero, nieve-dulce. ¿Qué iba con luna?",
+        "answer": "salado"
+      },
+      {
+        "language": "de",
+        "question": "Lern sieben Paare: Sonne-grün, Mond-salzig, Stern-weich, Wolke-hart, Wind-bitter, Regen-rau, Schnee-süß. Was gehörte zum Mond?",
+        "answer": "salzig"
+      },
+      {
+        "language": "en",
+        "question": "Learn seven pairs: sun-green, moon-salty, star-soft, cloud-hard, wind-bitter, rain-rough, snow-sweet. What went with moon?",
+        "answer": "salty"
+      }
+    ]
+  },
+  {
+    "id": "memory_100",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Doña Amparo, de ochenta y un años, vivía en Puebla de Sanabria. Sus tres hijos vivían en Madrid, Valladolid y Salamanca. Cada domingo la llamaban. Este domingo llamó primero el que vivía más cerca. ¿Cuál llamó primero?",
+        "answer": "El de Salamanca, porque es la ciudad más cercana a Puebla de Sanabria de las tres."
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Doña Amparo, einundachtzig Jahre alt, lebte in Puebla de Sanabria. Ihre drei Kinder lebten in Madrid, Valladolid und Salamanca. Jeden Sonntag riefen sie an. Diesen Sonntag rief zuerst das nächste Kind an. Welches Kind rief zuerst an?",
+        "answer": "Das in Salamanca, weil es die nächste Stadt zu Puebla de Sanabria der drei ist."
+      },
+      {
+        "language": "en",
+        "question": "Listen: Doña Amparo, eighty-one, lived in Puebla de Sanabria. Her three children lived in Madrid, Valladolid and Salamanca. Every Sunday they called. This Sunday the closest one called first. Which child called first?",
+        "answer": "The one in Salamanca, because it is the closest of the three cities to Puebla de Sanabria."
+      }
+    ]
+  },
+  {
+    "id": "memory_101",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: ventana, café, perro. ¿Cuál era la del medio?",
+        "answer": "café"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Fenster, Kaffee, Hund. Was war das mittlere?",
+        "answer": "Kaffee"
+      },
+      {
+        "language": "en",
+        "question": "Listen: window, coffee, dog. What was the middle one?",
+        "answer": "coffee"
+      }
+    ]
+  },
+  {
+    "id": "memory_102",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: tres, nueve.",
+        "answer": "3, 9"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: drei, neun.",
+        "answer": "3, 9"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: three, nine.",
+        "answer": "3, 9"
+      }
+    ]
+  },
+  {
+    "id": "memory_103",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: La señora López tiene dos gatos y tres perros. ¿Cuántos animales tiene en total?",
+        "answer": "Cinco animales en total"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Frau López hat zwei Katzen und drei Hunde. Wie viele Tiere hat sie insgesamt?",
+        "answer": "Fünf Tiere insgesamt"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Mrs López has two cats and three dogs. How many animals does she have in total?",
+        "answer": "Five animals in total"
+      }
+    ]
+  },
+  {
+    "id": "memory_104",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y di cuántos números hay en total: cinco, doce, tres, ocho.",
+        "answer": "Cuatro números"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und sag wie viele Zahlen es insgesamt gibt: fünf, zwölf, drei, acht.",
+        "answer": "Vier Zahlen"
+      },
+      {
+        "language": "en",
+        "question": "Listen and say how many numbers there are in total: five, twelve, three, eight.",
+        "answer": "Four numbers"
+      }
+    ]
+  },
+  {
+    "id": "memory_105",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende este par: sol-caliente. ¿Qué iba con sol?",
+        "answer": "caliente"
+      },
+      {
+        "language": "de",
+        "question": "Lern dieses Paar: Sonne-heiß. Was gehörte zur Sonne?",
+        "answer": "heiß"
+      },
+      {
+        "language": "en",
+        "question": "Learn this pair: sun-hot. What went with sun?",
+        "answer": "hot"
+      }
+    ]
+  },
+  {
+    "id": "memory_106",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha estas tres palabras: silla, manzana, tren. ¿Cuál era la última?",
+        "answer": "tren"
+      },
+      {
+        "language": "de",
+        "question": "Hör dir diese drei Wörter an: Stuhl, Apfel, Zug. Was war das letzte?",
+        "answer": "Zug"
+      },
+      {
+        "language": "en",
+        "question": "Listen to these three words: chair, apple, train. What was the last one?",
+        "answer": "train"
+      }
+    ]
+  },
+  {
+    "id": "memory_107",
+    "category": "memory",
+    "type": "orientation",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántas horas tiene un día?",
+        "answer": "Veinticuatro horas"
+      },
+      {
+        "language": "de",
+        "question": "Wie viele Stunden hat ein Tag?",
+        "answer": "Vierundzwanzig Stunden"
+      },
+      {
+        "language": "en",
+        "question": "How many hours does a day have?",
+        "answer": "Twenty-four hours"
+      }
+    ]
+  },
+  {
+    "id": "memory_108",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: ocho, dos, siete, cuatro.",
+        "answer": "8, 2, 7, 4"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: acht, zwei, sieben, vier.",
+        "answer": "8, 2, 7, 4"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: eight, two, seven, four.",
+        "answer": "8, 2, 7, 4"
+      }
+    ]
+  },
+  {
+    "id": "memory_109",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Jorge salió a caminar a las seis de la tarde y volvió dos horas después. ¿A qué hora volvió Jorge?",
+        "answer": "A las ocho de la tarde"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Jorge ging um sechs Uhr nachmittags spazieren und kam zwei Stunden später zurück. Um wie viel Uhr kam Jorge zurück?",
+        "answer": "Um acht Uhr abends"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Jorge went for a walk at six in the evening and came back two hours later. What time did Jorge come back?",
+        "answer": "At eight in the evening"
+      }
+    ]
+  },
+  {
+    "id": "memory_110",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y cuenta cuántos colores hay: mesa, rojo, libro, azul, coche, verde, ventana, amarillo, piedra.",
+        "answer": "4 colores: rojo, azul, verde, amarillo"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und zähle wie viele Farben es gibt: Tisch, rot, Buch, blau, Auto, grün, Fenster, gelb, Stein.",
+        "answer": "4 Farben: rot, blau, grün, gelb"
+      },
+      {
+        "language": "en",
+        "question": "Listen and count how many colours there are: table, red, book, blue, car, green, window, yellow, stone.",
+        "answer": "4 colours: red, blue, green, yellow"
+      }
+    ]
+  },
+  {
+    "id": "memory_111",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: caracol, diamante, tobillo, paraguas, vaca. ¿Cuál era la tercera?",
+        "answer": "tobillo"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Schnecke, Diamant, Knöchel, Regenschirm, Kuh. Was war das dritte?",
+        "answer": "Knöchel"
+      },
+      {
+        "language": "en",
+        "question": "Listen: snail, diamond, ankle, umbrella, cow. What was the third?",
+        "answer": "ankle"
+      }
+    ]
+  },
+  {
+    "id": "memory_112",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: cuatro, siete, uno.",
+        "answer": "4, 7, 1"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: vier, sieben, eins.",
+        "answer": "4, 7, 1"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: four, seven, one.",
+        "answer": "4, 7, 1"
+      }
+    ]
+  },
+  {
+    "id": "memory_113",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: La familia García tiene cuatro miembros. ¿Cuántos miembros tiene la familia?",
+        "answer": "Cuatro miembros"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Die Familie García hat vier Mitglieder. Wie viele Mitglieder hat die Familie?",
+        "answer": "Vier Mitglieder"
+      },
+      {
+        "language": "en",
+        "question": "Listen: The García family has four members. How many members does the family have?",
+        "answer": "Four members"
+      }
+    ]
+  },
+  {
+    "id": "memory_114",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende estos cuatro pares: árbol-raíz, pájaro-pluma, pez-escama, serpiente-piel. ¿Qué iba con pájaro?",
+        "answer": "pluma"
+      },
+      {
+        "language": "de",
+        "question": "Lern diese vier Paare: Baum-Wurzel, Vogel-Feder, Fisch-Schuppe, Schlange-Haut. Was gehörte zum Vogel?",
+        "answer": "Feder"
+      },
+      {
+        "language": "en",
+        "question": "Learn these four pairs: tree-root, bird-feather, fish-scale, snake-skin. What went with bird?",
+        "answer": "feather"
+      }
+    ]
+  },
+  {
+    "id": "memory_115",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y di cuántas palabras son instrumentos musicales: guitarra, mesa, piano, sol, violín, libro, flauta, perro, trompeta.",
+        "answer": "5 instrumentos: guitarra, piano, violín, flauta, trompeta"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und sag wie viele Wörter Musikinstrumente sind: Gitarre, Tisch, Klavier, Sonne, Geige, Buch, Flöte, Hund, Trompete.",
+        "answer": "5 Instrumente: Gitarre, Klavier, Geige, Flöte, Trompete"
+      },
+      {
+        "language": "en",
+        "question": "Listen and say how many words are musical instruments: guitar, table, piano, sun, violin, book, flute, dog, trumpet.",
+        "answer": "5 instruments: guitar, piano, violin, flute, trumpet"
+      }
+    ]
+  },
+  {
+    "id": "memory_116",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha estas diez palabras: teja, corcho, brújula, musgo, espuela, crisol, badén, trenza, ojal, pincel. Dime todas las que puedas.",
+        "answer": "teja, corcho, brújula, musgo, espuela, crisol, badén, trenza, ojal, pincel"
+      },
+      {
+        "language": "de",
+        "question": "Hör dir zehn Wörter an: Dachziegel, Kork, Kompass, Moos, Sporn, Tiegel, Bodenschwelle, Zopf, Knopfloch, Pinsel. Nenn mir so viele wie möglich.",
+        "answer": "Dachziegel, Kork, Kompass, Moos, Sporn, Tiegel, Bodenschwelle, Zopf, Knopfloch, Pinsel"
+      },
+      {
+        "language": "en",
+        "question": "Listen to ten words: tile, cork, compass, moss, spur, crucible, speed bump, braid, buttonhole, paintbrush. Tell me all you can.",
+        "answer": "tile, cork, compass, moss, spur, crucible, speed bump, braid, buttonhole, paintbrush"
+      }
+    ]
+  },
+  {
+    "id": "memory_117",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: La tienda abre a las nueve y cierra a las dos. Lleva abierta tres horas. ¿A qué hora es ahora?",
+        "answer": "A las doce del mediodía"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Das Geschäft öffnet um neun und schließt um zwei. Es ist seit drei Stunden offen. Wie spät ist es jetzt?",
+        "answer": "Um zwölf Uhr mittags"
+      },
+      {
+        "language": "en",
+        "question": "Listen: The shop opens at nine and closes at two. It has been open for three hours. What time is it now?",
+        "answer": "Twelve noon"
+      }
+    ]
+  },
+  {
+    "id": "memory_118",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite al revés: nueve, cinco, tres, siete, uno.",
+        "answer": "1, 7, 3, 5, 9"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole rückwärts: neun, fünf, drei, sieben, eins.",
+        "answer": "1, 7, 3, 5, 9"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat backwards: nine, five, three, seven, one.",
+        "answer": "1, 7, 3, 5, 9"
+      }
+    ]
+  },
+  {
+    "id": "memory_119",
+    "category": "memory",
+    "type": "orientation",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántos días hay en el mes de febrero en un año normal?",
+        "answer": "Veintiocho días. En año bisiesto veintinueve."
+      },
+      {
+        "language": "de",
+        "question": "Wie viele Tage hat der Februar in einem normalen Jahr?",
+        "answer": "Achtundzwanzig Tage. In einem Schaltjahr neunundzwanzig."
+      },
+      {
+        "language": "en",
+        "question": "How many days are in February in a normal year?",
+        "answer": "Twenty-eight days. In a leap year twenty-nine."
+      }
+    ]
+  },
+  {
+    "id": "memory_120",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: volcán, estufa, bufanda, murciélago, cinturón, aguja. ¿Cuál era la segunda?",
+        "answer": "estufa"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Vulkan, Herd, Schal, Fledermaus, Gürtel, Nadel. Was war das zweite?",
+        "answer": "Herd"
+      },
+      {
+        "language": "en",
+        "question": "Listen: volcano, stove, scarf, bat, belt, needle. What was the second?",
+        "answer": "stove"
+      }
+    ]
+  },
+  {
+    "id": "memory_121",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende estos pares: pájaro-jaula, pez-pecera. ¿Qué iba con pez?",
+        "answer": "pecera"
+      },
+      {
+        "language": "de",
+        "question": "Lern diese Paare: Vogel-Käfig, Fisch-Aquarium. Was gehörte zum Fisch?",
+        "answer": "Aquarium"
+      },
+      {
+        "language": "en",
+        "question": "Learn these pairs: bird-cage, fish-tank. What went with fish?",
+        "answer": "tank"
+      }
+    ]
+  },
+  {
+    "id": "memory_122",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Don Aurelio, sastre de oficio, tenía su taller en la calle del Río número cuatro. Ese martes recibió tres encargos: un traje gris, una falda de lana y un abrigo azul marino. ¿Cuántos encargos recibió?",
+        "answer": "Tres encargos"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Don Aurelio, Schneider von Beruf, hatte sein Atelier in der Flussstraße Nummer vier. An jenem Dienstag erhielt er drei Aufträge: einen grauen Anzug, einen Wollrock und einen marineblauem Mantel. Wie viele Aufträge erhielt er?",
+        "answer": "Drei Aufträge"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Don Aurelio, a tailor by trade, had his workshop at number four River Street. That Tuesday he received three orders: a grey suit, a wool skirt and a navy blue coat. How many orders did he receive?",
+        "answer": "Three orders"
+      }
+    ]
+  },
+  {
+    "id": "memory_123",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y di cuántas palabras empiezan por la letra A: árbol, mesa, amor, ciudad, agua, río, alma.",
+        "answer": "4 palabras empiezan por A: árbol, amor, agua, alma"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und sag wie viele Wörter mit dem Buchstaben A beginnen: Baum, Tisch, Liebe, Stadt, Wasser, Fluss, Seele.",
+        "answer": "Diese deutschen Wörter beginnen nicht mit A. Variante: Apfel, Tisch, Arm, Stadt, Auge, Fluss, Ader. 4 beginnen mit A: Apfel, Arm, Auge, Ader"
+      },
+      {
+        "language": "en",
+        "question": "Listen and say how many words start with the letter A: apple, table, arm, city, air, river, angel.",
+        "answer": "4 words start with A: apple, arm, air, angel"
+      }
+    ]
+  },
+  {
+    "id": "memory_124",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: tres, ocho, seis, dos.",
+        "answer": "3, 8, 6, 2"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: drei, acht, sechs, zwei.",
+        "answer": "3, 8, 6, 2"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: three, eight, six, two.",
+        "answer": "3, 8, 6, 2"
+      }
+    ]
+  },
+  {
+    "id": "memory_125",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: llave, nube, vela. ¿Cuáles recuerdas?",
+        "answer": "llave, nube, vela"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Schlüssel, Wolke, Kerze. Welche erinnerst du?",
+        "answer": "Schlüssel, Wolke, Kerze"
+      },
+      {
+        "language": "en",
+        "question": "Listen: key, cloud, candle. Which do you remember?",
+        "answer": "key, cloud, candle"
+      }
+    ]
+  },
+  {
+    "id": "memory_126",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Inés fue al dentista el miércoles. La cita era a las once y cuarto y duró media hora. ¿A qué hora terminó la cita?",
+        "answer": "A las once y cuarenta y cinco"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Inés ging am Mittwoch zum Zahnarzt. Der Termin war um viertel nach elf und dauerte eine halbe Stunde. Um wie viel Uhr endete der Termin?",
+        "answer": "Um dreiviertel zwölf"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Inés went to the dentist on Wednesday. The appointment was at quarter past eleven and lasted half an hour. What time did the appointment end?",
+        "answer": "At quarter to twelve"
+      }
+    ]
+  },
+  {
+    "id": "memory_127",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende estos siete pares: caballo-silencio, árbol-rojo, río-alto, piedra-suave, viento-pesado, lluvia-dulce, sol-frío. ¿Qué iba con río?",
+        "answer": "alto"
+      },
+      {
+        "language": "de",
+        "question": "Lern diese sieben Paare: Pferd-Stille, Baum-rot, Fluss-hoch, Stein-weich, Wind-schwer, Regen-süß, Sonne-kalt. Was gehörte zum Fluss?",
+        "answer": "hoch"
+      },
+      {
+        "language": "en",
+        "question": "Learn these seven pairs: horse-silence, tree-red, river-high, stone-soft, wind-heavy, rain-sweet, sun-cold. What went with river?",
+        "answer": "high"
+      }
+    ]
+  },
+  {
+    "id": "memory_128",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y cuenta cuántas palabras son prendas de ropa: abrigo, libro, jersey, mesa, zapato, sol, bufanda, río, calcetín.",
+        "answer": "5 prendas: abrigo, jersey, zapato, bufanda, calcetín"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und zähle wie viele Wörter Kleidungsstücke sind: Mantel, Buch, Pullover, Tisch, Schuh, Sonne, Schal, Fluss, Socke.",
+        "answer": "5 Kleidungsstücke: Mantel, Pullover, Schuh, Schal, Socke"
+      },
+      {
+        "language": "en",
+        "question": "Listen and count how many words are items of clothing: coat, book, jumper, table, shoe, sun, scarf, river, sock.",
+        "answer": "5 clothing items: coat, jumper, shoe, scarf, sock"
+      }
+    ]
+  },
+  {
+    "id": "memory_129",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: siete, cuatro.",
+        "answer": "7, 4"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: sieben, vier.",
+        "answer": "7, 4"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: seven, four.",
+        "answer": "7, 4"
+      }
+    ]
+  },
+  {
+    "id": "memory_130",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: mosca, castillo, toalla, espejo, cangrejo. ¿Cuál era la cuarta?",
+        "answer": "espejo"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Fliege, Schloss, Handtuch, Spiegel, Krebs. Was war das vierte?",
+        "answer": "Spiegel"
+      },
+      {
+        "language": "en",
+        "question": "Listen: fly, castle, towel, mirror, crab. What was the fourth?",
+        "answer": "mirror"
+      }
+    ]
+  },
+  {
+    "id": "memory_131",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: El autobús tiene veinte asientos y van sentadas quince personas. ¿Cuántos asientos quedan libres?",
+        "answer": "Cinco asientos libres"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Der Bus hat zwanzig Sitze und fünfzehn Personen sitzen drin. Wie viele Sitze sind noch frei?",
+        "answer": "Fünf freie Sitze"
+      },
+      {
+        "language": "en",
+        "question": "Listen: The bus has twenty seats and fifteen people are seated. How many seats are free?",
+        "answer": "Five free seats"
+      }
+    ]
+  },
+  {
+    "id": "memory_132",
+    "category": "memory",
+    "type": "orientation",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿En qué continente está España y en cuál está Alemania?",
+        "answer": "Ambas están en Europa"
+      },
+      {
+        "language": "de",
+        "question": "Auf welchem Kontinent liegt Spanien und auf welchem liegt Deutschland?",
+        "answer": "Beide liegen in Europa"
+      },
+      {
+        "language": "en",
+        "question": "On which continent is Spain and on which is Germany?",
+        "answer": "Both are in Europe"
+      }
+    ]
+  },
+  {
+    "id": "memory_133",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende estos pares: manzana-dulce, limón-ácido, sal-salado. ¿Qué iba con limón?",
+        "answer": "ácido"
+      },
+      {
+        "language": "de",
+        "question": "Lern diese Paare: Apfel-süß, Zitrone-sauer, Salz-salzig. Was gehörte zur Zitrone?",
+        "answer": "sauer"
+      },
+      {
+        "language": "en",
+        "question": "Learn these pairs: apple-sweet, lemon-sour, salt-salty. What went with lemon?",
+        "answer": "sour"
+      }
+    ]
+  },
+  {
+    "id": "memory_134",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite al revés: cinco, ocho, tres.",
+        "answer": "3, 8, 5"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole rückwärts: fünf, acht, drei.",
+        "answer": "3, 8, 5"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat backwards: five, eight, three.",
+        "answer": "3, 8, 5"
+      }
+    ]
+  },
+  {
+    "id": "memory_135",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y cuenta los adjetivos: rápido, mesa, verde, correr, alto, libro, pequeño, caminar, feliz, sol.",
+        "answer": "5 adjetivos: rápido, verde, alto, pequeño, feliz"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und zähle die Adjektive: schnell, Tisch, grün, laufen, hoch, Buch, klein, gehen, glücklich, Sonne.",
+        "answer": "5 Adjektive: schnell, grün, hoch, klein, glücklich"
+      },
+      {
+        "language": "en",
+        "question": "Listen and count the adjectives: fast, table, green, run, tall, book, small, walk, happy, sun.",
+        "answer": "5 adjectives: fast, green, tall, small, happy"
+      }
+    ]
+  },
+  {
+    "id": "memory_136",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: lobo, campana, azúcar. ¿Cuál era la primera?",
+        "answer": "lobo"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Wolf, Glocke, Zucker. Was war das erste?",
+        "answer": "Wolf"
+      },
+      {
+        "language": "en",
+        "question": "Listen: wolf, bell, sugar. What was the first?",
+        "answer": "wolf"
+      }
+    ]
+  },
+  {
+    "id": "memory_137",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: La costurera Remedios trabaja cinco días a la semana y descansa dos. Lleva trabajando tres semanas seguidas sin descanso. ¿Cuántos días ha trabajado?",
+        "answer": "Quince días si trabaja todos los días de las tres semanas, o contando solo sus días de trabajo serían quince días laborables"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Die Näherin Remedios arbeitet fünf Tage die Woche und ruht sich zwei Tage aus. Sie hat drei Wochen hintereinander ohne Pause gearbeitet. Wie viele Tage hat sie gearbeitet?",
+        "answer": "Fünfzehn Arbeitstage"
+      },
+      {
+        "language": "en",
+        "question": "Listen: The seamstress Remedios works five days a week and rests two. She has been working three weeks in a row without a break. How many days has she worked?",
+        "answer": "Fifteen working days"
+      }
+    ]
+  },
+  {
+    "id": "memory_138",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: dos, seis, nueve, uno, cuatro, ocho.",
+        "answer": "2, 6, 9, 1, 4, 8"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: zwei, sechs, neun, eins, vier, acht.",
+        "answer": "2, 6, 9, 1, 4, 8"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: two, six, nine, one, four, eight.",
+        "answer": "2, 6, 9, 1, 4, 8"
+      }
+    ]
+  },
+  {
+    "id": "memory_139",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: palma, cohete, anchoa, destornillador, ola, cuervo. ¿Cuál era la quinta?",
+        "answer": "ola"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Handfläche, Rakete, Sardelle, Schraubenzieher, Welle, Rabe. Was war das fünfte?",
+        "answer": "Welle"
+      },
+      {
+        "language": "en",
+        "question": "Listen: palm, rocket, anchovy, screwdriver, wave, raven. What was the fifth?",
+        "answer": "wave"
+      }
+    ]
+  },
+  {
+    "id": "memory_140",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y di cuántas palabras terminan en vocal: libro, mesa, calle, árbol, casa, sol, tarde, pan, noche.",
+        "answer": "5 terminan en vocal: mesa, calle, casa, tarde, noche"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und sag wie viele Wörter auf einen Vokal enden: Buch, Tisch, Straße, Baum, Haus, Sonne, Abend, Brot, Nacht.",
+        "answer": "3 enden auf Vokal: Straße, Sonne, Ende"
+      },
+      {
+        "language": "en",
+        "question": "Listen and say how many words end in a vowel: book, table, street, tree, house, sun, evening, bread, night.",
+        "answer": "3 end in a vowel: table, house, evening"
+      }
+    ]
+  },
+  {
+    "id": "memory_141",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende: noche-oscuro, día-claro. ¿Qué iba con noche?",
+        "answer": "oscuro"
+      },
+      {
+        "language": "de",
+        "question": "Lern: Nacht-dunkel, Tag-hell. Was gehörte zur Nacht?",
+        "answer": "dunkel"
+      },
+      {
+        "language": "en",
+        "question": "Learn: night-dark, day-bright. What went with night?",
+        "answer": "dark"
+      }
+    ]
+  },
+  {
+    "id": "memory_142",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: El señor Valentín, barbero jubilado de Benavente, tenía noventa y dos años cuando plantó un roble en el jardín de su nieta Carmela. Le dijo que el árbol crecería tan alto como su amor por ella. ¿Qué plantó el señor Valentín?",
+        "answer": "Un roble"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Herr Valentín, ein pensionierter Barbier aus Benavente, war zweiundneunzig Jahre alt als er in Carmelas Garten eine Eiche pflanzte. Er sagte ihr der Baum würde so hoch wachsen wie seine Liebe zu ihr. Was pflanzte Herr Valentín?",
+        "answer": "Eine Eiche"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Mr Valentín, a retired barber from Benavente, was ninety-two years old when he planted an oak tree in his granddaughter Carmela's garden. He told her the tree would grow as tall as his love for her. What did Mr Valentín plant?",
+        "answer": "An oak tree"
+      }
+    ]
+  },
+  {
+    "id": "memory_143",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: seis, tres, nueve.",
+        "answer": "6, 3, 9"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: sechs, drei, neun.",
+        "answer": "6, 3, 9"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: six, three, nine.",
+        "answer": "6, 3, 9"
+      }
+    ]
+  },
+  {
+    "id": "memory_144",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha ocho palabras: anzuelo, pelícano, gorrión, marisma, umbral, azufre, cornisa, madeja. Dime las que recuerdes.",
+        "answer": "anzuelo, pelícano, gorrión, marisma, umbral, azufre, cornisa, madeja"
+      },
+      {
+        "language": "de",
+        "question": "Hör dir acht Wörter an: Angelhaken, Pelikan, Sperling, Marschland, Schwelle, Schwefel, Sims, Knäuel. Nenn mir die du erinnerst.",
+        "answer": "Angelhaken, Pelikan, Sperling, Marschland, Schwelle, Schwefel, Sims, Knäuel"
+      },
+      {
+        "language": "en",
+        "question": "Listen to eight words: fishhook, pelican, sparrow, marshland, threshold, sulphur, cornice, skein. Tell me the ones you remember.",
+        "answer": "fishhook, pelican, sparrow, marshland, threshold, sulphur, cornice, skein"
+      }
+    ]
+  },
+  {
+    "id": "memory_145",
+    "category": "memory",
+    "type": "orientation",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuántos minutos tiene una hora?",
+        "answer": "Sesenta minutos"
+      },
+      {
+        "language": "de",
+        "question": "Wie viele Minuten hat eine Stunde?",
+        "answer": "Sechzig Minuten"
+      },
+      {
+        "language": "en",
+        "question": "How many minutes does an hour have?",
+        "answer": "Sixty minutes"
+      }
+    ]
+  },
+  {
+    "id": "memory_146",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y di cuántas palabras hay que son números: tres, silla, ocho, río, veinte, árbol.",
+        "answer": "3 números: tres, ocho, veinte"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und sag wie viele Wörter Zahlen sind: drei, Stuhl, acht, Fluss, zwanzig, Baum.",
+        "answer": "3 Zahlen: drei, acht, zwanzig"
+      },
+      {
+        "language": "en",
+        "question": "Listen and say how many words are numbers: three, chair, eight, river, twenty, tree.",
+        "answer": "3 numbers: three, eight, twenty"
+      }
+    ]
+  },
+  {
+    "id": "memory_147",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende estos pares: verano-playa, invierno-nieve, otoño-hoja. ¿Qué iba con otoño?",
+        "answer": "hoja"
+      },
+      {
+        "language": "de",
+        "question": "Lern diese Paare: Sommer-Strand, Winter-Schnee, Herbst-Blatt. Was gehörte zum Herbst?",
+        "answer": "Blatt"
+      },
+      {
+        "language": "en",
+        "question": "Learn these pairs: summer-beach, winter-snow, autumn-leaf. What went with autumn?",
+        "answer": "leaf"
+      }
+    ]
+  },
+  {
+    "id": "memory_148",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: cinco, uno, ocho, tres.",
+        "answer": "5, 1, 8, 3"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: fünf, eins, acht, drei.",
+        "answer": "5, 1, 8, 3"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: five, one, eight, three.",
+        "answer": "5, 1, 8, 3"
+      }
+    ]
+  },
+  {
+    "id": "memory_149",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Manuel llevaba quince años yendo cada mañana a tomar café en el bar de la esquina. El jueves lo encontró cerrado por primera vez. ¿Cuántos años llevaba yendo al bar?",
+        "answer": "Quince años"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Manuel ging seit fünfzehn Jahren jeden Morgen in die Eckbar um Kaffee zu trinken. Am Donnerstag fand er sie zum ersten Mal geschlossen. Seit wie vielen Jahren ging er in die Bar?",
+        "answer": "Fünfzehn Jahre"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Manuel had been going to the corner bar every morning for fifteen years for coffee. On Thursday he found it closed for the first time. How many years had he been going to the bar?",
+        "answer": "Fifteen years"
+      }
+    ]
+  },
+  {
+    "id": "memory_150",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: lluvia, libro, mesa. ¿Cuáles recuerdas?",
+        "answer": "lluvia, libro, mesa"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Regen, Buch, Tisch. Welche erinnerst du?",
+        "answer": "Regen, Buch, Tisch"
+      },
+      {
+        "language": "en",
+        "question": "Listen: rain, book, table. Which do you remember?",
+        "answer": "rain, book, table"
+      }
+    ]
+  },
+  {
+    "id": "memory_151",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y di cuántas palabras son de la naturaleza: mesa, montaña, ordenador, río, silla, bosque, teléfono, lago, coche.",
+        "answer": "4 de la naturaleza: montaña, río, bosque, lago"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und sag wie viele Wörter aus der Natur sind: Tisch, Berg, Computer, Fluss, Stuhl, Wald, Telefon, See, Auto.",
+        "answer": "4 aus der Natur: Berg, Fluss, Wald, See"
+      },
+      {
+        "language": "en",
+        "question": "Listen and say how many words are from nature: table, mountain, computer, river, chair, forest, telephone, lake, car.",
+        "answer": "4 from nature: mountain, river, forest, lake"
+      }
+    ]
+  },
+  {
+    "id": "memory_152",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite al revés: seis, dos, ocho, cuatro, uno.",
+        "answer": "1, 4, 8, 2, 6"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole rückwärts: sechs, zwei, acht, vier, eins.",
+        "answer": "1, 4, 8, 2, 6"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat backwards: six, two, eight, four, one.",
+        "answer": "1, 4, 8, 2, 6"
+      }
+    ]
+  },
+  {
+    "id": "memory_153",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: La panadería está en la calle del Sol número siete. ¿En qué calle está la panadería?",
+        "answer": "En la calle del Sol"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Die Bäckerei befindet sich in der Sonnenstraße Nummer sieben. In welcher Straße ist die Bäckerei?",
+        "answer": "In der Sonnenstraße"
+      },
+      {
+        "language": "en",
+        "question": "Listen: The bakery is at number seven Sun Street. What street is the bakery on?",
+        "answer": "Sun Street"
+      }
+    ]
+  },
+  {
+    "id": "memory_154",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: romero, clavel, lirio, azalea, violeta. ¿Cuál era la primera y cuál era la última?",
+        "answer": "La primera era romero y la última era violeta"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Rosmarin, Nelke, Lilie, Azalee, Veilchen. Was war das erste und was war das letzte?",
+        "answer": "Das erste war Rosmarin und das letzte war Veilchen"
+      },
+      {
+        "language": "en",
+        "question": "Listen: rosemary, carnation, lily, azalea, violet. What was the first and what was the last?",
+        "answer": "The first was rosemary and the last was violet"
+      }
+    ]
+  },
+  {
+    "id": "memory_155",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende: cuchillo-cortar, aguja-coser. ¿Qué iba con aguja?",
+        "answer": "coser"
+      },
+      {
+        "language": "de",
+        "question": "Lern: Messer-schneiden, Nadel-nähen. Was gehörte zur Nadel?",
+        "answer": "nähen"
+      },
+      {
+        "language": "en",
+        "question": "Learn: knife-cut, needle-sew. What went with needle?",
+        "answer": "sew"
+      }
+    ]
+  },
+  {
+    "id": "memory_156",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y cuenta por separado las palabras largas de más de seis letras y las cortas de seis o menos: mariposa, sol, girasol, luz, ventana, pan, escalera, río, teléfono, mar.",
+        "answer": "Largas: mariposa, girasol, ventana, escalera, teléfono. Cortas: sol, luz, pan, río, mar"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und zähle getrennt die langen Wörter mit mehr als sechs Buchstaben und die kurzen: Schmetterling, Sonne, Sonnenblume, Licht, Fenster, Brot, Treppe, Fluss, Telefon, Meer.",
+        "answer": "Lang: Schmetterling, Sonnenblume, Fenster, Treppe, Telefon. Kurz: Sonne, Licht, Brot, Fluss, Meer"
+      },
+      {
+        "language": "en",
+        "question": "Listen and count separately the long words with more than six letters and the short ones: butterfly, sun, sunflower, light, window, bread, staircase, river, telephone, sea.",
+        "answer": "Long: butterfly, sunflower, window, staircase, telephone. Short: sun, light, bread, river, sea"
+      }
+    ]
+  },
+  {
+    "id": "memory_157",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Paquita y sus tres hermanas salieron de paseo a las cinco. Caminaron una hora y media y volvieron a casa. ¿A qué hora volvieron?",
+        "answer": "A las seis y media"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Paquita und ihre drei Schwestern gingen um fünf Uhr spazieren. Sie liefen anderthalb Stunden und kamen nach Hause. Um wie viel Uhr kamen sie zurück?",
+        "answer": "Um halb sieben"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Paquita and her three sisters went for a walk at five o'clock. They walked for an hour and a half and came home. What time did they get back?",
+        "answer": "At half past six"
+      }
+    ]
+  },
+  {
+    "id": "memory_158",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: nueve, tres, siete, cinco.",
+        "answer": "9, 3, 7, 5"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: neun, drei, sieben, fünf.",
+        "answer": "9, 3, 7, 5"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: nine, three, seven, five.",
+        "answer": "9, 3, 7, 5"
+      }
+    ]
+  },
+  {
+    "id": "memory_159",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha nueve palabras: velero, enebro, cetáceo, tamiz, alcayata, desván, gárgola, quilla, estribo. Dime todas las que puedas.",
+        "answer": "velero, enebro, cetáceo, tamiz, alcayata, desván, gárgola, quilla, estribo"
+      },
+      {
+        "language": "de",
+        "question": "Hör dir neun Wörter an: Segelboot, Wacholder, Wal, Sieb, Wandhaken, Dachboden, Wasserspeier, Kiel, Steigbügel. Nenn mir so viele wie möglich.",
+        "answer": "Segelboot, Wacholder, Wal, Sieb, Wandhaken, Dachboden, Wasserspeier, Kiel, Steigbügel"
+      },
+      {
+        "language": "en",
+        "question": "Listen to nine words: sailboat, juniper, cetacean, sieve, wall hook, attic, gargoyle, keel, stirrup. Tell me as many as you can.",
+        "answer": "sailboat, juniper, cetacean, sieve, wall hook, attic, gargoyle, keel, stirrup"
+      }
+    ]
+  },
+  {
+    "id": "memory_160",
+    "category": "memory",
+    "type": "orientation",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Qué país está al norte de España?",
+        "answer": "Francia. Al norte de España está Francia y también Andorra."
+      },
+      {
+        "language": "de",
+        "question": "Welches Land liegt nördlich von Spanien?",
+        "answer": "Frankreich. Nördlich von Spanien liegt Frankreich und auch Andorra."
+      },
+      {
+        "language": "en",
+        "question": "What country is to the north of Spain?",
+        "answer": "France. To the north of Spain is France and also Andorra."
+      }
+    ]
+  },
+  {
+    "id": "memory_161",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y di cuántas palabras son animales: perro, silla, gato, libro, caballo, mesa, pájaro.",
+        "answer": "4 animales: perro, gato, caballo, pájaro"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und sag wie viele Wörter Tiere sind: Hund, Stuhl, Katze, Buch, Pferd, Tisch, Vogel.",
+        "answer": "4 Tiere: Hund, Katze, Pferd, Vogel"
+      },
+      {
+        "language": "en",
+        "question": "Listen and say how many words are animals: dog, chair, cat, book, horse, table, bird.",
+        "answer": "4 animals: dog, cat, horse, bird"
+      }
+    ]
+  },
+  {
+    "id": "memory_162",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende estos tres pares: fuego-calor, hielo-frío, viento-movimiento. ¿Qué iba con hielo?",
+        "answer": "frío"
+      },
+      {
+        "language": "de",
+        "question": "Lern diese drei Paare: Feuer-Wärme, Eis-Kälte, Wind-Bewegung. Was gehörte zum Eis?",
+        "answer": "Kälte"
+      },
+      {
+        "language": "en",
+        "question": "Learn these three pairs: fire-heat, ice-cold, wind-movement. What went with ice?",
+        "answer": "cold"
+      }
+    ]
+  },
+  {
+    "id": "memory_163",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: uno, ocho.",
+        "answer": "1, 8"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: eins, acht.",
+        "answer": "1, 8"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: one, eight.",
+        "answer": "1, 8"
+      }
+    ]
+  },
+  {
+    "id": "memory_164",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: La señora Milagros, viuda de setenta y ocho años, vivía en el barrio antiguo de Zamora. Cada domingo iba a misa de doce y luego compraba el periódico y una rosquilla en el quiosco de la plaza. ¿Qué compraba después de misa?",
+        "answer": "El periódico y una rosquilla"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Frau Milagros, eine achtundsiebzigjährige Witwe, lebte im alten Viertel von Zamora. Jeden Sonntag ging sie zur Zwölfuhrmesse und kaufte danach die Zeitung und einen Donut am Kiosk auf dem Platz. Was kaufte sie nach der Messe?",
+        "answer": "Die Zeitung und einen Donut"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Mrs Milagros, a seventy-eight-year-old widow, lived in the old quarter of Zamora. Every Sunday she went to the twelve o'clock mass and then bought the newspaper and a doughnut at the square kiosk. What did she buy after mass?",
+        "answer": "The newspaper and a doughnut"
+      }
+    ]
+  },
+  {
+    "id": "memory_165",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: techo, semilla, cañón, tejido, brújula. ¿Cuál era la del medio?",
+        "answer": "cañón"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Dach, Samen, Kanone, Stoff, Kompass. Was war das mittlere?",
+        "answer": "Kanone"
+      },
+      {
+        "language": "en",
+        "question": "Listen: ceiling, seed, canyon, fabric, compass. What was the middle one?",
+        "answer": "canyon"
+      }
+    ]
+  },
+  {
+    "id": "memory_166",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y cuenta las palabras que tienen relación con el cuerpo humano: mano, árbol, ojo, coche, pie, libro, nariz, silla, oreja.",
+        "answer": "5 del cuerpo: mano, ojo, pie, nariz, oreja"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und zähle die Wörter die mit dem menschlichen Körper zu tun haben: Hand, Baum, Auge, Auto, Fuß, Buch, Nase, Stuhl, Ohr.",
+        "answer": "5 Körperteile: Hand, Auge, Fuß, Nase, Ohr"
+      },
+      {
+        "language": "en",
+        "question": "Listen and count the words related to the human body: hand, tree, eye, car, foot, book, nose, chair, ear.",
+        "answer": "5 body parts: hand, eye, foot, nose, ear"
+      }
+    ]
+  },
+  {
+    "id": "memory_167",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite al revés: dos, nueve, seis.",
+        "answer": "6, 9, 2"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole rückwärts: zwei, neun, sechs.",
+        "answer": "6, 9, 2"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat backwards: two, nine, six.",
+        "answer": "6, 9, 2"
+      }
+    ]
+  },
+  {
+    "id": "memory_168",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Don Fulgencio nació en 1945 y se casó a los veintisiete años. ¿En qué año se casó?",
+        "answer": "En 1972"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Don Fulgencio wurde 1945 geboren und heiratete mit siebenundzwanzig Jahren. In welchem Jahr heiratete er?",
+        "answer": "Im Jahr 1972"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Don Fulgencio was born in 1945 and got married at twenty-seven years old. What year did he get married?",
+        "answer": "In 1972"
+      }
+    ]
+  },
+  {
+    "id": "memory_169",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: pino, lago, noche. ¿Cuál era la primera?",
+        "answer": "pino"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Kiefer, See, Nacht. Was war das erste?",
+        "answer": "Kiefer"
+      },
+      {
+        "language": "en",
+        "question": "Listen: pine, lake, night. What was the first?",
+        "answer": "pine"
+      }
+    ]
+  },
+  {
+    "id": "memory_170",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende estos seis pares: lunes-lluvia, martes-sol, miércoles-niebla, jueves-viento, viernes-nieve, sábado-calor. ¿Qué iba con jueves?",
+        "answer": "viento"
+      },
+      {
+        "language": "de",
+        "question": "Lern diese sechs Paare: Montag-Regen, Dienstag-Sonne, Mittwoch-Nebel, Donnerstag-Wind, Freitag-Schnee, Samstag-Hitze. Was gehörte zum Donnerstag?",
+        "answer": "Wind"
+      },
+      {
+        "language": "en",
+        "question": "Learn these six pairs: Monday-rain, Tuesday-sun, Wednesday-fog, Thursday-wind, Friday-snow, Saturday-heat. What went with Thursday?",
+        "answer": "wind"
+      }
+    ]
+  },
+  {
+    "id": "memory_171",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y di cuántas palabras son comidas: manzana, silla, queso, libro, pan, mesa, leche.",
+        "answer": "4 comidas: manzana, queso, pan, leche"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und sag wie viele Wörter Lebensmittel sind: Apfel, Stuhl, Käse, Buch, Brot, Tisch, Milch.",
+        "answer": "4 Lebensmittel: Apfel, Käse, Brot, Milch"
+      },
+      {
+        "language": "en",
+        "question": "Listen and say how many words are foods: apple, chair, cheese, book, bread, table, milk.",
+        "answer": "4 foods: apple, cheese, bread, milk"
+      }
+    ]
+  },
+  {
+    "id": "memory_172",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: siete, cuatro, dos, nueve, seis, tres.",
+        "answer": "7, 4, 2, 9, 6, 3"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: sieben, vier, zwei, neun, sechs, drei.",
+        "answer": "7, 4, 2, 9, 6, 3"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: seven, four, two, nine, six, three.",
+        "answer": "7, 4, 2, 9, 6, 3"
+      }
+    ]
+  },
+  {
+    "id": "memory_173",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: hormiga, cactus, clavicémbalo, pantano, bisturí. ¿Cuál era la cuarta?",
+        "answer": "pantano"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Ameise, Kaktus, Cembalo, Sumpf, Skalpell. Was war das vierte?",
+        "answer": "Sumpf"
+      },
+      {
+        "language": "en",
+        "question": "Listen: ant, cactus, harpsichord, swamp, scalpel. What was the fourth?",
+        "answer": "swamp"
+      }
+    ]
+  },
+  {
+    "id": "memory_174",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Hay doce meses en el año. Si ya han pasado nueve meses, ¿cuántos quedan?",
+        "answer": "Tres meses"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Es gibt zwölf Monate im Jahr. Wenn neun Monate schon vergangen sind wie viele bleiben noch?",
+        "answer": "Drei Monate"
+      },
+      {
+        "language": "en",
+        "question": "Listen: There are twelve months in the year. If nine months have already passed how many are left?",
+        "answer": "Three months"
+      }
+    ]
+  },
+  {
+    "id": "memory_175",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende: doctor-hospital, bombero-incendio, maestro-escuela. ¿Qué iba con maestro?",
+        "answer": "escuela"
+      },
+      {
+        "language": "de",
+        "question": "Lern: Arzt-Krankenhaus, Feuerwehrmann-Brand, Lehrer-Schule. Was gehörte zum Lehrer?",
+        "answer": "Schule"
+      },
+      {
+        "language": "en",
+        "question": "Learn: doctor-hospital, firefighter-fire, teacher-school. What went with teacher?",
+        "answer": "school"
+      }
+    ]
+  },
+  {
+    "id": "memory_176",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y cuenta por separado los sustantivos y los verbos: correr, mesa, saltar, agua, dormir, sol, llorar, libro, nadar, piedra.",
+        "answer": "5 sustantivos: mesa, agua, sol, libro, piedra. 5 verbos: correr, saltar, dormir, llorar, nadar"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und zähle getrennt die Nomen und die Verben: laufen, Tisch, springen, Wasser, schlafen, Sonne, weinen, Buch, schwimmen, Stein.",
+        "answer": "5 Nomen: Tisch, Wasser, Sonne, Buch, Stein. 5 Verben: laufen, springen, schlafen, weinen, schwimmen"
+      },
+      {
+        "language": "en",
+        "question": "Listen and count separately the nouns and the verbs: run, table, jump, water, sleep, sun, cry, book, swim, stone.",
+        "answer": "5 nouns: table, water, sun, book, stone. 5 verbs: run, jump, sleep, cry, swim"
+      }
+    ]
+  },
+  {
+    "id": "memory_177",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: cuatro, dos, seis.",
+        "answer": "4, 2, 6"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: vier, zwei, sechs.",
+        "answer": "4, 2, 6"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: four, two, six.",
+        "answer": "4, 2, 6"
+      }
+    ]
+  },
+  {
+    "id": "memory_178",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: El huerto de la abuela tiene cuatro manzanos, dos perales y un cerezo. ¿Cuántos árboles hay en total?",
+        "answer": "Siete árboles en total"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Der Garten der Großmutter hat vier Apfelbäume, zwei Birnbäume und einen Kirschbaum. Wie viele Bäume sind es insgesamt?",
+        "answer": "Sieben Bäume insgesamt"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Grandmother's orchard has four apple trees, two pear trees and a cherry tree. How many trees are there in total?",
+        "answer": "Seven trees in total"
+      }
+    ]
+  },
+  {
+    "id": "memory_179",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha diez palabras: alcarraza, badajo, cenefa, decrépito, escarcha, féretro, gavilán, herrumbre, izada, jirón. Dime todas las que puedas.",
+        "answer": "alcarraza, badajo, cenefa, decrépito, escarcha, féretro, gavilán, herrumbre, izada, jirón"
+      },
+      {
+        "language": "de",
+        "question": "Hör dir zehn Wörter an: Wasserkrug, Klöppel, Borte, morsch, Raureif, Sarg, Sperber, Rost, gehisst, Fetzen. Nenn mir so viele wie möglich.",
+        "answer": "Wasserkrug, Klöppel, Borte, morsch, Raureif, Sarg, Sperber, Rost, gehisst, Fetzen"
+      },
+      {
+        "language": "en",
+        "question": "Listen to ten words: earthenware jug, clapper, border trim, decrepit, frost, coffin, sparrowhawk, rust, hoisted, tatter. Tell me all you can.",
+        "answer": "earthenware jug, clapper, border trim, decrepit, frost, coffin, sparrowhawk, rust, hoisted, tatter"
+      }
+    ]
+  },
+  {
+    "id": "memory_180",
+    "category": "memory",
+    "type": "orientation",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿Cuál es el río más largo de España?",
+        "answer": "El río Tajo es el más largo con unos 1007 kilómetros aunque el Ebro es el de mayor caudal."
+      },
+      {
+        "language": "de",
+        "question": "Was ist der längste Fluss Spaniens?",
+        "answer": "Der Tajo ist mit etwa 1007 Kilometern der längste obwohl der Ebro den größten Durchfluss hat."
+      },
+      {
+        "language": "en",
+        "question": "What is the longest river in Spain?",
+        "answer": "The River Tagus is the longest at around 1007 kilometres although the Ebro has the greatest flow."
+      }
+    ]
+  },
+  {
+    "id": "memory_181",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y di cuántas palabras son medios de transporte: tren, árbol, avión, libro, coche, sol, barco, mesa, bicicleta.",
+        "answer": "5 transportes: tren, avión, coche, barco, bicicleta"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und sag wie viele Wörter Transportmittel sind: Zug, Baum, Flugzeug, Buch, Auto, Sonne, Schiff, Tisch, Fahrrad.",
+        "answer": "5 Transportmittel: Zug, Flugzeug, Auto, Schiff, Fahrrad"
+      },
+      {
+        "language": "en",
+        "question": "Listen and say how many words are means of transport: train, tree, plane, book, car, sun, boat, table, bicycle.",
+        "answer": "5 transport: train, plane, car, boat, bicycle"
+      }
+    ]
+  },
+  {
+    "id": "memory_182",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite al revés: cuatro, siete, dos.",
+        "answer": "2, 7, 4"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole rückwärts: vier, sieben, zwei.",
+        "answer": "2, 7, 4"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat backwards: four, seven, two.",
+        "answer": "2, 7, 4"
+      }
+    ]
+  },
+  {
+    "id": "memory_183",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Doña Esperanza tenía un armario lleno de cartas de amor que su difunto marido Isidoro le había escrito durante el noviazgo. Eran cuarenta y tres cartas escritas entre 1962 y 1965. ¿Entre qué años se escribieron las cartas?",
+        "answer": "Entre 1962 y 1965"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Doña Esperanza hatte einen Schrank voller Liebesbriefe die ihr verstorbener Mann Isidoro ihr während der Verlobungszeit geschrieben hatte. Es waren dreiundvierzig Briefe, geschrieben zwischen 1962 und 1965. Zwischen welchen Jahren wurden die Briefe geschrieben?",
+        "answer": "Zwischen 1962 und 1965"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Doña Esperanza had a wardrobe full of love letters her late husband Isidoro had written to her during their engagement. There were forty-three letters written between 1962 and 1965. Between what years were the letters written?",
+        "answer": "Between 1962 and 1965"
+      }
+    ]
+  },
+  {
+    "id": "memory_184",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: sopa, taza, flor. ¿Cuál era la del medio?",
+        "answer": "taza"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Suppe, Tasse, Blume. Was war das mittlere?",
+        "answer": "Tasse"
+      },
+      {
+        "language": "en",
+        "question": "Listen: soup, cup, flower. What was the middle one?",
+        "answer": "cup"
+      }
+    ]
+  },
+  {
+    "id": "memory_185",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende estos pares: ojo-ver, oído-escuchar. ¿Qué iba con oído?",
+        "answer": "escuchar"
+      },
+      {
+        "language": "de",
+        "question": "Lern diese Paare: Auge-sehen, Ohr-hören. Was gehörte zum Ohr?",
+        "answer": "hören"
+      },
+      {
+        "language": "en",
+        "question": "Learn these pairs: eye-see, ear-hear. What went with ear?",
+        "answer": "hear"
+      }
+    ]
+  },
+  {
+    "id": "memory_186",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y di cuántas palabras son colores: azul, silla, rojo, perro, verde, árbol.",
+        "answer": "3 colores: azul, rojo, verde"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und sag wie viele Wörter Farben sind: blau, Stuhl, rot, Hund, grün, Baum.",
+        "answer": "3 Farben: blau, rot, grün"
+      },
+      {
+        "language": "en",
+        "question": "Listen and say how many words are colours: blue, chair, red, dog, green, tree.",
+        "answer": "3 colours: blue, red, green"
+      }
+    ]
+  },
+  {
+    "id": "memory_187",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: cinco, dos, nueve.",
+        "answer": "5, 2, 9"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: fünf, zwei, neun.",
+        "answer": "5, 2, 9"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: five, two, nine.",
+        "answer": "5, 2, 9"
+      }
+    ]
+  },
+  {
+    "id": "memory_188",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: El autobús sale a las ocho menos cuarto y tarda cuarenta minutos en llegar. ¿A qué hora llega?",
+        "answer": "A las ocho y veinticinco"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Der Bus fährt um viertel vor acht ab und braucht vierzig Minuten um anzukommen. Um wie viel Uhr kommt er an?",
+        "answer": "Um fünf und zwanzig nach acht"
+      },
+      {
+        "language": "en",
+        "question": "Listen: The bus leaves at quarter to eight and takes forty minutes to arrive. What time does it arrive?",
+        "answer": "At twenty-five past eight"
+      }
+    ]
+  },
+  {
+    "id": "memory_189",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: hierba, tornado, semáforo, aldaba, pañuelo. ¿Cuál era la segunda?",
+        "answer": "tornado"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Gras, Tornado, Ampel, Türklopfer, Taschentuch. Was war das zweite?",
+        "answer": "Tornado"
+      },
+      {
+        "language": "en",
+        "question": "Listen: grass, tornado, traffic light, door knocker, handkerchief. What was the second?",
+        "answer": "tornado"
+      }
+    ]
+  },
+  {
+    "id": "memory_190",
+    "category": "memory",
+    "type": "paired_associates",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Aprende estos seis pares: piano-negro, guitarra-marrón, violín-rojo, flauta-plata, trompeta-dorado, batería-gris. ¿Qué iba con violín?",
+        "answer": "rojo"
+      },
+      {
+        "language": "de",
+        "question": "Lern diese sechs Paare: Klavier-schwarz, Gitarre-braun, Geige-rot, Flöte-silber, Trompete-gold, Schlagzeug-grau. Was gehörte zur Geige?",
+        "answer": "rot"
+      },
+      {
+        "language": "en",
+        "question": "Learn these six pairs: piano-black, guitar-brown, violin-red, flute-silver, trumpet-gold, drums-grey. What went with violin?",
+        "answer": "red"
+      }
+    ]
+  },
+  {
+    "id": "memory_191",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y cuenta las palabras que son profesiones: médico, árbol, maestro, silla, albañil, libro, cocinero, sol, fontanero, coche.",
+        "answer": "5 profesiones: médico, maestro, albañil, cocinero, fontanero"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und zähle die Wörter die Berufe sind: Arzt, Baum, Lehrer, Stuhl, Maurer, Buch, Koch, Sonne, Klempner, Auto.",
+        "answer": "5 Berufe: Arzt, Lehrer, Maurer, Koch, Klempner"
+      },
+      {
+        "language": "en",
+        "question": "Listen and count the words that are professions: doctor, tree, teacher, chair, builder, book, cook, sun, plumber, car.",
+        "answer": "5 professions: doctor, teacher, builder, cook, plumber"
+      }
+    ]
+  },
+  {
+    "id": "memory_192",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite al revés: tres, siete, uno, cinco, ocho.",
+        "answer": "8, 5, 1, 7, 3"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole rückwärts: drei, sieben, eins, fünf, acht.",
+        "answer": "8, 5, 1, 7, 3"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat backwards: three, seven, one, five, eight.",
+        "answer": "8, 5, 1, 7, 3"
+      }
+    ]
+  },
+  {
+    "id": "memory_193",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: La señora Encarna compra el pan todos los días menos los domingos. ¿Cuántos días a la semana compra el pan?",
+        "answer": "Seis días a la semana"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Frau Encarna kauft jeden Tag Brot außer sonntags. Wie viele Tage in der Woche kauft sie Brot?",
+        "answer": "Sechs Tage in der Woche"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Mrs Encarna buys bread every day except Sundays. How many days a week does she buy bread?",
+        "answer": "Six days a week"
+      }
+    ]
+  },
+  {
+    "id": "memory_194",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "easy",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: puerta, cielo, sal. ¿Cuál era la última?",
+        "answer": "sal"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Tür, Himmel, Salz. Was war das letzte?",
+        "answer": "Salz"
+      },
+      {
+        "language": "en",
+        "question": "Listen: door, sky, salt. What was the last?",
+        "answer": "salt"
+      }
+    ]
+  },
+  {
+    "id": "memory_195",
+    "category": "memory",
+    "type": "orientation",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "¿En qué ciudad nació Cristóbal Colón según la historia oficial?",
+        "answer": "Según la historia oficial, Cristóbal Colón nació en Génova, Italia, aunque su origen es debatido."
+      },
+      {
+        "language": "de",
+        "question": "In welcher Stadt wurde Christoph Kolumbus der offiziellen Geschichte nach geboren?",
+        "answer": "Der offiziellen Geschichte nach wurde Christoph Kolumbus in Genua, Italien, geboren, obwohl seine Herkunft umstritten ist."
+      },
+      {
+        "language": "en",
+        "question": "In which city was Christopher Columbus born according to official history?",
+        "answer": "According to official history Christopher Columbus was born in Genoa Italy although his origins are debated."
+      }
+    ]
+  },
+  {
+    "id": "memory_196",
+    "category": "memory",
+    "type": "attention",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y cuenta las palabras que tengan relación con el tiempo meteorológico: lluvia, silla, nieve, libro, viento, mesa, sol, perro, niebla, coche.",
+        "answer": "5 del tiempo: lluvia, nieve, viento, sol, niebla"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und zähle die Wörter die mit dem Wetter zusammenhängen: Regen, Stuhl, Schnee, Buch, Wind, Tisch, Sonne, Hund, Nebel, Auto.",
+        "answer": "5 Wetterwörter: Regen, Schnee, Wind, Sonne, Nebel"
+      },
+      {
+        "language": "en",
+        "question": "Listen and count the words related to weather: rain, chair, snow, book, wind, table, sun, dog, fog, car.",
+        "answer": "5 weather words: rain, snow, wind, sun, fog"
+      }
+    ]
+  },
+  {
+    "id": "memory_197",
+    "category": "memory",
+    "type": "number_sequence",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha y repite: uno, cuatro, siete.",
+        "answer": "1, 4, 7"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu und wiederhole: eins, vier, sieben.",
+        "answer": "1, 4, 7"
+      },
+      {
+        "language": "en",
+        "question": "Listen and repeat: one, four, seven.",
+        "answer": "1, 4, 7"
+      }
+    ]
+  },
+  {
+    "id": "memory_198",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha esta historia completa: La familia Herrero organizó una reunión familiar el primer domingo de agosto. Vinieron los tres hijos con sus parejas y los cinco nietos. El mayor de los nietos tenía catorce años y la menor dos. La abuela Concha cocinó para todos durante dos días. ¿Cuántos nietos vinieron a la reunión?",
+        "answer": "Cinco nietos"
+      },
+      {
+        "language": "de",
+        "question": "Hör dir diese ganze Geschichte an: Die Familie Herrero organisierte am ersten Sonntag im August ein Familientreffen. Die drei Kinder kamen mit ihren Partnern und die fünf Enkelkinder. Der älteste Enkel war vierzehn Jahre alt und die jüngste zwei. Großmutter Concha kochte zwei Tage lang für alle. Wie viele Enkelkinder kamen zum Treffen?",
+        "answer": "Fünf Enkelkinder"
+      },
+      {
+        "language": "en",
+        "question": "Listen to this whole story: The Herrero family organised a family gathering on the first Sunday of August. The three children came with their partners and the five grandchildren. The eldest grandchild was fourteen and the youngest was two. Grandmother Concha cooked for everyone for two days. How many grandchildren came to the gathering?",
+        "answer": "Five grandchildren"
+      }
+    ]
+  },
+  {
+    "id": "memory_199",
+    "category": "memory",
+    "type": "word_recall",
+    "difficulty": "medium",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: cascada, pergamino, linterna, gaveta, ánfora. ¿Cuál era la primera y la tercera?",
+        "answer": "La primera era cascada y la tercera era linterna"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Wasserfall, Pergament, Laterne, Schublade, Amphore. Was war das erste und das dritte?",
+        "answer": "Das erste war Wasserfall und das dritte war Laterne"
+      },
+      {
+        "language": "en",
+        "question": "Listen: waterfall, parchment, lantern, drawer, amphora. What was the first and the third?",
+        "answer": "The first was waterfall and the third was lantern"
+      }
+    ]
+  },
+  {
+    "id": "memory_200",
+    "category": "memory",
+    "type": "story_recall",
+    "difficulty": "hard",
+    "translations": [
+      {
+        "language": "es",
+        "question": "Escucha: Don Celestino, relojero de profesión, tenía su taller en la misma calle desde hacía cuarenta años. Ese invierno cumplió setenta y cinco años y sus tres hijos le regalaron un viaje a Portugal que siempre había querido hacer. ¿Cuántos años tenía el taller?",
+        "answer": "Cuarenta años"
+      },
+      {
+        "language": "de",
+        "question": "Hör zu: Don Celestino, Uhrmacher von Beruf, hatte sein Atelier seit vierzig Jahren in derselben Straße. In jenem Winter wurde er fünfundsiebzig Jahre alt und seine drei Kinder schenkten ihm eine Reise nach Portugal die er sich immer gewünscht hatte. Wie viele Jahre hatte das Atelier?",
+        "answer": "Vierzig Jahre"
+      },
+      {
+        "language": "en",
+        "question": "Listen: Don Celestino, a watchmaker by trade, had his workshop on the same street for forty years. That winter he turned seventy-five and his three children gave him a trip to Portugal he had always wanted to make. How many years had the workshop been there?",
+        "answer": "Forty years"
+      }
+    ]
+  }
+]
