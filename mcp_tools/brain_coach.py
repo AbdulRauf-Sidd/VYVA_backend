@@ -27,12 +27,6 @@ class QuestionType(str, Enum):
     memory = 'memory'
     games = 'games' 
 
-class Language(str, Enum):
-    egnlish = 'english'
-    spanish = 'spanish'
-    german = 'german'
-
-
 class RetrieveQuestionsInput(BaseModel):
     user_id: int
     questions_type: QuestionType
@@ -46,8 +40,11 @@ class RetrieveQuestionsOutput(BaseModel):
     description=(
         "You will use this tool to retrieve the questions for a brain coach session."
         "You will call this tool when You're about to start the brain coach session."
-        "the question type will always be enum. if the user wants cognitive excersices then question_type will be cognitive_assessment."
-        "if the user wants trivia then question_type will be trivia"
+        "the question type will always be enum. if the user wants cognitive excersices then question_type will be cognitive_assessment. "
+        "if the user wants trivia then question_type will be trivia. "
+        "if the user wants chess questions then the question_type will be chess. "
+        "if the user wants memory questions then the question_type will be memory. "
+        "if the user wants games questions then the question_type will be games. "
     )
 )
 async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestionsOutput:
