@@ -39,13 +39,12 @@ def schedule_reminder_message(payload, dt_utc, preferred_reminder_channel):
             )
 
 
-def schedule_celery_task_for_call_status_check(payload=None, agent_type=None):
-    if agent_type:
+def schedule_celery_task_for_call_status_check(onboarding=False):
+    if not onboarding:
         exists = conn.get(CALL_STATUS_CHECK_REDIS_KEY)
         if not exists:
             celery_app.send_task(
                 "update_call_status",
-                args=[payload, agent_type],
                 countdown=300 # 5 minutes
             )
             conn.set(CALL_STATUS_CHECK_REDIS_KEY, 1, ex=300)    

@@ -81,7 +81,7 @@ def initiate_onboarding_call(payload: dict):
         db.add(onboarding_record)
         db.add(onboarding_log)
         db.commit()
-        schedule_celery_task_for_call_status_check()
+        schedule_celery_task_for_call_status_check(onboarding=True)
     except Exception as e:
         logger.error(f"Error initiating onboarding call: {e}")
     finally:
@@ -183,6 +183,8 @@ def initiate_medication_reminder_call(payload):
             session_record = ElevenLabsSessions(
                 user_id=payload.get('user_id'),                 # make sure this exists
                 agent_id=payload.get("agent_id"),
+                agent_type=AgentTypeEnum.medication_reminder.value,
+                payload=payload,
                 call_sid=call_sid,
                 status="ringing"
             )
@@ -190,7 +192,7 @@ def initiate_medication_reminder_call(payload):
             db.add(session_record)
             db.commit()
             # db.refresh(session_record)
-            schedule_celery_task_for_call_status_check(payload, agent_type=AgentTypeEnum.medication_reminder.value)
+            schedule_celery_task_for_call_status_check()
         
         except Exception as e:
             logger.error(f"error creating eleven labs session record: {e}")
@@ -199,7 +201,7 @@ def initiate_medication_reminder_call(payload):
             db.close()
 
 @celery_app.task(name="update_call_status", bind=True)
-def update_call_status(self, payload=None, agent_type=None):
+def update_call_status(self):
     db: Session = SessionLocal()
     try:
         excluded_statuses = ["answered", "declined", "no_answer", "failed"]
@@ -216,16 +218,15 @@ def update_call_status(self, payload=None, agent_type=None):
 
         for session in sessions:
             status = get_call_status_from_twilio(session.call_sid)
+            status = status.get('status', None)
             if status in excluded_statuses: #call completed
                 if status in ["declined", "no_answer", "failed"]:
                     # Mark medication as unconfirmed
-                    if agent_type == AgentTypeEnum.medication_reminder.value and payload:
-                        update_medication_status(payload, MedicationStatus.unconfirmed.value)
-
-                    if agent_type == AgentTypeEnum.check_in.value:
-                        pass
+                    if session.agent_type == AgentTypeEnum.medication_reminder.value and session.payload:
+                        update_medication_status(session.payload, MedicationStatus.unconfirmed.value)
                     
-                    session.status = status
+            
+            session.status = status
         db.commit()
     except Exception as e:
         logger.error(f"error updating call status: {e}")
@@ -257,14 +258,13 @@ def update_scheduled_call_status(self):
             session.status = status
             session_type = session.session_type
             if status in ["declined", "no_answer", "failed"]: #call completed
-                # Mark medication as unconfirmed
                 if session_type == CheckInType.check_up_call.value:
                     if session.attempts >= 3:
                         user_id = session.user_checkin.user_id
                         logger.info(f"User {user_id} has missed 3 check-up calls.")
                         send_emergency_alert_whatsapp.apply_async(args=[user_id])
                         call_emergency_outbound_agent.apply_async(args=[user_id])
-                        # session.is_completed = True
+                        session.is_completed = True
                         session.completed_at = datetime.now(timezone.utc)
                     else:
                         initiate_check_up_call.apply_async(args=[session.user_checkin_id], countdown=60) #reschedule call after 1 minute

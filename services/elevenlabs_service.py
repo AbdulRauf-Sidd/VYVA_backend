@@ -247,7 +247,6 @@ def make_medication_reminder_call(payload: dict):
         language = payload.get("language")
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
         medications = payload.get("medications")
-        first_message = construct_initial_agent_message_for_reminders(first_name, iso_language)
 
         response = requests.post(
           "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
@@ -295,7 +294,6 @@ def make_brain_coach_call(payload: dict):
         first_name = payload.get("first_name")
         language = payload.get("language")
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
-        initial_message = construct_general_welcome_message(first_name, iso_language)
 
         response = requests.post(
           "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
@@ -309,8 +307,7 @@ def make_brain_coach_call(payload: dict):
             "conversation_initiation_client_data": {
               "conversation_config_override": {
                 "agent": {
-                    "language": iso_language,
-                    "first_message": initial_message
+                    "language": iso_language
                 }
               },
               "dynamic_variables": {

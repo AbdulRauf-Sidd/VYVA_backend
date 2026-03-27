@@ -11,6 +11,7 @@ class ElevenLabsSessions(Base):
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=True)
     agent_id = Column(String(80), nullable=True)
     agent_type = Column(String(50), nullable=True)
+    payload = Column(JSON, nullable=True)
     duration = Column(Integer, nullable=True)
     status = Column(String(20), nullable=True)
     call_sid = Column(String(100), nullable=True)
