@@ -80,9 +80,6 @@ logger = logging.getLogger(__name__)
 class RetrieveMemoryInput(BaseModel):
     user_id: int
 
-class UserMemory(BaseModel):
-    content: dict[str, List[dict]]
-
 @mcp.tool(
     name="retrieve_user_memories",
     description=(
@@ -93,12 +90,12 @@ class UserMemory(BaseModel):
         "You will get a list of relevant memories about the user as output, along with the date created for those memories.\n\n"
         "Always use the memories as a guide to better understand and assist the user.\n\n"
         "The returned memories are summarized for your consumption." \
-        "ALWAYS USE AT THE START OF THE CONVERSATION." \
+        "ALWAYS USE AT THE START OF THE CONVERSATION AFTER GETTING THE USER_ID. AND ALWAYS PASS USER_ID" \
     )
 )
 async def retrieve_user_memories(
     input: RetrieveMemoryInput
-) -> UserMemory:
+) -> dict[str, List[dict]]:
     memories = []
     try:
         memories = await asyncio.wait_for(
