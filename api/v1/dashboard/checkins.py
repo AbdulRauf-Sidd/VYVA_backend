@@ -9,6 +9,7 @@ from datetime import time
 from core.database import get_async_session
 from models.user import User
 from models.user_check_ins import UserCheckin
+from models.organization import Organization
 
 router = APIRouter()
 
@@ -32,7 +33,12 @@ async def get_checkins(
     filter_status: Optional[str] = Query("all", description="Filter by status: all, active, inactive")
 ):
     async with get_async_session() as session: 
-        stmt = select(UserCheckin, User).join(User, UserCheckin.user_id == User.id)
+        stmt = (
+            select(UserCheckin, User)
+            .join(User, UserCheckin.user_id == User.id)
+            .join(Organization, User.organization_id == Organization.id)
+            .where(Organization.name.ilike("Red Cross")) 
+        )
 
         if filter_status == "active":
             stmt = stmt.where(UserCheckin.is_active == True)
