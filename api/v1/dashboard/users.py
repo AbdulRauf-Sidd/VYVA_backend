@@ -30,6 +30,7 @@ def compute_risk_score(user_data: dict) -> int:
 @router.get("/users")
 async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
 
+    # 1️⃣ Fetch Red Cross org
     org_result = await session.execute(
         select(Organization).where(Organization.name.ilike("Red Cross"))
     )
@@ -47,16 +48,18 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
             "activeAlerts": [],
             "cityDistribution": []
         }
-        
+
     org_id = redcross_org.id
 
     users_result = await session.execute(
         select(User)
         .where(User.organization_id == org_id)
-        .options(selectinload(User.caretaker)) 
+        .options(
+            selectinload(User.caretaker),
+            selectinload(User.medications)
+        )
     )
     users: List[User] = users_result.scalars().all()
-
     if not users:
         return {"totalUsers": 0, "gisUsers": [], "cityDistribution": []}
 
@@ -84,6 +87,7 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
         missed_meds = missed_meds_map.get(u.id, 0)
         checkin_enabled = checkin_map.get(u.id, False)
         health_conditions = len(u.health_conditions.split(",") if u.health_conditions else [])
+        meds_count = len([m for m in u.medications if m.is_active])
 
         gis_users.append({
             "id": u.id,
@@ -92,7 +96,7 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
             "city": u.city,
             "phone": u.phone_number,
             "date_of_birth": u.date_of_birth.isoformat() if u.date_of_birth else None,
-            "coords": None, 
+            "coords": None,
             "activeAlerts": 0,
             "criticalAlerts": 0,
             "sensorCount": 0,
@@ -100,6 +104,7 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
             "checkinEnabled": checkin_enabled,
             "healthConditions": health_conditions,
             "missedMeds7d": missed_meds,
+            "medsCount": meds_count, 
             "riskScore": compute_risk_score({
                 "critical_alerts": 0,
                 "active_alerts": 0,
@@ -125,7 +130,7 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
         "totalSensors": total_sensors,
         "caregiversLinked": caregivers_linked,
         "gisUsers": gis_users,
-        "activeAlerts": [],  
+        "activeAlerts": [],
         "cityDistribution": [
             {"city": city, "count": len([u for u in gis_users if u["city"] == city])}
             for city in set(u["city"] or "Unknown" for u in gis_users)
