@@ -248,7 +248,7 @@ async def get_user(
     mobility = (
         user.mobility.split(",") if user.mobility else []
     )
-
+    street_value = user.street if user.street else user.address
     return {
         "user": {
             "id": user.id,
@@ -260,7 +260,7 @@ async def get_user(
             "gender": None,  # not in model
             "language": user.preferred_consultation_language,
             "timezone": user.timezone,
-            "street": user.street,
+            "street": street_value,
             "house_number": user.house_number,
             "post_code": user.postal_code,
             "city": user.city,
