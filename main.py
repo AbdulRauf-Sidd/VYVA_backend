@@ -19,6 +19,7 @@ from core.config import settings
 from core.logging import setup_logging
 from api.v1.dashboard import dashboard
 from api.v1.dashboard import users as dashboard_users, caretakers as dashboard_caretakers, checkins as dashboard_checkins
+from api.v1.dashboard import cities
 from api.v1 import onboarding, users, social, brain_coach, medication, fall_detection, tts, symptom_checker, post_call, ai_assistant, news, tools, organization, authentication, twilio
 from api.v1 import webhooks
 from api.v1.managemant import admin, ingest_onboarding_users
@@ -205,6 +206,7 @@ app.include_router(dashboard.router, prefix="/api/v1/dashboard", tags=["Dashboar
 app.include_router(dashboard_users.router, prefix="/api/v1/user-dashboard", tags=["Dashboard Users"])
 app.include_router(dashboard_caretakers.router, prefix="/api/v1/caretaker-dashboard", tags=["Dashboard Caretakers"])
 app.include_router(dashboard_checkins.router, prefix="/api/v1/checkins-dashboard", tags=["Dashboard Checkins"])
+app.include_router(cities.router, prefix="/api/v1/cities", tags=["cities"])
 
 if __name__ == "__main__":
     import uvicorn
