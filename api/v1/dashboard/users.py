@@ -1,17 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from datetime import datetime, timedelta
-from typing import List, Dict
+from typing import List, Dict, Optional
 from core.database import get_async_session
 from models.user import User, Caretaker
 from models.user_check_ins import UserCheckin
-from models.medication import MedicationLog
+from models.medication import MedicationLog, Medication
 from models.organization import Organization
+from sqlalchemy.orm import selectinload
+from sqlalchemy import delete, update
 
 router = APIRouter()
 
-# Dependency to get async session
 async def get_session():
     async with get_async_session() as session:
         yield session
@@ -50,7 +51,9 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
     org_id = redcross_org.id
 
     users_result = await session.execute(
-        select(User).where(User.organization_id == org_id)
+        select(User)
+        .where(User.organization_id == org_id)
+        .options(selectinload(User.caretaker)) 
     )
     users: List[User] = users_result.scalars().all()
 
@@ -128,3 +131,245 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
             for city in set(u["city"] or "Unknown" for u in gis_users)
         ]
     }
+    
+@router.get("/user-info")
+async def get_user(
+    user_id: Optional[int] = Query(None),
+    organization_name: Optional[str] = Query(None),
+    session: AsyncSession = Depends(get_session),
+):
+    if not user_id and not organization_name:
+        raise HTTPException(status_code=400, detail="Provide at least user_id or organization_name")
+
+    query = select(User).options(
+        selectinload(User.organization),
+        selectinload(User.medications).selectinload(Medication.times_of_day),
+        selectinload(User.user_checkins),
+        selectinload(User.caretaker),
+    )
+
+    if user_id:
+        query = query.where(User.id == user_id)
+
+    if organization_name:
+        query = query.join(User.organization).where(Organization.name.ilike(organization_name))
+
+    result = await session.execute(query)  # ✅ FIXED
+    user: User = result.scalars().first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    caregivers = []
+    if user.caretaker:
+        caregivers.append({
+            "id": user.caretaker.id,
+            "caretaker_name": user.caretaker.name,
+            "caretaker_phone": user.caretaker.phone_number,
+        })
+
+    medications = []
+    for m in user.medications:
+        medications.append({
+            "id": m.id,
+            "medication_name": m.name,
+            "purpose": m.purpose,
+            "dosage": m.dosage,
+            "schedule_times": [
+                t.time_of_day.strftime("%H:%M") for t in (m.times_of_day or []) if t.time_of_day
+            ]
+        })
+
+    checkins = None
+    brain_coach = None
+
+    for c in user.user_checkins:
+        data = {
+            "enabled": c.is_active,
+            "frequency": f"{c.check_in_frequency_days} days",
+            "preferred_time": c.check_in_time.strftime("%H:%M") if c.check_in_time else None,
+        }
+
+        if c.check_in_type == "check_up_call":
+            checkins = data
+        elif c.check_in_type == "brain_coach":
+            brain_coach = data
+
+    health_conditions = (
+        user.health_conditions.split(",") if user.health_conditions else []
+    )
+
+    mobility = (
+        user.mobility.split(",") if user.mobility else []
+    )
+
+    return {
+        "user": {
+            "id": user.id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "photo_url": None,  # not in model → hardcoded
+            "phone": user.phone_number,
+            "date_of_birth": user.date_of_birth.isoformat() if user.date_of_birth else None,
+            "gender": None,  # not in model
+            "language": user.preferred_consultation_language,
+            "timezone": user.timezone,
+            "street": user.street,
+            "house_number": user.house_number,
+            "post_code": user.postal_code,
+            "city": user.city,
+            "emergency_notes": None,  # not in model
+            "created_at": user.created_at.isoformat() if user.created_at else None,
+        },
+
+        "consent": {
+            "consent_given": True,  # not in model → hardcoded
+            "caretaker_consent": user.caretaker_consent,
+            "created_at": user.created_at.isoformat() if user.created_at else None,
+        },
+
+        "health": {
+            "health_conditions": health_conditions,
+            "mobility_needs": mobility,
+        },
+
+        "medications": medications,
+
+        "checkins": checkins,
+        "brainCoach": brain_coach,
+
+        "caregivers": caregivers,
+
+        # ❗ Not in your models → hardcoded for now
+        "sensors": [],
+        "alerts": [],
+        "readings": [],
+    }
+    
+@router.delete("/medications/{med_id}")
+async def delete_medication(
+    med_id: int,
+    session: AsyncSession = Depends(get_session)
+):
+    result = await session.execute(
+        select(Medication).where(Medication.id == med_id)
+    )
+    med = result.scalars().first()
+
+    if not med:
+        raise HTTPException(status_code=404, detail="Medication not found")
+
+    await session.delete(med)
+    await session.commit()
+
+    return {"message": "Medication deleted successfully"}
+
+@router.delete("/caregivers/{caregiver_id}")
+async def delete_caregiver(
+    caregiver_id: int,
+    session: AsyncSession = Depends(get_session)
+):
+    result = await session.execute(
+        select(Caretaker).where(Caretaker.id == caregiver_id)
+    )
+    caregiver = result.scalars().first()
+
+    if not caregiver:
+        raise HTTPException(status_code=404, detail="Caregiver not found")
+
+    await session.delete(caregiver)
+    await session.commit()
+
+    return {"message": "Caregiver deleted successfully"}
+
+@router.put("/users/{user_id}")
+async def update_user(
+    user_id: int,
+    payload: dict = Body(...),
+    session: AsyncSession = Depends(get_session)
+):
+    result = await session.execute(
+        select(User).where(User.id == user_id)
+    )
+    user = result.scalars().first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    for key, value in payload.items():
+        if hasattr(user, key) and value is not None:
+            setattr(user, key, value)
+
+    await session.commit()
+    await session.refresh(user)
+
+    return {"message": "User updated successfully"}
+
+@router.put("/medications/{med_id}")
+async def update_medication(
+    med_id: int,
+    payload: dict = Body(...),
+    session: AsyncSession = Depends(get_session)
+):
+    result = await session.execute(
+        select(Medication).where(Medication.id == med_id)
+    )
+    med = result.scalars().first()
+
+    if not med:
+        raise HTTPException(status_code=404, detail="Medication not found")
+
+    for key, value in payload.items():
+        if hasattr(med, key) and value is not None:
+            setattr(med, key, value)
+
+    await session.commit()
+    await session.refresh(med)
+
+    return {"message": "Medication updated"}
+
+@router.put("/caregivers/{caregiver_id}")
+async def update_caregiver(
+    caregiver_id: int,
+    payload: dict = Body(...),
+    session: AsyncSession = Depends(get_session)
+):
+    result = await session.execute(
+        select(Caretaker).where(Caretaker.id == caregiver_id)
+    )
+    caregiver = result.scalars().first()
+
+    if not caregiver:
+        raise HTTPException(status_code=404, detail="Caregiver not found")
+
+    for key, value in payload.items():
+        if hasattr(caregiver, key) and value is not None:
+            setattr(caregiver, key, value)
+
+    await session.commit()
+    await session.refresh(caregiver)
+
+    return {"message": "Caregiver updated"}
+
+@router.put("/checkins/{checkin_id}")
+async def update_checkin(
+    checkin_id: int,
+    payload: dict = Body(...),
+    session: AsyncSession = Depends(get_session)
+):
+    result = await session.execute(
+        select(UserCheckin).where(UserCheckin.id == checkin_id)
+    )
+    checkin = result.scalars().first()
+
+    if not checkin:
+        raise HTTPException(status_code=404, detail="Checkin not found")
+
+    for key, value in payload.items():
+        if hasattr(checkin, key) and value is not None:
+            setattr(checkin, key, value)
+
+    await session.commit()
+    await session.refresh(checkin)
+
+    return {"message": "Checkin updated"}
