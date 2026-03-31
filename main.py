@@ -3,12 +3,7 @@ Vyva Backend - FastAPI Application Entry Point
 
 A production-ready FastAPI backend for senior care applications.
 """
-
-import asyncio
-from contextlib import asynccontextmanager
-from typing import Dict, Any
 from dotenv import load_dotenv
-from pydantic import BaseModel
 
 # Load environment variables from .env file
 load_dotenv()
@@ -22,7 +17,8 @@ from fastapi.exceptions import RequestValidationError
 
 from core.config import settings
 from core.logging import setup_logging
-from core.database import engine, Base
+from api.v1.dashboard import dashboard
+from api.v1.dashboard import users as dashboard_users
 from api.v1 import onboarding, users, social, brain_coach, medication, fall_detection, tts, symptom_checker, post_call, ai_assistant, news, tools, organization, authentication, twilio
 from api.v1 import webhooks
 from api.v1.managemant import admin, ingest_onboarding_users
@@ -211,6 +207,8 @@ app.include_router(news.router, prefix="/api/v1/news", tags=["News"])
 app.include_router(tools.router, prefix="/api/v1/tools", tags=["Tools"])
 app.include_router(twilio.router, prefix="/api/v1/twilio", tags=["Twilio"])
 app.include_router(webhooks.router, prefix="/api/v1/webhook", tags=["Webhooks"])
+app.include_router(dashboard.router, prefix="/api/v1/dashboard", tags=["Dashboard"])
+app.include_router(dashboard_users.router, prefix="/api/v1/user-dashboard", tags=["Dashboard Users"])
 
 if __name__ == "__main__":
     import uvicorn
