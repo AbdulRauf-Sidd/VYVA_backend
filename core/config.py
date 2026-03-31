@@ -45,6 +45,8 @@ class Settings(BaseSettings):
         "https://3627ab087f2f.ngrok-free.app",
         "https://care.zamora.vyva.io",
         "https://care-zamora.vyva.io",
+        "https://62e980b4-c7a2-4d7f-84b6-853448d5b732.lovableproject.com",
+        "https://rcadmin.vyva.life",
     ]
     
     # CORS

@@ -3,12 +3,7 @@ Vyva Backend - FastAPI Application Entry Point
 
 A production-ready FastAPI backend for senior care applications.
 """
-
-import asyncio
-from contextlib import asynccontextmanager
-from typing import Dict, Any
 from dotenv import load_dotenv
-from pydantic import BaseModel
 
 # Load environment variables from .env file
 load_dotenv()
@@ -22,7 +17,8 @@ from fastapi.exceptions import RequestValidationError
 
 from core.config import settings
 from core.logging import setup_logging
-from core.database import engine, Base
+from api.v1.dashboard import dashboard
+from api.v1.dashboard import users as dashboard_users, caretakers as dashboard_caretakers, checkins as dashboard_checkins
 from api.v1 import onboarding, users, social, brain_coach, medication, fall_detection, tts, symptom_checker, post_call, ai_assistant, news, tools, organization, authentication, twilio
 from api.v1 import webhooks
 from api.v1.managemant import admin, ingest_onboarding_users
@@ -30,23 +26,17 @@ from api.v1.managemant import ingest_onboarding_users
 # from apscheduler.schedulers.background import BackgroundScheduler
 # from tasks import check_medication_time, run_async_job
 from admin.admin import setup_admin
-from core.database import AsyncSessionLocal, get_db
+from core.database import AsyncSessionLocal
 # from sqlalchemy.ext.asyncio import AsyncSession
 # from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from services.elevenlabs_service import make_reminder_call_batch, check_batch_for_missed, make_caretaker_call_batch
-from services.helpers import construct_whatsapp_sms_message, construct_sms_body_from_template_for_reminders
+from services.elevenlabs_service import check_batch_for_missed, make_caretaker_call_batch
 # from services.whatsapp_service import whatsapp
-from services.email_service import email_service
-from schemas.eleven_labs_batch_calls import ElevenLabsBatchCallCreate
-from repositories.eleven_labs_batch_calls import ElevenLabsBatchCallRepository
 from repositories.user import UserRepository
 # from apscheduler.triggers.date import DateTrigger
 from celery.app.control import Inspect
 from celery_app import celery_app
 from mcp_tools.mcp_instance import mcp
-from mem0 import MemoryClient
-from mcp_tools import user, mem0, brain_coach as brain_coach_mcp, medication as med #dont remove
-import redis
+from mcp_tools import medication as med #dont remove
 
 # Setup logging
 logger = setup_logging()
@@ -211,6 +201,10 @@ app.include_router(news.router, prefix="/api/v1/news", tags=["News"])
 app.include_router(tools.router, prefix="/api/v1/tools", tags=["Tools"])
 app.include_router(twilio.router, prefix="/api/v1/twilio", tags=["Twilio"])
 app.include_router(webhooks.router, prefix="/api/v1/webhook", tags=["Webhooks"])
+app.include_router(dashboard.router, prefix="/api/v1/dashboard", tags=["Dashboard"])
+app.include_router(dashboard_users.router, prefix="/api/v1/user-dashboard", tags=["Dashboard Users"])
+app.include_router(dashboard_caretakers.router, prefix="/api/v1/caretaker-dashboard", tags=["Dashboard Caretakers"])
+app.include_router(dashboard_checkins.router, prefix="/api/v1/checkins-dashboard", tags=["Dashboard Checkins"])
 
 if __name__ == "__main__":
     import uvicorn
