@@ -17,7 +17,7 @@ from services.medication import MedicationService
 from models.user_check_ins import UserCheckin, CheckInType
 from models.organization import Organization
 from services.mem0 import add_conversation
-from datetime import timezone
+from datetime import timezone as timezone_obj
 from typing import Optional
 from celery.result import AsyncResult
 from scripts.onboarding_utils import construct_onboarding_user_payload, send_onboarding_sms
@@ -144,7 +144,7 @@ async def onboard_user(
         await db.refresh(user)
 
         record.onboarding_status = True
-        record.onboarded_at = datetime.now(timezone.utc)
+        record.onboarded_at = datetime.now(timezone_obj.utc)
         db.add(record)        
 
         wants_brain_coach = brain_coach.get("wants_brain_coach_sessions", False)
@@ -188,7 +188,7 @@ async def onboard_user(
                         str(med_input.get("start_date")), "%Y-%m-%d"
                     ).date()
                 else:
-                    start_date = datetime.now(timezone.utc).date()
+                    start_date = datetime.now(timezone_obj.utc).date()
 
                 # End date
                 if med_input.get("end_date"):
@@ -383,7 +383,7 @@ async def onboard_user_red_cross(
                         str(med_input.get("start_date")), "%Y-%m-%d"
                     ).date()
                 else:
-                    start_date = datetime.now(timezone.utc).date()
+                    start_date = datetime.now(timezone_obj.utc).date()
 
                 # End date
                 if med_input.get("end_date"):
@@ -515,12 +515,12 @@ async def get_onboarding_users_trend(
     organization_id_int = _parse_positive_int(organization_id, "organization_id")
     days_int = _parse_positive_int(days, "days", default=30)
 
-    now_utc = datetime.now(timezone.utc)
+    now_utc = datetime.now(timezone_obj.utc)
     end_day = now_utc.date()
     start_day = end_day - timedelta(days=days_int - 1)
 
-    start_dt = datetime.combine(start_day, time.min, tzinfo=timezone.utc)
-    end_dt = datetime.combine(end_day + timedelta(days=1), time.min, tzinfo=timezone.utc)
+    start_dt = datetime.combine(start_day, time.min, tzinfo=timezone_obj.utc)
+    end_dt = datetime.combine(end_day + timedelta(days=1), time.min, tzinfo=timezone_obj.utc)
 
     try:
         created_events = (
