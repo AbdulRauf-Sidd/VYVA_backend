@@ -10,7 +10,7 @@ from models.medication import MedicationLog, Medication
 from models.organization import Organization
 from sqlalchemy.orm import selectinload
 from sqlalchemy import delete, update
-from datetime import datetime
+from datetime import datetime, time
 from zoneinfo import ZoneInfo
 
 GERMAN_TZ = ZoneInfo("Europe/Berlin")
@@ -28,6 +28,19 @@ def to_cet(dt: Optional[datetime]) -> Optional[str]:
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=ZoneInfo("UTC"))
     return dt.astimezone(GERMAN_TZ).isoformat()
+
+
+def to_cet_time(t: Optional[time]) -> Optional[str]:
+    if t is None:
+        return None
+
+    # attach a dummy date
+    dt = datetime.combine(datetime.utcnow().date(), t)
+
+    # assume stored in UTC
+    dt = dt.replace(tzinfo=ZoneInfo("UTC"))
+
+    return dt.astimezone(GERMAN_TZ).strftime("%H:%M")
 
 def compute_risk_score(user_data: dict) -> int:
     score = 0
@@ -220,7 +233,7 @@ async def get_user(
         data = {
             "enabled": c.is_active,
             "frequency": f"{c.check_in_frequency_days} days",
-            "preferred_time": c.check_in_time.astimezone(GERMAN_TZ).strftime("%H:%M") if c.check_in_time else None,
+            "preferred_time": to_cet_time(c.check_in_time),
         }
 
         if c.check_in_type == "check_up_call":
