@@ -68,3 +68,27 @@ async def get_users_by_city(db: AsyncSession = Depends(get_db)):
         }
         for row in rows
     ]
+
+@router.get("/locations")
+async def city_coords():
+    # coords = get_city_coords(city)
+
+    # if not coords:
+    #     raise HTTPException(status_code=404, detail="City not found")
+
+    return [
+      {
+        "id": 131,
+        "lat": 24.901,
+        "lng": 67.082,
+        "name": "John Doe",
+        "status": "active"
+      },
+      {
+        "id": 136,
+        "lat": 24.912,
+        "lng": 67.095,
+        "name": "Jane Smith",
+        "status": "inactive"
+      }
+    ]

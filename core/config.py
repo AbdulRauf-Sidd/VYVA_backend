@@ -197,6 +197,8 @@ class Settings(BaseSettings):
     GOOGLE_PLACES_API_KEY: Optional[str] = Field(default=None, env="GOOGLE_PLACES_API_KEY")
     GOOGLE_PLACES_BASE_URL: str = Field(default="https://places.googleapis.com/v1", env="GOOGLE_PLACES_BASE_URL")
 
+    GOOGLE_MAPS_API_KEY: str = Field(env="GOOGLE_MAPS_API_KEY")
+
     MEM0_API_KEY: Optional[str] = Field(default=None, env="MEM0_API_KEY")
 
     ADMIN_USERNAME: str = Field(default="", env="ADMIN_USERNAME")

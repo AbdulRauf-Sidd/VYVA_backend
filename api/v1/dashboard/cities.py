@@ -48,15 +48,26 @@ def get_city_coords(city: Optional[str]) -> Optional[Tuple[float, float]]:
     return None
 
 
-@router.get("/city-coords")
+@router.get("/locations")
 async def city_coords(city: Optional[str] = Query(None)):
     coords = get_city_coords(city)
 
     if not coords:
         raise HTTPException(status_code=404, detail="City not found")
 
-    return {
-        "city": city,
-        "latitude": coords[0],
-        "longitude": coords[1],
-    }
+    return [
+      {
+        "id": 131,
+        "lat": 24.901,
+        "lng": 67.082,
+        "name": "John Doe",
+        "status": "active"
+      },
+      {
+        "id": 136,
+        "lat": 24.912,
+        "lng": 67.095,
+        "name": "Jane Smith",
+        "status": "inactive"
+      }
+    ]

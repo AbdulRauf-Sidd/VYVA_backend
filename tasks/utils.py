@@ -5,8 +5,7 @@ import logging
 from core.database import SessionLocal
 from models.user_check_ins import ScheduledSession, UserCheckin, CheckInType
 from sqlalchemy.orm import selectinload
-from sqlalchemy import desc
-from datetime import datetime, date, time, timezone
+from datetime import datetime, time 
 
 logger = logging.getLogger(__name__)
 
@@ -171,3 +170,4 @@ def get_default_time_obj(check_in_type = None):
         return time(hour=15, minute=0)  # default to 3 PM for brain coach
     if check_in_type == CheckInType.check_up_call.value:
         return time(hour=10, minute=0)  # default to 10 AM for check up call
+    

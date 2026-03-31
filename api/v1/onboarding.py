@@ -11,9 +11,6 @@ from core.database import get_db
 import logging
 from schemas.onboarding_user import OnboardingRequestBody, OnboardingRequestBodyRedCross
 from scripts.utils import convert_local_time_to_utc_time, get_or_create_caregiver, construct_mem0_memory_onboarding, date_now_in_timezone, convert_to_utc_datetime, parse_time_string
-from schemas.medication import BulkMedicationSchema
-from repositories.medication import MedicationRepository
-from services.medication import MedicationService
 from models.user_check_ins import UserCheckin, CheckInType
 from models.organization import Organization
 from services.mem0 import add_conversation
@@ -22,6 +19,7 @@ from typing import Optional
 from celery.result import AsyncResult
 from scripts.onboarding_utils import construct_onboarding_user_payload, send_onboarding_sms
 from celery_app import celery_app
+from tasks.onboarding_tasks import set_location_coordinates
 
 logger = logging.getLogger(__name__)
 
@@ -123,7 +121,7 @@ async def onboard_user(
             first_name=record.first_name,
             last_name=record.last_name,
             phone_number=phone_number,
-            address=address,
+            street=address,
             city=city,
             postal_code=postal_code,
             preferred_communication_channel=record.preferred_communication_channel,
@@ -235,6 +233,8 @@ async def onboard_user(
             logger.error(f"Error adding onboarding details to mem0: {e}")
         
         await db.commit()
+        address_str = f"{address}, {city}, {postal_code}"
+        set_location_coordinates.delay(user_id=user.id, location=address_str)
         send_onboarding_sms(user=user, send_to_caregiver=True)
             
         return {
@@ -321,7 +321,7 @@ async def onboard_user_red_cross(
             first_name=first_name,
             last_name=last_name,
             phone_number=phone_number,
-            address=street_address,
+            street=street_address,
             city=city,
             postal_code=post_code,
             house_number=house_number,
@@ -335,6 +335,7 @@ async def onboard_user_red_cross(
             preferred_reminder_channel="phone",
             preferred_reports_channel=payload.preferred_reports_channel if payload.preferred_reports_channel else "whatsapp",
             timezone=timezone,
+            country="Germany",
             organization_id=organization.id,
         )
 
@@ -432,6 +433,8 @@ async def onboard_user_red_cross(
             logger.error(f"Error adding onboarding details to mem0: {e}")
 
         await db.commit()
+        address_str = f"{street_address}, {house_number}, {city}, {post_code}, Germany"
+        set_location_coordinates.delay(user_id=user.id, location=address_str)
         # send_onboarding_sms(user=user, send_to_caregiver=True) 
             
         return {

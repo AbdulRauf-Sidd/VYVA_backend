@@ -6,7 +6,7 @@ celery_app = Celery(
     settings.APP_NAME,
     broker=settings.CELERY_BROKER_URL,
     backend=settings.CELERY_RESULT_BACKEND,
-    include=["tasks.management_tasks", "tasks.medication_tasks"],  # import your tasks here
+    include=["tasks.management_tasks", "tasks.medication_tasks", "tasks.onboarding_tasks"],  # import your tasks here
 )
 
 celery_app.conf.update(

@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from core.config import settings
 from core.logging import get_logger
-
+import requests
 
 logger = get_logger(__name__)
 
@@ -149,3 +149,25 @@ class GooglePlacesService:
 google_places = GooglePlacesService()
 
 
+def get_geocode_address(address):
+    url = "https://maps.googleapis.com/maps/api/geocode/json"
+    
+    params = {
+        "address": address,
+        "key": settings.GOOGLE_MAPS_API_KEY
+    }
+
+    res = requests.get(url, params=params).json()
+
+    if res["status"] == "OK":
+        result = res["results"][0]
+        location = result["geometry"]["location"]
+        
+        return {
+            "lat": location["lat"],
+            "lng": location["lng"],
+            "formatted_address": result["formatted_address"]
+        }
+    else:
+        logger.error(f"Error getting geocode address: {res['status']}")
+        return None

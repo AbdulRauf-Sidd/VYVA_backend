@@ -113,6 +113,8 @@ class User(Base):
     country = Column(String(100), nullable=True)
     address = Column(Text, nullable=True)
     house_number = Column(String(40), nullable=True)
+    latitude = Column(String(50), nullable=True)
+    longitude = Column(String(50), nullable=True)
 
     # #Brain Coach
     # brain_coach_complexity = Column(String(50), nullable=True)  
@@ -157,11 +159,10 @@ class User(Base):
     def full_address(self) -> str:
         """Return the user's full address as a readable string."""
         parts = [
+            self.postal_code,
             self.street,
             self.city,
-            self.postal_code,
-            self.country,
-            self.address
+            self.country
         ]
     
         # Filter out None / empty / whitespace-only values
