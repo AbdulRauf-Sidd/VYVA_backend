@@ -29,7 +29,6 @@ def compute_risk_score(user_data: dict) -> int:
 
 @router.get("/users")
 async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
-
     # 1️⃣ Fetch Red Cross org
     org_result = await session.execute(
         select(Organization).where(Organization.name.ilike("Red Cross"))
@@ -51,12 +50,14 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
 
     org_id = redcross_org.id
 
+    # 2️⃣ Fetch users with caretakers, medications, and brain responses
     users_result = await session.execute(
         select(User)
         .where(User.organization_id == org_id)
         .options(
             selectinload(User.caretaker),
-            selectinload(User.medications)
+            selectinload(User.medications),
+            selectinload(User.brain_responses)
         )
     )
     users: List[User] = users_result.scalars().all()
@@ -65,12 +66,14 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
 
     seven_days_ago = datetime.utcnow() - timedelta(days=7)
 
+    # 3️⃣ Fetch active check-ins
     checkins_result = await session.execute(
         select(UserCheckin).where(UserCheckin.user_id.in_([u.id for u in users]))
     )
     checkins: List[UserCheckin] = checkins_result.scalars().all()
     checkin_map = {c.user_id: c.is_active for c in checkins}
 
+    # 4️⃣ Fetch missed meds in last 7 days
     med_logs_result = await session.execute(
         select(MedicationLog)
         .where(MedicationLog.user_id.in_([u.id for u in users]))
@@ -82,12 +85,14 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
     for log in med_logs:
         missed_meds_map[log.user_id] = missed_meds_map.get(log.user_id, 0) + 1
 
+    # 5️⃣ Build GIS users
     gis_users = []
     for u in users:
         missed_meds = missed_meds_map.get(u.id, 0)
         checkin_enabled = checkin_map.get(u.id, False)
         health_conditions = len(u.health_conditions.split(",") if u.health_conditions else [])
         meds_count = len([m for m in u.medications if m.is_active])
+        brain_coach_enabled = len(u.brain_responses) > 0  # True if user has any brain coach responses
 
         gis_users.append({
             "id": u.id,
@@ -102,9 +107,10 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
             "sensorCount": 0,
             "offlineSensors": 0,
             "checkinEnabled": checkin_enabled,
+            "brainCoachEnabled": brain_coach_enabled,
             "healthConditions": health_conditions,
             "missedMeds7d": missed_meds,
-            "medsCount": meds_count, 
+            "medsCount": meds_count,
             "riskScore": compute_risk_score({
                 "critical_alerts": 0,
                 "active_alerts": 0,
