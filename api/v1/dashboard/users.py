@@ -222,7 +222,7 @@ async def get_user(
             "purpose": m.purpose,
             "dosage": m.dosage,
             "schedule_times": [
-                t.time_of_day.strftime("%H:%M") for t in (m.times_of_day or []) if t.time_of_day
+                to_cet_time(t.time_of_day) for t in (m.times_of_day or []) if t.time_of_day
             ]
         })
 
