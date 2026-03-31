@@ -129,7 +129,7 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
             "city": u.city,
             "phone": u.phone_number,
             "date_of_birth": to_cet(u.date_of_birth) if u.date_of_birth else None,
-            "coords": [int(u.latitude), int(u.longitude)] if u.latitude and u.longitude else None,
+            "coords": [float(u.latitude), float(u.longitude)] if u.latitude and u.longitude else None,
             "activeAlerts": 0,
             "criticalAlerts": 0,
             "sensorCount": 0,
