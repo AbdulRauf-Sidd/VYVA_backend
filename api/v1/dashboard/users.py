@@ -10,12 +10,24 @@ from models.medication import MedicationLog, Medication
 from models.organization import Organization
 from sqlalchemy.orm import selectinload
 from sqlalchemy import delete, update
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+GERMAN_TZ = ZoneInfo("Europe/Berlin")
 
 router = APIRouter()
 
 async def get_session():
     async with get_async_session() as session:
         yield session
+
+def to_cet(dt: Optional[datetime]) -> Optional[str]:
+    if dt is None:
+        return None
+    # assume dt is UTC if naive
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=ZoneInfo("UTC"))
+    return dt.astimezone(GERMAN_TZ).isoformat()
 
 def compute_risk_score(user_data: dict) -> int:
     score = 0
@@ -103,7 +115,7 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
             "last_name": u.last_name,
             "city": u.city,
             "phone": u.phone_number,
-            "date_of_birth": u.date_of_birth.isoformat() if u.date_of_birth else None,
+            "date_of_birth": to_cet(u.date_of_birth) if u.date_of_birth else None,
             "coords": None,
             "activeAlerts": 0,
             "criticalAlerts": 0,
@@ -145,6 +157,13 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
             for city in set(u["city"] or "Unknown" for u in gis_users)
         ]
     }
+    
+def to_cet_date(dt: Optional[datetime]) -> Optional[str]:
+    if dt is None:
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=ZoneInfo("UTC"))
+    return dt.astimezone(GERMAN_TZ).date().isoformat()
     
 @router.get("/user-info")
 async def get_user(
@@ -201,7 +220,7 @@ async def get_user(
         data = {
             "enabled": c.is_active,
             "frequency": f"{c.check_in_frequency_days} days",
-            "preferred_time": c.check_in_time.strftime("%H:%M") if c.check_in_time else None,
+            "preferred_time": c.check_in_time.astimezone(GERMAN_TZ).strftime("%H:%M") if c.check_in_time else None,
         }
 
         if c.check_in_type == "check_up_call":
@@ -224,7 +243,7 @@ async def get_user(
             "last_name": user.last_name,
             "photo_url": None,  # not in model → hardcoded
             "phone": user.phone_number,
-            "date_of_birth": user.date_of_birth.isoformat() if user.date_of_birth else None,
+            "date_of_birth": to_cet_date(user.date_of_birth) if user.date_of_birth else None,
             "gender": None,  # not in model
             "language": user.preferred_consultation_language,
             "timezone": user.timezone,
