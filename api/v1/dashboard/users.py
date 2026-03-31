@@ -50,33 +50,36 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
 
     org_id = redcross_org.id
 
-    # 2️⃣ Fetch users with caretakers, medications, and brain responses
+    # 2️⃣ Fetch users with caretakers and medications
     users_result = await session.execute(
         select(User)
         .where(User.organization_id == org_id)
         .options(
             selectinload(User.caretaker),
             selectinload(User.medications),
-            selectinload(User.brain_responses)
         )
     )
     users: List[User] = users_result.scalars().all()
     if not users:
         return {"totalUsers": 0, "gisUsers": [], "cityDistribution": []}
 
+    user_ids = [u.id for u in users]
     seven_days_ago = datetime.utcnow() - timedelta(days=7)
 
-    # 3️⃣ Fetch active check-ins
+    # 3️⃣ Fetch all check-ins
     checkins_result = await session.execute(
-        select(UserCheckin).where(UserCheckin.user_id.in_([u.id for u in users]))
+        select(UserCheckin).where(UserCheckin.user_id.in_(user_ids))
     )
     checkins: List[UserCheckin] = checkins_result.scalars().all()
+
+    # Maps for check-in statuses
     checkin_map = {c.user_id: c.is_active for c in checkins}
+    brain_coach_map = {c.user_id: True for c in checkins if c.check_in_type == "brain_coach"}
 
     # 4️⃣ Fetch missed meds in last 7 days
     med_logs_result = await session.execute(
         select(MedicationLog)
-        .where(MedicationLog.user_id.in_([u.id for u in users]))
+        .where(MedicationLog.user_id.in_(user_ids))
         .where(MedicationLog.status == "missed")
         .where(MedicationLog.created_at >= seven_days_ago)
     )
@@ -90,9 +93,9 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
     for u in users:
         missed_meds = missed_meds_map.get(u.id, 0)
         checkin_enabled = checkin_map.get(u.id, False)
+        brain_coach_enabled = brain_coach_map.get(u.id, False)  # ✅ Updated logic
         health_conditions = len(u.health_conditions.split(",") if u.health_conditions else [])
         meds_count = len([m for m in u.medications if m.is_active])
-        brain_coach_enabled = len(u.brain_responses) > 0  # True if user has any brain coach responses
 
         gis_users.append({
             "id": u.id,
