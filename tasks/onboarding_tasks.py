@@ -15,8 +15,8 @@ def set_location_coordinates(self, user_id: int, location: str):
             with get_sync_session() as db:
                 user = db.query(User).filter(User.id == user_id).first()
                 if user:
-                    user.latitude = response['latitude']
-                    user.longitude = response['longitude']
+                    user.latitude = response['lat']
+                    user.longitude = response['lng']
                     user.address = response['formatted_address']
                     db.commit()
                 else:
