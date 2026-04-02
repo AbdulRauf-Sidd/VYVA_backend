@@ -7,7 +7,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-@celery_app.task(name="process_pending_onboarding_users", bind=True, max_retries=3, default_retry_delay=1800)
+@celery_app.task(name="set_location_coordinates", bind=True, max_retries=3, default_retry_delay=1800)
 def set_location_coordinates(self, user_id: int, location: str):
     try:
         response = get_geocode_address(location)
