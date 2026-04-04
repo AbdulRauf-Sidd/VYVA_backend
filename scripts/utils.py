@@ -341,11 +341,11 @@ def parse_time_string(time_str: str) -> time:
 
 
 def get_user_organization(user_id: int) -> Organization:
-    from sqlalchemy.orm import joinedload
+    from sqlalchemy.orm import joinedload, selectinload
     
     with SessionLocal() as db:
         user = db.query(User).options(
-            joinedload(User.organization)
+            joinedload(User.organization).selectinload(Organization.agents)
         ).filter(User.id == user_id).first()
         
         if not user:
