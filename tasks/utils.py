@@ -6,6 +6,7 @@ from core.database import SessionLocal
 from models.user_check_ins import ScheduledSession, UserCheckin, CheckInType
 from sqlalchemy.orm import selectinload
 from datetime import datetime, time 
+from scripts.utils import convert_local_time_to_utc_time
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +24,7 @@ def schedule_reminder_message(payload, dt_utc, preferred_reminder_channel):
                 args=[payload,],
                 eta=dt_utc
             )
-        elif preferred_reminder_channel == "app":
+        elif preferred_reminder_channel == "app": #TODO
             celery_app.send_task(
                 "send_app_medication_reminder",
                 args=[payload,],
@@ -93,9 +94,9 @@ def schedule_check_in_calls_for_hour(db, today, hour_start, hour_end):
             db.query(UserCheckin)
             .options(selectinload(UserCheckin.user),
                      selectinload(UserCheckin.scheduled_sessions))
-            .filter(UserCheckin.is_active == True,
-                    UserCheckin.check_in_time >= hour_start,
-                    UserCheckin.check_in_time < hour_end
+            .filter(UserCheckin.is_active == True
+                    # UserCheckin.check_in_time >= hour_start,
+                    # UserCheckin.check_in_time < hour_end
                     )
             .all()
         )
@@ -104,6 +105,11 @@ def schedule_check_in_calls_for_hour(db, today, hour_start, hour_end):
 
         for checkin in checkins:
             try:
+                local_time = checkin.check_in_time
+                utc_time = convert_local_time_to_utc_time(local_time, UserCheckin.user.timezone)
+                if not (hour_start <= utc_time < hour_end):
+                    continue
+
                 # --- get last scheduled session ---
                 last_session = max(
                     checkin.scheduled_sessions,

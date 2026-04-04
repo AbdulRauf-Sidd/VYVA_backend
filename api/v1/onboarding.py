@@ -153,12 +153,12 @@ async def onboard_user(
                 time_of_day = "12:00" #defaulting to 12 PM if no time provided
 
             time_obj = parse_time_string(time_of_day)
-            utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
+            # utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
             check_in = UserCheckin(
                 user_id=user.id,
                 check_in_type=CheckInType.brain_coach.value,
                 check_in_frequency_days=frequency_in_days if frequency_in_days else 7,
-                check_in_time=utc_time
+                check_in_time=time_obj
             )
             db.add(check_in)
 
@@ -170,12 +170,12 @@ async def onboard_user(
                 time_of_day = "09:00" #defaulting to 9 AM if no time provided
 
             time_obj = parse_time_string(time_of_day)
-            utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
+            # utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
             check_in = UserCheckin(
                 user_id=user.id,
                 check_in_type=CheckInType.check_up_call.value,
                 check_in_frequency_days=check_in_frequency if check_in_frequency else 7,
-                check_in_time=utc_time
+                check_in_time=time_obj
             )
             db.add(check_in)
 
@@ -210,11 +210,11 @@ async def onboard_user(
 
                 for time_str in med_input.get("times", []):
                     time_obj = parse_time_string(time_str)
-                    utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
+                    # utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
 
                     med_time = MedicationTime(
                         medication_id=med.id,
-                        time_of_day=utc_time
+                        time_of_day=time_obj
                     )
                     db.add(med_time)        
 
@@ -352,12 +352,12 @@ async def onboard_user_red_cross(
                 time_of_day = "12:00" #defaulting to 12 PM if no time provided
 
             time_obj = parse_time_string(time_of_day)
-            utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
+            # utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
             check_in = UserCheckin(
                 user_id=user.id,
                 check_in_type=CheckInType.brain_coach.value,
                 check_in_frequency_days=frequency_in_days if frequency_in_days else 7,
-                check_in_time=utc_time
+                check_in_time=time_obj
             )
             db.add(check_in)
 
@@ -369,12 +369,12 @@ async def onboard_user_red_cross(
                 time_of_day = "09:00" #defaulting to 9 AM if no time provided
 
             time_obj = parse_time_string(time_of_day)
-            utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
+            # utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
             check_in = UserCheckin(
                 user_id=user.id,
                 check_in_type=CheckInType.check_up_call.value,
                 check_in_frequency_days=check_in_frequency if check_in_frequency else 7,
-                check_in_time=utc_time
+                check_in_time=time_obj
             )
             db.add(check_in)
 
@@ -409,11 +409,11 @@ async def onboard_user_red_cross(
 
                 for time_str in med_input.get("times", []):
                     time_obj = parse_time_string(time_str)
-                    utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
+                    # utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
 
                     med_time = MedicationTime(
                         medication_id=med.id,
-                        time_of_day=utc_time
+                        time_of_day=time_obj
                     )
                     db.add(med_time)
 

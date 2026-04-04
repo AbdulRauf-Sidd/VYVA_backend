@@ -2,8 +2,9 @@ from elevenlabs import ElevenLabs, OutboundCallRecipient, ConversationConfigOver
 from core.config import settings
 from models.onboarding import OnboardingUser
 import requests
+from models.organization import AgentTypeEnum, OrganizationAgents
 from services.helpers import construct_initial_agent_message_for_reminders, constuct_initial_agent_message_for_onboarding, construct_general_welcome_message
-from scripts.utils import LANGUAGE_MAP
+from scripts.utils import LANGUAGE_MAP, get_user_organization
 from typing import Optional, Dict, Any
 from datetime import datetime
 
@@ -235,12 +236,19 @@ def make_onboarding_call(payload: dict):
 
 def make_medication_reminder_call(payload: dict):
     try:
-        phone_number_id = payload.get("phone_number_id", None)
-        if not phone_number_id:
-            settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
-
         id = payload.get("user_id")
-        agent_id = payload.get("agent_id")
+        organization = get_user_organization(id)
+        phone_number_id = organization.elevenlabs_phone_number_id if organization.elevenlabs_phone_number_id else settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
+        agent = next(
+            (a for a in organization.agents 
+             if a.agent_type == AgentTypeEnum.medication_reminder.value and a.is_active),
+            None
+        )
+        
+        if not agent:
+            raise ValueError(f"No active medication reminder agent found for organization {organization.id}")
+        
+        agent_id = agent.agent_id
         phone_number = payload.get("phone_number")
         first_name = payload.get("first_name")
         # last_name = payload.get("last_name")

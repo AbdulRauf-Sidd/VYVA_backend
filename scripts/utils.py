@@ -3,7 +3,10 @@ import random
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 from models.user import Caretaker, User
+from models.organization import Organization
+from core.database import SessionLocal
 import logging
 from typing import Optional
 
@@ -335,3 +338,20 @@ def parse_time_string(time_str: str) -> time:
     except (ValueError, AttributeError):
         logger.error(f"Invalid time format: {time_str}. Expected format: 'HH:MM'")
         return None
+
+
+def get_user_organization(user_id: int) -> Organization:
+    from sqlalchemy.orm import joinedload
+    
+    with SessionLocal() as db:
+        user = db.query(User).options(
+            joinedload(User.organization)
+        ).filter(User.id == user_id).first()
+        
+        if not user:
+            raise ValueError(f"User {user_id} not found")
+        
+        if not user.organization:
+            raise ValueError(f"No organization found for user {user_id}")
+        
+        return user.organization

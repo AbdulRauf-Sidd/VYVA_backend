@@ -216,11 +216,11 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
                         "message": "check_in_frequency_days is required for add operation."
                     }
 
-                utc_time = convert_local_time_to_utc_time(input.check_in_time, user.timezone)
+                # utc_time = convert_local_time_to_utc_time(input.check_in_time, user.timezone)
                 if existing:
                     # UPDATE
                     existing.check_in_frequency_days = input.check_in_frequency_days
-                    existing.check_in_time = utc_time
+                    existing.check_in_time = input.check_in_time
 
                     await db.commit()
 
@@ -235,7 +235,7 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
                         user_id=input.user_id,
                         check_in_type=input.check_in_type.value,
                         check_in_frequency_days=input.check_in_frequency_days,
-                        check_in_time=utc_time,
+                        check_in_time=input.check_in_time,
                         is_active=True
                     )
 
@@ -252,12 +252,12 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
                         "success": False,
                         "message": "Check-in configuration does not exist."
                     }
-                check_time_local = convert_utc_time_to_local_time(existing.check_in_time, user.timezone)
+                # check_time_local = convert_utc_time_to_local_time(existing.check_in_time, user.timezone)
                 return {
                     "success": True,
                     "check_in_type": existing.check_in_type,
                     "check_in_frequency_days": existing.check_in_frequency_days,
-                    "check_in_time": check_time_local,
+                    "check_in_time": existing.check_in_time,
                 }
 
         except Exception as e:

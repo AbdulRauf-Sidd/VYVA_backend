@@ -7,7 +7,7 @@ from models.medication import Medication, MedicationTime, MedicationStatus, Medi
 from models.organization import AgentTypeEnum, TwilioWhatsappTemplates, TemplateTypeEnum
 from sqlalchemy import or_, select
 from models.eleven_labs_sessions import ElevenLabsSessions
-from scripts.medication_utils import notify_caretaker_on_missed_meds, construct_medication_string_for_whatsapp
+from scripts.medication_utils import notify_caretaker_on_missed_meds, construct_medication_string_for_whatsapp, create_medication_logs
 import asyncio
 
 
@@ -43,17 +43,7 @@ def send_whatsapp_medication_reminder(payload):
             
             template_id = template.template_id
 
-            for medication in medications:
-                med_log = MedicationLog(
-                    medication_id = medication['medication_id'],
-                    medication_time_id = medication['time_id'],
-                    user_id = user_id,
-                    status = MedicationStatus.unconfirmed.value
-                )
-                db.add(med_log)
-                db.flush()  # assigns ID without committing
-                med_log_ids.append(med_log.id)
-            db.commit()
+            med_log_ids = create_medication_logs(user_id, medications)
         
         template_dic = {
             1: first_name,

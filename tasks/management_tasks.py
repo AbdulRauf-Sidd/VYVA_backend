@@ -6,7 +6,7 @@ from models.user import User
 from models.onboarding import OnboardingUser, OnboardingLogs
 from models.organization import Organization, OrganizationAgents, AgentTypeEnum, TwilioWhatsappTemplates, TemplateTypeEnum
 import logging
-from sqlalchemy.orm import selectinload, with_loader_criteria
+from sqlalchemy.orm import selectinload
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from datetime import datetime, date, timezone
@@ -17,7 +17,7 @@ from models.eleven_labs_sessions import ElevenLabsSessions
 from models.user_check_ins import ScheduledSession
 from scripts.medication_utils import schedule_medication_reminders_for_hour
 from models.user_check_ins import UserCheckin, CheckInType
-from tasks.utils import schedule_celery_task_for_call_status_check, update_medication_status, schedule_check_in_calls_for_hour, schedule_celery_task_for_scheduled_session_status_check
+from tasks.utils import schedule_celery_task_for_call_status_check, schedule_check_in_calls_for_hour, schedule_celery_task_for_scheduled_session_status_check
 
 from scripts.onboarding_utils import construct_onboarding_user_payload
 from scripts.utils import date_now_in_timezone, get_iso_language
@@ -26,6 +26,7 @@ from services.helpers import construct_user_not_picked_up_message
 from twilio.rest import Client
 from core.config import settings
 from services.whatsapp_service import whatsapp_service
+from scripts.medication_utils import create_medication_logs
 
 logger = logging.getLogger(__name__)
 
@@ -107,7 +108,6 @@ def process_pending_onboarding_users():
                     OnboardingUser.consent_given.is_not(False))
             .all()
         )
-        print(pending_users, hour_start, hour_end)
         for user in pending_users:
             dt_today_utc = None
             call_back_date_time = user.call_back_date_time
@@ -175,11 +175,11 @@ def schedule_calls_for_hour():
 
 @celery_app.task(name="initiate_medication_reminder_call")
 def initiate_medication_reminder_call(payload):
+    create_medication_logs(payload.get("user_id"), payload.get("medications"))
     response = make_medication_reminder_call(payload)
-    if response:
-        call_sid = response.get('callSid')
-        db: Session = SessionLocal()
-        try:
+    with SessionLocal() as db:
+        if response:
+            call_sid = response.get('callSid')
             session_record = ElevenLabsSessions(
                 user_id=payload.get('user_id'),                 # make sure this exists
                 agent_id=payload.get("agent_id"),
@@ -188,17 +188,12 @@ def initiate_medication_reminder_call(payload):
                 call_sid=call_sid,
                 status="ringing"
             )
-
             db.add(session_record)
             db.commit()
-            # db.refresh(session_record)
             schedule_celery_task_for_call_status_check()
-        
-        except Exception as e:
-            logger.error(f"error creating eleven labs session record: {e}")
+        else:
+            logger.error(f"Failed to initiate medication reminder call for payload: {payload}")
 
-        finally:
-            db.close()
 
 @celery_app.task(name="update_call_status", bind=True)
 def update_call_status(self):
@@ -219,13 +214,11 @@ def update_call_status(self):
         for session in sessions:
             status = get_call_status_from_twilio(session.call_sid)
             status = status.get('status', None)
-            if status in excluded_statuses: #call completed
-                if status in ["declined", "no_answer", "failed"]:
-                    # Mark medication as unconfirmed
-                    if session.agent_type == AgentTypeEnum.medication_reminder.value and session.payload:
-                        update_medication_status(session.payload, MedicationStatus.unconfirmed.value)
-                    
-            
+            # if status in excluded_statuses: #call completed
+            #     if status in ["declined", "no_answer", "failed"]:
+            #         # Mark medication as unconfirmed
+            #         if session.agent_type == AgentTypeEnum.medication_reminder.value and session.payload:
+            #             update_medication_status(session.payload, MedicationStatus.unconfirmed.value)
             session.status = status
         db.commit()
     except Exception as e:

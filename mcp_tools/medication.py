@@ -36,10 +36,10 @@ async def retrieve_user_medications(user_id: int) -> list[dict]:
 
         meds = []
         for med in medications:
-            times = []
-            for time in med.times_of_day:
-                local_time = convert_utc_time_to_local_time(time.time_of_day, med.user.timezone)
-                times.append(local_time)
+            # times = []
+            # for time in med.times_of_day:
+            #     # local_time = convert_utc_time_to_local_time(time.time_of_day, med.user.timezone)
+            #     times.append(local_time)
 
             meds.append(
                 {
@@ -49,7 +49,7 @@ async def retrieve_user_medications(user_id: int) -> list[dict]:
                     "purpose": med.purpose,
                     # "start_date": med.start_date.isoformat() if med.start_date else None,
                     # "end_date": med.end_date.isoformat() if med.end_date else None,
-                    "times": times
+                    "times": med.times_of_day
                 }
             )
         return meds
@@ -99,11 +99,11 @@ async def add_user_medication(user_id: int, name: str, dosage: str, purpose: str
         for time_str in times:
             hours, minutes = map(int, time_str.split(":"))
             time_obj = time(hour=hours, minute=minutes)
-            utc_time = convert_local_time_to_utc_time(time_obj, user_timezone)
+            # utc_time = convert_local_time_to_utc_time(time_obj, user_timezone)
             db.add(
                 MedicationTime(
                     medication=new_med,
-                    time_of_day=utc_time
+                    time_of_day=time_obj
                 )
             )
 
@@ -168,7 +168,7 @@ async def update_user_medication(
 
         await db.flush()
 
-        # 🔹 2️⃣ Create new medication starting tomorrow
+        # 🔹 2️⃣ Create new medication starting today
         today = user_today
 
         new_med = Medication(
@@ -186,10 +186,10 @@ async def update_user_medication(
         db.add(new_med)
         await db.flush()
         if times is not None:
-            convert=True
+            # convert=True
             time_strings = times
         else:
-            convert=False
+            # convert=False
             time_strings = [
                 t.time_of_day.strftime("%H:%M")
                 for t in old_med.times_of_day
@@ -199,8 +199,8 @@ async def update_user_medication(
         for time_str in time_strings:
             hours, minutes = map(int, time_str.split(":"))
             time_obj = time(hour=hours, minute=minutes)
-            if convert:
-                time_obj = convert_local_time_to_utc_time(time_obj, old_med.user.timezone)
+            # if convert:
+            #     time_obj = convert_local_time_to_utc_time(time_obj, old_med.user.timezone)
 
             db.add(
                 MedicationTime(
@@ -249,6 +249,7 @@ async def end_user_medication(medication_id: int) -> DeleteUserMedication:
         
         medication.end_date = user_today
         medication.is_active = False
+        medication.disabled_at = now_utc
 
         await db.commit()
 
@@ -285,16 +286,14 @@ async def update_reminder_channel(channel_input: UpdateReminderChannel) -> bool:
 
 class MedicationLogInput(BaseModel):
     user_id: int
-    reminder: bool
     medication_logs: list[dict]
 
 @mcp.tool(
     name="medication_log",
     description=(
         "Use this tool to update the user's medication log. "
-        "Call this tool after reminding the user about their medications "
-        "and confirming which ones have been taken. "
-        "Once all medications have been checked, submit the results using this tool.\n\n"
+        "Call this tool only if the user wants to log their medication intake. "
+        "You will ask which medications (and times) they want to update the log, submit the results using this tool.\n\n"
         "Example input format:\n"
         "{\n"
         "  user_id: 4,\n"
@@ -305,7 +304,7 @@ class MedicationLogInput(BaseModel):
         "      taken: true\n"
         "    }\n"
         "  ]\n"
-        "}"
+        "}" \
     )
 )
 
@@ -317,19 +316,41 @@ async def update_medication_log(input: MedicationLogInput) -> dict:
         if not input.medication_logs:
             raise ValueError(f"Med Logs not found.")
         
-        # update_caretaker = False
+        # Fetch user timezone
+        stmt = select(User.timezone).where(User.id == input.user_id)
+        result = await db.execute(stmt)
+        user_timezone = result.scalars().first()
+        tz = get_zoneinfo_safe(user_timezone)
+        now_utc = datetime.now(timezone.utc)
+        user_now = now_utc.astimezone(tz)
         
         for med in input.medication_logs:
             med_taken = med['taken']
 
-            log = MedicationLog(
-                medication_id = med['medication_id'],
-                medication_time_id = med['time_id'],
-                user_id = input.user_id,
-                taken_at=datetime.now(timezone.utc) if med_taken else None,
-                status=MedicationStatus.taken.value if med_taken else MedicationStatus.missed.value
-            )
-            db.add(log)
+            # Find the latest log for this medication and time
+            stmt = select(MedicationLog).where(
+                MedicationLog.medication_id == med['medication_id'],
+                MedicationLog.medication_time_id == med['time_id'],
+                MedicationLog.user_id == input.user_id
+            ).order_by(MedicationLog.created_at.desc()).limit(1)
+            result = await db.execute(stmt)
+            log = result.scalars().first()
+
+            if log:
+                log.status = MedicationStatus.taken.value if med_taken else MedicationStatus.missed.value
+                log.taken_at = now_utc if med_taken else None
+                log.taken_at_local = user_now if med_taken else None
+            else:
+                # Fallback: create new log if none exists
+                log = MedicationLog(
+                    medication_id=med['medication_id'],
+                    medication_time_id=med['time_id'],
+                    user_id=input.user_id,
+                    taken_at=now_utc if med_taken else None,
+                    taken_at_local=user_now if med_taken else None,
+                    status=MedicationStatus.taken.value if med_taken else MedicationStatus.missed.value
+                )
+                db.add(log)
 
         await db.commit()
 

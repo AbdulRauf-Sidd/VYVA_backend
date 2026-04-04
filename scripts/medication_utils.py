@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime, timezone
+from scripts.utils import convert_local_time_to_utc_time, get_zoneinfo_safe
 from sqlalchemy import Time, or_
 from sqlalchemy import update
 from sqlalchemy.exc import IntegrityError
@@ -11,7 +12,6 @@ from sqlalchemy.orm import selectinload
 from services.whatsapp_service import whatsapp_service
 from tasks.utils import schedule_reminder_message
 from models.organization import OrganizationAgents, AgentTypeEnum
-from tasks.utils import schedule_reminder_message
 
 logger = logging.getLogger(__name__)
 
@@ -116,6 +116,23 @@ def construct_medication_string_for_whatsapp(medications):
     )
 
 
+def create_medication_logs(user_id, medications, status=MedicationStatus.unconfirmed.value):
+    with SessionLocal() as db:
+        med_log_ids = []
+        for medication in medications:
+            med_log = MedicationLog(
+                medication_id=medication['medication_id'],
+                medication_time_id=medication['time_id'],
+                user_id=user_id,
+                status=status
+            )
+            db.add(med_log)
+            db.flush()
+            med_log_ids.append(med_log.id)
+        db.commit()
+        return med_log_ids
+
+
 def schedule_medication_reminders_for_hour(db, today: datetime.date, hour_start: Time, hour_end: Time):
     try:
         active_medications = (
@@ -126,8 +143,6 @@ def schedule_medication_reminders_for_hour(db, today: datetime.date, hour_start:
                 selectinload(Medication.user),
             )
             .filter(
-                MedicationTime.time_of_day >= hour_start,
-                MedicationTime.time_of_day < hour_end,
                 Medication.is_active.is_(True),
                 or_(
                     Medication.start_date == None,
@@ -147,7 +162,6 @@ def schedule_medication_reminders_for_hour(db, today: datetime.date, hour_start:
             try:
                 scheduled_for_med = False
                 user = med.user
-                # timezone = user.timezone
                 preferred_reminder_channel = user.preferred_reminder_channel
                 
                 # Cache agent_id for organization to avoid redundant DB queries
@@ -176,10 +190,17 @@ def schedule_medication_reminders_for_hour(db, today: datetime.date, hour_start:
 
                 for time in med.times_of_day:
                     med_time = time.time_of_day
+                    med_time_utc = convert_local_time_to_utc_time(med_time, user.timezone)
+                    if not (hour_start <= med_time_utc < hour_end):
+                        continue
+
                     dt_utc = datetime.combine(today, med_time)
+                    
+                    
                     if time.scheduled_at and time.scheduled_at == dt_utc:
                         logger.info(f"Medication {med.id} for user {user.id} at time {med_time} has already been scheduled. Skipping duplicate scheduling.")
                         continue
+
 
                     med_payload = build_medication_payload(med, time)
 
@@ -239,3 +260,59 @@ def schedule_reminder_messages_for_users(user_reminders):
         except Exception as e:
             logger.error(f"Error scheduling reminders for user {user_id}: {e}")
             continue
+
+
+def construct_medication_object_for_reminder(medication_list: list[dict]):
+    """
+    structure:
+    [
+        {
+            "medication_id": 1,
+            "time_id": 3
+        },
+        ...]
+    """
+    meds = []
+    with SessionLocal() as db:
+        if not medication_list:
+            return meds
+        
+        med_ids = [m['medication_id'] for m in medication_list]
+        time_ids = [m['time_id'] for m in medication_list]
+        
+        # Fetch all medications and times in bulk
+        medications = db.query(Medication).filter(Medication.id.in_(med_ids)).all()
+        times = db.query(MedicationTime).filter(MedicationTime.id.in_(time_ids)).all()
+        
+        # Create lookup dicts
+        med_dict = {m.id: m for m in medications}
+        time_dict = {t.id: t for t in times}
+        
+        for med_dict_item in medication_list:
+            med_id = med_dict_item['medication_id']
+            time_id = med_dict_item['time_id']
+            med = med_dict.get(med_id)
+            time_obj = time_dict.get(time_id)
+            if med and time_obj:
+                payload = build_medication_payload(med, time_obj)
+                meds.append(payload)
+    return meds
+
+
+def construct_user_payload_for_reminder(user_id: int):
+    with SessionLocal() as db:
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            logger.warning(f"User not found for constructing reminder payload: {user_id}")
+            return {}
+        
+        payload = {
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'phone_number': user.phone_number,
+            'language': user.preferred_consultation_language,
+            'user_id': user.id,
+            "preferred_reminder_channel": user.preferred_reminder_channel
+        }
+
+        return payload

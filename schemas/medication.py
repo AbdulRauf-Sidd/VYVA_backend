@@ -86,3 +86,15 @@ class WeeklyScheduleRequest(BaseModel):
     date_start: date
     date_end: date
     is_present: bool
+
+
+class MedicationLogItem(BaseModel):
+    medication_id: int
+    time_id: int
+    taken: bool
+
+class MedicationLogRequest(BaseModel):
+    user_id: int
+    medication_logs: List[MedicationLogItem]
+    reminder: bool = False
+    reminder_time: Optional[time] = None

@@ -76,8 +76,10 @@ async def receive_message(request: Request, db: AsyncSession = Depends(get_db)):
 
         # --- Extract payload fields safely ---
 
+        logger.info(f"POST CALL PAYLOAD ==>>: {payload}")
         type = payload.get("type")
         data = payload.get("data", {})
+        conversation_id = data.get("conversation_id")
         event_timestamp = payload.get("event_timestamp")
         stmt = select(Organization.onboarding_agent_id)
         result = (
@@ -88,12 +90,21 @@ async def receive_message(request: Request, db: AsyncSession = Depends(get_db)):
         status = data.get("status")
         transcript = data.get("transcript")
         metadata = data.get("metadata", {})
-        analysis = data.get("analysis", {})
         conversation_initiation_client_data = data.get("conversation_initiation_client_data", {})
         
         if agent_id in result:
-            pass
+            return {"success": True} #onboarding agent. 
+        
         else:
+            user_id = conversation_initiation_client_data.get("dynamic_variables", {}).get("user_id")
+            phone_number = conversation_initiation_client_data.get("dynamic_variables", {}).get("phone_number")
+            call_duration = metadata.get("call_duration_secs")
+            termination_reason = metadata.get("termination_reason")
+            
+            if phone_number:
+                result = await db.execute(select(User.id).where(User.phone_number == phone_number))
+                user_id = result.scalar_one()
+
             conversation = []
             for message in transcript:
                 role = message['role']
@@ -106,15 +117,6 @@ async def receive_message(request: Request, db: AsyncSession = Depends(get_db)):
                     'role': role,
                     'content': content
                 })
-            user_id = conversation_initiation_client_data.get("dynamic_variables", {}).get("user_id")
-            phone_number = conversation_initiation_client_data.get("dynamic_variables", {}).get("phone_number")
-            call_duration = metadata.get("call_duration_secs")
-            termination_reason = metadata.get("termination_reason")
-            call_successful = analysis.get("call_successful")
-            transcript_summary = analysis.get("transcript_summary")
-            if phone_number:
-                result = await db.execute(select(User.id).where(User.phone_number == phone_number))
-                user_id = result.scalar_one()
 
             if user_id:
                 await add_conversation(
@@ -123,18 +125,7 @@ async def receive_message(request: Request, db: AsyncSession = Depends(get_db)):
                 )
         
             try:
-                session_repo = ElevenLabsSessionRepository(db)
-                session_data = ElevenLabsSessionCreate(
-                    call_successful=call_successful,
-                    user_id=user_id,
-                    agent_id=agent_id,
-                    duration=call_duration,
-                    termination_reason=termination_reason,
-                    summary=transcript_summary,
-                    transcription=transcript,
-                )
-                created_session = await session_repo.create(session_data)
-                logger.info(f"Session saved successfully with ID {created_session.id}")
+                pass
             except Exception as e:
                 logger.error(f"DB insert failed: {e}")
                 return {"status": "error", "reason": "db_insert_failed"}

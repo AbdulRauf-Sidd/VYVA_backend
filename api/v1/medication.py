@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from requests import Session
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import or_, select, func
 from typing import List, Dict
@@ -11,24 +10,25 @@ import time
 from zoneinfo import ZoneInfo
 from models.user import User
 from models.medication import MedicationStatus, Medication, MedicationLog, MedicationTime
-from datetime import time as dt_time
-import asyncio
 from sqlalchemy.orm import selectinload
 from core.database import get_db
-from scripts.utils import convert_utc_time_to_local_time
+from scripts.medication_utils import construct_medication_object_for_reminder, construct_user_payload_for_reminder
+from scripts.utils import convert_utc_time_to_local_time, get_zoneinfo_safe, convert_local_time_to_utc_time
 from services.medication import MedicationService
 from repositories.user import UserRepository
 from repositories.medication import MedicationRepository
 from schemas.user import UserCreate
-from schemas.responses import MedicationEntry, WeeklyScheduleResponse, MedicationOut, MedicationInfoOut, NextDoseOut
+from schemas.responses import MedicationOut, MedicationInfoOut, NextDoseOut
 from schemas.medication import (
     BulkMedicationRequest,
-    MedicationCreate,
     MedicationUpdate,
     MedicationInDB,
     BulkMedicationSchema,
-    WeeklyScheduleRequest
+    WeeklyScheduleRequest,
+    MedicationLogRequest
 )
+from tasks.utils import schedule_reminder_message
+
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -887,4 +887,108 @@ async def get_adherence_history(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error while fetching adherence history"
+        )
+
+
+@router.post(
+    "/log-medication",
+    summary="Update medication logs"
+)
+async def update_medication_log_api(
+    request: MedicationLogRequest,
+    db: AsyncSession = Depends(get_db)
+):
+    try:
+        if not request.user_id:
+            raise ValueError("User ID is required.")
+        
+        if not request.medication_logs:
+            raise ValueError("Medication logs are required.")
+        
+        # Fetch user timezone
+        stmt = select(User.timezone).where(User.id == request.user_id)
+        result = await db.execute(stmt)
+        user_timezone = result.scalars().first()
+        if not user_timezone:
+            raise ValueError(f"User with ID {request.user_id} not found.")
+        tz = get_zoneinfo_safe(user_timezone)
+        now_utc = datetime.now(timezone.utc)
+        user_now = now_utc.astimezone(tz)
+        
+        missed_meds = []
+        for med in request.medication_logs:
+            med_taken = med.taken
+            if not med_taken:
+                missed_meds.append({"medication_id": med.medication_id, "time_id": med.time_id})
+            # Find the latest log for this medication and time
+            stmt = select(MedicationLog).where(
+                MedicationLog.medication_id == med.medication_id,
+                MedicationLog.medication_time_id == med.time_id,
+                MedicationLog.user_id == request.user_id
+            ).order_by(MedicationLog.created_at.desc()).limit(1)
+            result = await db.execute(stmt)
+            log = result.scalars().first()
+
+            if log:
+                log.status = MedicationStatus.taken.value if med_taken else MedicationStatus.missed.value
+                log.taken_at = now_utc if med_taken else None
+                log.taken_at_local = user_now if med_taken else None
+            else:
+                # Fallback: create new log if none exists
+                log = MedicationLog(
+                    medication_id=med.medication_id,
+                    medication_time_id=med.time_id,
+                    user_id=request.user_id,
+                    taken_at=now_utc if med_taken else None,
+                    taken_at_local=user_now if med_taken else None,
+                    status=MedicationStatus.taken.value if med_taken else MedicationStatus.missed.value
+                )
+                db.add(log)
+
+        await db.commit()
+
+        if request.reminder:
+            reminder_time = request.reminder_time
+            if not reminder_time:
+                logger.info("No reminder time provided, defaulting to 15 minutes from now")
+                reminder_time = user_now + timedelta(minutes=15).time()
+            
+            utc_time = convert_local_time_to_utc_time(reminder_time, user_timezone)
+            dt_utc = datetime.combine(now_utc.date(), utc_time, tzinfo=timezone.utc)
+            med_payload = construct_medication_object_for_reminder(request.user_id, missed_meds)
+            user_payload = construct_user_payload_for_reminder(request.user_id)
+            schedule_reminder_message(
+                    payload={
+                        **user_payload,
+                        "medications": med_payload
+                    },
+                    dt_utc=dt_utc,
+                    preferred_reminder_channel=user_payload.get("preferred_reminder_channel", "phone")
+                )
+            message = "meds scheduled for reminder. "
+
+            return {
+                "success": True,
+                "message": message
+            }
+        else:
+            return {
+                "success": True,
+                "message": "Congratulate User on taking medications."
+            }
+
+    except ValueError as e:
+        logger.warning(f"Medication Log: Validation failed: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+    except Exception as e:
+        logger.error(
+            f"Medication Log: Failed to update medication logs for user {request.user_id}: {str(e)}",
+            exc_info=True
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to update medication logs"
         )

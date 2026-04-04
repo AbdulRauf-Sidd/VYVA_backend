@@ -108,6 +108,7 @@ class MedicationLog(Base):
     )
 
     taken_at = Column(DateTime(timezone=True), nullable=True)
+    taken_at_local = Column(DateTime(timezone=True), nullable=True)
 
     status = Column(String(50), nullable=False)
 

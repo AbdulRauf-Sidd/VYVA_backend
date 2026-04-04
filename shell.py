@@ -127,20 +127,6 @@ def main():
             user_ns=globals(),
             colors="neutral"
         )
-    # code.interact(banner=banner, local=local_vars, exitmsg="Goodbye!")
 
 if __name__ == "__main__":
     main()
-
-    # from tasks.management_tasks import *
-
-    # payload = {
-    #     "user_id": 1,
-    #     "first_name": "Hassam",
-    #     "last_name": "Zahid",
-    #     "agent_id": "agent_0901kdp9z86neny81f2mvpe1gp1m",
-    #     "language": "english",
-    #     "phone_number": "+923112042259",
-    # }
-
-    # initiate_medication_reminder_call.delay(payload)
