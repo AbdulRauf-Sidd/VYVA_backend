@@ -955,7 +955,7 @@ async def update_medication_log_api(
             
             utc_time = convert_local_time_to_utc_time(reminder_time, user_timezone)
             dt_utc = datetime.combine(now_utc.date(), utc_time, tzinfo=timezone.utc)
-            med_payload = construct_medication_object_for_reminder(request.user_id, missed_meds)
+            med_payload = construct_medication_object_for_reminder(missed_meds)
             user_payload = construct_user_payload_for_reminder(request.user_id)
             schedule_reminder_message(
                     payload={
