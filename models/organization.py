@@ -53,7 +53,6 @@ class OrganizationAgents(Base):
     name = Column(String(100), nullable=False)
     agent_id = Column(String(255), nullable=False)
     agent_type = Column(String(30), nullable=False)
-    phone_number_id = Column(String(50), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     organization_id = Column(Integer, ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False)
     organization = relationship("Organization", back_populates="agents")

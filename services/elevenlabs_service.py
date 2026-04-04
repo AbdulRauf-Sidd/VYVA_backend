@@ -238,7 +238,7 @@ def make_medication_reminder_call(payload: dict):
     try:
         id = payload.get("user_id")
         organization = get_user_organization(id)
-        phone_number_id = organization.elevenlabs_phone_number_id if organization.elevenlabs_phone_number_id else settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
+        phone_number_id = organization.phone_number_id if organization.phone_number_id else settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
         agent = next(
             (a for a in organization.agents 
              if a.agent_type == AgentTypeEnum.medication_reminder.value and a.is_active),
