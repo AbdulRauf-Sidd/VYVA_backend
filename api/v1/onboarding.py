@@ -164,6 +164,7 @@ async def onboard_user(
 
         wants_daily_check_ins = check_in_details.get("wants_check_ins", False)
         check_in_frequency = check_in_details.get("frequency_in_days", None)
+        time_of_day = check_in_details.get("time_of_day", None)
         if wants_daily_check_ins:
             if not time_of_day:
                 time_of_day = "09:00" #defaulting to 9 AM if no time provided
