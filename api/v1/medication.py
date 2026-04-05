@@ -53,7 +53,6 @@ async def get_weekly_medication_schedule(
             select(User.timezone).where(User.id == payload.user_id)
         )
         user_timezone = result.scalar_one_or_none()
-        logger.info(f"User timezone: {user_timezone}")
         now_utc = datetime.now(timezone.utc)
         user_now = now_utc.astimezone(ZoneInfo(user_timezone))
         today = user_now.date()
@@ -128,7 +127,7 @@ async def get_weekly_medication_schedule(
                         "notes": time_entry.notes,
                         "status": status_value
                     })
-                    
+
             current_date += timedelta(days=1)
 
         return {

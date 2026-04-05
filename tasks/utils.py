@@ -106,7 +106,7 @@ def schedule_check_in_calls_for_hour(db, today, hour_start, hour_end):
         for checkin in checkins:
             try:
                 local_time = checkin.check_in_time
-                utc_time = convert_local_time_to_utc_time(local_time, UserCheckin.user.timezone)
+                utc_time = convert_local_time_to_utc_time(local_time, checkin.user.timezone)
                 if not (hour_start <= utc_time < hour_end):
                     continue
 
