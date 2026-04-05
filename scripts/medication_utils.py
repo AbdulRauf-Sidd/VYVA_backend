@@ -194,7 +194,7 @@ def schedule_medication_reminders_for_hour(db, today: datetime.date, hour_start:
                     if not (hour_start <= med_time_utc < hour_end):
                         continue
 
-                    dt_utc = datetime.combine(today, med_time)
+                    dt_utc = datetime.combine(today, med_time_utc)
                     
                     
                     if time.scheduled_at and time.scheduled_at == dt_utc:

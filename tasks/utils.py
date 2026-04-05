@@ -129,7 +129,7 @@ def schedule_check_in_calls_for_hour(db, today, hour_start, hour_end):
                 if not should_schedule:
                     continue
 
-                scheduled_dt = datetime.combine(today, checkin.check_in_time)
+                scheduled_dt = datetime.combine(today, utc_time)
                 if checkin.check_in_type == CheckInType.brain_coach.value:
                     task_name = "initiate_brain_coach_session"
                 elif checkin.check_in_type == CheckInType.check_up_call.value:
