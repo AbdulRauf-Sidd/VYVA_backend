@@ -13,20 +13,6 @@ from models.organization import Organization
 from zoneinfo import ZoneInfo
 from datetime import datetime
 
-GERMAN_TZ = ZoneInfo("Europe/Berlin")
-
-def to_cet_time(t: Optional[time]) -> Optional[str]:
-    if t is None:
-        return None
-    
-    # combine with dummy UTC date
-    dt = datetime.combine(datetime.utcnow().date(), t)
-
-    # assume stored as UTC
-    dt = dt.replace(tzinfo=ZoneInfo("UTC"))
-
-    return dt.astimezone(GERMAN_TZ).strftime("%H:%M")
-
 router = APIRouter()
 
 # Response schema
@@ -82,7 +68,7 @@ async def get_checkins(
                 city=user.city,
                 is_active=checkin.is_active,
                 frequency_days=checkin.check_in_frequency_days,
-                preferred_time=to_cet_time(checkin.check_in_time)
+                preferred_time=checkin.check_in_time.strftime("%H:%M") if checkin.check_in_time else None
             ))
 
         return checkins
