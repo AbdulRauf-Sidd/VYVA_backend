@@ -21,7 +21,7 @@ class CheckInOut(BaseModel):
     user_id: int
     userName: str
     userPhone: Optional[str]
-    city: Optional[str]
+    type: Optional[str] 
     is_active: bool
     frequency_days: int
     preferred_time: Optional[str]  # ✅ change this
@@ -56,7 +56,7 @@ async def get_checkins(
             if search:
                 s = search.lower()
                 if s not in full_name.lower() and \
-                   (user.city or "").lower().find(s) == -1 and \
+                   (checkin.check_in_type or "").lower().find(s) == -1 and \
                    (user.phone_number or "").find(s) == -1:
                     continue
 
@@ -65,7 +65,7 @@ async def get_checkins(
                 user_id=user.id,
                 userName=full_name,
                 userPhone=user.phone_number,
-                city=user.city,
+                type=checkin.check_in_type.replace("_", " ").title(),
                 is_active=checkin.is_active,
                 frequency_days=checkin.check_in_frequency_days,
                 preferred_time=checkin.check_in_time.strftime("%H:%M") if checkin.check_in_time else None
