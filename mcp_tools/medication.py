@@ -36,10 +36,10 @@ async def retrieve_user_medications(user_id: int) -> list[dict]:
 
         meds = []
         for med in medications:
-            # times = []
-            # for time in med.times_of_day:
-            #     # local_time = convert_utc_time_to_local_time(time.time_of_day, med.user.timezone)
-            #     times.append(local_time)
+            times = []
+            for time in med.times_of_day:
+                # local_time = convert_utc_time_to_local_time(time.time_of_day, med.user.timezone)
+                times.append(time)
 
             meds.append(
                 {
@@ -49,7 +49,7 @@ async def retrieve_user_medications(user_id: int) -> list[dict]:
                     "purpose": med.purpose,
                     # "start_date": med.start_date.isoformat() if med.start_date else None,
                     # "end_date": med.end_date.isoformat() if med.end_date else None,
-                    "times": med.times_of_day
+                    "times": times
                 }
             )
         return meds
