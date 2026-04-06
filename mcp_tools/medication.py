@@ -39,7 +39,7 @@ async def retrieve_user_medications(user_id: int) -> list[dict]:
             times = []
             for time in med.times_of_day:
                 # local_time = convert_utc_time_to_local_time(time.time_of_day, med.user.timezone)
-                times.append(time)
+                times.append(time.time_of_day.strftime("%H:%M"))
 
             meds.append(
                 {
