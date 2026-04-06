@@ -10,37 +10,15 @@ from models.medication import MedicationLog, Medication
 from models.organization import Organization
 from sqlalchemy.orm import selectinload
 from sqlalchemy import delete, update
-from datetime import datetime, time
+from datetime import datetime, time, date
 from zoneinfo import ZoneInfo
 
-GERMAN_TZ = ZoneInfo("Europe/Berlin")
 
 router = APIRouter()
 
 async def get_session():
     async with get_async_session() as session:
         yield session
-
-def to_cet(dt: Optional[datetime]) -> Optional[str]:
-    if dt is None:
-        return None
-    # assume dt is UTC if naive
-    if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=ZoneInfo("UTC"))
-    return dt.astimezone(GERMAN_TZ).isoformat()
-
-
-def to_cet_time(t: Optional[time]) -> Optional[str]:
-    if t is None:
-        return None
-
-    # attach a dummy date
-    dt = datetime.combine(datetime.utcnow().date(), t)
-
-    # assume stored in UTC
-    dt = dt.replace(tzinfo=ZoneInfo("UTC"))
-
-    return dt.astimezone(GERMAN_TZ).strftime("%H:%M")
 
 def compute_risk_score(user_data: dict) -> int:
     score = 0
@@ -128,7 +106,7 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
             "last_name": u.last_name,
             "city": u.city,
             "phone": u.phone_number,
-            "date_of_birth": to_cet(u.date_of_birth) if u.date_of_birth else None,
+            "date_of_birth": u.date_of_birth.isoformat() if u.date_of_birth else None,
             "coords": [float(u.latitude), float(u.longitude)] if u.latitude and u.longitude else None,
             "activeAlerts": 0,
             "criticalAlerts": 0,
@@ -171,13 +149,6 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
         ]
     }
     
-def to_cet_date(dt: Optional[datetime]) -> Optional[str]:
-    if dt is None:
-        return None
-    if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=ZoneInfo("UTC"))
-    return dt.astimezone(GERMAN_TZ).date().isoformat()
-    
 @router.get("/user-info")
 async def get_user(
     user_id: Optional[int] = Query(None),
@@ -215,14 +186,24 @@ async def get_user(
         })
 
     medications = []
+    
+    today = date.today()
     for m in user.medications:
+        if (
+            not m.is_active
+            or m.disabled_at is not None
+            or (m.start_date and m.start_date > today)
+            or (m.end_date and m.end_date < today)
+        ):
+            continue
+
         medications.append({
             "id": m.id,
             "medication_name": m.name,
             "purpose": m.purpose,
             "dosage": m.dosage,
             "schedule_times": [
-                to_cet_time(t.time_of_day) for t in (m.times_of_day or []) if t.time_of_day
+                t.time_of_day.strftime("%H:%M") for t in (m.times_of_day or []) if t.time_of_day
             ]
         })
 
@@ -233,7 +214,7 @@ async def get_user(
         data = {
             "enabled": c.is_active,
             "frequency": f"{c.check_in_frequency_days} days",
-            "preferred_time": to_cet_time(c.check_in_time),
+            "preferred_time": c.check_in_time.strftime("%H:%M") if c.check_in_time else None,
         }
 
         if c.check_in_type == "check_up_call":
@@ -256,7 +237,7 @@ async def get_user(
             "last_name": user.last_name,
             "photo_url": None,  # not in model → hardcoded
             "phone": user.phone_number,
-            "date_of_birth": to_cet_date(user.date_of_birth) if user.date_of_birth else None,
+            "date_of_birth": user.date_of_birth.isoformat() if user.date_of_birth else None,
             "gender": None,  # not in model
             "language": user.preferred_consultation_language,
             "timezone": user.timezone,

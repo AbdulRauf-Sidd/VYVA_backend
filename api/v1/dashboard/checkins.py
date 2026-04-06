@@ -13,20 +13,6 @@ from models.organization import Organization
 from zoneinfo import ZoneInfo
 from datetime import datetime
 
-GERMAN_TZ = ZoneInfo("Europe/Berlin")
-
-def to_cet_time(t: Optional[time]) -> Optional[str]:
-    if t is None:
-        return None
-    
-    # combine with dummy UTC date
-    dt = datetime.combine(datetime.utcnow().date(), t)
-
-    # assume stored as UTC
-    dt = dt.replace(tzinfo=ZoneInfo("UTC"))
-
-    return dt.astimezone(GERMAN_TZ).strftime("%H:%M")
-
 router = APIRouter()
 
 # Response schema
@@ -35,7 +21,7 @@ class CheckInOut(BaseModel):
     user_id: int
     userName: str
     userPhone: Optional[str]
-    city: Optional[str]
+    type: Optional[str] 
     is_active: bool
     frequency_days: int
     preferred_time: Optional[str]  # ✅ change this
@@ -70,7 +56,7 @@ async def get_checkins(
             if search:
                 s = search.lower()
                 if s not in full_name.lower() and \
-                   (user.city or "").lower().find(s) == -1 and \
+                   (checkin.check_in_type or "").lower().find(s) == -1 and \
                    (user.phone_number or "").find(s) == -1:
                     continue
 
@@ -79,10 +65,10 @@ async def get_checkins(
                 user_id=user.id,
                 userName=full_name,
                 userPhone=user.phone_number,
-                city=user.city,
+                type=checkin.check_in_type.replace("_", " ").title(),
                 is_active=checkin.is_active,
                 frequency_days=checkin.check_in_frequency_days,
-                preferred_time=to_cet_time(checkin.check_in_time)
+                preferred_time=checkin.check_in_time.strftime("%H:%M") if checkin.check_in_time else None
             ))
 
         return checkins
