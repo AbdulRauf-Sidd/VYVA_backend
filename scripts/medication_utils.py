@@ -223,10 +223,9 @@ def schedule_medication_reminders_for_hour(db, today: datetime.date, hour_start:
                     days_of_week = time.days_of_week
                     if days_of_week:
                         today_weekday = today.weekday()  # Monday=0, Sunday=6
-                        for day in days_of_week:
-                            day_str = medication_days_mapping_int_to_string.get(day)
-                            if day_str != today_weekday:
-                                break
+                        if today_weekday not in days_of_week:
+                            continue
+                        
 
                     dt_utc = datetime.combine(today, med_time_utc) 
                     med_payload = build_medication_payload(med, time)
