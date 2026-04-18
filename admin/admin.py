@@ -77,6 +77,7 @@ def setup_admin(app):
         column_list = "__all__"
 
     class UserCheckinLogAdmin(ModelView, model=CheckinLog):
+        column_list = "__all__"
 
     class ScheduledSessionAdmin(ModelView, model=ScheduledSession):
         column_list = "__all__"
@@ -99,4 +100,5 @@ def setup_admin(app):
     admin.add_view(CareTakerTempTokenAdmin)
     admin.add_view(CaretakerSessionAdmin)
     admin.add_view(UserCheckinAdmin)
+    admin.add_view(UserCheckinLogAdmin)
     admin.add_view(ScheduledSessionAdmin)

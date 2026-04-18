@@ -14,7 +14,6 @@ from sqlalchemy.orm import selectinload
 from core.database import get_db
 from scripts.medication_utils import construct_medication_object_for_reminder, construct_user_payload_for_reminder
 from scripts.utils import convert_utc_time_to_local_time, get_zoneinfo_safe, convert_local_time_to_utc_time
-from services.medication import MedicationService
 from repositories.user import UserRepository
 from repositories.medication import MedicationRepository
 from schemas.user import UserCreate

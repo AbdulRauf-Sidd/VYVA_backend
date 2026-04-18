@@ -13,7 +13,6 @@ from sqlalchemy.orm import selectinload
 from services.whatsapp_service import whatsapp_service
 from tasks.utils import schedule_reminder_message
 from models.organization import OrganizationAgents, AgentTypeEnum
-from scripts.medication_utils import medication_days_mapping_int_to_string
 
 logger = logging.getLogger(__name__)
 

@@ -43,6 +43,7 @@ class Medication(Base):
         cascade="all, delete-orphan",
         passive_deletes=True
     )
+    pauses = relationship("MedicationPause", back_populates="schedule", cascade="all, delete-orphan", passive_deletes=True)
 
     def __repr__(self):
         return f"id: {self.id}, name: {self.name}"
