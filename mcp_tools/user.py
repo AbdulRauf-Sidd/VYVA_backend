@@ -1,5 +1,4 @@
 from schemas.twilio import MessageTypeEnum, SendWhatsappMessage
-from scripts.utils import convert_local_time_to_utc_time, convert_utc_time_to_local_time
 from .mcp_instance import mcp
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
@@ -7,7 +6,7 @@ from typing import Optional
 from core.database import get_async_session
 from pydantic import BaseModel, EmailStr
 from models.user import User, PreferredReportsChannelEnum
-from models.user_check_ins import UserCheckin, CheckInType
+from models.user_check_ins import CheckinLog, UserCheckin, CheckInType
 import enum
 import logging
 from datetime import time
@@ -37,8 +36,7 @@ async def retrieve_user_profile(input: RetrieveUserProfileInput) -> Optional[dic
         stmt = select(User).where(User.phone_number == input.phone_number)
         result = await db.execute(stmt)
         user = result.scalars().first()
-        print('mcp====>', input.phone_number, user)
-
+        
         if user:
             return {
                 "id": user.id,
@@ -267,6 +265,56 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
                 "success": False,
                 "message": "Internal error occurred."
             }
+
+class CheckInLogStatusEnum(str, enum.Enum):
+    reported_okay = "reported_okay"
+    reported_issue = "reported_issue"
+
+class CheckInTypeEnum(str, enum.Enum):
+    brain_coach = "brain_coach"
+    check_up_call = "check_up_call"
+    
+
+class UpdateCallLogStatusInput(BaseModel):
+    user_id: int
+    status: CheckInLogStatusEnum
+    checkin_type: CheckInTypeEnum
+    
+
+@mcp.tool(
+    name="update_call_log_status",
+    description=(
+        "Update the latest call log for the given user. "
+        "Use this tool whenever the user user says they received a check in call and wanted to update it's status"
+        "the options for status are 'reported_okay' and 'reported_issue'"
+        "The options for checkin_type are 'brain_coach' and 'check_up_call'"
+        "Provide user_id and status, and checkin_type. The tool will find the latest call log for that user "
+        "and checkin type, and update its status."
+    )
+)
+async def update_call_log_status(input: UpdateCallLogStatusInput) -> dict:
+    async with get_async_session() as db:
+        stmt = select(CheckinLog).join(
+            UserCheckin, CheckinLog.checkin_id == UserCheckin.id
+        ).where(
+            UserCheckin.user_id == input.user_id,
+            UserCheckin.check_in_type == input.checkin_type.value
+        ).order_by(CheckinLog.date.desc()).limit(1)
+        result = await db.execute(stmt)
+        log = result.scalars().first()
+
+        if not log:
+            raise ValueError(f"No call log found for user {input.user_id}.")
+
+        log.status = input.status
+
+        await db.commit()
+        await db.refresh(log)
+
+        return {
+            "success": True
+        }
+
 
 @mcp.tool(
     name="send_whatsapp",

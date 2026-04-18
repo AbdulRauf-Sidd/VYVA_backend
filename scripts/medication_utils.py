@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime, timezone
+from typing import List, Optional
 from scripts.utils import convert_local_time_to_utc_time, get_zoneinfo_safe
 from sqlalchemy import Time, or_
 from sqlalchemy import update
@@ -12,9 +13,29 @@ from sqlalchemy.orm import selectinload
 from services.whatsapp_service import whatsapp_service
 from tasks.utils import schedule_reminder_message
 from models.organization import OrganizationAgents, AgentTypeEnum
+from scripts.medication_utils import medication_days_mapping_int_to_string
 
 logger = logging.getLogger(__name__)
 
+medication_days_mapping_int_to_string = {
+    0: "monday",
+    1: "tuesday",
+    2: "wednesday",
+    3: "thursday",
+    4: "friday",
+    5: "saturday",
+    6: "sunday"
+}
+
+medication_days_mapping_string_to_int = {
+    "monday": 0,
+    "tuesday": 1,
+    "wednesday": 2,
+    "thursday": 3,
+    "friday": 4,
+    "saturday": 5,
+    "sunday": 6
+}
 
 def update_med_logs(user_id: int, medication_taken: bool, med_log_ids: list[int]):
     if not med_log_ids:
@@ -189,19 +210,25 @@ def schedule_medication_reminders_for_hour(db, today: datetime.date, hour_start:
                     user_reminders[user.id] = payload
 
                 for time in med.times_of_day:
-                    med_time = time.time_of_day
-                    med_time_utc = convert_local_time_to_utc_time(med_time, user.timezone)
-                    if not (hour_start <= med_time_utc < hour_end):
-                        continue
-
-                    dt_utc = datetime.combine(today, med_time_utc)
-                    
                     
                     if time.scheduled_at and time.scheduled_at == dt_utc:
                         logger.info(f"Medication {med.id} for user {user.id} at time {med_time} has already been scheduled. Skipping duplicate scheduling.")
                         continue
 
+                    med_time = time.time_of_day
+                    med_time_utc = convert_local_time_to_utc_time(med_time, user.timezone)
+                    if not (hour_start <= med_time_utc < hour_end):
+                        continue
 
+                    days_of_week = time.days_of_week
+                    if days_of_week:
+                        today_weekday = today.weekday()  # Monday=0, Sunday=6
+                        for day in days_of_week:
+                            day_str = medication_days_mapping_int_to_string.get(day)
+                            if day_str != today_weekday:
+                                break
+
+                    dt_utc = datetime.combine(today, med_time_utc) 
                     med_payload = build_medication_payload(med, time)
 
                     if dt_utc not in user_reminders[user.id]["medication_info"]:
@@ -316,3 +343,16 @@ def construct_user_payload_for_reminder(user_id: int):
         }
 
         return payload
+    
+
+def construct_days_array_from_string(days: Optional[List[str]]) -> Optional[List[int]]:    
+    if not days:
+        return None  # This means the medication is scheduled for every day
+
+    days_array = []
+    for day in days:
+        day_int = medication_days_mapping_string_to_int.get(day.lower())
+        if day_int is not None:
+            days_array.append(day_int)
+    
+    return days_array

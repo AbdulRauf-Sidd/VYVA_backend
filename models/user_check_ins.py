@@ -17,6 +17,7 @@ class UserCheckin(Base):
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     user = relationship("User", back_populates="user_checkins")
     scheduled_sessions = relationship("ScheduledSession", back_populates="user_checkin", cascade="all, delete-orphan", passive_deletes=True)
+    checkin_logs = relationship("CheckinLogStatus", back_populates="checkin")
     check_in_type = Column(String(20), nullable=False) # brain coach, check up call. 
     check_in_frequency_days = Column(Integer, nullable=False)
     check_in_time = Column(Time, nullable=True)
@@ -28,7 +29,27 @@ class UserCheckin(Base):
     
     __table_args__ = (
         UniqueConstraint("user_id", "check_in_type", name="uq_user_checkin_type"),
-)
+    )
+
+
+class CheckinLogStatusEnum(enum.Enum):
+    unconfirmed     = "unconfirmed"
+    reported_okay   = "reported_okay"
+    reported_issue  = "reported_issue"
+
+class CheckinLog(Base):
+    __tablename__ = "checkin_log_status"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    status = Column(String(50), nullable=True)  
+    checkin_id = Column(Integer, ForeignKey('user_checkins.id'), nullable=True)
+    date = Column(DateTime(timezone=True), server_default=func.now())
+    
+    checkin = relationship("UserCheckin", back_populates="checkin_logs")
+    
+    def __repr__(self):
+        return f"user_id: {self.user_id}, status: '{self.status}', date: '{self.date}')>"
 
 
 class ScheduledSession(Base):

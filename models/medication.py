@@ -8,7 +8,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from sqlalchemy import Time
 from datetime import datetime, timezone
-from sqlalchemy.dialects.postgresql import ENUM as PGEnum
+from sqlalchemy.dialects.postgresql import ARRAY, ENUM as PGEnum
 
 from core.database import Base
 
@@ -55,6 +55,7 @@ class MedicationTime(Base):
     id = Column(Integer, primary_key=True, index=True)
     medication_id = Column(Integer, ForeignKey("medications.id", ondelete="CASCADE"), nullable=False)
     time_of_day = Column(Time, nullable=True) 
+    days_of_week = Column(ARRAY(Integer), nullable=True)  # null = every day, [0,1,2] = Mon, Tue, Wed, etc.
     notes = Column(String(150), nullable=True)
     scheduled_at = Column(DateTime, nullable=True)  # This is to implement idempotency for scheduling reminders. 
     created_at = Column(DateTime(timezone=True), default=datetime.now(timezone.utc))
@@ -80,6 +81,16 @@ class MedicationTime(Base):
         ),
     )
 
+class MedicationPause(Base):
+    __tablename__ = "medication_pauses"
+
+    id = Column(Integer, primary_key=True)
+    schedule_id = Column(Integer, ForeignKey("medications.id", ondelete="CASCADE"), nullable=False)
+    pause_start = Column(Date, nullable=False)
+    pause_end = Column(Date, nullable=True)
+    reason = Column(Text, nullable=True)
+
+    schedule = relationship("Medication", back_populates="pauses")
 
 class MedicationStatus(enum.Enum):
     taken = "taken"

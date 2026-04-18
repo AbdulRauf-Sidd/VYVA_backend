@@ -18,6 +18,10 @@ class OnboardingUserRead(UserBase):
     called_at: Optional[datetime]
     created_at: datetime
 
+class MedicationSlot(BaseModel):
+    time: str
+    days: Optional[List[str]] = None 
+
 class MedicationDetailsItem(BaseModel):
     end_date: Optional[date] = None
     name: str
@@ -25,7 +29,7 @@ class MedicationDetailsItem(BaseModel):
     side_effects: Optional[str] = None
     dosage: str
     start_date: Optional[date] = None
-    times: List[str]
+    medication_slot: List[MedicationSlot]
 
 
 class CheckInDetails(BaseModel):

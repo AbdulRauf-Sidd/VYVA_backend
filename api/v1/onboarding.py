@@ -10,6 +10,7 @@ from sqlalchemy.orm import selectinload
 from core.database import get_db
 import logging
 from schemas.onboarding_user import OnboardingRequestBody, OnboardingRequestBodyRedCross
+from scripts.medication_utils import construct_days_array_from_string
 from scripts.utils import convert_local_time_to_utc_time, get_or_create_caregiver, construct_mem0_memory_onboarding, date_now_in_timezone, convert_to_utc_datetime, parse_time_string
 from models.user_check_ins import UserCheckin, CheckInType
 from models.organization import Organization
@@ -208,13 +209,15 @@ async def onboard_user(
                 db.add(med)
                 await db.flush()
 
-                for time_str in med_input.get("times", []):
-                    time_obj = parse_time_string(time_str)
-                    # utc_time = convert_local_time_to_utc_time(time_obj, user.timezone)
-
+                for slot in med_input.get("medication_slot"):
+                    time_obj = parse_time_string(slot.get('time'))
+                    days_of_week = slot.get('days', None)
+                    days_array = construct_days_array_from_string(days_of_week)
+                    
                     med_time = MedicationTime(
                         medication_id=med.id,
-                        time_of_day=time_obj
+                        time_of_day=time_obj,
+                        days_of_week=days_array
                     )
                     db.add(med_time)        
 

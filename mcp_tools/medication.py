@@ -9,6 +9,8 @@ from core.database import get_async_session
 from datetime import datetime, timezone, date, timedelta
 from scripts.utils import get_zoneinfo_safe, convert_utc_time_to_local_time, convert_local_time_to_utc_time
 from tasks.medication_tasks import notify_caregiver_on_missed_medication_task
+from typing import Optional, List
+from scripts.medication_utils import construct_days_array_from_string, medication_days_mapping_int_to_string
 
 class RetrieveMedicationInput(BaseModel):
     user_id: int
@@ -37,9 +39,22 @@ async def retrieve_user_medications(user_id: int) -> list[dict]:
         meds = []
         for med in medications:
             times = []
+            days = []
             for time in med.times_of_day:
                 # local_time = convert_utc_time_to_local_time(time.time_of_day, med.user.timezone)
                 times.append(time.time_of_day.strftime("%H:%M"))
+                if time.days_of_week:
+                    days = []
+                    days_of_week = time.days_of_week
+                    for day in days_of_week:
+                        day_str = medication_days_mapping_int_to_string.get(day)
+                        if day_str:
+                            days.append(day_str)
+                    
+                    times[-1] = {
+                        "time": times[-1],
+                        "days": days
+                    }
 
             meds.append(
                 {
@@ -49,28 +64,38 @@ async def retrieve_user_medications(user_id: int) -> list[dict]:
                     "purpose": med.purpose,
                     # "start_date": med.start_date.isoformat() if med.start_date else None,
                     # "end_date": med.end_date.isoformat() if med.end_date else None,
-                    "times": times
+                    "times": times,
+                    "days": days if days else None
+
                 }
             )
         return meds
+    
+class MedicationSlot(BaseModel):
+    time: str
+    days: Optional[List[str]] = None
         
 class AddMedication(BaseModel):
     user_id: int
     name: str
     dosage: str
     purpose: str
-    times: list[str]
+    medication_slot: list[MedicationSlot]
 
 @mcp.tool(
     name="add_user_medication",
     description=(
         "You will use this tool to add a new medication for a user."
         "You will call this when the user wants to add a new medication."
-        "Times should be in 24-hour format. example HH:MM"
+        "medication_slot is a list of time and days the medication should be taken. "
+        "time should be in 24-hour format. example HH:MM. "
         "if the user says 6 in the evening, send 18:00"
+        "optionally, the user can specify the days they want to take the medication. "
+        "days should be a list of strings. example: ['Monday', 'Wednesday', 'Friday']"
+        "If no days are specified, assume the medication is taken every day. and don't send days"
     )
 )
-async def add_user_medication(user_id: int, name: str, dosage: str, purpose: str, times: list[str]) -> AddMedication:
+async def add_user_medication(user_id: int, name: str, dosage: str, purpose: str, medication_slot: list[MedicationSlot]):
 
     async with get_async_session() as db:
         stmt = (
@@ -96,42 +121,45 @@ async def add_user_medication(user_id: int, name: str, dosage: str, purpose: str
         db.add(new_med)
         await db.flush()
 
-        for time_str in times:
+        for slot in medication_slot:
+            time_str = slot.time
+            days = slot.days
             hours, minutes = map(int, time_str.split(":"))
             time_obj = time(hour=hours, minute=minutes)
-            # utc_time = convert_local_time_to_utc_time(time_obj, user_timezone)
+            days_array = construct_days_array_from_string(days)
             db.add(
                 MedicationTime(
                     medication=new_med,
-                    time_of_day=time_obj
+                    time_of_day=time_obj,
+                    days_of_week=days_array
                 )
             )
 
         await db.commit()
 
-        return AddMedication(
-            id=new_med.id,
-            user_id=new_med.user_id,
-            name=new_med.name,
-            dosage=new_med.dosage,
-            purpose=new_med.purpose,
-            times=times
-        )
+        return {
+            "success": True,
+            "medication_id": new_med.id
+        }
         
 class UpdateUserMedication(BaseModel):
     medication_id: int
     name: str | None = None
     dosage: str | None = None
     purpose: str | None = None
-    times: list[str] | None = None
+    medication_slot: list[MedicationSlot] | None = None
     
 @mcp.tool(
     name="update_user_medication",
     description=(
         "You will use this tool to update an existing medication for a user."
         "You will call this when the user wants to update their medication details."
-        "Times should be in 24-hour format. Format: HH:MM"
-        "Example: if the user says 6 in the evening, send 18:00"
+        "medication_slot is a list of time and days the medication should be taken. "
+        "time should be in 24-hour format. example HH:MM. "
+        "if the user says 6 in the evening, send 18:00"
+        "optionally, the user can specify the days they want to take the medication. "
+        "days should be a list of strings. example: ['Monday', 'Wednesday', 'Friday']"
+        "If no days are specified, assume the medication is taken every day. and don't send days"
     )
 )
 async def update_user_medication(
@@ -139,8 +167,8 @@ async def update_user_medication(
     name: str | None = None,
     dosage: str | None = None,
     purpose: str | None = None,
-    times: list[str] | None = None
-) -> UpdateUserMedication:
+    medication_slot: list[MedicationSlot] | None = None
+):
 
     async with get_async_session() as db:
 
@@ -185,39 +213,40 @@ async def update_user_medication(
 
         db.add(new_med)
         await db.flush()
-        if times is not None:
+        if medication_slot is not None:
             # convert=True
-            time_strings = times
-        else:
-            # convert=False
-            time_strings = [
-                t.time_of_day.strftime("%H:%M")
-                for t in old_med.times_of_day
-                if t.time_of_day
-            ]
-
-        for time_str in time_strings:
-            hours, minutes = map(int, time_str.split(":"))
-            time_obj = time(hour=hours, minute=minutes)
-            # if convert:
-            #     time_obj = convert_local_time_to_utc_time(time_obj, old_med.user.timezone)
-
-            db.add(
-                MedicationTime(
-                    medication_id=new_med.id,
-                    time_of_day=time_obj
+            time_strings = []
+            for slot in medication_slot:
+                time_str = slot.time
+                hours, minutes = map(int, time_str.split(":"))
+                time_obj = time(hour=hours, minute=minutes)
+                days = slot.days
+                days_array = construct_days_array_from_string(days)
+                db.add(
+                    MedicationTime(
+                        medication=new_med,
+                        time_of_day=time_obj,
+                        days_of_week=days_array
+                    )
                 )
-            )
+        else:
+            for t in old_med.times_of_day:
+                time_obj = t.time_of_day
+                days_array = t.days_of_week
+                db.add(
+                    MedicationTime(
+                        medication=new_med,
+                        time_of_day=time_obj,
+                        days_of_week=days_array
+                    )
+                )
 
         await db.commit()
 
-        return UpdateUserMedication(
-            medication_id=new_med.id,
-            name=new_med.name,
-            dosage=new_med.dosage,
-            purpose=new_med.purpose,
-            times=time_strings
-        )
+        return {
+            "success": True,
+            "medication_id": new_med.id
+        }
         
 class DeleteUserMedication(BaseModel):
     medication_id: int
@@ -283,10 +312,14 @@ async def update_reminder_channel(channel_input: UpdateReminderChannel) -> bool:
 
         return True
     
+class MedicationLogs(BaseModel):
+    medication_id: int
+    time_id: int
+    taken: bool
 
 class MedicationLogInput(BaseModel):
     user_id: int
-    medication_logs: list[dict]
+    medication_logs: list[MedicationLogs]
 
 @mcp.tool(
     name="medication_log",

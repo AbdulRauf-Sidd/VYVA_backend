@@ -14,7 +14,7 @@ from zoneinfo import ZoneInfo
 from models.medication import MedicationStatus
 from sqlalchemy import or_, select
 from models.eleven_labs_sessions import ElevenLabsSessions
-from models.user_check_ins import ScheduledSession
+from models.user_check_ins import ScheduledSession, CheckinLog, CheckinLogStatusEnum
 from scripts.medication_utils import schedule_medication_reminders_for_hour
 from models.user_check_ins import UserCheckin, CheckInType
 from tasks.utils import schedule_celery_task_for_call_status_check, schedule_check_in_calls_for_hour, schedule_celery_task_for_scheduled_session_status_check
@@ -373,12 +373,6 @@ def initiate_brain_coach_session(check_in_id: int):
                 selectinload(UserCheckin.user)
                 .selectinload(User.organization)
                 .selectinload(Organization.agents),
-
-                # with_loader_criteria(
-                #     OrganizationAgents,   
-                #     OrganizationAgents.agent_type == AgentTypeEnum.brain_coach.value,  # filter for brain coach agents
-                #     include_aliases=True
-                # )
             )
             .filter(UserCheckin.id == check_in_id)
             .first()
@@ -421,11 +415,21 @@ def initiate_brain_coach_session(check_in_id: int):
             return
         
         if response:
-            last_pending_session.completed_at = datetime.now(timezone.utc)
-            last_pending_session.is_completed = True
-            db.commit()
-
-        
+            call_sid = response.get('callSid')
+            if call_sid:
+                last_pending_session.call_sid = call_sid
+                call_log = CheckinLog(
+                    user_id=user.id,
+                    status=CheckinLogStatusEnum.unconfirmed.value,
+                    checkin_id=check_in_id,
+                    date=datetime.now(timezone.utc),
+                )
+                db.add(call_log)
+                db.commit()
+                schedule_celery_task_for_scheduled_session_status_check()
+            else:
+                logger.error(f"Brain coach call initiated but no callSid returned for check_in_id {check_in_id}")
+                db.commit()
     except Exception as e:
         logger.error(f"Error initiating brain coach session for check ID {check_in_id}: {e}")
     finally:
@@ -487,7 +491,15 @@ def initiate_check_up_call(check_in_id: int):
 
         if response:
             last_pending_session.attempts += 1
-            last_pending_session.call_sid = response.get('callSid')
+            call_sid = response.get('callSid')
+            last_pending_session.call_sid = call_sid
+            call_log = CheckinLog(
+                user_id=user.id,
+                status=CheckinLogStatusEnum.unconfirmed.value,
+                checkin_id=check_in_id,
+                date=datetime.now(timezone.utc),
+            )
+            db.add(call_log)
             db.commit()
             schedule_celery_task_for_scheduled_session_status_check()
 
