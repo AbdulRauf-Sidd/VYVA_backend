@@ -140,7 +140,7 @@ async def personalize_call(
     caller_id = payload.caller_id
     if not caller_id.startswith('+'):
         caller_id = '+' + caller_id
-    stmt = select(User).where(User.phone_number == payload.caller_id)
+    stmt = select(User).where(User.phone_number == caller_id)
     result = await db.execute(stmt)
     user = result.scalar_one_or_none()
 
