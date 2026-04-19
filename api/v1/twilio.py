@@ -175,6 +175,7 @@ async def personalize_call(
     payload: TwilioPersonalizationRequest,
     db: AsyncSession = Depends(get_db)
 ):
+    logger.info(f"TWILIO====>", payload)
     stmt = select(User).where(User.phone_number == payload.caller_id)
     result = await db.execute(stmt)
     user = result.scalar_one_or_none()
