@@ -304,7 +304,22 @@ async def update_call_log_status(input: UpdateCallLogStatusInput) -> dict:
         log = result.scalars().first()
 
         if not log:
-            raise ValueError(f"No call log found for user {input.user_id}.")
+            stmt = select(UserCheckin).where(
+                UserCheckin.user_id == input.user_id,
+                UserCheckin.check_in_type == input.checkin_type.value
+            )
+            result = await db.execute(stmt)
+            checkin = result.scalars().first()
+            db.add(
+                CheckinLog(
+                user_id=input.user_id,
+                checkin_id=checkin.id,
+                status=input.status.value,
+                ))
+            await db.commit()
+            return {
+                "success": True,
+            }
 
         log.status = input.status
 
