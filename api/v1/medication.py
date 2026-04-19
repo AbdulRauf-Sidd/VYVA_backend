@@ -12,7 +12,7 @@ from models.user import User
 from models.medication import MedicationStatus, Medication, MedicationLog, MedicationTime
 from sqlalchemy.orm import selectinload
 from core.database import get_db
-from scripts.medication_utils import construct_medication_object_for_reminder, construct_user_payload_for_reminder
+from scripts.medication_utils import construct_medication_object_for_reminder, construct_user_payload_for_reminder, medication_days_mapping_string_to_int
 from scripts.utils import convert_utc_time_to_local_time, get_zoneinfo_safe, convert_local_time_to_utc_time
 from repositories.user import UserRepository
 from repositories.medication import MedicationRepository
@@ -92,6 +92,11 @@ async def get_weekly_medication_schedule(
                     medication_time = time_entry.time_of_day
                     if not medication_time:
                         continue
+
+                    if time_entry.days_of_week:
+                        day_num = medication_days_mapping_string_to_int(day_name.lower())
+                        if day_num not in time_entry.days_of_week:
+                            continue
                     # Check if log exists for that date
                     log = next(
                         (log for log in time_entry.logs
@@ -203,16 +208,18 @@ async def get_weekly_overview(
     upcoming_medicines_today = []
 
     while current_date <= sunday:
+        day_name = current_date.strftime("%A")
         for med in medications:
             for time_entry in med.times_of_day:
                 medication_time = time_entry.time_of_day
                 if not medication_time:
                     continue
 
-                local_time = convert_utc_time_to_local_time(
-                            medication_time,
-                            user_timezone
-                        )
+                if time_entry.days_of_week:
+                    day_num = medication_days_mapping_string_to_int(day_name.lower())
+                    if day_num not in time_entry.days_of_week:
+                        continue
+
 
                 log = log_lookup.get((time_entry.id, current_date))
                 if log and log.status == MedicationStatus.taken.value:
@@ -237,7 +244,7 @@ async def get_weekly_overview(
                     if med.is_active:
                         upcoming_medicines_today.append({
                             "name": med.name,
-                            "time": local_time.strftime("%H:%M"),
+                            "time": medication_time.strftime("%H:%M"),
                             "status": status
                         })
 
@@ -246,7 +253,7 @@ async def get_weekly_overview(
                         upcoming_datetime = dose_datetime
                         upcoming_medicine = {
                             "name": med.name,
-                            "time": local_time.strftime("%H:%M")
+                            "time": medication_time.strftime("%H:%M")
                         }
 
         current_date += timedelta(days=1)
@@ -302,7 +309,7 @@ async def get_all_medications_with_times(
                         {
                             "id": t.id,
                             "medication_id": t.medication_id,
-                            "time_of_day": convert_utc_time_to_local_time(t.time_of_day, med.user.timezone),
+                            "time_of_day": t.time_of_day.strftime("%H:%M") if t.time_of_day else None,
                             "notes": t.notes,
                         }
                         for t in med.times_of_day
@@ -395,7 +402,7 @@ async def get_detailed_medication_info(
         next_dose = None
         if upcoming_doses:
             next_time, med_name = min(upcoming_doses, key=lambda x: x[0])
-            next_dose = NextDoseOut(medication_name=med_name, time=convert_utc_time_to_local_time(next_time, user_tz))
+            next_dose = NextDoseOut(medication_name=med_name, time=next_time)
 
         return MedicationInfoOut(
             weekly_adherence_percentage=adherence_percentage,

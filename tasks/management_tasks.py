@@ -454,6 +454,10 @@ def initiate_check_up_call(check_in_id: int):
             logger.error(f"UserCheckin not found for check_in_id {check_in_id}")
             return
 
+        if user_checkin.status != CheckinLogStatusEnum.unconfirmed.value:
+            logger.info(f"Check-in {check_in_id} already has a reported status of {user_checkin.status}. Skipping call initiation.")
+            return
+
         user = user_checkin.user
         last_pending_session = max(
             (s for s in user_checkin.scheduled_sessions if not s.is_completed and s.session_type == CheckInType.check_up_call.value),
