@@ -210,13 +210,16 @@ def schedule_medication_reminders_for_hour(db, today: datetime.date, hour_start:
 
                 for time in med.times_of_day:
                     
-                    if time.scheduled_at and time.scheduled_at == dt_utc:
-                        logger.info(f"Medication {med.id} for user {user.id} at time {med_time} has already been scheduled. Skipping duplicate scheduling.")
-                        continue
 
                     med_time = time.time_of_day
                     med_time_utc = convert_local_time_to_utc_time(med_time, user.timezone)
                     if not (hour_start <= med_time_utc < hour_end):
+                        continue
+
+                    dt_utc = datetime.combine(today, med_time_utc)
+                    
+                    if time.scheduled_at and time.scheduled_at == dt_utc:
+                        logger.info(f"Medication {med.id} for user {user.id} at time {med_time} has already been scheduled. Skipping duplicate scheduling.")
                         continue
 
                     days_of_week = time.days_of_week
@@ -224,9 +227,7 @@ def schedule_medication_reminders_for_hour(db, today: datetime.date, hour_start:
                         today_weekday = today.weekday()  # Monday=0, Sunday=6
                         if today_weekday not in days_of_week:
                             continue
-                        
-
-                    dt_utc = datetime.combine(today, med_time_utc) 
+                         
                     med_payload = build_medication_payload(med, time)
 
                     if dt_utc not in user_reminders[user.id]["medication_info"]:
