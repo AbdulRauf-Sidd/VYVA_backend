@@ -94,7 +94,7 @@ async def get_weekly_medication_schedule(
                         continue
 
                     if time_entry.days_of_week:
-                        day_num = medication_days_mapping_string_to_int(day_name.lower())
+                        day_num = medication_days_mapping_string_to_int.get(day_name.lower())
                         if day_num not in time_entry.days_of_week:
                             continue
                     # Check if log exists for that date
@@ -216,7 +216,7 @@ async def get_weekly_overview(
                     continue
 
                 if time_entry.days_of_week:
-                    day_num = medication_days_mapping_string_to_int(day_name.lower())
+                    day_num = medication_days_mapping_string_to_int.get(day_name.lower())
                     if day_num not in time_entry.days_of_week:
                         continue
 
