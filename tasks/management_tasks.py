@@ -443,6 +443,7 @@ def initiate_check_up_call(check_in_id: int):
             db.query(UserCheckin)
             .options(
                 selectinload(UserCheckin.scheduled_sessions),
+                selectinload(UserCheckin.checkin_logs),
                 selectinload(UserCheckin.user)
                 .selectinload(User.organization)
                 .selectinload(Organization.agents),
@@ -454,8 +455,9 @@ def initiate_check_up_call(check_in_id: int):
             logger.error(f"UserCheckin not found for check_in_id {check_in_id}")
             return
 
-        if user_checkin.status != CheckinLogStatusEnum.unconfirmed.value:
-            logger.info(f"Check-in {check_in_id} already has a reported status of {user_checkin.status}. Skipping call initiation.")
+        latest_log = user_checkin.checkin_logs.order_by(CheckinLog.date.desc()).first()
+        if latest_log and latest_log.status != CheckinLogStatusEnum.unconfirmed.value:
+            logger.info(f"Check-in {check_in_id} already has a reported status of {latest_log.status}. Skipping call initiation.")
             return
 
         user = user_checkin.user
@@ -497,13 +499,6 @@ def initiate_check_up_call(check_in_id: int):
             last_pending_session.attempts += 1
             call_sid = response.get('callSid')
             last_pending_session.call_sid = call_sid
-            call_log = CheckinLog(
-                user_id=user.id,
-                status=CheckinLogStatusEnum.unconfirmed.value,
-                checkin_id=check_in_id,
-                date=datetime.now(timezone.utc),
-            )
-            db.add(call_log)
             db.commit()
             schedule_celery_task_for_scheduled_session_status_check()
 

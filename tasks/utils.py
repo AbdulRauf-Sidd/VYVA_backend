@@ -3,9 +3,9 @@ from core.redis import conn, ONBOARDING_CALL_STATUS_CHECK_REDIS_KEY, CALL_STATUS
 from models.medication import MedicationLog
 import logging
 from core.database import SessionLocal
-from models.user_check_ins import ScheduledSession, UserCheckin, CheckInType
+from models.user_check_ins import CheckinLog, CheckinLogStatusEnum, ScheduledSession, UserCheckin, CheckInType
 from sqlalchemy.orm import selectinload
-from datetime import datetime, time 
+from datetime import datetime, time, timezone 
 from scripts.utils import convert_local_time_to_utc_time
 
 logger = logging.getLogger(__name__)
@@ -139,6 +139,14 @@ def schedule_check_in_calls_for_hour(db, today, hour_start, hour_end):
                     continue
 
                 # --- call scheduler ---
+                call_log = CheckinLog(
+                        user_id=checkin.user.id,
+                        status=CheckinLogStatusEnum.unconfirmed.value,
+                        checkin_id=checkin.id,
+                        date=datetime.now(timezone.utc),
+                    )
+                db.add(call_log)
+                db.commit()
                 task_id = celery_app.send_task(
                     task_name,
                     args=[checkin.id,],
@@ -161,7 +169,7 @@ def schedule_check_in_calls_for_hour(db, today, hour_start, hour_end):
                 logger.error(f"Error processing checkin {checkin.id}: {e}")
                 continue
 
-        db.commit()
+        
         logger.info(f"Scheduled {scheduled_count} check-in sessions at {hour_start}-{hour_end}.")
 
     except Exception as e:
