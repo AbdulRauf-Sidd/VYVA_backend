@@ -455,7 +455,7 @@ def initiate_check_up_call(check_in_id: int):
             logger.error(f"UserCheckin not found for check_in_id {check_in_id}")
             return
 
-        latest_log = user_checkin.checkin_logs.order_by(CheckinLog.date.desc()).first()
+        latest_log = sorted(user_checkin.checkin_logs, key=lambda x: x.date, reverse=True)[0] if user_checkin.checkin_logs else None
         if latest_log and latest_log.status != CheckinLogStatusEnum.unconfirmed.value:
             logger.info(f"Check-in {check_in_id} already has a reported status of {latest_log.status}. Skipping call initiation.")
             return
