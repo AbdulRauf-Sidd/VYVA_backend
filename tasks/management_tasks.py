@@ -467,6 +467,10 @@ def initiate_check_up_call(check_in_id: int):
             default=None,
         )
 
+        if not last_pending_session:
+            logger.warning(f"No pending session found for check in {check_in_id}")
+            return
+
         check_up_agent_id = None
         agents = user.organization.agents
         for agent in agents:
@@ -488,10 +492,6 @@ def initiate_check_up_call(check_in_id: int):
             "address": user.full_address,
             "phone_number_id": user.organization.phone_number_id
         }
-
-        if not last_pending_session:
-            logger.warning(f"No pending session found for check in {check_in_id}")
-            return
         
         response = make_check_up_call(payload)
 

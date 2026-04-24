@@ -163,6 +163,7 @@ def schedule_check_in_calls_for_hour(db, today, hour_start, hour_end):
                 )
 
                 db.add(new_session)
+                db.commit()
                 scheduled_count += 1
 
             except Exception as e:
