@@ -85,3 +85,29 @@ class OnboardingRequestBodyRedCross(OnboardingRequestBody):
     preferences: Optional[List[str]] = None
     preferred_reminder_channel: Optional[str] = None
     preferred_reports_channel: Optional[str] = None
+
+
+class OnboardingRequestBodyZamora(OnboardingRequestBody):
+    user_id: Optional[int] = None
+    first_name: str = None
+    last_name: str = None
+    timezone: str = None
+    phone_number: str = None
+    call_back_date_time: Optional[datetime] = None
+    consent_given: Optional[bool] = None
+    medication_details: Optional[List[MedicationDetailsItem]] = None
+    caretaker_phone: Optional[str] = None
+    check_in_details: Optional[CheckInDetails] = None
+    caretaker_name: Optional[str] = None
+    brain_coach: Optional[BrainCoach] = None
+    caretaker_consent: Optional[bool] = None
+    health_conditions: Optional[List[str]] = None
+    street_address: Optional[str] = None
+    city: Optional[str] = None
+    country: Optional[str] = None
+    post_code: Optional[str] = None
+    house_number: Optional[str] = None
+    mobility: Optional[List[str]] = None
+    preferences: Optional[List[str]] = None
+    preferred_reminder_channel: Optional[str] = None
+    preferred_reports_channel: Optional[str] = None

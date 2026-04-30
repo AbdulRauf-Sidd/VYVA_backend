@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Body, Response, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from models.medication import Medication, MedicationTime
-from models.user import User, Caretaker
+from models.user import User
 from models.onboarding import OnboardingUser
 from datetime import datetime, timedelta, time
 from sqlalchemy.sql import func
@@ -9,9 +9,9 @@ from sqlalchemy import select, union_all, literal
 from sqlalchemy.orm import selectinload
 from core.database import get_db
 import logging
-from schemas.onboarding_user import OnboardingRequestBody, OnboardingRequestBodyRedCross
+from schemas.onboarding_user import OnboardingRequestBody, OnboardingRequestBodyRedCross, OnboardingRequestBodyZamora
 from scripts.medication_utils import construct_days_array_from_string
-from scripts.utils import convert_local_time_to_utc_time, get_or_create_caregiver, construct_mem0_memory_onboarding, date_now_in_timezone, convert_to_utc_datetime, parse_time_string
+from scripts.utils import get_or_create_caregiver, construct_mem0_memory_onboarding, date_now_in_timezone, convert_to_utc_datetime, parse_time_string
 from models.user_check_ins import UserCheckin, CheckInType
 from models.organization import Organization
 from services.mem0 import add_conversation
@@ -450,6 +450,204 @@ async def onboard_user_red_cross(
         logger.error(f"Error processing payload: {e}")
         raise HTTPException(status_code=400, detail="Invalid payload")
 
+@router.post(
+    "/zamora/",
+    status_code=status.HTTP_201_CREATED,
+    summary="Create a new onboarding user",
+    description="Create a new onboarding user with the provided details"
+)
+async def onboard_user_zamora(
+    payload: OnboardingRequestBodyZamora = Body(...),
+    db: AsyncSession = Depends(get_db)
+):
+    try:
+        data = payload.model_dump()
+        timezone = data["timezone"]
+        stmt = select(Organization).where(Organization.name_slug == "zamora")
+        result = await db.execute(stmt)
+        organization = result.scalar_one_or_none()
+        if not organization:
+            raise HTTPException(status_code=404, detail="Organization not found")
+        # if data.get("call_back_date_time"):
+        #     callback_date = data["call_back_date_time"].date()
+        #     user_today = date_now_in_timezone(timezone)
+        #     record.call_back_date_time = data["call_back_date_time"]
+        #     if callback_date == user_today:
+        #         onboarding_payload = construct_onboarding_user_payload(record, record.organization.onboarding_agent_id)
+
+        #         dt_utc = convert_to_utc_datetime(tz_name=record.timezone, dt=data["call_back_date_time"])
+        #         celery_app.send_task(
+        #             "initiate_onboarding_call",
+        #             args=[onboarding_payload,],
+        #             eta=dt_utc
+        #         )
+
+        #         record.onboarding_call_scheduled = True #if the user is calling, no need for call back
+            
+            # db.add(record)
+            # await db.commit()
+            # return
+        
+        # --- check consent --- no need for this if the user is calling
+        if not payload.consent_given:
+            raise HTTPException(status_code=400, detail="Consent not given")
+        
+        phone_number = data["phone_number"]
+        first_name = data["first_name"]
+        last_name = data["last_name"]
+        caretaker_phone = data.get("caretaker_phone", None)
+        caretaker_name = data.get("caretaker_name", None)
+        street_address = data.get("street_address", None)
+        city = data.get("city", None)
+        country = data.get("country", None)
+        post_code = data.get("post_code", None)
+        house_number = data.get("house_number", None)
+        medication_details = data.get("medication_details", [])
+        check_in_details = data.get("check_in_details", {})
+        brain_coach = data.get("brain_coach", {})
+        caretaker_consent = data.get("caretaker_consent", False)
+        health_conditions = data.get("health_conditions", [])
+        preferences = data.get("preferences", [])
+        mobility = data.get("mobility", [])
+        
+
+        caregiver_phone = caretaker_phone
+        
+
+        if caregiver_phone:
+            caregiver, created = await get_or_create_caregiver(db, caregiver_phone, caretaker_name)
+        else:
+            caregiver = None
+
+        language = "english" 
+
+        user = User(
+            first_name=first_name,
+            last_name=last_name,
+            phone_number=phone_number,
+            street=street_address,
+            city=city,
+            postal_code=post_code,
+            house_number=house_number,
+            preferred_communication_channel='phone', 
+            preferred_consultation_language=language,
+            health_conditions=", ".join(health_conditions) if health_conditions else None,
+            mobility=", ".join(mobility) if mobility else None,
+            caretaker_id=caregiver.id if caregiver_phone else None,
+            caretaker_consent=caretaker_consent,
+            caretaker=caregiver if caregiver_phone else None,
+            preferred_reminder_channel="phone",
+            preferred_reports_channel=payload.preferred_reports_channel if payload.preferred_reports_channel else "whatsapp",
+            timezone=timezone,
+            country=country,
+            organization_id=organization.id,
+        )
+
+        db.add(user)
+        await db.flush()
+        await db.refresh(user)
+
+        wants_brain_coach = brain_coach.get("wants_brain_coach_sessions", False)
+        frequency_in_days = brain_coach.get("frequency_in_days", None)
+        time_of_day = brain_coach.get("time_of_day", None)
+        if wants_brain_coach:
+            if not time_of_day:
+                time_of_day = "12:00" 
+
+            time_obj = parse_time_string(time_of_day)
+
+            check_in = UserCheckin(
+                user_id=user.id,
+                check_in_type=CheckInType.brain_coach.value,
+                check_in_frequency_days=frequency_in_days if frequency_in_days else 7,
+                check_in_time=time_obj
+            )
+            db.add(check_in)
+
+        wants_daily_check_ins = check_in_details.get("wants_check_ins", False)
+        check_in_frequency = check_in_details.get("frequency_in_days", None)
+        time_of_day = check_in_details.get("time_of_day", None)
+        if wants_daily_check_ins:
+            if not time_of_day:
+                time_of_day = "09:00" 
+
+            time_obj = parse_time_string(time_of_day)
+
+            check_in = UserCheckin(
+                user_id=user.id,
+                check_in_type=CheckInType.check_up_call.value,
+                check_in_frequency_days=check_in_frequency if check_in_frequency else 7,
+                check_in_time=time_obj
+            )
+            db.add(check_in)
+
+        if medication_details:
+            for med_input in medication_details:
+                # Start date
+                if med_input.get("start_date"):
+                    start_date = datetime.strptime(
+                        str(med_input.get("start_date")), "%Y-%m-%d"
+                    ).date()
+                else:
+                    start_date = datetime.now(timezone_obj.utc).date()
+
+                # End date
+                if med_input.get("end_date"):
+                    end_date = datetime.strptime(
+                        str(med_input.get("end_date")), "%Y-%m-%d"
+                    ).date()
+                else:
+                    end_date = None
+
+                med = Medication(
+                    user_id=user.id,
+                    name=med_input.get("name"),
+                    dosage=med_input.get("dosage"),
+                    start_date=start_date,
+                    end_date=end_date,
+                    purpose=med_input.get("purpose")
+                )
+                db.add(med)
+                await db.flush()
+
+                for time_str in med_input.get("times", []):
+                    time_obj = parse_time_string(time_str)
+
+                    med_time = MedicationTime(
+                        medication_id=med.id,
+                        time_of_day=time_obj
+                    )
+                    db.add(med_time)
+
+
+        try:
+            mem0_payload = []
+
+            if mobility:
+                mem0_payload += construct_mem0_memory_onboarding(", ".join(mobility), "mobility")
+                await add_conversation(user.id, mem0_payload)
+            if health_conditions:
+                mem0_payload += construct_mem0_memory_onboarding(", ".join(health_conditions), "health_conditions")
+                await add_conversation(user.id, mem0_payload)
+            if preferences:
+                mem0_payload += construct_mem0_memory_onboarding(", ".join(preferences), "preferences")
+                await add_conversation(user.id, mem0_payload)
+        except Exception as e:
+            logger.error(f"Error adding onboarding details to mem0: {e}")
+
+        await db.commit()
+        address_str = f"{street_address}, {house_number}, {city}, {post_code}, {country}"
+        set_location_coordinates.delay(user_id=user.id, location=address_str)
+        # send_onboarding_sms(user=user, send_to_caregiver=True) 
+            
+        return {
+            "status": "success",
+            "message": "Payload processed",
+        }
+    except Exception as e:
+        await db.rollback()
+        logger.error(f"Error processing payload: {e}")
+        raise HTTPException(status_code=400, detail="Invalid payload")
     
 @router.get(
     "/onboarding-users",
