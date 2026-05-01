@@ -463,7 +463,7 @@ async def onboard_user_zamora(
     try:
         data = payload.model_dump()
         timezone = data["timezone"]
-        stmt = select(Organization).where(Organization.name_slug == "Zamora")
+        stmt = select(Organization).where(Organization.name == "Zamora")
         result = await db.execute(stmt)
         organization = result.scalar_one_or_none()
         if not organization:
