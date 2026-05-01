@@ -82,7 +82,7 @@ def initiate_onboarding_call(payload: dict):
         db.add(onboarding_record)
         db.add(onboarding_log)
         db.commit()
-        # schedule_celery_task_for_call_status_check(onboarding=True)
+        schedule_celery_task_for_call_status_check(onboarding=True)
     except Exception as e:
         logger.error(f"Error initiating onboarding call: {e}")
     finally:
