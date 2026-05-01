@@ -208,8 +208,7 @@ def make_onboarding_call(payload: dict):
             "conversation_initiation_client_data": {
               "conversation_config_override": {
                 "agent": {
-                    "language": iso_language,
-                    "first_message": initial_message
+                    "language": iso_language
                 }
               },
               "dynamic_variables": {

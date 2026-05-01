@@ -127,6 +127,8 @@ def process_pending_onboarding_users():
 
             if not dt_today_utc:
                 preferred_time = user.preferred_time
+                if not preferred_time:
+                    continue
                 if preferred_time < hour_start or preferred_time >= hour_end:
                     continue
 
