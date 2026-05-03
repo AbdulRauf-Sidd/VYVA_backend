@@ -1,12 +1,8 @@
 from core.database import SessionLocal
 from celery_app import celery_app
 from services.whatsapp_service import whatsapp_service
-from services.elevenlabs_service import make_onboarding_call, make_medication_reminder_call
 import logging
-from models.medication import Medication, MedicationTime, MedicationStatus, MedicationLog
 from models.organization import AgentTypeEnum, TwilioWhatsappTemplates, TemplateTypeEnum
-from sqlalchemy import or_, select
-from models.eleven_labs_sessions import ElevenLabsSessions
 from scripts.medication_utils import notify_caretaker_on_missed_meds, construct_medication_string_for_whatsapp, create_medication_logs
 import asyncio
 

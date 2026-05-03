@@ -8,6 +8,7 @@ from .fall_detection import *
 from .medication import *
 from .onboarding import *
 from .organization import *
+from .prompt import *
 from .symptom_checker import *
 from .user_check_ins import *
 from .user import *

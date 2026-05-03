@@ -293,7 +293,7 @@ def make_brain_coach_call(payload: dict):
     try:
         phone_number_id = payload.get("phone_number_id", None)
         if not phone_number_id:
-            settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
+            phone_number_id = settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
 
         id = payload.get("user_id")
         agent_id = payload.get("agent_id")
@@ -338,7 +338,7 @@ def make_check_up_call(payload: dict):
     try:
         phone_number_id = payload.get("phone_number_id", None)
         if not phone_number_id:
-            settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
+            phone_number_id = settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
 
         id = payload.get("user_id")
         agent_id = payload.get("agent_id")
@@ -346,8 +346,18 @@ def make_check_up_call(payload: dict):
         first_name = payload.get("first_name")
         last_name = payload.get("last_name")
         address = payload.get("address")
+        conversation_plan = payload.get("conversation_plan")
         language = payload.get("language")
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
+        dynamic_variables = {
+            "user_id": id,
+            "first_name": first_name,
+            "last_name": last_name,
+            "phone_number": phone_number,
+            "address": address,
+        }
+        if conversation_plan:
+            dynamic_variables["conversation_plan"] = conversation_plan
 
         response = requests.post(
           "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
@@ -360,17 +370,11 @@ def make_check_up_call(payload: dict):
             "to_number": phone_number,
             "conversation_initiation_client_data": {
               "conversation_config_override": {
-                "agent": {
+                  "agent": {
                     "language": iso_language,
                 }
               },
-              "dynamic_variables": {
-                "user_id": id,
-                "first_name": first_name,
-                "last_name": last_name,
-                "phone_number": phone_number,
-                "address": address
-              }
+              "dynamic_variables": dynamic_variables
             }
           },
         )
