@@ -12,6 +12,8 @@ from core.config import settings
 from models.medication import MedicationTime, MedicationLog
 from models.user import Caretaker
 from models.brain_coach import BrainCoachQuestions, BrainCoachResponses, QuestionTranslations
+from models.prompt import Prompt
+from models.eleven_labs_sessions import ElevenLabsSessions
 
 def setup_admin(app):
     admin = Admin(
@@ -82,6 +84,34 @@ def setup_admin(app):
     class ScheduledSessionAdmin(ModelView, model=ScheduledSession):
         column_list = "__all__"
 
+    class PromptAdmin(ModelView, model=Prompt):
+        column_list = [
+            Prompt.id,
+            Prompt.name,
+            Prompt.prompt_type,
+            Prompt.organization_id,
+            Prompt.organization_agent_id,
+            Prompt.agent_type,
+            Prompt.model,
+            Prompt.is_active,
+            Prompt.updated_at,
+        ]
+        form_columns = "__all__"
+
+    class ElevenLabsSessionsAdmin(ModelView, model=ElevenLabsSessions):
+        column_list = [
+            ElevenLabsSessions.id,
+            ElevenLabsSessions.conversation_id,
+            ElevenLabsSessions.user_id,
+            ElevenLabsSessions.agent_type,
+            ElevenLabsSessions.status,
+            ElevenLabsSessions.duration,
+            ElevenLabsSessions.cost,
+            ElevenLabsSessions.call_successful,
+            ElevenLabsSessions.created,
+        ]
+        form_columns = "__all__"
+
 
     admin.add_view(UserAdmin)
     admin.add_view(CaretakerAdmin)
@@ -102,3 +132,5 @@ def setup_admin(app):
     admin.add_view(UserCheckinAdmin)
     admin.add_view(UserCheckinLogAdmin)
     admin.add_view(ScheduledSessionAdmin)
+    admin.add_view(PromptAdmin)
+    admin.add_view(ElevenLabsSessionsAdmin)
