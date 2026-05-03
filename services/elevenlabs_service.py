@@ -359,6 +359,8 @@ def make_check_up_call(payload: dict):
         if conversation_plan:
             dynamic_variables["conversation_plan"] = conversation_plan
 
+        logger.info(f"Making check up call with dynamic variables: {dynamic_variables}")
+
         response = requests.post(
           "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
           headers={

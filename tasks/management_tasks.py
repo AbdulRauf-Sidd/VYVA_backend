@@ -525,6 +525,8 @@ def initiate_check_up_call(check_in_id: int):
                 organization_agent_id=check_up_agent.id if check_up_agent else None,
             )
         )
+
+        logger.info(f"Generated conversation plan for check-up call: {conversation_plan}")
         if conversation_plan:
             payload["conversation_plan"] = conversation_plan
         
