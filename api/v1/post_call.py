@@ -1,15 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
 from fastapi import Request
-from hashlib import sha256
-import logging, json, pytz
-from models.organization import Organization
-from repositories.eleven_labs_sessions import ElevenLabsSessionRepository
-from schemas.eleven_labs_session import ElevenLabsSessionCreate
-from tasks.management_tasks import initiate_onboarding_call
-from models.onboarding import OnboardingUser
+import logging, json
+from models.organization import Organization, OrganizationAgents
 from repositories.symptom_checker import SymptomCheckerRepository
 from api.v1.symptom_checker import (
     _build_ai_summary_source,
@@ -18,9 +13,9 @@ from api.v1.symptom_checker import (
 )
 from schemas.symptom_checker import SymptomCheckerInteractionCreate
 from core.config import settings
-from scripts.onboarding_utils import construct_onboarding_user_payload
 from services.mem0 import add_conversation
 from models import User
+from models.eleven_labs_sessions import ElevenLabsSessions
 
 
 logger = logging.getLogger(__name__)
@@ -29,6 +24,57 @@ logger = logging.getLogger(__name__)
 from core.database import get_db
 
 router = APIRouter()
+
+
+def _parse_event_timestamp(value):
+    if not value:
+        return None
+    try:
+        if isinstance(value, (int, float)):
+            timestamp = value / 1000 if value > 10_000_000_000 else value
+            return datetime.fromtimestamp(timestamp, tz=timezone.utc)
+        if isinstance(value, str):
+            try:
+                return datetime.fromisoformat(value.replace("Z", "+00:00"))
+            except ValueError:
+                timestamp = float(value)
+                timestamp = timestamp / 1000 if timestamp > 10_000_000_000 else timestamp
+                return datetime.fromtimestamp(timestamp, tz=timezone.utc)
+    except (TypeError, ValueError):
+        logger.warning(f"Unable to parse ElevenLabs event timestamp: {value}")
+    return None
+
+
+def _normalize_elevenlabs_transcript(transcript):
+    conversation = []
+    if not isinstance(transcript, list):
+        return conversation
+
+    for message in transcript:
+        if not isinstance(message, dict):
+            continue
+        role = message.get("role")
+        content = message.get("message")
+        if not content:
+            continue
+        if role == "agent":
+            role = "assistant"
+        conversation.append({
+            "role": role,
+            "content": content
+        })
+    return conversation
+
+
+def _parse_optional_float(value):
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        logger.warning(f"Unable to parse ElevenLabs cost: {value}")
+        return None
+
 
 @router.post("/", status_code=200)
 async def receive_message(request: Request, db: AsyncSession = Depends(get_db)):
@@ -88,45 +134,98 @@ async def receive_message(request: Request, db: AsyncSession = Depends(get_db)):
         
         agent_id = data.get("agent_id")
         status = data.get("status")
-        transcript = data.get("transcript")
+        transcript = data.get("transcript") or []
         metadata = data.get("metadata", {})
+        analysis = data.get("analysis", {})
         conversation_initiation_client_data = data.get("conversation_initiation_client_data", {})
         
-        if agent_id in result:
-            return {"success": True} #onboarding agent. 
+        add_to_mem0 = True
+        if agent_id in result:  #onboarding agent.
+            add_to_mem0 = False
         
         else:
             user_id = conversation_initiation_client_data.get("dynamic_variables", {}).get("user_id")
             phone_number = conversation_initiation_client_data.get("dynamic_variables", {}).get("phone_number")
             call_duration = metadata.get("call_duration_secs")
+            cost = _parse_optional_float(metadata.get("cost"))
             termination_reason = metadata.get("termination_reason")
+            summary = analysis.get("transcript_summary") or data.get("summary")
+            call_successful = analysis.get("call_successful")
+            dynamic_variables = conversation_initiation_client_data.get("dynamic_variables", {})
+            call_sid = metadata.get("call_sid") or metadata.get("callSid") or data.get("call_sid") or data.get("callSid")
             
             if phone_number:
                 result = await db.execute(select(User.id).where(User.phone_number == phone_number))
-                user_id = result.scalar_one()
-
-            conversation = []
-            for message in transcript:
-                role = message['role']
-                content = message['message']
-                if not content:
-                    continue
-                if role == 'agent':
-                    role = 'assistant'
-                conversation.append({
-                    'role': role,
-                    'content': content
-                })
-
+                user_id = result.scalar_one_or_none() or user_id
             if user_id:
-                await add_conversation(
-                    user_id=user_id,
-                    conversation=conversation
+                try:
+                    user_id = int(user_id)
+                except (TypeError, ValueError):
+                    logger.warning(f"Invalid user_id in ElevenLabs webhook: {user_id}")
+                    user_id = None
+
+            agent_type_result = await db.execute(
+                select(OrganizationAgents.agent_type).where(
+                    OrganizationAgents.agent_id == agent_id
                 )
+            )
+            agent_type = agent_type_result.scalars().first()
+
+            conversation = _normalize_elevenlabs_transcript(transcript)
+
+            if user_id and add_to_mem0:
+                try:
+                    await add_conversation(
+                        user_id=user_id,
+                        conversation=conversation
+                    )
+                except Exception as e:
+                    logger.error(f"Mem0 add_conversation failed: {e}")
         
             try:
-                pass
+                session_record = None
+                if conversation_id:
+                    existing = await db.execute(
+                        select(ElevenLabsSessions).where(
+                            ElevenLabsSessions.conversation_id == conversation_id
+                        )
+                    )
+                    session_record = existing.scalar_one_or_none()
+
+                if session_record is None:
+                    session_record = ElevenLabsSessions(conversation_id=conversation_id)
+                    db.add(session_record)
+
+                session_record.call_successful = (
+                    str(call_successful) if call_successful is not None else None
+                )
+                session_record.user_id = user_id
+                session_record.agent_id = agent_id
+                session_record.agent_type = agent_type
+                session_record.event_type = type
+                session_record.event_timestamp = _parse_event_timestamp(event_timestamp)
+                session_record.payload = payload
+                session_record.call_metadata = metadata
+                session_record.analysis = analysis
+                session_record.dynamic_variables = dynamic_variables
+                session_record.duration = call_duration
+                session_record.cost = cost
+                session_record.status = status
+                session_record.call_sid = call_sid
+                session_record.phone_number = phone_number
+                session_record.termination_reason = termination_reason
+                session_record.summary = summary
+                session_record.transcription = {
+                    "conversation": conversation
+                }
+
+                await db.commit()
+                await db.refresh(session_record)
+                logger.info(
+                    f"Saved ElevenLabs session {session_record.id} for conversation_id={conversation_id}"
+                )
             except Exception as e:
+                await db.rollback()
                 logger.error(f"DB insert failed: {e}")
                 return {"status": "error", "reason": "db_insert_failed"}
             
