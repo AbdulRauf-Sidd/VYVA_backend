@@ -8,7 +8,7 @@ from sqlalchemy.sql import func
 from sqlalchemy import select, union_all, literal
 from sqlalchemy.orm import selectinload
 from core.database import get_db
-import logging
+import logging, traceback
 from schemas.onboarding_user import OnboardingRequestBody, OnboardingRequestBodyRedCross, OnboardingRequestBodyZamora
 from scripts.medication_utils import construct_days_array_from_string
 from scripts.utils import get_or_create_caregiver, construct_mem0_memory_onboarding, date_now_in_timezone, convert_to_utc_datetime, parse_time_string
@@ -468,40 +468,18 @@ async def onboard_user_zamora(
         organization = result.scalar_one_or_none()
         if not organization:
             raise HTTPException(status_code=404, detail="Organization not found")
-        # if data.get("call_back_date_time"):
-        #     callback_date = data["call_back_date_time"].date()
-        #     user_today = date_now_in_timezone(timezone)
-        #     record.call_back_date_time = data["call_back_date_time"]
-        #     if callback_date == user_today:
-        #         onboarding_payload = construct_onboarding_user_payload(record, record.organization.onboarding_agent_id)
 
-        #         dt_utc = convert_to_utc_datetime(tz_name=record.timezone, dt=data["call_back_date_time"])
-        #         celery_app.send_task(
-        #             "initiate_onboarding_call",
-        #             args=[onboarding_payload,],
-        #             eta=dt_utc
-        #         )
-
-        #         record.onboarding_call_scheduled = True #if the user is calling, no need for call back
-            
-            # db.add(record)
-            # await db.commit()
-            # return
-        
-        # --- check consent --- no need for this if the user is calling
         if not payload.consent_given:
             raise HTTPException(status_code=400, detail="Consent not given")
         
         phone_number = data["phone_number"]
         first_name = data["first_name"]
         last_name = data["last_name"]
-        caretaker_phone = data.get("caretaker_phone", None)
-        caretaker_name = data.get("caretaker_name", None)
-        street_address = data.get("street_address", None)
-        city = data.get("city", None)
+        caretaker_phone = (data.get("caretaker_phone") or "").strip()
+        caretaker_name = (data.get("caretaker_name") or "").strip()
+        address = data.get("address", None)
         country = data.get("country", None)
-        post_code = data.get("post_code", None)
-        house_number = data.get("house_number", None)
+        language = data.get("language", None)
         medication_details = data.get("medication_details", [])
         check_in_details = data.get("check_in_details", {})
         brain_coach = data.get("brain_coach", {})
@@ -509,33 +487,28 @@ async def onboard_user_zamora(
         health_conditions = data.get("health_conditions", [])
         preferences = data.get("preferences", [])
         mobility = data.get("mobility", [])
+       
         
 
-        caregiver_phone = caretaker_phone
-        
-
-        if caregiver_phone:
-            caregiver, created = await get_or_create_caregiver(db, caregiver_phone, caretaker_name)
+        if caretaker_phone:
+            caregiver, created = await get_or_create_caregiver(db, caretaker_phone, caretaker_name)
         else:
             caregiver = None
 
-        language = "english" 
 
         user = User(
             first_name=first_name,
             last_name=last_name,
             phone_number=phone_number,
-            street=street_address,
-            city=city,
-            postal_code=post_code,
-            house_number=house_number,
+            address=address,
+            language=language.lower(),
             preferred_communication_channel='phone', 
             preferred_consultation_language=language,
             health_conditions=", ".join(health_conditions) if health_conditions else None,
             mobility=", ".join(mobility) if mobility else None,
-            caretaker_id=caregiver.id if caregiver_phone else None,
+            caretaker_id=caregiver.id if caretaker_phone else None,
             caretaker_consent=caretaker_consent,
-            caretaker=caregiver if caregiver_phone else None,
+            caretaker=caregiver if caretaker_phone else None,
             preferred_reminder_channel="phone",
             preferred_reports_channel=payload.preferred_reports_channel if payload.preferred_reports_channel else "whatsapp",
             timezone=timezone,
@@ -636,7 +609,7 @@ async def onboard_user_zamora(
             logger.error(f"Error adding onboarding details to mem0: {e}")
 
         await db.commit()
-        address_str = f"{street_address}, {house_number}, {city}, {post_code}, {country}"
+        address_str = f"{address}, {country}"
         set_location_coordinates.delay(user_id=user.id, location=address_str)
         # send_onboarding_sms(user=user, send_to_caregiver=True) 
             
@@ -646,8 +619,9 @@ async def onboard_user_zamora(
         }
     except Exception as e:
         await db.rollback()
-        logger.error(f"Error processing payload: {e}")
-        raise HTTPException(status_code=400, detail="Invalid payload")
+        logger.error("Error processing payload:")
+        logger.error(traceback.format_exc())
+        raise HTTPException(status_code=400, detail=str(e) or "Unknown error")
     
 @router.get(
     "/onboarding-users",

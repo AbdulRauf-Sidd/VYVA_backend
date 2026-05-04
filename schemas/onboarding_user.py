@@ -100,13 +100,11 @@ class OnboardingRequestBodyZamora(OnboardingRequestBody):
     check_in_details: Optional[CheckInDetails] = None
     caretaker_name: Optional[str] = None
     brain_coach: Optional[BrainCoach] = None
+    language: Optional[str] = None
     caretaker_consent: Optional[bool] = None
     health_conditions: Optional[List[str]] = None
-    street_address: Optional[str] = None
-    city: Optional[str] = None
+    address: Optional[str] = None
     country: Optional[str] = None
-    post_code: Optional[str] = None
-    house_number: Optional[str] = None
     mobility: Optional[List[str]] = None
     preferences: Optional[List[str]] = None
     preferred_reminder_channel: Optional[str] = None
