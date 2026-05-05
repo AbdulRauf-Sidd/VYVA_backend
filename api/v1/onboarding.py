@@ -8,6 +8,7 @@ from sqlalchemy.sql import func
 from sqlalchemy import select, union_all, literal
 from sqlalchemy.orm import selectinload
 from core.database import get_db
+from sqlalchemy.exc import IntegrityError
 import logging, traceback
 from schemas.onboarding_user import OnboardingRequestBody, OnboardingRequestBodyRedCross, OnboardingRequestBodyZamora
 from scripts.medication_utils import construct_days_array_from_string
@@ -616,11 +617,40 @@ async def onboard_user_zamora(
             "status": "success",
             "message": "Payload processed",
         }
+    except HTTPException as e:
+        raise e
+
+    except IntegrityError as e:
+        await db.rollback()
+
+        if "users_phone_number_key" in str(e):
+            raise HTTPException(
+                status_code=409,
+                detail={
+                    "code": "USER_ALREADY_EXISTS",
+                    "message": "A user with this phone number already exists"
+                }
+            )
+
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "code": "DB_ERROR",
+                "message": "Database constraint error"
+            }
+        )
+
     except Exception as e:
         await db.rollback()
-        logger.error("Error processing payload:")
         logger.error(traceback.format_exc())
-        raise HTTPException(status_code=400, detail=str(e) or "Unknown error")
+
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "code": "INTERNAL_ERROR",
+                "message": "Something went wrong while processing the request"
+            }
+        )
     
 @router.get(
     "/onboarding-users",
