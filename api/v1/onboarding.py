@@ -608,8 +608,6 @@ async def onboard_user_zamora(
             logger.error(f"Error adding onboarding details to mem0: {e}")
 
         await db.commit()
-        address_str = f"{address}, {country}"
-        set_location_coordinates.delay(user_id=user.id, location=address_str)
         # send_onboarding_sms(user=user, send_to_caregiver=True) 
             
         return {
