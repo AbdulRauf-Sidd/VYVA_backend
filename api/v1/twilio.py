@@ -145,7 +145,16 @@ async def personalize_call(
     user = result.scalar_one_or_none()
 
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        return {
+            "dynamic_variables": {
+                "user_id": "",
+                "first_name": "",
+                "phone_number": payload.caller_id,
+                "conversation_id": payload.conversation_id,
+                "is_registered": False,
+                "app_user": False
+            },
+        }
 
     first_time = not bool(user.social_companion_first_time)
     
@@ -158,16 +167,15 @@ async def personalize_call(
             "agent": {
                 "first_message": first_message,
             }
-            # "tts": {
-            #   "voice_id": "new-voice-id"
-            # }
         },
         "dynamic_variables": {
             "user_id": user.id,
+            "address": user.full_address,
             "first_name": user.first_name,
             "phone_number": user.phone_number,
             "timezone": user.timezone,
             "conversation_id": payload.conversation_id,
+            "is_registered": True,
             "app_user": False
         },
     }
