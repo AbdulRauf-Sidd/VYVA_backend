@@ -148,8 +148,10 @@ async def personalize_call(
         return {
             "dynamic_variables": {
                 "user_id": "",
+                "address": "",
                 "first_name": "",
                 "phone_number": payload.caller_id,
+                "timezone": "",
                 "conversation_id": payload.conversation_id,
                 "is_registered": False,
                 "app_user": False
