@@ -609,7 +609,7 @@ async def onboard_user_zamora(
             logger.error(f"Error adding onboarding details to mem0: {e}")
 
         await db.commit()
-        # send_onboarding_sms(user=user, send_to_caregiver=True) 
+        send_onboarding_sms(user=user, send_to_caregiver=True) 
             
         return {
             "status": "success",
