@@ -68,6 +68,12 @@ class User(Base):
     #sessions
     user_checkins = relationship("UserCheckin", back_populates="user", cascade="all, delete-orphan", passive_deletes=True)
 
+    checkin_logs = relationship(
+        "CheckinLog",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
 
     #Medications
     medications = relationship("Medication", back_populates="user", cascade="all, delete-orphan", passive_deletes=True)
