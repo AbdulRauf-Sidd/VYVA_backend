@@ -36,69 +36,6 @@ Return only a valid JSON object.
 """
 
 
-DEFAULT_MED_REMINDER_PLAN_PROMPT = """
-You are a compassionate Medication Reminder call planner for a senior care voice assistant service.
-
-Your job is to generate a warm, natural call plan for an AI voice agent that is about to call an older adult with a medication reminder.
-
-Return only valid JSON in this exact format:
-{
-  "call_plan": "...",
-  "opening_line_direction": "...",
-  "last_med_status": "...",
-  "med_streak": "...",
-  "health_tip": "..."
-}
-
-call_plan: Private instructions to the voice agent for today's medication reminder. One natural paragraph. Include the medication name(s), how to gently confirm if taken, and what tone to use based on recent adherence history.
-opening_line_direction: How the agent should open the call after the greeting. A direction, not a script.
-last_med_status: A single neutral, non-judgmental phrase describing the user's most recent medication adherence. Empty string if no history.
-med_streak: A short encouraging phrase about the user's recent consecutive adherence. Empty string if no streak data. Never guilt-trip.
-health_tip: One short, general, condition-related wellness tip based on the user's health conditions. Supportive only, not medical advice.
-
-Rules:
-- Never shame or pressure the user about missed doses.
-- Never give medical advice or suggest dose changes.
-- If there is no medication history, do not pretend familiarity.
-- Keep the tone warm, calm, and supportive.
-- Do not include markdown, comments, or extra keys.
-
-Return only valid JSON matching the format above.
-"""
-
-DEFAULT_BRAIN_COACH_PLAN_PROMPT = """
-You are a compassionate Brain Coach call planner for a senior care voice assistant service.
-
-Your job is to generate a warm, natural call plan for an AI voice agent that is about to call an older adult for a short daily cognitive activity.
-
-Return only valid JSON in this exact format:
-{
-  "call_plan": "...",
-  "opening_line_direction": "...",
-  "suggested_activity": "...",
-  "last_session_score": "...",
-  "session_streak": "...",
-  "cognitive_health_tip": "..."
-}
-
-call_plan: One natural paragraph of private instructions to the voice agent. Include the last activity completed, current streak, today's suggested activity, a short scientific motivation for daily cognitive activity, one personalization detail, and guidance for if the user is tired, hesitant, struggling, or declines.
-opening_line_direction: How the agent should open the call after the greeting. A direction, not a script.
-suggested_activity: The specific cognitive activity recommended for today, chosen based on recent session history and trend direction.
-last_session_score: A single neutral phrase describing performance in the last session. Empty string if no history. Frame as silent context only, never announce the score.
-session_streak: A gentle encouragement phrase about the user's current streak. Empty string if no streak. Never create pressure or guilt.
-cognitive_health_tip: One short, friendly, evidence-based motivation for doing small daily thinking exercises. Do not claim it prevents or treats any condition.
-
-Rules:
-- The core task is to invite the user into one short cognitive activity within the first 30 seconds.
-- The agent must ask only one question at a time.
-- The agent must never make the user feel tested, judged, or corrected.
-- If no session history is available, do not pretend familiarity.
-- If the user declines, respect that and close warmly.
-- Do not include markdown, comments, or extra keys.
-
-Return only valid JSON matching the format above.
-"""
-
 
 @dataclass
 class CallPlanContext:
@@ -406,7 +343,7 @@ class OpenAIService:
     ) -> Dict[str, Any]:
         prompt_config = await self.get_prompt(
             db=db,
-            prompt_type=PromptTypeEnum.conversation_plan.value,
+            prompt_type=PromptTypeEnum.medication_reminder_plan.value,
             organization_id=None,
             organization_agent_id=context.organization_agent_id,
             agent_type=context.agent_type,
@@ -426,10 +363,12 @@ class OpenAIService:
         user_tz = get_zoneinfo_safe(context.user.timezone)
         local_time = datetime.now(timezone.utc).astimezone(user_tz).strftime("%Y-%m-%d %H:%M %Z")
 
-        system_prompt = prompt_config.prompt if prompt_config else DEFAULT_MED_REMINDER_PLAN_PROMPT
+        if not prompt_config:
+            raise RuntimeError("No medication_reminder_plan prompt found in database.")
+        system_prompt = prompt_config.prompt
         if "json" not in system_prompt.lower():
             system_prompt = f"{system_prompt}\n\nReturn only a valid JSON object."
-        model = prompt_config.model if prompt_config and prompt_config.model else self.model
+        model = prompt_config.model if prompt_config.model else self.model
 
         user_payload = {
             "call_type": context.agent_type,
@@ -484,7 +423,7 @@ class OpenAIService:
     ) -> Dict[str, Any]:
         prompt_config = await self.get_prompt(
             db=db,
-            prompt_type=PromptTypeEnum.conversation_plan.value,
+            prompt_type=PromptTypeEnum.brain_coach_plan.value,
             organization_id=None,
             organization_agent_id=context.organization_agent_id,
             agent_type=context.agent_type,
@@ -501,10 +440,12 @@ class OpenAIService:
         trend = self.compute_brain_coach_trend(brain_coach_sessions)
         last_session = brain_coach_sessions[-1] if brain_coach_sessions else None
 
-        system_prompt = prompt_config.prompt if prompt_config else DEFAULT_BRAIN_COACH_PLAN_PROMPT
+        if not prompt_config:
+            raise RuntimeError("No brain_coach_plan prompt found in database.")
+        system_prompt = prompt_config.prompt
         if "json" not in system_prompt.lower():
             system_prompt = f"{system_prompt}\n\nReturn only a valid JSON object."
-        model = prompt_config.model if prompt_config and prompt_config.model else self.model
+        model = prompt_config.model if prompt_config.model else self.model
 
         user_payload = {
             "call_type": context.agent_type,
