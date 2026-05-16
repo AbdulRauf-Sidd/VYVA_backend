@@ -9,6 +9,8 @@ from core.database import Base
 
 class PromptTypeEnum(str, PyEnum):
     conversation_plan = "conversation_plan"
+    medication_reminder_plan = "medication_reminder_plan"
+    brain_coach_plan = "brain_coach_plan"
 
 
 class Prompt(Base):

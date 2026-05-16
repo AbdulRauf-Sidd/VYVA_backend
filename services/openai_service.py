@@ -1,13 +1,18 @@
 import json
 import logging
-from dataclasses import dataclass
+from collections import defaultdict
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from sqlalchemy import desc, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from core.config import settings
+from models.brain_coach import BrainCoachResponses
 from models.eleven_labs_sessions import ElevenLabsSessions
+from models.medication import Medication, MedicationLog
 from models.organization import OrganizationAgents
 from models.prompt import Prompt, PromptTypeEnum
 from models.user import User
@@ -29,6 +34,7 @@ Make the plan useful for one short phone call:
 
 Return only a valid JSON object.
 """
+
 
 
 @dataclass
@@ -245,6 +251,249 @@ class OpenAIService:
             )
         )
         return result.scalars().first()
+
+    async def get_medication_log_context(
+        self,
+        db: AsyncSession,
+        user_id: int,
+        limit: int = 5,
+    ) -> List[Dict[str, Any]]:
+        stmt = (
+            select(MedicationLog, Medication.name)
+            .join(Medication, MedicationLog.medication_id == Medication.id)
+            .where(MedicationLog.user_id == user_id)
+            .order_by(desc(MedicationLog.created_at))
+            .limit(limit)
+        )
+        result = await db.execute(stmt)
+        rows = result.all()
+        return [
+            {
+                "medication_name": name,
+                "status": log.status,
+                "taken_at": log.taken_at.isoformat() if log.taken_at else None,
+                "created_at": log.created_at.isoformat() if log.created_at else None,
+            }
+            for log, name in rows
+        ]
+
+    def compute_med_streak(self, medication_logs: List[Dict[str, Any]]) -> int:
+        streak = 0
+        for log in medication_logs:
+            if log.get("status") == "taken":
+                streak += 1
+            else:
+                break
+        return streak
+
+    async def get_brain_coach_session_context(
+        self,
+        db: AsyncSession,
+        user_id: int,
+        limit: int = 5,
+    ) -> List[Dict[str, Any]]:
+        result = await db.execute(
+            select(BrainCoachResponses)
+            .where(BrainCoachResponses.user_id == user_id)
+            .options(selectinload(BrainCoachResponses.question))
+            .order_by(BrainCoachResponses.created.asc())
+        )
+        responses = result.scalars().all()
+
+        if not responses:
+            return []
+
+        sessions: Dict[str, list] = defaultdict(list)
+        for r in responses:
+            sessions[r.session_id].append(r)
+
+        session_summaries = []
+        for session_id, items in sessions.items():
+            total_score = sum(r.score for r in items)
+            max_score = sum((r.question.max_score or 1) for r in items)
+            percent = round((total_score / max_score) * 100) if max_score else 0
+            created_at = min((r.created for r in items if r.created), default=None)
+            session_summaries.append({
+                "session_id": session_id,
+                "total_score": total_score,
+                "max_score": max_score,
+                "percent": percent,
+                "question_count": len(items),
+                "created": created_at.isoformat() if created_at else None,
+            })
+
+        session_summaries.sort(key=lambda x: x["created"] or "")
+        return session_summaries[-limit:]
+
+    def compute_brain_coach_trend(self, sessions: List[Dict[str, Any]]) -> str:
+        percents = [s["percent"] for s in sessions]
+        if len(percents) < 2:
+            return "insufficient_data"
+        delta = percents[-1] - percents[-2]
+        if delta > 1:
+            return "improving"
+        elif delta < -1:
+            return "declining"
+        return "stable"
+
+    async def generate_med_reminder_call_plan(
+        self,
+        db: AsyncSession,
+        context: CallPlanContext,
+    ) -> Dict[str, Any]:
+        prompt_config = await self.get_prompt(
+            db=db,
+            prompt_type=PromptTypeEnum.medication_reminder_plan.value,
+            organization_id=None,
+            organization_agent_id=context.organization_agent_id,
+            agent_type=context.agent_type,
+        )
+
+        medication_logs = await self.get_medication_log_context(db=db, user_id=context.user.id)
+        recent_sessions = await self.get_recent_session_context(
+            db=db,
+            user_id=context.user.id,
+            agent_type=None,
+            limit=5,
+        )
+        memories = await self.get_user_memories(context.user.id)
+        med_streak = self.compute_med_streak(medication_logs)
+
+        from scripts.utils import get_zoneinfo_safe
+        user_tz = get_zoneinfo_safe(context.user.timezone)
+        local_time = datetime.now(timezone.utc).astimezone(user_tz).strftime("%Y-%m-%d %H:%M %Z")
+
+        if not prompt_config:
+            raise RuntimeError("No medication_reminder_plan prompt found in database.")
+        system_prompt = prompt_config.prompt
+        if "json" not in system_prompt.lower():
+            system_prompt = f"{system_prompt}\n\nReturn only a valid JSON object."
+        model = prompt_config.model if prompt_config.model else self.model
+
+        user_payload = {
+            "call_type": context.agent_type,
+            "user": self.serialize_user(context.user),
+            "local_time": local_time,
+            "medication_logs": medication_logs,
+            "med_streak": med_streak,
+            "memories": memories,
+            "recent_sessions": recent_sessions,
+            "output_contract": {
+                "call_plan": "private instructions for today's medication reminder call, one natural paragraph",
+                "opening_line_direction": "how to open the call after greeting, as direction not script",
+                "last_med_status": "neutral phrase about most recent adherence, empty string if none",
+                "med_streak": "short encouraging phrase about streak, empty string if none",
+                "health_tip": "one short general wellness tip based on health conditions, not medical advice",
+            },
+            "response_format": "Return only valid JSON matching the output_contract.",
+        }
+
+        completion = await self._get_client().chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": json.dumps(user_payload, default=str)},
+            ],
+            response_format={"type": "json_object"},
+            max_completion_tokens=self.max_tokens,
+            temperature=self.temperature,
+        )
+        content = completion.choices[0].message.content if completion.choices else None
+        if not content:
+            raise RuntimeError("OpenAI returned an empty med reminder call plan.")
+
+        plan = json.loads(content)
+        plan["dynamic_variable"] = self.format_med_reminder_plan(plan)
+        return plan
+
+    def format_med_reminder_plan(self, plan: Dict[str, Any]) -> str:
+        compact = {
+            "call_plan": plan.get("call_plan"),
+            "opening_line_direction": plan.get("opening_line_direction"),
+            "last_med_status": plan.get("last_med_status"),
+            "med_streak": plan.get("med_streak"),
+            "health_tip": plan.get("health_tip"),
+        }
+        return json.dumps(compact, ensure_ascii=False)
+
+    async def generate_brain_coach_call_plan(
+        self,
+        db: AsyncSession,
+        context: CallPlanContext,
+    ) -> Dict[str, Any]:
+        prompt_config = await self.get_prompt(
+            db=db,
+            prompt_type=PromptTypeEnum.brain_coach_plan.value,
+            organization_id=None,
+            organization_agent_id=context.organization_agent_id,
+            agent_type=context.agent_type,
+        )
+
+        brain_coach_sessions = await self.get_brain_coach_session_context(db=db, user_id=context.user.id)
+        recent_sessions = await self.get_recent_session_context(
+            db=db,
+            user_id=context.user.id,
+            agent_type=None,
+            limit=5,
+        )
+        memories = await self.get_user_memories(context.user.id)
+        trend = self.compute_brain_coach_trend(brain_coach_sessions)
+        last_session = brain_coach_sessions[-1] if brain_coach_sessions else None
+
+        if not prompt_config:
+            raise RuntimeError("No brain_coach_plan prompt found in database.")
+        system_prompt = prompt_config.prompt
+        if "json" not in system_prompt.lower():
+            system_prompt = f"{system_prompt}\n\nReturn only a valid JSON object."
+        model = prompt_config.model if prompt_config.model else self.model
+
+        user_payload = {
+            "call_type": context.agent_type,
+            "user": self.serialize_user(context.user),
+            "brain_coach_sessions": brain_coach_sessions,
+            "last_session": last_session,
+            "trend_direction": trend,
+            "memories": memories,
+            "recent_sessions": recent_sessions,
+            "output_contract": {
+                "call_plan": "private instructions for today's brain coach call, one natural paragraph",
+                "opening_line_direction": "how to open the call after greeting, as direction not script",
+                "suggested_activity": "cognitive activity recommended for today based on session history and trend",
+                "last_session_score": "neutral phrase about last session performance, empty string if no history",
+                "session_streak": "gentle encouragement phrase about current streak, empty string if none",
+                "cognitive_health_tip": "short evidence-based motivation for daily thinking exercises",
+            },
+            "response_format": "Return only valid JSON matching the output_contract.",
+        }
+
+        completion = await self._get_client().chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": json.dumps(user_payload, default=str)},
+            ],
+            response_format={"type": "json_object"},
+            max_completion_tokens=self.max_tokens,
+            temperature=self.temperature,
+        )
+        content = completion.choices[0].message.content if completion.choices else None
+        if not content:
+            raise RuntimeError("OpenAI returned an empty brain coach call plan.")
+
+        plan = json.loads(content)
+        plan["dynamic_variable"] = self.format_brain_coach_plan(plan)
+        return plan
+
+    def format_brain_coach_plan(self, plan: Dict[str, Any]) -> str:
+        compact = {
+            "call_plan": plan.get("call_plan"),
+            "opening_line_direction": plan.get("opening_line_direction"),
+            "suggested_activity": plan.get("suggested_activity"),
+            "last_session_score": plan.get("last_session_score"),
+            "session_streak": plan.get("session_streak"),
+            "cognitive_health_tip": plan.get("cognitive_health_tip"),
+        }
+        return json.dumps(compact, ensure_ascii=False)
 
 
 openai_service = OpenAIService()
