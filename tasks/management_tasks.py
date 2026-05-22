@@ -268,7 +268,7 @@ def initiate_medication_reminder_call(payload):
             )
             if conversation_plan:
                 payload["conversation_plan"] = conversation_plan
-                logger.info(f"Generated medication reminder conversation plan for user {user_id}")
+                logger.info(f"Generated medication reminder conversation plan for user {user_id}: {conversation_plan}")
     except Exception as e:
         logger.error(f"Failed to generate medication reminder plan for user {user_id}: {e}")
     finally:
@@ -516,7 +516,7 @@ def initiate_brain_coach_session(check_in_id: int):
         )
         if conversation_plan:
             payload["conversation_plan"] = conversation_plan
-            logger.info(f"Generated brain coach conversation plan for user {user.id}")
+            logger.info(f"Generated brain coach conversation plan for user {user.id}: {conversation_plan}")
 
         response = make_brain_coach_call(payload)
         if not last_pending_session:
