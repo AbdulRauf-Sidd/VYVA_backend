@@ -36,6 +36,42 @@ logger = logging.getLogger(__name__)
 twilio_client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 
 
+async def generate_medication_reminder_conversation_plan(user: User, organization_agent_id: int | None) -> str | None:
+    try:
+        async with AsyncSessionLocal() as async_db:
+            plan = await openai_service.generate_med_reminder_call_plan(
+                db=async_db,
+                context=CallPlanContext(
+                    user=user,
+                    agent_type=AgentTypeEnum.medication_reminder.value,
+                    organization_agent_id=organization_agent_id,
+                    required_task="generate a call plan for a medication reminder call with an older adult.",
+                ),
+            )
+            return plan.get("dynamic_variable")
+    except Exception as e:
+        logger.error(f"Failed to generate medication reminder conversation plan for user {user.id}: {e}")
+        return None
+
+
+async def generate_brain_coach_conversation_plan(user: User, organization_agent_id: int | None) -> str | None:
+    try:
+        async with AsyncSessionLocal() as async_db:
+            plan = await openai_service.generate_brain_coach_call_plan(
+                db=async_db,
+                context=CallPlanContext(
+                    user=user,
+                    agent_type=AgentTypeEnum.brain_coach.value,
+                    organization_agent_id=organization_agent_id,
+                    required_task="generate a call plan for a brain coach session with an older adult.",
+                ),
+            )
+            return plan.get("dynamic_variable")
+    except Exception as e:
+        logger.error(f"Failed to generate brain coach conversation plan for user {user.id}: {e}")
+        return None
+
+
 async def generate_check_up_conversation_plan(user: User, organization_agent_id: int | None) -> str | None:
     try:
         async with AsyncSessionLocal() as async_db:
@@ -201,12 +237,49 @@ def schedule_calls_for_hour():
 @celery_app.task(name="initiate_medication_reminder_call")
 def initiate_medication_reminder_call(payload):
     create_medication_logs(payload.get("user_id"), payload.get("medications"))
+
+    user_id = payload.get("user_id")
+    db = SessionLocal()
+    try:
+        user = (
+            db.query(User)
+            .options(
+                selectinload(User.organization)
+                .selectinload(Organization.agents)
+            )
+            .filter(User.id == user_id)
+            .first()
+        )
+        if user:
+            organization_agent_id = None
+            if user.organization:
+                med_agent = next(
+                    (a for a in user.organization.agents
+                     if a.agent_type == AgentTypeEnum.medication_reminder.value and a.is_active),
+                    None,
+                )
+                organization_agent_id = med_agent.id if med_agent else None
+
+            conversation_plan = asyncio.run(
+                generate_medication_reminder_conversation_plan(
+                    user=user,
+                    organization_agent_id=organization_agent_id,
+                )
+            )
+            if conversation_plan:
+                payload["conversation_plan"] = conversation_plan
+                logger.info(f"Generated medication reminder conversation plan for user {user_id}")
+    except Exception as e:
+        logger.error(f"Failed to generate medication reminder plan for user {user_id}: {e}")
+    finally:
+        db.close()
+
     response = make_medication_reminder_call(payload)
     with SessionLocal() as db:
         if response:
             call_sid = response.get('callSid')
             session_record = ElevenLabsSessions(
-                user_id=payload.get('user_id'),                 # make sure this exists
+                user_id=payload.get('user_id'),
                 agent_id=payload.get("agent_id"),
                 agent_type=AgentTypeEnum.medication_reminder.value,
                 payload=payload,
@@ -413,18 +486,19 @@ def initiate_brain_coach_session(check_in_id: int):
         )
 
         brain_coach_agent_id = None
+        brain_coach_organization_agent = None
         agents = user.organization.agents
         for agent in agents:
             logger.info(agent.agent_type)
             if agent.agent_type == AgentTypeEnum.brain_coach.value:
                 brain_coach_agent_id = agent.agent_id
+                brain_coach_organization_agent = agent
                 break
-        
+
         if not brain_coach_agent_id:
             logger.error(f"No brain coach agent found for organization {user.organization.id}")
             return
 
-        
         payload = {
             "user_id": user.id,
             "agent_id": brain_coach_agent_id,
@@ -433,7 +507,17 @@ def initiate_brain_coach_session(check_in_id: int):
             "language": user.preferred_consultation_language,
             "phone_number_id": user.organization.phone_number_id
         }
-        
+
+        conversation_plan = asyncio.run(
+            generate_brain_coach_conversation_plan(
+                user=user,
+                organization_agent_id=brain_coach_organization_agent.id if brain_coach_organization_agent else None,
+            )
+        )
+        if conversation_plan:
+            payload["conversation_plan"] = conversation_plan
+            logger.info(f"Generated brain coach conversation plan for user {user.id}")
+
         response = make_brain_coach_call(payload)
         if not last_pending_session:
             logger.warning(f"No pending session found for check in {check_in_id}")

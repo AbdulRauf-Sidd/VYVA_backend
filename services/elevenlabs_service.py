@@ -254,6 +254,16 @@ def make_medication_reminder_call(payload: dict):
         language = payload.get("language")
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
         medications = payload.get("medications")
+        conversation_plan = payload.get("conversation_plan")
+
+        dynamic_variables = {
+            "user_id": id,
+            "first_name": first_name,
+            "medications": str(medications),
+            "phone_number": phone_number,
+        }
+        if conversation_plan:
+            dynamic_variables["conversation_plan"] = conversation_plan
 
         response = requests.post(
           "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
@@ -271,12 +281,7 @@ def make_medication_reminder_call(payload: dict):
                 }
               },
               "user_id": str(id),
-              "dynamic_variables": {
-                "user_id": id,
-                "first_name": first_name,
-                "medications": str(medications),
-                "phone_number": phone_number
-              }
+              "dynamic_variables": dynamic_variables,
             }
           },
         )
@@ -301,6 +306,15 @@ def make_brain_coach_call(payload: dict):
         first_name = payload.get("first_name")
         language = payload.get("language")
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
+        conversation_plan = payload.get("conversation_plan")
+
+        dynamic_variables = {
+            "user_id": id,
+            "first_name": first_name,
+            "phone_number": phone_number,
+        }
+        if conversation_plan:
+            dynamic_variables["conversation_plan"] = conversation_plan
 
         response = requests.post(
           "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
@@ -317,11 +331,7 @@ def make_brain_coach_call(payload: dict):
                     "language": iso_language
                 }
               },
-              "dynamic_variables": {
-                "user_id": id,
-                "first_name": first_name,
-                "phone_number": phone_number
-              }
+              "dynamic_variables": dynamic_variables,
             }
           },
         )
