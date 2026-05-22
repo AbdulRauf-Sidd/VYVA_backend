@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from core.config import settings
+from core.database import SessionLocal
 from models.brain_coach import BrainCoachResponses
 from models.eleven_labs_sessions import ElevenLabsSessions
 from models.medication import Medication, MedicationLog
@@ -252,30 +253,30 @@ class OpenAIService:
         )
         return result.scalars().first()
 
-    async def get_medication_log_context(
+    def get_medication_log_context(
         self,
-        db: AsyncSession,
         user_id: int,
         limit: int = 5,
     ) -> List[Dict[str, Any]]:
-        stmt = (
-            select(MedicationLog, Medication.name)
-            .join(Medication, MedicationLog.medication_id == Medication.id)
-            .where(MedicationLog.user_id == user_id)
-            .order_by(desc(MedicationLog.created_at))
-            .limit(limit)
-        )
-        result = await db.execute(stmt)
-        rows = result.all()
-        return [
-            {
-                "medication_name": name,
-                "status": log.status,
-                "taken_at": log.taken_at.isoformat() if log.taken_at else None,
-                "created_at": log.created_at.isoformat() if log.created_at else None,
-            }
-            for log, name in rows
-        ]
+        with SessionLocal() as db:
+            stmt = (
+                select(MedicationLog, Medication.name)
+                .join(Medication, MedicationLog.medication_id == Medication.id)
+                .where(MedicationLog.user_id == user_id)
+                .order_by(desc(MedicationLog.created_at))
+                .limit(limit)
+            )
+            result = db.execute(stmt)
+            rows = result.all()
+            return [
+                {
+                    "medication_name": name,
+                    "status": log.status,
+                    "taken_at": log.taken_at.isoformat() if log.taken_at else None,
+                    "created_at": log.created_at.isoformat() if log.created_at else None,
+                }
+                for log, name in rows
+            ]
 
     def compute_med_streak(self, medication_logs: List[Dict[str, Any]]) -> int:
         streak = 0
@@ -286,19 +287,19 @@ class OpenAIService:
                 break
         return streak
 
-    async def get_brain_coach_session_context(
+    def get_brain_coach_session_context(
         self,
-        db: AsyncSession,
         user_id: int,
         limit: int = 5,
     ) -> List[Dict[str, Any]]:
-        result = await db.execute(
-            select(BrainCoachResponses)
-            .where(BrainCoachResponses.user_id == user_id)
-            .options(selectinload(BrainCoachResponses.question))
-            .order_by(BrainCoachResponses.created.asc())
-        )
-        responses = result.scalars().all()
+        with SessionLocal() as db:
+            result = db.execute(
+                select(BrainCoachResponses)
+                .where(BrainCoachResponses.user_id == user_id)
+                .options(selectinload(BrainCoachResponses.question))
+                .order_by(BrainCoachResponses.created.asc())
+            )
+            responses = result.scalars().all()
 
         if not responses:
             return []
@@ -349,7 +350,7 @@ class OpenAIService:
             agent_type=context.agent_type,
         )
 
-        medication_logs = await self.get_medication_log_context(db=db, user_id=context.user.id)
+        medication_logs = self.get_medication_log_context(user_id=context.user.id)
         recent_sessions = await self.get_recent_session_context(
             db=db,
             user_id=context.user.id,
@@ -429,7 +430,7 @@ class OpenAIService:
             agent_type=context.agent_type,
         )
 
-        brain_coach_sessions = await self.get_brain_coach_session_context(db=db, user_id=context.user.id)
+        brain_coach_sessions = self.get_brain_coach_session_context(user_id=context.user.id)
         recent_sessions = await self.get_recent_session_context(
             db=db,
             user_id=context.user.id,
