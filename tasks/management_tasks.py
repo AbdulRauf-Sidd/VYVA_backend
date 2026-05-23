@@ -1,6 +1,6 @@
 import asyncio
 
-from core.database import AsyncSessionLocal, SessionLocal, get_sync_session
+from core.database import AsyncSessionLocal, SessionLocal, get_sync_session, engine
 from celery_app import celery_app
 from models import user
 from services.elevenlabs_service import make_onboarding_call, make_medication_reminder_call, make_brain_coach_call, make_check_up_call, call_agent
@@ -52,6 +52,8 @@ async def generate_medication_reminder_conversation_plan(user: User, organizatio
     except Exception as e:
         logger.error(f"Failed to generate medication reminder conversation plan for user {user.id}: {e}")
         return None
+    finally:
+        await engine.dispose()
 
 
 async def generate_brain_coach_conversation_plan(user: User, organization_agent_id: int | None) -> str | None:
@@ -70,6 +72,8 @@ async def generate_brain_coach_conversation_plan(user: User, organization_agent_
     except Exception as e:
         logger.error(f"Failed to generate brain coach conversation plan for user {user.id}: {e}")
         return None
+    finally:
+        await engine.dispose()
 
 
 async def generate_check_up_conversation_plan(user: User, organization_agent_id: int | None) -> str | None:
@@ -90,6 +94,8 @@ async def generate_check_up_conversation_plan(user: User, organization_agent_id:
     except Exception as e:
         logger.error(f"Failed to generate check-up conversation plan for user {user.id}: {e}")
         return None
+    finally:
+        await engine.dispose()
 
 def get_call_status_from_twilio(callSid: str) -> dict:
     try:
