@@ -345,8 +345,8 @@ class OpenAIService:
             db=db,
             prompt_type=PromptTypeEnum.medication_reminder_plan.value,
             organization_id=None,
-            organization_agent_id=context.organization_agent_id,
-            agent_type=context.agent_type,
+            # organization_agent_id=context.organization_agent_id,
+            # agent_type=context.agent_type,
         )
 
         medication_logs = await self.get_medication_log_context(db=db, user_id=context.user.id)
@@ -425,8 +425,8 @@ class OpenAIService:
             db=db,
             prompt_type=PromptTypeEnum.brain_coach_plan.value,
             organization_id=None,
-            organization_agent_id=context.organization_agent_id,
-            agent_type=context.agent_type,
+            # organization_agent_id=context.organization_agent_id,
+            # agent_type=context.agent_type,
         )
 
         brain_coach_sessions = await self.get_brain_coach_session_context(db=db, user_id=context.user.id)
