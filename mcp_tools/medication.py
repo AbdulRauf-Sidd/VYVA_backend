@@ -384,7 +384,7 @@ async def update_medication_log(input: MedicationLogInput) -> dict:
 
         await db.commit()
 
-        if input.reminder:
+        if False: #Hard code for now. 
             message = "meds scheduled for reminder. "
             return {
                 "success": True,
