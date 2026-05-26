@@ -126,7 +126,7 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
         other_rows = []
         
         for row in rows:
-            if row.question_type in ("Memory", "Memoria", ""):
+            if row.question_type in ("Memory", "Memoria", "Gedächtnis"):
                 memory_row = row
             else:
                 other_rows.append(row)

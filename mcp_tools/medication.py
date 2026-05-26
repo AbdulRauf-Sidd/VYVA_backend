@@ -358,12 +358,12 @@ async def update_medication_log(input: MedicationLogInput) -> dict:
         user_now = now_utc.astimezone(tz)
         
         for med in input.medication_logs:
-            med_taken = med['taken']
+            med_taken = med.taken
 
             # Find the latest log for this medication and time
             stmt = select(MedicationLog).where(
-                MedicationLog.medication_id == med['medication_id'],
-                MedicationLog.medication_time_id == med['time_id'],
+                MedicationLog.medication_id == med.medication_id,
+                MedicationLog.medication_time_id == med.time_id,
                 MedicationLog.user_id == input.user_id
             ).order_by(MedicationLog.created_at.desc()).limit(1)
             result = await db.execute(stmt)
@@ -376,8 +376,8 @@ async def update_medication_log(input: MedicationLogInput) -> dict:
             else:
                 # Fallback: create new log if none exists
                 log = MedicationLog(
-                    medication_id=med['medication_id'],
-                    medication_time_id=med['time_id'],
+                    medication_id=med.medication_id,
+                    medication_time_id=med.time_id,
                     user_id=input.user_id,
                     taken_at=now_utc if med_taken else None,
                     taken_at_local=user_now if med_taken else None,
