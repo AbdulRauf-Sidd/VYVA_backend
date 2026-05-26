@@ -42,7 +42,7 @@ async def retrieve_user_medications(user_id: int) -> list[dict]:
             days = []
             for time in med.times_of_day:
                 # local_time = convert_utc_time_to_local_time(time.time_of_day, med.user.timezone)
-                times.append(time.time_of_day.strftime("%H:%M"))
+                time_entry = {"id": time.id, "time": time.time_of_day.strftime("%H:%M")}
                 if time.days_of_week:
                     days = []
                     days_of_week = time.days_of_week
@@ -50,11 +50,8 @@ async def retrieve_user_medications(user_id: int) -> list[dict]:
                         day_str = medication_days_mapping_int_to_string.get(day)
                         if day_str:
                             days.append(day_str)
-                    
-                    times[-1] = {
-                        "time": times[-1],
-                        "days": days
-                    }
+                    time_entry["days"] = days
+                times.append(time_entry)
 
             meds.append(
                 {
