@@ -384,6 +384,7 @@ class WhatsAppService:
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
                 timeout=30.0
             )
+            logger.info(f"WhatsApp message Response: {response}")
             response.raise_for_status()
             return response
         

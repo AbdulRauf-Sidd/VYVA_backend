@@ -122,7 +122,7 @@ async def receive_message(request: Request, db: AsyncSession = Depends(get_db)):
 
         # --- Extract payload fields safely ---
 
-        logger.info(f"POST CALL PAYLOAD ==>>: {payload}")
+        # logger.info(f"POST CALL PAYLOAD ==>>: {payload}")
         type = payload.get("type")
         data = payload.get("data", {})
         conversation_id = data.get("conversation_id")
@@ -263,14 +263,14 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
         
         is_direct_format = has_conversation_id and has_user_id and not (has_type and has_data)
         
-        logger.info(
-            f"Payload format detection: "
-            f"has_conversation_id={has_conversation_id}, "
-            f"has_user_id={has_user_id}, "
-            f"has_type={has_type}, "
-            f"has_data={has_data}, "
-            f"is_direct_format={is_direct_format}"
-        )
+        # logger.info(
+        #     f"Payload format detection: "
+        #     f"has_conversation_id={has_conversation_id}, "
+        #     f"has_user_id={has_user_id}, "
+        #     f"has_type={has_type}, "
+        #     f"has_data={has_data}, "
+        #     f"is_direct_format={is_direct_format}"
+        # )
         
         try:
             if is_direct_format:
@@ -429,20 +429,20 @@ async def receive_symptom_checker_message(request: Request, db: AsyncSession = D
             logger.warning(f"Agent ID {agent_id} does not match symptom checker agent ID {settings.ELEVENLABS_SYMPTOM_CHECKER_AGENT_ID}")
             # Continue anyway - might be useful for debugging
 
-        logger.info(
-            f"Symptom Checker Webhook Received: "
-            f"Format={'Direct' if is_direct_format else 'ElevenLabs'}, "
-            f"Type={event_type if not is_direct_format else 'N/A'}, "
-            f"AgentID={agent_id if not is_direct_format else 'N/A'}, "
-            f"Status={status}, "
-            f"UserID={user_id}, "
-            f"ConversationID={conversation_id}, "
-            f"Duration={call_duration_secs if call_duration_secs else 'N/A'}, "
-            f"CallTimestamp={call_timestamp}, "
-            f"VitalsData={bool(vitals_data)}, "
-            f"VitalsAISummary={bool(vitals_ai_summary)}, "
-            f"SymptomsAISummary={bool(symptoms_ai_summary)}"
-        )
+        # logger.info(
+        #     f"Symptom Checker Webhook Received: "
+        #     f"Format={'Direct' if is_direct_format else 'ElevenLabs'}, "
+        #     f"Type={event_type if not is_direct_format else 'N/A'}, "
+        #     f"AgentID={agent_id if not is_direct_format else 'N/A'}, "
+        #     f"Status={status}, "
+        #     f"UserID={user_id}, "
+        #     f"ConversationID={conversation_id}, "
+        #     f"Duration={call_duration_secs if call_duration_secs else 'N/A'}, "
+        #     f"CallTimestamp={call_timestamp}, "
+        #     f"VitalsData={bool(vitals_data)}, "
+        #     f"VitalsAISummary={bool(vitals_ai_summary)}, "
+        #     f"SymptomsAISummary={bool(symptoms_ai_summary)}"
+        # )
 
         # --- Backfill AI summaries if missing ---
         if not vitals_ai_summary or not symptoms_ai_summary:
