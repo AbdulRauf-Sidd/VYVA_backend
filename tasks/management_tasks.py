@@ -343,6 +343,7 @@ def update_scheduled_call_status(self):
                     ScheduledSession.status.notin_(excluded_statuses),
                 ),
                 ScheduledSession.is_completed.is_(False),
+                ScheduledSession.call_sid.isnot(None),
             )
         )
 
@@ -352,6 +353,7 @@ def update_scheduled_call_status(self):
         for session in sessions:
             status = get_call_status_from_twilio(session.call_sid)
             status = status.get('status', None)
+            logger.info(f"Updating status for ScheduledSession {session.id} with Call SID {session.call_sid}: {status}")
             session.status = status
             session_type = session.session_type
             if status in ["declined", "no_answer", "failed"]: #call completed
@@ -365,6 +367,9 @@ def update_scheduled_call_status(self):
                         session.completed_at = datetime.now(timezone.utc)
                     else:
                         initiate_check_up_call.apply_async(args=[session.user_checkin_id], countdown=60) #reschedule call after 1 minute
+                else:
+                    session.is_completed = True
+                    session.completed_at = datetime.now(timezone.utc)
             else:
                 session.is_completed = True
                 session.completed_at = datetime.now(timezone.utc)

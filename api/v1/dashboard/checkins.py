@@ -3,7 +3,7 @@ from fastapi import APIRouter, Query
 from typing import List, Optional
 from sqlalchemy.future import select
 from sqlalchemy import and_
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import time
 
 from core.database import get_async_session
@@ -25,8 +25,7 @@ class CheckInOut(BaseModel):
     is_active: bool
     frequency_days: int
     preferred_time: Optional[str]  # ✅ change this
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 @router.get("/checkins", response_model=List[CheckInOut])
 async def get_checkins(
