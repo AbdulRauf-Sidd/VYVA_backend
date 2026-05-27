@@ -70,7 +70,7 @@ class ScheduledSession(Base):
     status = Column(String(20), nullable=True) # completed, missed, voicemail, etc.
     created_at = Column(DateTime(timezone=True), server_default=func.now()) 
     
-    is_cancelled = Column(Boolean, default=False, nullable=False)
+    is_cancelled = Column(Boolean, default=False, nullable=True)
     metadata_ = Column("metadata", JSON, nullable=True)
 
     # Direct user link — used when session_type == "general_reminders" (no UserCheckin anchor)
