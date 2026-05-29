@@ -2,7 +2,7 @@ import logging
 from datetime import datetime, timezone
 from typing import List, Optional
 from scripts.utils import convert_local_time_to_utc_time, get_zoneinfo_safe
-from sqlalchemy import Time, or_
+from sqlalchemy import Time, or_, func
 from sqlalchemy import update
 from sqlalchemy.exc import IntegrityError
 from models.user import User
@@ -139,10 +139,36 @@ def construct_medication_string_for_whatsapp(medications):
 def create_medication_logs(user_id, medications, status=MedicationStatus.unconfirmed.value):
     with SessionLocal() as db:
         med_log_ids = []
+        today = datetime.now(timezone.utc).date()
         for medication in medications:
+            med_id = medication['medication_id']
+            time_id = medication['time_id']
+
+            # Skip if the medication is no longer active (e.g. updated since scheduling)
+            med = db.query(Medication).filter(Medication.id == med_id).first()
+            if not med or not med.is_active:
+                logger.info(f"Skipping log creation for inactive medication {med_id}")
+                continue
+
+            # Skip if an unconfirmed log already exists for this time slot today
+            existing = (
+                db.query(MedicationLog)
+                .filter(
+                    MedicationLog.medication_time_id == time_id,
+                    MedicationLog.user_id == user_id,
+                    MedicationLog.status == MedicationStatus.unconfirmed.value,
+                    func.date(MedicationLog.created_at) == today,
+                )
+                .first()
+            )
+            if existing:
+                logger.info(f"Skipping duplicate log for time_id {time_id} on {today}")
+                med_log_ids.append(existing.id)
+                continue
+
             med_log = MedicationLog(
-                medication_id=medication['medication_id'],
-                medication_time_id=medication['time_id'],
+                medication_id=med_id,
+                medication_time_id=time_id,
                 user_id=user_id,
                 status=status
             )

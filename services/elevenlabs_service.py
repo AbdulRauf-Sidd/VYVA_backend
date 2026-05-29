@@ -398,6 +398,43 @@ def make_check_up_call(payload: dict):
         logger.error(f"Elevenlabs check up call failed: {e}")
         return None
     
+def make_general_reminder_call(payload: dict):
+    try:
+        from scripts.utils import get_user_organization
+        id = payload.get("user_id")
+        phone_number = payload.get("phone_number")
+        reminder_purpose = payload.get("reminder_purpose")
+
+        organization = get_user_organization(id)
+        phone_number_id = organization.phone_number_id
+
+        response = requests.post(
+          "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
+          headers={
+            "xi-api-key": settings.ELEVENLABS_API_KEY
+          },
+          json={
+            "agent_id": settings.ELEVENLABS_GENERAL_REMINDER_AGENT_ID,
+            "agent_phone_number_id": phone_number_id,
+            "to_number": phone_number,
+            "conversation_initiation_client_data": {
+              "dynamic_variables": {
+                "user_id": id,
+                "phone_number": phone_number,
+                "reminder_purpose": reminder_purpose,
+              }
+            }
+          },
+        )
+
+        logger.info(f"Call response for general reminder call: {response.json()}")
+
+        return response.json()
+    except Exception as e:
+        logger.error(f"Elevenlabs general reminder call failed: {e}")
+        return None
+
+
 def call_agent(agent_id: str, phone_number: str, payload: Optional[Dict[str, Any]] = None) -> dict:
     try:
         if not agent_id or not phone_number:

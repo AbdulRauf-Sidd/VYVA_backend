@@ -325,6 +325,8 @@ async def update_user(
 
     for key, value in payload.items():
         if hasattr(user, key) and value is not None:
+            if key == "date_of_birth" and isinstance(value, str):
+                value = datetime.fromisoformat(value)
             setattr(user, key, value)
 
     await session.commit()

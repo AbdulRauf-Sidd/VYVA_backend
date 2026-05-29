@@ -152,6 +152,11 @@ class Settings(BaseSettings):
         env="ELEVENLABS_SYMPTOM_CHECKER_AGENT_ID"
     )
 
+    ELEVENLABS_GENERAL_REMINDER_AGENT_ID: Optional[str] = Field(
+        default="agent_1801kshz8rpeehs892jnb7hhdjd2",
+        env="ELEVENLABS_GENERAL_REMINDER_AGENT_ID"
+    )
+
     ELEVENLABS_OUTBOUND_CALL_URL: str = "https://api.elevenlabs.io/v1/convai/twilio/outbound-call"
 
     OPENAI_MODEL: Optional[str] = Field(

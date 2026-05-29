@@ -3,7 +3,7 @@ import asyncio
 from core.database import AsyncSessionLocal, SessionLocal, get_sync_session, engine
 from celery_app import celery_app
 from models import user
-from services.elevenlabs_service import make_onboarding_call, make_medication_reminder_call, make_brain_coach_call, make_check_up_call, call_agent
+from services.elevenlabs_service import make_onboarding_call, make_medication_reminder_call, make_brain_coach_call, make_check_up_call, call_agent, make_general_reminder_call
 from models.user import User
 from models.onboarding import OnboardingUser, OnboardingLogs
 from models.organization import Organization, OrganizationAgents, AgentTypeEnum, TwilioWhatsappTemplates, TemplateTypeEnum
@@ -631,5 +631,51 @@ def initiate_check_up_call(check_in_id: int):
 
     except Exception as e:
         logger.error(f"Error initiating check-up call for check ID {check_in_id}: {e}")
+    finally:
+        db.close()
+
+
+@celery_app.task(name="initiate_general_reminder_call", max_retries=0)
+def initiate_general_reminder_call(session_id: int):
+    db = SessionLocal()
+    try:
+        session = db.query(ScheduledSession).filter(ScheduledSession.id == session_id).first()
+        if not session:
+            logger.error(f"ScheduledSession {session_id} not found for general reminder call")
+            return
+
+        meta = session.session_metadata or {}
+        payload = {
+            "user_id": session.user_id,
+            "phone_number": meta.get("phone_number"),
+            "reminder_purpose": meta.get("reminder_purpose"),
+        }
+
+        response = make_general_reminder_call(payload)
+
+        if response:
+            call_sid = response.get("callSid")
+            session.call_sid = call_sid
+            session.status = "ringing"
+            eleven_session = ElevenLabsSessions(
+                user_id=session.user_id,
+                agent_id=settings.ELEVENLABS_GENERAL_REMINDER_AGENT_ID,
+                agent_type=CheckInType.general_reminder.value,
+                payload=payload,
+                call_sid=call_sid,
+                status="ringing",
+            )
+            db.add(eleven_session)
+        else:
+            session.status = "failed"
+            logger.error(f"Failed to initiate general reminder call for session {session_id}")
+
+        session.is_completed = True
+        db.commit()
+        if response:
+            schedule_celery_task_for_call_status_check()
+
+    except Exception as e:
+        logger.error(f"Error initiating general reminder call for session {session_id}: {e}")
     finally:
         db.close()

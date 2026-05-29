@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean, Time, Enum, UniqueConstraint
+from sqlalchemy import Column, ForeignKey, Integer, JSON, String, DateTime, Boolean, Time, Enum, UniqueConstraint
 from sqlalchemy.sql import func
 from zoneinfo import ZoneInfo
 from sqlalchemy.orm import relationship
@@ -9,6 +9,7 @@ from core.database import Base
 class CheckInType(enum.Enum):
     brain_coach = "brain_coach"
     check_up_call = "check_up_call"
+    general_reminder = "general_reminder"
 
 class UserCheckin(Base):
     __tablename__ = "user_checkins"
@@ -67,10 +68,13 @@ class ScheduledSession(Base):
     attempts = Column(Integer, default=0)
     call_sid = Column(String(100), nullable=True)
     status = Column(String(20), nullable=True) # completed, missed, voicemail, etc.
-    created_at = Column(DateTime(timezone=True), server_default=func.now()) 
+    session_metadata = Column("metadata", JSON, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     user_checkin = relationship("UserCheckin", passive_deletes=True)
-    user_checkin_id = Column(Integer, ForeignKey("user_checkins.id", ondelete="CASCADE"), nullable=False)
-    
+    user_checkin_id = Column(Integer, ForeignKey("user_checkins.id", ondelete="CASCADE"), nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True)
+    user = relationship("User")
+
     def __repr__(self):
         return f"id: {self.id}, scheduled_at: {self.scheduled_at}, is_completed: {self.is_completed}"

@@ -20,7 +20,7 @@ from core.logging import setup_logging
 from api.v1.dashboard import dashboard
 from api.v1.dashboard import users as dashboard_users, caretakers as dashboard_caretakers, checkins as dashboard_checkins
 from api.v1.dashboard import cities
-from api.v1 import onboarding, users, social, brain_coach, medication, fall_detection, tts, symptom_checker, post_call, ai_assistant, news, tools, organization, authentication, twilio
+from api.v1 import onboarding, users, social, brain_coach, medication, fall_detection, tts, symptom_checker, post_call, ai_assistant, news, tools, organization, authentication, twilio, reminders
 from api.v1 import webhooks
 from api.v1.managemant import admin, ingest_onboarding_users
 from api.v1.managemant import ingest_onboarding_users
@@ -37,7 +37,7 @@ from repositories.user import UserRepository
 from celery.app.control import Inspect
 from celery_app import celery_app
 from mcp_tools.mcp_instance import mcp
-from mcp_tools import brain_coach as brain, user, mem0, medication as med #dont remove
+from mcp_tools import brain_coach as brain, user, mem0, medication as med, reminders as reminder_tools #dont remove
 
 # Setup logging
 logger = setup_logging()
@@ -207,6 +207,7 @@ app.include_router(dashboard_users.router, prefix="/api/v1/user-dashboard", tags
 app.include_router(dashboard_caretakers.router, prefix="/api/v1/caretaker-dashboard", tags=["Dashboard Caretakers"])
 app.include_router(dashboard_checkins.router, prefix="/api/v1/checkins-dashboard", tags=["Dashboard Checkins"])
 app.include_router(cities.router, prefix="/api/v1/cities", tags=["cities"])
+app.include_router(reminders.router, prefix="/api/v1/reminders", tags=["Reminders"])
 
 if __name__ == "__main__":
     import uvicorn

@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from models.medication import Medication, MedicationTime, MedicationLog, MedicationStatus
 from models.user import User
 from sqlalchemy.orm import selectinload
-from sqlalchemy import select
+from sqlalchemy import select, func
 from core.database import get_async_session
 from datetime import datetime, timezone, date, timedelta
 from scripts.utils import get_zoneinfo_safe, convert_utc_time_to_local_time, convert_local_time_to_utc_time
@@ -213,33 +213,59 @@ async def update_user_medication(
 
         db.add(new_med)
         await db.flush()
+
+        new_times: list[MedicationTime] = []
         if medication_slot is not None:
-            # convert=True
-            time_strings = []
             for slot in medication_slot:
                 time_str = slot.time
                 hours, minutes = map(int, time_str.split(":"))
                 time_obj = time(hour=hours, minute=minutes)
                 days = slot.days
                 days_array = construct_days_array_from_string(days)
-                db.add(
-                    MedicationTime(
-                        medication=new_med,
-                        time_of_day=time_obj,
-                        days_of_week=days_array
-                    )
+                new_time = MedicationTime(
+                    medication=new_med,
+                    time_of_day=time_obj,
+                    days_of_week=days_array,
                 )
+                db.add(new_time)
+                new_times.append(new_time)
         else:
             for t in old_med.times_of_day:
-                time_obj = t.time_of_day
-                days_array = t.days_of_week
-                db.add(
-                    MedicationTime(
-                        medication=new_med,
-                        time_of_day=time_obj,
-                        days_of_week=days_array
-                    )
+                new_time = MedicationTime(
+                    medication=new_med,
+                    time_of_day=t.time_of_day,
+                    days_of_week=t.days_of_week,
                 )
+                db.add(new_time)
+                new_times.append(new_time)
+
+        await db.flush()
+
+        # Migrate today's unconfirmed logs from old time IDs to new time IDs
+        # so that logs already created by today's reminder call stay accurate.
+        tz = get_zoneinfo_safe(old_med.user.timezone)
+        user_today = datetime.now(timezone.utc).astimezone(tz).date()
+        new_time_by_tod = {t.time_of_day: t for t in new_times}
+
+        for old_time in old_med.times_of_day:
+            new_time = new_time_by_tod.get(old_time.time_of_day)
+            if not new_time:
+                continue  # time-of-day changed — no migration needed for this slot
+
+            result = await db.execute(
+                select(MedicationLog)
+                .where(
+                    MedicationLog.medication_time_id == old_time.id,
+                    MedicationLog.user_id == old_med.user_id,
+                    MedicationLog.status == MedicationStatus.unconfirmed.value,
+                    func.date(MedicationLog.created_at) == user_today,
+                )
+                .limit(1)
+            )
+            log = result.scalars().first()
+            if log:
+                log.medication_id = new_med.id
+                log.medication_time_id = new_time.id
 
         await db.commit()
 
