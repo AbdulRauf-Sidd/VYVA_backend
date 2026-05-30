@@ -419,3 +419,50 @@ async def update_checkin(
     await session.refresh(checkin)
 
     return {"message": "Checkin updated"}
+
+
+@router.put("/brain-coach/{user_id}")
+async def upsert_brain_coach(
+    user_id: int,
+    payload: dict = Body(...),
+    session: AsyncSession = Depends(get_session)
+):
+    result = await session.execute(
+        select(UserCheckin).where(
+            UserCheckin.user_id == user_id,
+            UserCheckin.check_in_type == "brain_coach",
+        )
+    )
+    checkin = result.scalars().first()
+
+    frequency_days = payload.get("frequency_days")
+    preferred_time = payload.get("preferred_time")
+    is_active = payload.get("is_active")
+
+    if checkin:
+        if frequency_days is not None:
+            checkin.check_in_frequency_days = frequency_days
+        if preferred_time is not None:
+            h, m = map(int, preferred_time.split(":"))
+            checkin.check_in_time = time(hour=h, minute=m)
+        if is_active is not None:
+            checkin.is_active = is_active
+    else:
+        checkin = UserCheckin(
+            user_id=user_id,
+            check_in_type="brain_coach",
+            check_in_frequency_days=frequency_days or 1,
+            check_in_time=time(*map(int, preferred_time.split(":"))) if preferred_time else None,
+            is_active=is_active if is_active is not None else True,
+        )
+        session.add(checkin)
+
+    await session.commit()
+    await session.refresh(checkin)
+
+    return {
+        "id": checkin.id,
+        "enabled": checkin.is_active,
+        "frequency": f"{checkin.check_in_frequency_days} days",
+        "preferred_time": checkin.check_in_time.strftime("%H:%M") if checkin.check_in_time else None,
+    }
