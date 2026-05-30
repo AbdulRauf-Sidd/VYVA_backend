@@ -212,6 +212,7 @@ async def get_user(
 
     for c in user.user_checkins:
         data = {
+            "id": c.id,
             "enabled": c.is_active,
             "frequency": f"{c.check_in_frequency_days} days",
             "preferred_time": c.check_in_time.strftime("%H:%M") if c.check_in_time else None,
