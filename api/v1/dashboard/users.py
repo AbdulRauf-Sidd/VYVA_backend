@@ -414,6 +414,9 @@ async def update_checkin(
 
     for key, value in payload.items():
         if hasattr(checkin, key) and value is not None:
+            if key == "check_in_time" and isinstance(value, str):
+                h, m = map(int, value.split(":"))
+                value = time(hour=h, minute=m)
             setattr(checkin, key, value)
 
     await session.commit()
