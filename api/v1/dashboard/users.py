@@ -6,7 +6,7 @@ from typing import List, Dict, Optional
 from core.database import get_async_session
 from models.user import User, Caretaker
 from models.user_check_ins import UserCheckin
-from models.medication import MedicationLog, Medication
+from models.medication import MedicationLog, Medication, MedicationTime
 from models.organization import Organization
 from sqlalchemy.orm import selectinload
 from sqlalchemy import delete, update
@@ -339,16 +339,35 @@ async def update_medication(
     session: AsyncSession = Depends(get_session)
 ):
     result = await session.execute(
-        select(Medication).where(Medication.id == med_id)
+        select(Medication)
+        .where(Medication.id == med_id)
+        .options(selectinload(Medication.times_of_day))
     )
     med = result.scalars().first()
 
     if not med:
         raise HTTPException(status_code=404, detail="Medication not found")
 
+    schedule_times: Optional[List[str]] = payload.pop("schedule_times", None)
+
     for key, value in payload.items():
         if hasattr(med, key) and value is not None:
             setattr(med, key, value)
+
+    if schedule_times is not None:
+        existing_times = list(med.times_of_day)
+
+        for i, time_str in enumerate(schedule_times):
+            hours, minutes = map(int, time_str.split(":"))
+            new_time = time(hour=hours, minute=minutes)
+            if i < len(existing_times):
+                existing_times[i].time_of_day = new_time
+            else:
+                session.add(MedicationTime(medication_id=med_id, time_of_day=new_time))
+
+        # Remove surplus entries if the new list is shorter
+        for surplus in existing_times[len(schedule_times):]:
+            await session.delete(surplus)
 
     await session.commit()
     await session.refresh(med)
