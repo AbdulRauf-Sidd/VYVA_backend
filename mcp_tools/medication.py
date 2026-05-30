@@ -42,7 +42,7 @@ async def retrieve_user_medications(user_id: int) -> list[dict]:
             days = []
             for time in med.times_of_day:
                 # local_time = convert_utc_time_to_local_time(time.time_of_day, med.user.timezone)
-                times.append(time.time_of_day.strftime("%H:%M"))
+                time_entry = {"id": time.id, "time": time.time_of_day.strftime("%H:%M")}
                 if time.days_of_week:
                     days = []
                     days_of_week = time.days_of_week
@@ -50,11 +50,8 @@ async def retrieve_user_medications(user_id: int) -> list[dict]:
                         day_str = medication_days_mapping_int_to_string.get(day)
                         if day_str:
                             days.append(day_str)
-                    
-                    times[-1] = {
-                        "time": times[-1],
-                        "days": days
-                    }
+                    time_entry["days"] = days
+                times.append(time_entry)
 
             meds.append(
                 {
@@ -358,12 +355,12 @@ async def update_medication_log(input: MedicationLogInput) -> dict:
         user_now = now_utc.astimezone(tz)
         
         for med in input.medication_logs:
-            med_taken = med['taken']
+            med_taken = med.taken
 
             # Find the latest log for this medication and time
             stmt = select(MedicationLog).where(
-                MedicationLog.medication_id == med['medication_id'],
-                MedicationLog.medication_time_id == med['time_id'],
+                MedicationLog.medication_id == med.medication_id,
+                MedicationLog.medication_time_id == med.time_id,
                 MedicationLog.user_id == input.user_id
             ).order_by(MedicationLog.created_at.desc()).limit(1)
             result = await db.execute(stmt)
@@ -376,8 +373,8 @@ async def update_medication_log(input: MedicationLogInput) -> dict:
             else:
                 # Fallback: create new log if none exists
                 log = MedicationLog(
-                    medication_id=med['medication_id'],
-                    medication_time_id=med['time_id'],
+                    medication_id=med.medication_id,
+                    medication_time_id=med.time_id,
                     user_id=input.user_id,
                     taken_at=now_utc if med_taken else None,
                     taken_at_local=user_now if med_taken else None,
@@ -387,7 +384,7 @@ async def update_medication_log(input: MedicationLogInput) -> dict:
 
         await db.commit()
 
-        if input.reminder:
+        if False: #Hard code for now. 
             message = "meds scheduled for reminder. "
             return {
                 "success": True,

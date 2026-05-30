@@ -37,7 +37,7 @@ from repositories.user import UserRepository
 from celery.app.control import Inspect
 from celery_app import celery_app
 from mcp_tools.mcp_instance import mcp
-from mcp_tools import brain_coach as brain, user, mem0, medication as med #dont remove
+from mcp_tools import brain_coach as brain, user, mem0, medication as med, general_features  # dont remove
 
 # Setup logging
 logger = setup_logging()

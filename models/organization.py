@@ -45,6 +45,7 @@ class AgentTypeEnum(str, PyEnum):
     fall_detector = "fall_detector"
     emergency_responder = "emergency_responder"
     check_in = "check_in"
+    general_reminder = "general_reminder"
 
 class OrganizationAgents(Base):
     __tablename__ = "organization_agents"

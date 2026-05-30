@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean, Time, Enum, UniqueConstraint
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean, Time, Enum, UniqueConstraint, JSON
 from sqlalchemy.sql import func
 from zoneinfo import ZoneInfo
 from sqlalchemy.orm import relationship
@@ -9,6 +9,7 @@ from core.database import Base
 class CheckInType(enum.Enum):
     brain_coach = "brain_coach"
     check_up_call = "check_up_call"
+    general_reminders = "general_reminders"
 
 class UserCheckin(Base):
     __tablename__ = "user_checkins"
@@ -69,8 +70,16 @@ class ScheduledSession(Base):
     status = Column(String(20), nullable=True) # completed, missed, voicemail, etc.
     created_at = Column(DateTime(timezone=True), server_default=func.now()) 
     
+    is_cancelled = Column(Boolean, default=False, nullable=True)
+    metadata_ = Column("metadata", JSON, nullable=True)
+
+    # Direct user link — used when session_type == "general_reminders" (no UserCheckin anchor)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=True)
+    user = relationship("User", foreign_keys=[user_id])
+
+    # UserCheckin link — used for brain_coach / check_up_call sessions
     user_checkin = relationship("UserCheckin", passive_deletes=True)
-    user_checkin_id = Column(Integer, ForeignKey("user_checkins.id", ondelete="CASCADE"), nullable=False)
-    
+    user_checkin_id = Column(Integer, ForeignKey("user_checkins.id", ondelete="CASCADE"), nullable=True)
+
     def __repr__(self):
         return f"id: {self.id}, scheduled_at: {self.scheduled_at}, is_completed: {self.is_completed}"
