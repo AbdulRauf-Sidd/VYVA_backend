@@ -1,6 +1,6 @@
 import asyncio
 
-from core.database import AsyncSessionLocal, SessionLocal, get_sync_session, engine
+from core.database import SessionLocal, get_sync_session
 from celery_app import celery_app
 from models import user
 from services.elevenlabs_service import make_onboarding_call, make_medication_reminder_call, make_brain_coach_call, make_check_up_call, call_agent
@@ -30,72 +30,11 @@ from core.config import settings
 from services.whatsapp_service import whatsapp_service
 from scripts.medication_utils import create_medication_logs
 from services.openai_service import CallPlanContext, openai_service
+from scripts.utils import generate_medication_reminder_conversation_plan, generate_check_up_conversation_plan, generate_brain_coach_conversation_plan 
 
 logger = logging.getLogger(__name__)
 
 twilio_client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-
-
-async def generate_medication_reminder_conversation_plan(user: User, organization_agent_id: int | None) -> str | None:
-    try:
-        async with AsyncSessionLocal() as async_db:
-            plan = await openai_service.generate_med_reminder_call_plan(
-                db=async_db,
-                context=CallPlanContext(
-                    user=user,
-                    agent_type=AgentTypeEnum.medication_reminder.value,
-                    organization_agent_id=organization_agent_id,
-                    required_task="generate a call plan for a medication reminder call with an older adult.",
-                ),
-            )
-            return plan.get("dynamic_variable")
-    except Exception as e:
-        logger.error(f"Failed to generate medication reminder conversation plan for user {user.id}: {e}")
-        return None
-    finally:
-        await engine.dispose()
-
-
-async def generate_brain_coach_conversation_plan(user: User, organization_agent_id: int | None) -> str | None:
-    try:
-        async with AsyncSessionLocal() as async_db:
-            plan = await openai_service.generate_brain_coach_call_plan(
-                db=async_db,
-                context=CallPlanContext(
-                    user=user,
-                    agent_type=AgentTypeEnum.brain_coach.value,
-                    organization_agent_id=organization_agent_id,
-                    required_task="generate a call plan for a brain coach session with an older adult.",
-                ),
-            )
-            return plan.get("dynamic_variable")
-    except Exception as e:
-        logger.error(f"Failed to generate brain coach conversation plan for user {user.id}: {e}")
-        return None
-    finally:
-        await engine.dispose()
-
-
-async def generate_check_up_conversation_plan(user: User, organization_agent_id: int | None) -> str | None:
-    try:
-        async with AsyncSessionLocal() as async_db:
-            plan = await openai_service.generate_call_plan(
-                db=async_db,
-                context=CallPlanContext(
-                    user=user,
-                    agent_type=AgentTypeEnum.check_in.value,
-                    organization_agent_id=organization_agent_id,
-                    required_task=(
-                        "generate a call plan for a check-up call with an older adult. "
-                    ),
-                ),
-            )
-            return plan.get("dynamic_variable")
-    except Exception as e:
-        logger.error(f"Failed to generate check-up conversation plan for user {user.id}: {e}")
-        return None
-    finally:
-        await engine.dispose()
 
 def get_call_status_from_twilio(callSid: str) -> dict:
     try:
@@ -266,12 +205,11 @@ def initiate_medication_reminder_call(payload):
                 )
                 organization_agent_id = med_agent.id if med_agent else None
 
-            conversation_plan = asyncio.run(
-                generate_medication_reminder_conversation_plan(
-                    user=user,
-                    organization_agent_id=organization_agent_id,
-                )
-            )
+            try:
+                conversation_plan = generate_medication_reminder_conversation_plan(user)
+            except Exception as e:
+                logger.error(f"Failed to generate medication reminder conversation plan for user {user_id}: {e}")
+                conversation_plan = None
             if conversation_plan:
                 payload["conversation_plan"] = conversation_plan
                 logger.info(f"Generated medication reminder conversation plan for user {user_id}: {conversation_plan}")
@@ -519,12 +457,12 @@ def initiate_brain_coach_session(check_in_id: int):
             "phone_number_id": user.organization.phone_number_id
         }
 
-        conversation_plan = asyncio.run(
-            generate_brain_coach_conversation_plan(
-                user=user,
-                organization_agent_id=brain_coach_organization_agent.id if brain_coach_organization_agent else None,
-            )
-        )
+        try:
+            conversation_plan = generate_brain_coach_conversation_plan(user)
+            
+        except Exception as e:
+            logger.error(f"Failed to generate brain coach conversation plan for user {user.id}: {e}")
+            conversation_plan = None
         if conversation_plan:
             payload["conversation_plan"] = conversation_plan
             logger.info(f"Generated brain coach conversation plan for user {user.id}: {conversation_plan}")
@@ -614,12 +552,11 @@ def initiate_check_up_call(check_in_id: int):
             "address": user.full_address,
             "phone_number_id": user.organization.phone_number_id
         }
-        conversation_plan = asyncio.run(
-            generate_check_up_conversation_plan(
-                user=user,
-                organization_agent_id=check_up_agent.id if check_up_agent else None,
-            )
-        )
+        try:
+            conversation_plan = generate_check_up_conversation_plan(user)
+        except Exception as e:
+            logger.error(f"Failed to generate check-up conversation plan for user {user.id}: {e}")
+            conversation_plan = None
 
         logger.info(f"Generated conversation plan for check-up call: {conversation_plan}")
         if conversation_plan:

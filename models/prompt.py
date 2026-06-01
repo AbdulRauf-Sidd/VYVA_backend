@@ -13,6 +13,21 @@ class PromptTypeEnum(str, PyEnum):
     brain_coach_plan = "brain_coach_plan"
 
 
+class UserConversationPlan(Base):
+    """Cached conversation plans per user per week, keyed by plan_type."""
+
+    __tablename__ = "user_conversation_plans"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    plan_type = Column(String(50), nullable=False, index=True)
+    plan = Column(JSON, nullable=False)
+    dynamic_variable = Column(Text, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
+
+    user = relationship("User")
+
+
 class Prompt(Base):
     __tablename__ = "prompts"
 
@@ -42,3 +57,5 @@ class Prompt(Base):
 
     organization = relationship("Organization")
     organization_agent = relationship("OrganizationAgents")
+
+

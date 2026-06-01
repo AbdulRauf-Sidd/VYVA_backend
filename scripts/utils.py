@@ -3,12 +3,20 @@ import random
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 from models.user import Caretaker, User
-from models.organization import Organization
-from core.database import SessionLocal
+from models.organization import Organization, AgentTypeEnum
+from core.database import AsyncSessionLocal, SessionLocal, engine, get_sync_session
 import logging
 from typing import Optional
+from services.mem0 import get_memories
+from services.openai_service import CallPlanContext, openai_service
+import asyncio
+from models.prompt import PromptTypeEnum, UserConversationPlan
+from models.medication import MedicationLog
+from typing import Any, Dict
+from models.brain_coach import BrainCoachResponses
+from collections import defaultdict
 
 logger = logging.getLogger(__name__)
 
@@ -355,3 +363,169 @@ def get_user_organization(user_id: int) -> Organization:
             raise ValueError(f"No organization found for user {user_id}")
         
         return user.organization
+    
+def get_recent_plans(db, user_id: int, plan_type: str, limit: int = 5) -> list[dict]:
+    records = (
+        db.execute(
+            select(UserConversationPlan)
+            .where(UserConversationPlan.user_id == user_id, UserConversationPlan.plan_type == plan_type)
+            .order_by(UserConversationPlan.created_at.desc())
+            .limit(limit)
+        )
+        .scalars()
+        .all()
+    )
+    return [r.plan for r in records]
+
+def get_brain_coach_session_context(db, user_id: int, limit: int = 5) -> list[dict[str, Any]]:
+        responses = (
+            db.execute(
+                select(BrainCoachResponses)
+                .where(BrainCoachResponses.user_id == user_id)
+                .options(selectinload(BrainCoachResponses.question))
+                .order_by(BrainCoachResponses.created.asc())
+            )
+            .scalars()
+            .all()
+        )
+        if not responses:
+            return []
+
+        sessions: Dict[str, list] = defaultdict(list)
+        for r in responses:
+            sessions[r.session_id].append(r)
+
+        summaries = []
+        for session_id, items in sessions.items():
+            total = sum(r.score for r in items)
+            max_s = sum((r.question.max_score or 1) for r in items)
+            percent = round((total / max_s) * 100) if max_s else 0
+            created_at = min((r.created for r in items if r.created), default=None)
+            summaries.append({
+                "session_id": session_id,
+                "total_score": total,
+                "max_score": max_s,
+                "percent": percent,
+                "question_count": len(items),
+                "created": created_at.isoformat() if created_at else None,
+            })
+
+        summaries.sort(key=lambda x: x["created"] or "")
+        return summaries[-limit:]
+    
+def get_medication_logs(db: Session, user_id: int, limit: int = 30) -> list[dict]:
+    records = (
+        db.execute(
+            select(MedicationLog)
+            .where(MedicationLog.user_id == user_id)
+            .options(selectinload(MedicationLog.medication))
+            .order_by(MedicationLog.created_at.desc())
+            .limit(limit)
+        )
+        .scalars()
+        .all()
+    )
+    return [
+        {
+            "status": r.status,
+            "medication_name": r.medication.name if r.medication else None,
+            "dosage": r.medication.dosage if r.medication else None,
+            "taken_at": r.taken_at.isoformat() if r.taken_at else None,
+            "notes": r.notes,
+            "created_at": r.created_at.isoformat() if r.created_at else None,
+        }
+        for r in records
+    ]
+
+
+def generate_medication_reminder_conversation_plan(user: User) -> str | None:
+    try:
+        categories = [
+            "health & conditions",
+            "medication & treatment",
+            "Flags & Alerts"
+        ]
+        with get_sync_session() as db:
+            
+            memories = asyncio.run(get_memories(user_id=user.id, categories=categories))
+            medication_logs = get_medication_logs(db=db, user_id=user.id)
+            recent_plans = get_recent_plans(db=db, user_id=user.id, plan_type=PromptTypeEnum.brain_coach_plan.value)
+            plan = openai_service.generate_med_reminder_call_plan(
+                db=db,
+                context=CallPlanContext(
+                    user=user,
+                    agent_type=AgentTypeEnum.medication_reminder.value,
+                    recent_plans=recent_plans,
+                    memories=memories,
+                    required_task="generate a call plan for a medication reminder call with an older adult.",
+                    medication_logs=medication_logs,
+                ),
+            )
+            return plan.get("dynamic_variable")
+    except Exception as e:
+        logger.error(f"Failed to generate medication reminder conversation plan for user {user.id}: {e}")
+        return None
+
+
+def generate_brain_coach_conversation_plan(user: User) -> str | None:
+    try:
+        categories = [
+            "cognitive & mood",
+            "Mood & Emotional Patterns",
+            "Cognitive Performance"
+        ]
+        with get_sync_session() as db:
+            recent_plans = get_recent_plans(db=db, user_id=user.id, plan_type=PromptTypeEnum.brain_coach_plan.value)
+            memories = asyncio.run(get_memories(user_id=user.id, categories=categories))
+            brain_coach_sessions = get_brain_coach_session_context(db=db, user_id=user.id)
+
+            plan = openai_service.generate_brain_coach_call_plan(
+                db=db,
+                context=CallPlanContext(
+                    user=user,
+                    agent_type=AgentTypeEnum.brain_coach.value,
+                    prompt_type=PromptTypeEnum.brain_coach_plan.value,
+                    recent_plans=recent_plans,
+                    memories=memories,
+                    brain_coach_sessions=brain_coach_sessions,
+                    required_task="generate a call plan for a brain coach session with an older adult.",
+                ),
+            )
+            return plan.get("dynamic_variable")
+    except Exception as e:
+        logger.error(f"Failed to generate brain coach conversation plan for user {user.id}: {e}")
+        return None
+
+
+def generate_check_up_conversation_plan(user: User) -> str | None:
+    try:
+        categories = [
+            "routine & environment",
+            "social life & companionship",
+            "values, faith & life story",
+            "Recent Events & Life Moments",
+            "Mood & Emotional Patterns",
+            "Conversation History Patterns"
+        ]
+        
+        with get_sync_session() as db:
+            memories = asyncio.run(get_memories(user_id=user.id, categories=categories))
+            recent_plans = get_recent_plans(db=db, user_id=user.id, plan_type=PromptTypeEnum.conversation_plan.value) 
+            plan = openai_service.generate_call_plan(
+                db = db,
+                context=CallPlanContext(
+                    user=user,
+                    agent_type=AgentTypeEnum.check_in.value,
+                    prompt_type=PromptTypeEnum.conversation_plan.value,
+                    recent_plans=recent_plans,
+                    memories=memories,
+                    required_task=(
+                        "generate a call plan for a check-up call with an older adult. "
+                    ),
+
+                ),
+            )
+            return plan.get("dynamic_variable")
+    except Exception as e:
+        logger.error(f"Failed to generate check-up conversation plan for user {user.id}: {e}")
+        return None
