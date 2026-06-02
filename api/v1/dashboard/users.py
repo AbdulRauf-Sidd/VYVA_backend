@@ -6,7 +6,7 @@ from typing import List, Dict, Optional
 from core.database import get_async_session
 from models.user import User, Caretaker
 from models.user_check_ins import UserCheckin
-from models.medication import MedicationLog, Medication
+from models.medication import MedicationLog, Medication, MedicationTime
 from models.organization import Organization
 from sqlalchemy.orm import selectinload
 from sqlalchemy import delete, update
@@ -212,6 +212,7 @@ async def get_user(
 
     for c in user.user_checkins:
         data = {
+            "id": c.id,
             "enabled": c.is_active,
             "frequency": f"{c.check_in_frequency_days} days",
             "preferred_time": c.check_in_time.strftime("%H:%M") if c.check_in_time else None,
@@ -339,16 +340,35 @@ async def update_medication(
     session: AsyncSession = Depends(get_session)
 ):
     result = await session.execute(
-        select(Medication).where(Medication.id == med_id)
+        select(Medication)
+        .where(Medication.id == med_id)
+        .options(selectinload(Medication.times_of_day))
     )
     med = result.scalars().first()
 
     if not med:
         raise HTTPException(status_code=404, detail="Medication not found")
 
+    schedule_times: Optional[List[str]] = payload.pop("schedule_times", None)
+
     for key, value in payload.items():
         if hasattr(med, key) and value is not None:
             setattr(med, key, value)
+
+    if schedule_times is not None:
+        existing_times = list(med.times_of_day)
+
+        for i, time_str in enumerate(schedule_times):
+            hours, minutes = map(int, time_str.split(":"))
+            new_time = time(hour=hours, minute=minutes)
+            if i < len(existing_times):
+                existing_times[i].time_of_day = new_time
+            else:
+                session.add(MedicationTime(medication_id=med_id, time_of_day=new_time))
+
+        # Remove surplus entries if the new list is shorter
+        for surplus in existing_times[len(schedule_times):]:
+            await session.delete(surplus)
 
     await session.commit()
     await session.refresh(med)
@@ -394,9 +414,59 @@ async def update_checkin(
 
     for key, value in payload.items():
         if hasattr(checkin, key) and value is not None:
+            if key == "check_in_time" and isinstance(value, str):
+                h, m = map(int, value.split(":"))
+                value = time(hour=h, minute=m)
             setattr(checkin, key, value)
 
     await session.commit()
     await session.refresh(checkin)
 
     return {"message": "Checkin updated"}
+
+
+@router.put("/brain-coach/{user_id}")
+async def upsert_brain_coach(
+    user_id: int,
+    payload: dict = Body(...),
+    session: AsyncSession = Depends(get_session)
+):
+    result = await session.execute(
+        select(UserCheckin).where(
+            UserCheckin.user_id == user_id,
+            UserCheckin.check_in_type == "brain_coach",
+        )
+    )
+    checkin = result.scalars().first()
+
+    frequency_days = payload.get("frequency_days")
+    preferred_time = payload.get("preferred_time")
+    is_active = payload.get("is_active")
+
+    if checkin:
+        if frequency_days is not None:
+            checkin.check_in_frequency_days = frequency_days
+        if preferred_time is not None:
+            h, m = map(int, preferred_time.split(":"))
+            checkin.check_in_time = time(hour=h, minute=m)
+        if is_active is not None:
+            checkin.is_active = is_active
+    else:
+        checkin = UserCheckin(
+            user_id=user_id,
+            check_in_type="brain_coach",
+            check_in_frequency_days=frequency_days or 1,
+            check_in_time=time(*map(int, preferred_time.split(":"))) if preferred_time else None,
+            is_active=is_active if is_active is not None else True,
+        )
+        session.add(checkin)
+
+    await session.commit()
+    await session.refresh(checkin)
+
+    return {
+        "id": checkin.id,
+        "enabled": checkin.is_active,
+        "frequency": f"{checkin.check_in_frequency_days} days",
+        "preferred_time": checkin.check_in_time.strftime("%H:%M") if checkin.check_in_time else None,
+    }
