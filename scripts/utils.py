@@ -524,7 +524,6 @@ def generate_check_up_conversation_plan(user: User) -> str | None:
                     required_task=(
                         "generate a call plan for a check-up call with an older adult. "
                     ),
-
                 ),
             )
             logger.info(f"check-up plan. Recent plans: {recent_plans}, memories: {memories}, generated plan: {plan}")
