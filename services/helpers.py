@@ -2,6 +2,8 @@ import random
 import string
 import logging
 from datetime import datetime, timezone
+
+from scripts.utils import get_user_local_dt
 # from passlib.context import CryptContext
 
 logger = logging.getLogger(__name__)
@@ -120,3 +122,36 @@ def construct_welcome_message_for_main_agent(first_name, iso_language='en', firs
         return MAIN_AGENT_INITITAL_FIRST_MESSAGE_MAP.get(iso_language).format(first_name=first_name)
     else:
         return construct_general_welcome_message(first_name, iso_language)
+    
+
+def construct_user_dynamic_variables(user):
+    if not user:
+        return {
+            "user_id": "",
+            "address": "",
+            "first_name": "",
+            "name": "",
+            'email': "",
+            "phone_number": "",
+            "local_time": "",
+            "timezone": "",
+            'preferred_reports_channel': "",
+            'health_conditions': "",
+            'mobility_issues': "",
+        }
+    
+    local_time = get_user_local_dt(user.timezone) if user and user.timezone else ""
+    dynamic_variables = {
+        "user_id": user.id if user else "",
+        "address": user.full_address if user else "",
+        "first_name": user.first_name if user else "",
+        "name": user.full_name if user else "",
+        "phone_number": user.phone_number if user else "",
+        'email': user.email if user else "",
+        "local_time": local_time.time().strftime("%H:%M") if local_time else "",
+        "timezone": user.timezone if user else "",
+        'preferred_reports_channel': user.preferred_reports_channel if user else "",
+        'health_conditions': user.health_conditions if user else "",
+        'mobility_issues': user.mobility if user else "",
+    }
+    return dynamic_variables

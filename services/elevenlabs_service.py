@@ -261,6 +261,13 @@ def make_medication_reminder_call(payload: dict):
             "first_name": first_name,
             "medications": str(medications),
             "phone_number": phone_number,
+            "local_time": payload.get("local_time", ""),
+            "health_conditions": payload.get("health_conditions", ""),
+            "mobility_issues": payload.get("mobility_issues", ""),
+            "name": payload.get("name", ""),
+            "email": payload.get("email", ""),
+            "timezone": payload.get("timezone", ""),
+            "preferred_reports_channel": payload.get("preferred_reports_channel", "")
         }
         if conversation_plan:
             dynamic_variables["conversation_plan"] = conversation_plan
@@ -312,6 +319,13 @@ def make_brain_coach_call(payload: dict):
             "user_id": id,
             "first_name": first_name,
             "phone_number": phone_number,
+            "local_time": payload.get("local_time", ""),
+            "health_conditions": payload.get("health_conditions", ""),
+            "mobility_issues": payload.get("mobility_issues", ""),
+            "name": payload.get("name", ""),
+            "email": payload.get("email", ""),
+            "timezone": payload.get("timezone", ""),
+            "preferred_reports_channel": payload.get("preferred_reports_channel", "")
         }
         if conversation_plan:
             dynamic_variables["conversation_plan"] = conversation_plan
@@ -365,6 +379,13 @@ def make_check_up_call(payload: dict):
             "last_name": last_name,
             "phone_number": phone_number,
             "address": address,
+            "local_time": payload.get("local_time", ""),
+            "health_conditions": payload.get("health_conditions", ""),
+            "mobility_issues": payload.get("mobility_issues", ""),
+            "name": payload.get("name", ""),
+            "email": payload.get("email", ""),
+            "timezone": payload.get("timezone", ""),
+            "preferred_reports_channel": payload.get("preferred_reports_channel", "")
         }
         if conversation_plan:
             dynamic_variables["conversation_plan"] = conversation_plan

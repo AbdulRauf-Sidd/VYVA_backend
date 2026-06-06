@@ -23,7 +23,7 @@ from tasks.utils import schedule_celery_task_for_call_status_check, schedule_che
 
 from scripts.onboarding_utils import construct_onboarding_user_payload
 from scripts.utils import date_now_in_timezone, get_iso_language
-from services.helpers import construct_user_not_picked_up_message
+from services.helpers import construct_dynamic_variables, construct_user_dynamic_variables, construct_user_not_picked_up_message
 
 from twilio.rest import Client
 from core.config import settings
@@ -196,15 +196,8 @@ def initiate_medication_reminder_call(payload):
             .first()
         )
         if user:
-            organization_agent_id = None
-            if user.organization:
-                med_agent = next(
-                    (a for a in user.organization.agents
-                     if a.agent_type == AgentTypeEnum.medication_reminder.value and a.is_active),
-                    None,
-                )
-                organization_agent_id = med_agent.id if med_agent else None
-
+            
+            payload = {**construct_user_dynamic_variables(user), **payload}
             try:
                 conversation_plan = generate_medication_reminder_conversation_plan(user)
             except Exception as e:
@@ -212,7 +205,8 @@ def initiate_medication_reminder_call(payload):
                 conversation_plan = None
             if conversation_plan:
                 payload["conversation_plan"] = conversation_plan
-                logger.info(f"Generated medication reminder conversation plan for user {user_id}: {conversation_plan}")
+        else:
+            raise ValueError(f"User with ID {user_id} not found for medication reminder call.")
     except Exception as e:
         logger.error(f"Failed to generate medication reminder plan for user {user_id}: {e}")
     finally:
@@ -435,13 +429,11 @@ def initiate_brain_coach_session(check_in_id: int):
         )
 
         brain_coach_agent_id = None
-        brain_coach_organization_agent = None
         agents = user.organization.agents
         for agent in agents:
             logger.info(agent.agent_type)
             if agent.agent_type == AgentTypeEnum.brain_coach.value:
                 brain_coach_agent_id = agent.agent_id
-                brain_coach_organization_agent = agent
                 break
 
         if not brain_coach_agent_id:
@@ -456,6 +448,7 @@ def initiate_brain_coach_session(check_in_id: int):
             "language": user.preferred_consultation_language,
             "phone_number_id": user.organization.phone_number_id
         }
+        payload = {**construct_user_dynamic_variables(user), **payload}
 
         try:
             conversation_plan = generate_brain_coach_conversation_plan(user)
@@ -465,8 +458,7 @@ def initiate_brain_coach_session(check_in_id: int):
             conversation_plan = None
         if conversation_plan:
             payload["conversation_plan"] = conversation_plan
-            logger.info(f"Generated brain coach conversation plan for user {user.id}: {conversation_plan}")
-
+            
         response = make_brain_coach_call(payload)
         if not last_pending_session:
             logger.warning(f"No pending session found for check in {check_in_id}")
@@ -529,13 +521,11 @@ def initiate_check_up_call(check_in_id: int):
             logger.warning(f"No pending session found for check in {check_in_id}")
             return
 
-        check_up_agent = None
         check_up_agent_id = None
         agents = user.organization.agents
         for agent in agents:
             logger.info(agent.agent_type)
             if agent.agent_type == AgentTypeEnum.check_in.value:
-                check_up_agent = agent
                 check_up_agent_id = agent.agent_id
                 break
         if not check_up_agent_id:
@@ -552,13 +542,14 @@ def initiate_check_up_call(check_in_id: int):
             "address": user.full_address,
             "phone_number_id": user.organization.phone_number_id
         }
+
+        payload = {**construct_user_dynamic_variables(user), **payload}
         try:
             conversation_plan = generate_check_up_conversation_plan(user)
         except Exception as e:
             logger.error(f"Failed to generate check-up conversation plan for user {user.id}: {e}")
             conversation_plan = None
 
-        logger.info(f"Generated conversation plan for check-up call: {conversation_plan}")
         if conversation_plan:
             payload["conversation_plan"] = conversation_plan
         

@@ -245,6 +245,10 @@ def get_zoneinfo_safe(tz_name: str | None) -> ZoneInfo:
         return ZoneInfo("UTC")
 
 
+def get_user_local_dt(timezone: str | None) -> datetime:
+    return datetime.now(get_zoneinfo_safe(timezone))
+
+
 def convert_to_utc_datetime(tz_name: str, date: date | None = None, time: time | None = None, dt: datetime | None = None, normalize_seconds: bool = True) -> datetime:
     """
     Convert a local date+time OR datetime into UTC.

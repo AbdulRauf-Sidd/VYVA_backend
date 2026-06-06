@@ -18,7 +18,6 @@ async def add_memory(user_id: int, content: str) -> dict:
 
 async def add_conversation(user_id: int, conversation: list[dict]) -> dict:
     client = get_mem0_client()
-    print('convo', conversation)
     client.add(conversation, user_id=str(user_id), enable_graph=False)
     return {"message": "Conversation added successfully"}
 
