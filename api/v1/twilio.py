@@ -8,7 +8,7 @@ from sqlalchemy.orm import selectinload
 from core.database import get_db
 from core.config import settings
 from scripts.medication_utils import update_med_logs
-from scripts.utils import generate_medication_whatsapp_response_message, get_iso_language, generate_reminder_later_whatsapp_response_message, get_user_local_dt, get_user_localdt
+from scripts.utils import generate_medication_whatsapp_response_message, get_iso_language, generate_reminder_later_whatsapp_response_message, get_user_local_dt
 from models.organization import TemplateTypeEnum, TwilioWhatsappTemplates
 from models.medication import MedicationLog
 from services.helpers import construct_general_welcome_message, construct_welcome_message_for_main_agent

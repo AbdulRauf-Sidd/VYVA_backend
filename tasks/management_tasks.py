@@ -23,7 +23,7 @@ from tasks.utils import schedule_celery_task_for_call_status_check, schedule_che
 
 from scripts.onboarding_utils import construct_onboarding_user_payload
 from scripts.utils import date_now_in_timezone, get_iso_language
-from services.helpers import construct_dynamic_variables, construct_user_dynamic_variables, construct_user_not_picked_up_message
+from services.helpers import construct_user_dynamic_variables, construct_user_not_picked_up_message
 
 from twilio.rest import Client
 from core.config import settings
