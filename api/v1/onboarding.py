@@ -585,12 +585,15 @@ async def onboard_user_zamora(
                 db.add(med)
                 await db.flush()
 
-                for time_str in med_input.get("times", []):
-                    time_obj = parse_time_string(time_str)
-
+                for slot in med_input.get("medication_slot"):
+                    time_obj = parse_time_string(slot.get('time'))
+                    days_of_week = slot.get('days', None)
+                    days_array = construct_days_array_from_string(days_of_week)
+                    
                     med_time = MedicationTime(
                         medication_id=med.id,
-                        time_of_day=time_obj
+                        time_of_day=time_obj,
+                        days_of_week=days_array
                     )
                     db.add(med_time)
 
