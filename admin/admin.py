@@ -16,6 +16,7 @@ from models.prompt import Prompt
 from models.eleven_labs_sessions import ElevenLabsSessions
 from models.emergency_numbers import EmergencyNumber
 from models.outbound_call_logs import OutboundCallLog
+from models.doctor import Doctor
 
 def setup_admin(app):
     admin = Admin(
@@ -158,6 +159,19 @@ def setup_admin(app):
         ]
         form_columns = "__all__"
 
+    class DoctorAdmin(ModelView, model=Doctor):
+        column_list = [
+            Doctor.id,
+            Doctor.first_name,
+            Doctor.last_name,
+            Doctor.email,
+            Doctor.phone,
+            Doctor.organization_id,
+            Doctor.user_id,
+            Doctor.created_at,
+        ]
+        form_columns = "__all__"
+
     class OutboundCallLogAdmin(ModelView, model=OutboundCallLog):
         column_list = [
             OutboundCallLog.id,
@@ -195,3 +209,4 @@ def setup_admin(app):
     admin.add_view(ElevenLabsSessionsAdmin)
     admin.add_view(EmergencyNumberAdmin)
     admin.add_view(OutboundCallLogAdmin)
+    admin.add_view(DoctorAdmin)

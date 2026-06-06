@@ -17,6 +17,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db
 from models.symptom_checker import SymptomCheckerResponse
 from models.user import User
+from models.doctor import Doctor
 from services import whatsapp_service
 from services.email_service import EmailService
 from services.whatsapp_service import WhatsAppService
@@ -1112,8 +1113,12 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
         doctor_email_status = "not_requested"
         doctor_whatsapp_status = "not_requested"
 
-        DOCTOR_EMAIL = "pablojrossi@hotmail.com"
-        DOCTOR_WHATSAPP_PHONE = "+34675060210"
+        doctor_result = await db.execute(
+            select(Doctor).where(Doctor.organization_id == user.organization_id)
+        )
+        doctor = doctor_result.scalars().first()
+        DOCTOR_EMAIL = doctor.email if doctor else None
+        DOCTOR_WHATSAPP_PHONE = doctor.phone if doctor else None
 
         if send_to_doctor_only:
             # Send to fixed doctor email

@@ -6,6 +6,7 @@ from .elevenlabs_agents import *
 from .emergency import *
 from .emergency_numbers import *
 from .outbound_call_logs import *
+from .doctor import *
 from .fall_detection import *
 from .medication import *
 from .onboarding import *
