@@ -155,3 +155,20 @@ def construct_user_dynamic_variables(user):
         'mobility_issues': user.mobility if user else "",
     }
     return dynamic_variables
+
+
+def construct_dynamic_variables_from_payload(payload):
+
+    return {
+        "user_id": payload.get("user_id", ""),
+        "first_name": payload.get("first_name", ""),
+        "phone_number": payload.get("phone_number", ""),
+        "address": payload.get("address", ""),
+        "local_time": payload.get("local_time", ""),
+        "health_conditions": payload.get("health_conditions", ""),
+        "mobility_issues": payload.get("mobility_issues", ""),
+        "name": payload.get("name", ""),
+        "email": payload.get("email", ""),
+        "timezone": payload.get("timezone", ""),
+        "preferred_reports_channel": payload.get("preferred_reports_channel", "")
+    }

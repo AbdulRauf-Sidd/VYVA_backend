@@ -3,7 +3,7 @@ from core.config import settings
 from models.onboarding import OnboardingUser
 import requests
 from models.organization import AgentTypeEnum, OrganizationAgents
-from services.helpers import construct_initial_agent_message_for_reminders, constuct_initial_agent_message_for_onboarding, construct_general_welcome_message
+from services.helpers import construct_dynamic_variables_from_payload, construct_initial_agent_message_for_reminders, constuct_initial_agent_message_for_onboarding, construct_general_welcome_message
 from scripts.utils import LANGUAGE_MAP, get_user_organization
 from typing import Optional, Dict, Any
 from datetime import datetime
@@ -256,19 +256,9 @@ def make_medication_reminder_call(payload: dict):
         medications = payload.get("medications")
         conversation_plan = payload.get("conversation_plan")
 
-        dynamic_variables = {
-            "user_id": id,
-            "first_name": first_name,
-            "medications": str(medications),
-            "phone_number": phone_number,
-            "local_time": payload.get("local_time", ""),
-            "health_conditions": payload.get("health_conditions", ""),
-            "mobility_issues": payload.get("mobility_issues", ""),
-            "name": payload.get("name", ""),
-            "email": payload.get("email", ""),
-            "timezone": payload.get("timezone", ""),
-            "preferred_reports_channel": payload.get("preferred_reports_channel", "")
-        }
+        dynamic_variables = construct_dynamic_variables_from_payload(payload)
+        dynamic_variables["medications"] = medications
+        
         if conversation_plan:
             dynamic_variables["conversation_plan"] = conversation_plan
 
@@ -307,29 +297,16 @@ def make_brain_coach_call(payload: dict):
         if not phone_number_id:
             phone_number_id = settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
 
-        id = payload.get("user_id")
         agent_id = payload.get("agent_id")
         phone_number = payload.get("phone_number")
-        first_name = payload.get("first_name")
         language = payload.get("language")
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
         conversation_plan = payload.get("conversation_plan")
 
-        dynamic_variables = {
-            "user_id": id,
-            "first_name": first_name,
-            "phone_number": phone_number,
-            "local_time": payload.get("local_time", ""),
-            "health_conditions": payload.get("health_conditions", ""),
-            "mobility_issues": payload.get("mobility_issues", ""),
-            "name": payload.get("name", ""),
-            "email": payload.get("email", ""),
-            "timezone": payload.get("timezone", ""),
-            "preferred_reports_channel": payload.get("preferred_reports_channel", "")
-        }
+        dynamic_variables = construct_dynamic_variables_from_payload(payload)
         if conversation_plan:
             dynamic_variables["conversation_plan"] = conversation_plan
-
+            
         response = requests.post(
           "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
           headers={
@@ -364,34 +341,15 @@ def make_check_up_call(payload: dict):
         if not phone_number_id:
             phone_number_id = settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
 
-        id = payload.get("user_id")
         agent_id = payload.get("agent_id")
         phone_number = payload.get("phone_number")
-        first_name = payload.get("first_name")
-        last_name = payload.get("last_name")
-        address = payload.get("address")
         conversation_plan = payload.get("conversation_plan")
         language = payload.get("language")
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
-        dynamic_variables = {
-            "user_id": id,
-            "first_name": first_name,
-            "last_name": last_name,
-            "phone_number": phone_number,
-            "address": address,
-            "local_time": payload.get("local_time", ""),
-            "health_conditions": payload.get("health_conditions", ""),
-            "mobility_issues": payload.get("mobility_issues", ""),
-            "name": payload.get("name", ""),
-            "email": payload.get("email", ""),
-            "timezone": payload.get("timezone", ""),
-            "preferred_reports_channel": payload.get("preferred_reports_channel", "")
-        }
+        dynamic_variables = construct_dynamic_variables_from_payload(payload)
         if conversation_plan:
             dynamic_variables["conversation_plan"] = conversation_plan
-
-        logger.info(f"Making check up call with dynamic variables: {dynamic_variables}")
-
+      
         response = requests.post(
           "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
           headers={
@@ -428,12 +386,7 @@ def make_general_reminder_call(payload: dict):
         language = payload.get("language")
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
 
-        dynamic_variables = {
-            "user_id": payload.get("user_id"),
-            "first_name": payload.get("first_name"),
-            "phone_number": phone_number,
-            "purpose": payload.get("purpose"),
-        }
+        dynamic_variables = construct_dynamic_variables_from_payload(payload)
 
         response = requests.post(
             "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
@@ -467,8 +420,8 @@ def call_agent(agent_id: str, phone_number: str, payload: Optional[Dict[str, Any
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
         phone_number_id = payload.get("phone_number_id", None)
         if not phone_number_id:
-            settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
-                
+            phone_number_id = settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
+
         # Build dynamic variables from entire payload
         dynamic_variables = {k: v for k, v in payload.items() if k != "agent_id" or k != "phone_number_id"}
         
