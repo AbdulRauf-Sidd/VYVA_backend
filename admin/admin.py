@@ -34,10 +34,26 @@ def setup_admin(app):
         column_list = "__all__"
 
     class MedicationAdmin(ModelView, model=Medication):
-        column_list = "__all__"
+        column_list = [
+            Medication.id,
+            Medication.user_id,
+            Medication.name,
+            Medication.dosage,
+            Medication.start_date,
+            Medication.end_date,
+            Medication.purpose,
+            Medication.is_active,
+            Medication.created_at,
+        ]
 
     class MedicationTimeAdmin(ModelView, model=MedicationTime):
-        column_list = "__all__" 
+        column_list = [
+            MedicationTime.id,
+            MedicationTime.medication_id,
+            MedicationTime.time_of_day,
+            MedicationTime.days_of_week,
+            MedicationTime.created_at,
+        ]
 
     class OrganizationAdmin(ModelView, model=Organization):
         column_list = "__all__"
@@ -46,16 +62,26 @@ def setup_admin(app):
         column_list = "__all__"
 
     class OnboardingUserAdmin(ModelView, model=OnboardingUser):
-        column_list = "__all__"
+        column_list = [
+            OnboardingUser.id,
+            OnboardingUser.first_name,
+            OnboardingUser.last_name,
+            OnboardingUser.phone_number,
+            OnboardingUser.onboarding_status,
+            OnboardingUser.created_at,
+        ]
 
     class OnboardingLogsAdmin(ModelView, model=OnboardingLogs):
         column_list = "__all__"
 
     class SymptomCheckerResponseAdmin(ModelView, model=SymptomCheckerResponse):
-        column_list = "__all__"
-
-    class SymptomCheckerResponseAdmin(ModelView, model=SymptomCheckerResponse):
-        column_list = "__all__"
+        column_list = [
+            SymptomCheckerResponse.id,
+            SymptomCheckerResponse.user_id,
+            SymptomCheckerResponse.conversation_id,
+            SymptomCheckerResponse.symptoms,
+            SymptomCheckerResponse.created_at,
+        ]
 
     class BrainCoachQuestionsAdmin(ModelView, model=BrainCoachQuestions):
         column_list = "__all__"
@@ -76,7 +102,15 @@ def setup_admin(app):
         column_list = "__all__"
 
     class UserCheckinAdmin(ModelView, model=UserCheckin):
-        column_list = "__all__"
+        column_list = [
+            UserCheckin.id,
+            UserCheckin.user_id,
+            UserCheckin.check_in_type,
+            UserCheckin.check_in_frequency_days,
+            UserCheckin.check_in_time,
+            UserCheckin.is_active,
+            UserCheckin.created_at,
+        ]
 
     class UserCheckinLogAdmin(ModelView, model=CheckinLog):
         column_list = "__all__"

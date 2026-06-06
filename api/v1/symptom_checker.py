@@ -12,6 +12,7 @@ import string
 import unicodedata
 import asyncio
 from sqlalchemy import select, or_
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db
 from models.symptom_checker import SymptomCheckerResponse
@@ -1023,7 +1024,7 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
 
         # Get user and preferred reports channel
         user_result = await db.execute(
-            select(User).where(User.id == payload.user_id)
+            select(User).where(User.id == payload.user_id).options(selectinload(User.caretaker))
         )
         user = user_result.scalar_one_or_none()
         if not user:
