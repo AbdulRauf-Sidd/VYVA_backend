@@ -4,6 +4,8 @@ from .eleven_labs_batch_calls import *
 from .eleven_labs_sessions import *
 from .elevenlabs_agents import *
 from .emergency import *
+from .emergency_numbers import *
+from .outbound_call_logs import *
 from .fall_detection import *
 from .medication import *
 from .onboarding import *

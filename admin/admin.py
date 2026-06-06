@@ -14,6 +14,8 @@ from models.user import Caretaker
 from models.brain_coach import BrainCoachQuestions, BrainCoachResponses, QuestionTranslations
 from models.prompt import Prompt
 from models.eleven_labs_sessions import ElevenLabsSessions
+from models.emergency_numbers import EmergencyNumber
+from models.outbound_call_logs import OutboundCallLog
 
 def setup_admin(app):
     admin = Admin(
@@ -146,6 +148,29 @@ def setup_admin(app):
         ]
         form_columns = "__all__"
 
+    class EmergencyNumberAdmin(ModelView, model=EmergencyNumber):
+        column_list = [
+            EmergencyNumber.id,
+            EmergencyNumber.phone_number,
+            EmergencyNumber.type,
+            EmergencyNumber.organization_id,
+            EmergencyNumber.created_at,
+        ]
+        form_columns = "__all__"
+
+    class OutboundCallLogAdmin(ModelView, model=OutboundCallLog):
+        column_list = [
+            OutboundCallLog.id,
+            OutboundCallLog.agent_id,
+            OutboundCallLog.phone_number,
+            OutboundCallLog.success,
+            OutboundCallLog.created_at,
+        ]
+        column_details_list = "__all__"
+        can_create = False
+        can_edit = False
+        can_delete = False
+
 
     admin.add_view(UserAdmin)
     admin.add_view(CaretakerAdmin)
@@ -168,3 +193,5 @@ def setup_admin(app):
     admin.add_view(ScheduledSessionAdmin)
     admin.add_view(PromptAdmin)
     admin.add_view(ElevenLabsSessionsAdmin)
+    admin.add_view(EmergencyNumberAdmin)
+    admin.add_view(OutboundCallLogAdmin)

@@ -7,6 +7,7 @@ from services.elevenlabs_service import make_onboarding_call, make_medication_re
 from models.user import User
 from models.onboarding import OnboardingUser, OnboardingLogs
 from models.organization import Organization, OrganizationAgents, AgentTypeEnum, TwilioWhatsappTemplates, TemplateTypeEnum
+from models.emergency_numbers import EmergencyNumber, EmergencyNumberTypeEnum
 import logging
 from sqlalchemy.orm import selectinload
 from datetime import datetime, timedelta
@@ -354,6 +355,14 @@ def call_emergency_outbound_agent(user_id):
         ).first()
         agent_id = agent_result.agent_id if agent_result else None
         message = construct_user_not_picked_up_message(get_iso_language(user.preferred_consultation_language))
+        emergency_number_record = db.query(EmergencyNumber).filter(
+            EmergencyNumber.organization_id == user.organization.id,
+            EmergencyNumber.type == EmergencyNumberTypeEnum.check_in_misses
+        ).first()
+        emergency_phone = emergency_number_record.phone_number if emergency_number_record else None
+        if not emergency_phone:
+            logger.error(f"No emergency phone number found for organization {user.organization.id}, cannot call emergency outbound agent")
+            return
         payload = {
             "full_name": user.full_name,
             "address": user.full_address,
@@ -362,8 +371,8 @@ def call_emergency_outbound_agent(user_id):
             "language": user.preferred_consultation_language or "spanish",
             "phone_number_id": user.organization.phone_number_id
         }
-        response = call_agent(agent_id=agent_id, phone_number="+34664338991", payload=payload) #DUMMY
-        logger.info(f"Emergency outbound agent response: {response}")
+        call_agent(agent_id=agent_id, phone_number=emergency_phone, payload=payload)
+       
 
 @celery_app.task(name="check_onboarding_call_status")
 def check_onboarding_call_status():
@@ -524,7 +533,6 @@ def initiate_check_up_call(check_in_id: int):
         check_up_agent_id = None
         agents = user.organization.agents
         for agent in agents:
-            logger.info(agent.agent_type)
             if agent.agent_type == AgentTypeEnum.check_in.value:
                 check_up_agent_id = agent.agent_id
                 break

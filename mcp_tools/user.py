@@ -11,6 +11,7 @@ import enum
 import logging
 from datetime import time
 from models.organization import OrganizationAgents, TwilioWhatsappTemplates, TemplateTypeEnum, AgentTypeEnum
+from models.emergency_numbers import EmergencyNumber, EmergencyNumberTypeEnum
 from services.whatsapp_service import whatsapp_service
 from services.elevenlabs_service import call_agent
 from schemas.tools import EmergencyResponderRequest
@@ -460,11 +461,28 @@ async def emergency_responder(req: EmergencyResponderRequest):
                 "phone_number_id": user.organization.phone_number_id
             }
 
-            # Call general agent function
-            response = call_agent(agent_id=agent.agent_id, phone_number="+34664338991", payload=payload) #DUMMY
+            emergency_number_result = await db.execute(
+                select(EmergencyNumber).where(
+                    EmergencyNumber.organization_id == user.organization.id,
+                    EmergencyNumber.type == EmergencyNumberTypeEnum.emergency_call
+                )
+            )
+            emergency_number_record = emergency_number_result.scalar_one_or_none()
+            emergency_phone = emergency_number_record.phone_number if emergency_number_record else None
+            if not emergency_phone:
+                logger.error(f"No emergency phone number found for organization {user.organization.id}, cannot call emergency responder agent")
+                return {
+                    "status_code": 400,
+                    "detail": "No emergency phone number found for this organization"
+                }
 
-            logger.info(f"Emergency responder agent response: {response}")
-            return response
+            success = call_agent(agent_id=agent.agent_id, phone_number=emergency_phone, payload=payload)
+            if not success:
+                logger.error(f"Failed to call emergency responder agent for user {req.user_id}")
+                return {
+                    "status_code": 500,
+                    "detail": "Failed to call emergency responder."
+                }
         
     except Exception as e:
         logger.error(f"Error in emergency_responder endpoint: {str(e)}", exc_info=True)
