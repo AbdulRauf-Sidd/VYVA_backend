@@ -7,6 +7,7 @@ from services.helpers import construct_dynamic_variables_from_payload, construct
 from scripts.utils import LANGUAGE_MAP, get_user_organization
 from typing import Optional, Dict, Any
 from core.database import get_sync_session
+import json
 import logging
 
 client = ElevenLabs(
@@ -139,10 +140,10 @@ def make_medication_reminder_call(payload: dict):
         conversation_plan = payload.get("conversation_plan")
 
         dynamic_variables = construct_dynamic_variables_from_payload(payload)
-        dynamic_variables["medications"] = medications
+        dynamic_variables["medications"] = json.dumps(medications) if medications else ""
 
         if conversation_plan:
-            dynamic_variables["conversation_plan"] = conversation_plan
+            dynamic_variables["conversation_plan"] = json.dumps(conversation_plan) if isinstance(conversation_plan, (dict, list)) else conversation_plan
 
         response = requests.post(
           "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
