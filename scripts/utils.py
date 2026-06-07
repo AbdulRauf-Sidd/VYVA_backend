@@ -459,13 +459,13 @@ def generate_medication_reminder_conversation_plan(user: User) -> str | None:
                 context=CallPlanContext(
                     user=user,
                     agent_type=AgentTypeEnum.medication_reminder.value,
+                    prompt_type=PromptTypeEnum.medication_reminder_plan.value,
                     recent_plans=recent_plans,
                     memories=memories,
                     required_task="generate a call plan for a medication reminder call with an older adult.",
                     medication_logs=medication_logs,
                 ),
             )
-            logger.info(f"medication reminder plan. Recent plans: {recent_plans}, memories: {memories}, medication logs: {medication_logs}, generated plan: {plan}")
             return plan.get("dynamic_variable")
     except Exception as e:
         logger.error(f"Failed to generate medication reminder conversation plan for user {user.id}: {e}")
@@ -496,7 +496,6 @@ def generate_brain_coach_conversation_plan(user: User) -> str | None:
                     required_task="generate a call plan for a brain coach session with an older adult.",
                 ),
             )
-            logger.info(f"brain coach plan. Recent plans: {recent_plans}, memories: {memories}, brain coach sessions: {brain_coach_sessions}, generated plan: {plan}")
             return plan.get("dynamic_variable")
     except Exception as e:
         logger.error(f"Failed to generate brain coach conversation plan for user {user.id}: {e}")
@@ -530,7 +529,6 @@ def generate_check_up_conversation_plan(user: User) -> str | None:
                     ),
                 ),
             )
-            logger.info(f"check-up plan. Recent plans: {recent_plans}, memories: {memories}, generated plan: {plan}")
             return plan.get("dynamic_variable")
     except Exception as e:
         logger.error(f"Failed to generate check-up conversation plan for user {user.id}: {e}")
