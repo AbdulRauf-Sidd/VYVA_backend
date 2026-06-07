@@ -159,7 +159,6 @@ def make_medication_reminder_call(payload: dict):
                     "language": iso_language,
                 }
               },
-              "user_id": str(id),
               "dynamic_variables": dynamic_variables,
             }
           },
