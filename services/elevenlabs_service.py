@@ -1,117 +1,37 @@
-from elevenlabs import ElevenLabs, OutboundCallRecipient, ConversationConfigOverrideConfig
+from elevenlabs import ElevenLabs
 from core.config import settings
-from models.onboarding import OnboardingUser
 import requests
 from models.organization import AgentTypeEnum, OrganizationAgents
-from services.helpers import construct_initial_agent_message_for_reminders, constuct_initial_agent_message_for_onboarding, construct_general_welcome_message
+from models.outbound_call_logs import OutboundCallLog
+from services.helpers import construct_dynamic_variables_from_payload, construct_initial_agent_message_for_reminders, constuct_initial_agent_message_for_onboarding, construct_general_welcome_message
 from scripts.utils import LANGUAGE_MAP, get_user_organization
 from typing import Optional, Dict, Any
-from datetime import datetime
+from core.database import get_sync_session
+import json
+import logging
 
 client = ElevenLabs(
     api_key=settings.ELEVENLABS_API_KEY,
 )
 
-import logging
 logger = logging.getLogger(__name__)
-
-async def make_reminder_call_batch(users: list):
-    try:
-        recipients = []
-        for user in users:
-            medication_details = user['medications']
-            med_names = ''
-            med_dosage = ''
-            for med in medication_details:
-                med_names += med['medication_name'] + " "
-                med_dosage += med['medication_dosage'] + " "
-            # initial_message = construct_initial_agent_message_for_reminders(user)
-            phone_number = user['phone_number']
-            recipients.append(OutboundCallRecipient(
-                phone_number=phone_number,
-                dynamic_variables={
-                    "user_id": user['user_id'],
-                    'first_name': user['first_name'],
-                    'medication_names': med_names,
-                    'medication_dosage': med_dosage,
-                    'caretaker_alert': user['wants_caretaker_alerts']
-                }
-            ))
-
-        obj = client.conversational_ai.batch_calls.create(
-            call_name="Medication Reminder Batch",
-            agent_id=settings.ELEVENLABS_MEDICATION_AGENT_ID,
-            agent_phone_number_id=settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
-            scheduled_time_unix=1,
-            recipients=recipients
-        )
-
-        logger.info(f"Initiated {len(recipients)} reminder calls via ElevenLabs with batch id: {obj.id}.")
-
-        return obj.id
-    except Exception as e:
-        logger.error(f"Elevenlabs batch call failed: {e}")
-
-
-async def make_caretaker_call_batch(users: list):
-    try:
-        recipients = []
-        for user in users:
-            user_id = user['user_id']
-            first_name = user['first_name']
-            caretaker_name = user['caretaker_name']
-            phone_number = user['caretaker_phone_number']
-
-            recipients.append({
-                "phone_number": phone_number,
-                "conversation_initiation_client_data": {
-                  "dynamic_variables": {
-                      "user_id": user_id,
-                      'first_name': first_name,
-                  },
-                  "conversation_config_override": {
-                    "agent": {
-                      "first_message": f"Hello, is this {caretaker_name}?"
-                    }
-                  }
-                }
-            })
-
-        logger.info(f'making caretaker batch for {len(recipients)} users')
-
-        response = requests.post(
-          "https://api.elevenlabs.io/v1/convai/batch-calling/submit",
-          headers={
-            "xi-api-key": settings.ELEVENLABS_API_KEY
-          },
-          json={
-            "call_name": "Medication Reminder Caretaker Batch",
-            "agent_id": settings.ELEVENLABS_EMERGENCY_AGENT_ID,
-            "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
-            "scheduled_time_unix": 1,
-            "recipients": recipients
-          },
-        )
-
-        logger.info(f"Initiated {len(recipients)} reminder calls via ElevenLabs with response: {response}.")
-
-    except Exception as e:
-        logger.error(f"Elevenlabs batch call failed: {e}")
-
 
 
 async def make_fall_detection_call(user):
+    data = None
+    success = False
+    agent_id = settings.ELEVENLABS_FALL_DETECTION_AGENT_ID
+    phone_number = user.get('phone_number')
     try:
-        # Outbound call via twilio (POST /v1/convai/twilio/outbound-call)
         response = requests.post(
           "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
           headers={
             "xi-api-key": settings.ELEVENLABS_API_KEY
           },
           json={
-            "agent_id": settings.ELEVENLABS_FALL_DETECTION_AGENT_ID,
+            "agent_id": agent_id,
             "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
-            "to_number": user['phone_number'],
+            "to_number": phone_number,
             "conversation_initiation_client_data": {
               "conversation_config_override": {
                 "agent": {
@@ -125,66 +45,23 @@ async def make_fall_detection_call(user):
           },
         )
 
-        logger.info(f"Call response for fall detection: {response.json()}")
-        
-        return response.json
+        response.raise_for_status()
+        data = response.json()
+        success = True
+        return data
     except Exception as e:
         logger.error(f"Elevenlabs fall detection call failed: {e}")
-
-
-async def make_emergency_call(user):
-    try:
-        # Outbound call via twilio (POST /v1/convai/twilio/outbound-call)
-        response = requests.post(
-          "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
-          headers={
-            "xi-api-key": settings.ELEVENLABS_API_KEY
-          },
-          json={
-            "agent_id": settings.ELEVENLABS_EMERGENCY_AGENT_ID,
-            "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
-            "to_number": user['phone_number'],
-            "conversation_initiation_client_data": {
-              "conversation_config_override": {
-                "agent": {
-                  "first_message": f"Hello, is this {user['caretaker_name']}?"
-                }
-              },
-              "dynamic_variables": {
-                "first_name": user['first_name']
-              }
-            }
-          },
-        )
-
-        logger.info(f"Call response for fall detection: {response.json()}")
-        
-        return response.json
-    except Exception as e:
-        logger.error(f"Elevenlabs fall detection call failed: {e}")
-
-
-
-async def check_batch_for_missed(batch_id):
-    batch = client.conversational_ai.batch_calls.get(
-      batch_id=batch_id,
-    )
-    missed_phones = set()
-    if batch:
-        batch_status = batch.status
-        if batch_status == 'completed':
-            for reciepent in batch.recipients:
-                if reciepent.status in ("initiated", "voicemail"):
-                    missed_phones.add(reciepent.phone_number)
-
-    return missed_phones
+    finally:
+        save_outbound_call_log(agent_id, phone_number, user, data, success)
 
 
 def make_onboarding_call(payload: dict):
+    data = None
+    success = False
+    agent_id = payload.get("agent_id")
+    phone_number = payload.get("phone_number")
     try:
         id = payload.get("user_id")
-        agent_id = payload.get("agent_id")
-        phone_number = payload.get("phone_number")
         user_type = payload.get("user_type")
         email = payload.get("email")
         timezone = payload.get("timezone")
@@ -226,29 +103,35 @@ def make_onboarding_call(payload: dict):
           },
         )
 
-        logger.info(f"Call response for onboarding call: {response.json()}")
-        
-        return response.json()
+        response.raise_for_status()
+        data = response.json()
+        success = True
+        return data
     except Exception as e:
         logger.error(f"Elevenlabs onboarding call failed: {e}")
+    finally:
+        save_outbound_call_log(agent_id, phone_number, payload, data, success)
 
 
 def make_medication_reminder_call(payload: dict):
+    data = None
+    success = False
+    agent_id = None
+    phone_number = payload.get("phone_number")
     try:
         id = payload.get("user_id")
         organization = get_user_organization(id)
         phone_number_id = organization.phone_number_id if organization.phone_number_id else settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
         agent = next(
-            (a for a in organization.agents 
+            (a for a in organization.agents
              if a.agent_type == AgentTypeEnum.medication_reminder.value and a.is_active),
             None
         )
-        
+
         if not agent:
             raise ValueError(f"No active medication reminder agent found for organization {organization.id}")
-        
+
         agent_id = agent.agent_id
-        phone_number = payload.get("phone_number")
         first_name = payload.get("first_name")
         # last_name = payload.get("last_name")
         language = payload.get("language")
@@ -256,14 +139,11 @@ def make_medication_reminder_call(payload: dict):
         medications = payload.get("medications")
         conversation_plan = payload.get("conversation_plan")
 
-        dynamic_variables = {
-            "user_id": id,
-            "first_name": first_name,
-            "medications": str(medications),
-            "phone_number": phone_number,
-        }
+        dynamic_variables = construct_dynamic_variables_from_payload(payload)
+        dynamic_variables["medications"] = json.dumps(medications) if medications else ""
+
         if conversation_plan:
-            dynamic_variables["conversation_plan"] = conversation_plan
+            dynamic_variables["conversation_plan"] = json.dumps(conversation_plan) if isinstance(conversation_plan, (dict, list)) else conversation_plan
 
         response = requests.post(
           "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
@@ -280,39 +160,34 @@ def make_medication_reminder_call(payload: dict):
                     "language": iso_language,
                 }
               },
-              "user_id": str(id),
               "dynamic_variables": dynamic_variables,
             }
           },
         )
 
-        logger.info(f"Call response for medication reminder call: {response.json()}")
-        
-        return response.json()
+        response.raise_for_status()
+        data = response.json()
+        success = True
+        return data
     except Exception as e:
         logger.error(f"Elevenlabs medication reminder call failed: {e}")
         return None
+    finally:
+        save_outbound_call_log(agent_id, phone_number, payload, data, success)
     
 
 def make_brain_coach_call(payload: dict):
+    data = None
+    success = False
+    agent_id = payload.get("agent_id")
+    phone_number = payload.get("phone_number")
     try:
-        phone_number_id = payload.get("phone_number_id", None)
-        if not phone_number_id:
-            phone_number_id = settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
-
-        id = payload.get("user_id")
-        agent_id = payload.get("agent_id")
-        phone_number = payload.get("phone_number")
-        first_name = payload.get("first_name")
+        phone_number_id = payload.get("phone_number_id") or settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
         language = payload.get("language")
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
         conversation_plan = payload.get("conversation_plan")
 
-        dynamic_variables = {
-            "user_id": id,
-            "first_name": first_name,
-            "phone_number": phone_number,
-        }
+        dynamic_variables = construct_dynamic_variables_from_payload(payload)
         if conversation_plan:
             dynamic_variables["conversation_plan"] = conversation_plan
 
@@ -336,40 +211,30 @@ def make_brain_coach_call(payload: dict):
           },
         )
 
-        logger.info(f"Call response for brain coach call: {response.json()}")
-        
-        return response.json()
+        response.raise_for_status()
+        data = response.json()
+        success = True
+        return data
     except Exception as e:
         logger.error(f"Elevenlabs brain coach call failed: {e}")
         return None
+    finally:
+        save_outbound_call_log(agent_id, phone_number, payload, data, success)
     
 
 def make_check_up_call(payload: dict):
+    data = None
+    success = False
+    agent_id = payload.get("agent_id")
+    phone_number = payload.get("phone_number")
     try:
-        phone_number_id = payload.get("phone_number_id", None)
-        if not phone_number_id:
-            phone_number_id = settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
-
-        id = payload.get("user_id")
-        agent_id = payload.get("agent_id")
-        phone_number = payload.get("phone_number")
-        first_name = payload.get("first_name")
-        last_name = payload.get("last_name")
-        address = payload.get("address")
+        phone_number_id = payload.get("phone_number_id") or settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
         conversation_plan = payload.get("conversation_plan")
         language = payload.get("language")
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
-        dynamic_variables = {
-            "user_id": id,
-            "first_name": first_name,
-            "last_name": last_name,
-            "phone_number": phone_number,
-            "address": address,
-        }
+        dynamic_variables = construct_dynamic_variables_from_payload(payload)
         if conversation_plan:
             dynamic_variables["conversation_plan"] = conversation_plan
-
-        logger.info(f"Making check up call with dynamic variables: {dynamic_variables}")
 
         response = requests.post(
           "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
@@ -391,28 +256,27 @@ def make_check_up_call(payload: dict):
           },
         )
 
-        logger.info(f"Call response for check up call: {response.json()}")
-        
-        return response.json()
+        response.raise_for_status()
+        data = response.json()
+        success = True
+        return data
     except Exception as e:
         logger.error(f"Elevenlabs check up call failed: {e}")
         return None
+    finally:
+        save_outbound_call_log(agent_id, phone_number, payload, data, success)
     
 def make_general_reminder_call(payload: dict):
+    data = None
+    success = False
+    agent_id = payload.get("agent_id")
+    phone_number = payload.get("phone_number")
     try:
         phone_number_id = payload.get("phone_number_id") or settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
-
-        agent_id = payload.get("agent_id")
-        phone_number = payload.get("phone_number")
         language = payload.get("language")
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
 
-        dynamic_variables = {
-            "user_id": payload.get("user_id"),
-            "first_name": payload.get("first_name"),
-            "phone_number": phone_number,
-            "purpose": payload.get("purpose"),
-        }
+        dynamic_variables = construct_dynamic_variables_from_payload(payload)
 
         response = requests.post(
             "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
@@ -430,27 +294,48 @@ def make_general_reminder_call(payload: dict):
             },
         )
 
-        logger.info(f"Call response for general reminder call: {response.json()}")
-        return response.json()
+        response.raise_for_status()
+        data = response.json()
+        success = True
+        return data
     except Exception as e:
         logger.error(f"Elevenlabs general reminder call failed: {e}")
         return None
+    finally:
+        save_outbound_call_log(agent_id, phone_number, payload, data, success)
+
+
+def save_outbound_call_log(agent_id: str, phone_number: str, params: dict, response: dict, success: bool):
+    try:
+        with get_sync_session() as db:
+            db.add(OutboundCallLog(
+                agent_id=agent_id or "",
+                phone_number=phone_number,
+                params=params,
+                response=response,
+                success=success,
+            ))
+            db.commit()
+    except Exception as log_err:
+        logger.error(f"Failed to write outbound call log: {log_err}")
 
 
 def call_agent(agent_id: str, phone_number: str, payload: Optional[Dict[str, Any]] = None) -> dict:
+    data = None
+    success = False
     try:
         if not agent_id or not phone_number:
             raise ValueError("Both agent_id and phone_number are required to make the call.")
-        
+
         language = payload.get("language", "en")
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
         phone_number_id = payload.get("phone_number_id", None)
         if not phone_number_id:
-            settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
-                
+            phone_number_id = settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
+
         # Build dynamic variables from entire payload
         dynamic_variables = {k: v for k, v in payload.items() if k != "agent_id" or k != "phone_number_id"}
-        
+
         # Make the ElevenLabs API call
         response = requests.post(
             "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
@@ -471,12 +356,13 @@ def call_agent(agent_id: str, phone_number: str, payload: Optional[Dict[str, Any
                 }
             },
         )
-        
-        return response.json()
+
+        response.raise_for_status()
+        data = response.json()
+        success = True
+        return data
     except Exception as e:
         logger.error(f"Error calling agent {agent_id}: {str(e)}", exc_info=True)
-        return {
-            "success": False,
-            "agent_id": agent_id,
-            "error": str(e)
-        }
+        raise
+    finally:
+        save_outbound_call_log(agent_id, phone_number, payload, data, success)

@@ -14,6 +14,9 @@ from models.user import Caretaker
 from models.brain_coach import BrainCoachQuestions, BrainCoachResponses, QuestionTranslations
 from models.prompt import Prompt
 from models.eleven_labs_sessions import ElevenLabsSessions
+from models.emergency_numbers import EmergencyNumber
+from models.outbound_call_logs import OutboundCallLog
+from models.doctor import Doctor
 
 def setup_admin(app):
     admin = Admin(
@@ -34,10 +37,26 @@ def setup_admin(app):
         column_list = "__all__"
 
     class MedicationAdmin(ModelView, model=Medication):
-        column_list = "__all__"
+        column_list = [
+            Medication.id,
+            Medication.user_id,
+            Medication.name,
+            Medication.dosage,
+            Medication.start_date,
+            Medication.end_date,
+            Medication.purpose,
+            Medication.is_active,
+            Medication.created_at,
+        ]
 
     class MedicationTimeAdmin(ModelView, model=MedicationTime):
-        column_list = "__all__" 
+        column_list = [
+            MedicationTime.id,
+            MedicationTime.medication_id,
+            MedicationTime.time_of_day,
+            MedicationTime.days_of_week,
+            MedicationTime.created_at,
+        ]
 
     class OrganizationAdmin(ModelView, model=Organization):
         column_list = "__all__"
@@ -46,16 +65,26 @@ def setup_admin(app):
         column_list = "__all__"
 
     class OnboardingUserAdmin(ModelView, model=OnboardingUser):
-        column_list = "__all__"
+        column_list = [
+            OnboardingUser.id,
+            OnboardingUser.first_name,
+            OnboardingUser.last_name,
+            OnboardingUser.phone_number,
+            OnboardingUser.onboarding_status,
+            OnboardingUser.created_at,
+        ]
 
     class OnboardingLogsAdmin(ModelView, model=OnboardingLogs):
         column_list = "__all__"
 
     class SymptomCheckerResponseAdmin(ModelView, model=SymptomCheckerResponse):
-        column_list = "__all__"
-
-    class SymptomCheckerResponseAdmin(ModelView, model=SymptomCheckerResponse):
-        column_list = "__all__"
+        column_list = [
+            SymptomCheckerResponse.id,
+            SymptomCheckerResponse.user_id,
+            SymptomCheckerResponse.conversation_id,
+            SymptomCheckerResponse.symptoms,
+            SymptomCheckerResponse.created_at,
+        ]
 
     class BrainCoachQuestionsAdmin(ModelView, model=BrainCoachQuestions):
         column_list = "__all__"
@@ -76,7 +105,15 @@ def setup_admin(app):
         column_list = "__all__"
 
     class UserCheckinAdmin(ModelView, model=UserCheckin):
-        column_list = "__all__"
+        column_list = [
+            UserCheckin.id,
+            UserCheckin.user_id,
+            UserCheckin.check_in_type,
+            UserCheckin.check_in_frequency_days,
+            UserCheckin.check_in_time,
+            UserCheckin.is_active,
+            UserCheckin.created_at,
+        ]
 
     class UserCheckinLogAdmin(ModelView, model=CheckinLog):
         column_list = "__all__"
@@ -112,6 +149,42 @@ def setup_admin(app):
         ]
         form_columns = "__all__"
 
+    class EmergencyNumberAdmin(ModelView, model=EmergencyNumber):
+        column_list = [
+            EmergencyNumber.id,
+            EmergencyNumber.phone_number,
+            EmergencyNumber.type,
+            EmergencyNumber.organization_id,
+            EmergencyNumber.created_at,
+        ]
+        form_columns = "__all__"
+
+    class DoctorAdmin(ModelView, model=Doctor):
+        column_list = [
+            Doctor.id,
+            Doctor.first_name,
+            Doctor.last_name,
+            Doctor.email,
+            Doctor.phone,
+            Doctor.organization_id,
+            Doctor.user_id,
+            Doctor.created_at,
+        ]
+        form_columns = "__all__"
+
+    class OutboundCallLogAdmin(ModelView, model=OutboundCallLog):
+        column_list = [
+            OutboundCallLog.id,
+            OutboundCallLog.agent_id,
+            OutboundCallLog.phone_number,
+            OutboundCallLog.success,
+            OutboundCallLog.created_at,
+        ]
+        column_details_list = "__all__"
+        can_create = False
+        can_edit = False
+        can_delete = False
+
 
     admin.add_view(UserAdmin)
     admin.add_view(CaretakerAdmin)
@@ -134,3 +207,6 @@ def setup_admin(app):
     admin.add_view(ScheduledSessionAdmin)
     admin.add_view(PromptAdmin)
     admin.add_view(ElevenLabsSessionsAdmin)
+    admin.add_view(EmergencyNumberAdmin)
+    admin.add_view(OutboundCallLogAdmin)
+    admin.add_view(DoctorAdmin)

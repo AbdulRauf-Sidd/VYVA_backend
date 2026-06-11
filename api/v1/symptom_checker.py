@@ -12,10 +12,12 @@ import string
 import unicodedata
 import asyncio
 from sqlalchemy import select, or_
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db
 from models.symptom_checker import SymptomCheckerResponse
 from models.user import User
+from models.doctor import Doctor
 from services import whatsapp_service
 from services.email_service import EmailService
 from services.whatsapp_service import WhatsAppService
@@ -1023,7 +1025,7 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
 
         # Get user and preferred reports channel
         user_result = await db.execute(
-            select(User).where(User.id == payload.user_id)
+            select(User).where(User.id == payload.user_id).options(selectinload(User.caretaker))
         )
         user = user_result.scalar_one_or_none()
         if not user:
@@ -1087,31 +1089,36 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
                 )
 
         # Send report to caregiver/caretaker if available
-        # caretaker = user.caretaker
-        # if caretaker:
-        #     caretaker_email = (caretaker.email or "").strip()
-        #     caretaker_phone = (caretaker.phone_number or "").strip()
-
-        #     if caretaker_email:
-        #         caregiver_results["email"] = await _send_email_report(
-        #             recipient_email=caretaker_email,
-        #             report_content=report_content,
-        #             patient_name=response_record.full_name or " "
-        #         )
-
-        #     if caretaker_phone:
-        #         caregiver_results["whatsapp"] = await _send_whatsapp_report(
-        #             phone_number=caretaker_phone,
-        #             report_content=report_content,
-        #             patient_name=response_record.full_name or " "
-        #         )
+        if not send_to_doctor_only:
+            caretaker = user.caretaker
+            if caretaker:
+                caretaker_email = (caretaker.email or "").strip()
+                caretaker_phone = (caretaker.phone_number or "").strip()
+    
+                if caretaker_email:
+                    caregiver_results["email"] = await _send_email_report(
+                        recipient_email=caretaker_email,
+                        report_content=report_content,
+                        patient_name=response_record.full_name or " "
+                    )
+    
+                if caretaker_phone:
+                    caregiver_results["whatsapp"] = await _send_whatsapp_report(
+                        phone_number=caretaker_phone,
+                        report_content=report_content,
+                        patient_name=response_record.full_name or " "
+                    )
 
         # Optionally send report to fixed doctor contacts when explicitly requested
         doctor_email_status = "not_requested"
         doctor_whatsapp_status = "not_requested"
 
-        DOCTOR_EMAIL = "pablojrossi@hotmail.com"
-        DOCTOR_WHATSAPP_PHONE = "+34675060210"
+        doctor_result = await db.execute(
+            select(Doctor).where(Doctor.organization_id == user.organization_id)
+        )
+        doctor = doctor_result.scalars().first()
+        DOCTOR_EMAIL = doctor.email if doctor else None
+        DOCTOR_WHATSAPP_PHONE = doctor.phone if doctor else None
 
         if send_to_doctor_only:
             # Send to fixed doctor email
@@ -1223,9 +1230,6 @@ async def _send_email_report(recipient_email: str, report_content: Dict[str, Any
             recipient_email=recipient_email,
             report_content=report_content
         )
-
-        logger.info(
-            f"Email service returned: {success} (type: {type(success)})")
 
         if success:
             logger.info(

@@ -8,7 +8,7 @@ from sqlalchemy.orm import selectinload
 from core.database import get_db
 from core.config import settings
 from scripts.medication_utils import update_med_logs
-from scripts.utils import generate_medication_whatsapp_response_message, get_iso_language, generate_reminder_later_whatsapp_response_message
+from scripts.utils import generate_medication_whatsapp_response_message, get_iso_language, generate_reminder_later_whatsapp_response_message, get_user_local_dt
 from models.organization import TemplateTypeEnum, TwilioWhatsappTemplates
 from models.medication import MedicationLog
 from services.helpers import construct_general_welcome_message, construct_welcome_message_for_main_agent
@@ -144,14 +144,22 @@ async def personalize_call(
     result = await db.execute(stmt)
     user = result.scalar_one_or_none()
 
+    local_time = get_user_local_dt(user.timezone) if user and user.timezone else ""
+
     if not user:
         return {
             "dynamic_variables": {
                 "user_id": "",
                 "address": "",
                 "first_name": "",
+                "name": "",
+                'email': "",
                 "phone_number": payload.caller_id,
+                "local_time": "",
                 "timezone": "",
+                'preferred_reports_channel': "",
+                'health_conditions': "",
+                'mobility_issues': "",
                 "conversation_id": payload.conversation_id,
                 "is_registered": False,
                 "app_user": False
@@ -174,7 +182,13 @@ async def personalize_call(
             "user_id": user.id,
             "address": user.full_address,
             "first_name": user.first_name,
+            "name": user.full_name,
+            "local_time": local_time.time().strftime("%H:%M") if local_time else "",
+            'email': user.email,
             "phone_number": user.phone_number,
+            'preferred_reports_channel': user.preferred_reports_channel,
+            'health_conditions': user.health_conditions,
+            'mobility_issues': user.mobility,
             "timezone": user.timezone,
             "conversation_id": payload.conversation_id,
             "is_registered": True,
@@ -192,12 +206,21 @@ async def personalize_call(
     result = await db.execute(stmt)
     user = result.scalar_one_or_none()
 
+    local_time = get_user_local_dt(user.timezone) if user and user.timezone else ""
+
     if not user:
         return {
         "dynamic_variables": {
             "user_id": "",
             "first_name": "",
+            "name": "",
             "phone_number": payload.caller_id,
+            'email': "",
+            "local_time": "",
+            "timezone": "",
+            'preferred_reports_channel': "",
+            'health_conditions': "",
+            'mobility_issues': "",
             "conversation_id": payload.conversation_id,
             "is_registered": False,
             "app_user": False
@@ -220,7 +243,13 @@ async def personalize_call(
             "user_id": user.id,
             "address": user.full_address,
             "first_name": user.first_name,
+            "name": user.full_name,
+            "local_time": local_time.time().strftime("%H:%M") if local_time else "",
+            'email': user.email,
             "phone_number": user.phone_number,
+            'preferred_reports_channel': user.preferred_reports_channel,
+            'health_conditions': user.health_conditions,
+            'mobility_issues': user.mobility,
             "timezone": user.timezone,
             "conversation_id": payload.conversation_id,
             "is_registered": True,

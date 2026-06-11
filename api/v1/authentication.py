@@ -11,8 +11,9 @@ from core.config import settings
 from models.authentication import CaretakerTempToken, UserTempToken, UserSession, CaretakerSession
 from datetime import datetime, timedelta, timezone
 from schemas.authentication import PhoneRequest, VerifyOtpRequest, CaretakerProfileUpdate
+from services.helpers import construct_user_dynamic_variables
 from services.whatsapp_service import whatsapp_service
-from scripts.utils import LANGUAGE_MAP
+from scripts.utils import LANGUAGE_MAP, get_user_local_dt
 
 router = APIRouter()
 
@@ -305,17 +306,13 @@ async def read_user_profile(
             detail="Not authenticated: Invalid or expired session"
         )
     
+    dynamic_variables = construct_user_dynamic_variables(user)
+    
     first_time_agents = [user.symptom_checker_first_time, user.medication_manager_first_time, user.brain_coach_first_time, user.assisstant_first_time, user.social_companion_first_time]
+    dynamic_variables["first_time_agents"] = first_time_agents
+    dynamic_variables["language"] = LANGUAGE_MAP.get(user.preferred_consultation_language.lower() if user.preferred_consultation_language else "english")
 
-    return {
-        "user_id": user.id,
-        "first_name": user.first_name,
-        "last_name": user.last_name,
-        "phone_number": user.phone_number,
-        "organization_id": user.organization_id,
-        "language": LANGUAGE_MAP.get(user.preferred_consultation_language.lower() if user.preferred_consultation_language else "english"),
-        "first_time_agents": first_time_agents
-    }
+    return dynamic_variables
 
 @router.get("/caretaker-profile/")
 async def read_caretaker_profile(

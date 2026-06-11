@@ -4,15 +4,10 @@ Vyva Backend - FastAPI Application Entry Point
 A production-ready FastAPI backend for senior care applications.
 """
 from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
-
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
-# from apscheduler.triggers.interval import IntervalTrigger
 from fastapi.exceptions import RequestValidationError
 
 from core.config import settings
@@ -24,23 +19,18 @@ from api.v1 import onboarding, users, social, brain_coach, medication, fall_dete
 from api.v1 import webhooks
 from api.v1.managemant import admin, ingest_onboarding_users
 from api.v1.managemant import ingest_onboarding_users
-# from apscheduler.schedulers.background import BackgroundScheduler
-# from tasks import check_medication_time, run_async_job
 from admin.admin import setup_admin
-from core.database import AsyncSessionLocal
-# from sqlalchemy.ext.asyncio import AsyncSession
-# from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from services.elevenlabs_service import check_batch_for_missed, make_caretaker_call_batch
-# from services.whatsapp_service import whatsapp
-from repositories.user import UserRepository
-# from apscheduler.triggers.date import DateTrigger
 from celery.app.control import Inspect
 from celery_app import celery_app
 from mcp_tools.mcp_instance import mcp
 from mcp_tools import brain_coach as brain, user, mem0, medication as med, general_features  # dont remove
+from starlette.middleware.sessions import SessionMiddleware
+
 
 # Setup logging
 logger = setup_logging()
+
+load_dotenv()
 
 # mcp = FastMCP("Memory Tools")
 mcp_app = mcp.http_app('/mcp')
@@ -56,43 +46,11 @@ app = FastAPI(
     lifespan=mcp_app.lifespan
 )
 
+setup_admin(app) 
 
 
 app.mount("/memory", mcp_app)
 
-setup_admin(app) 
-
-async def process_missed_calls(batch_id):
-    logger.info(f"Proccessing missed calls for batch {batch_id}")
-    phone_number_set = await check_batch_for_missed(batch_id=batch_id)
-    session = AsyncSessionLocal()
-    try:
-        user_repo = UserRepository(session)
-        users = await user_repo.get_users_by_phone_numbers(phone_number_set)
-        logger.info(f"fetched {len(users)} missed medications")
-        alert_by_phone = []
-        for user in users:
-            preferred_channel = user['caretaker_preferred_channel']
-            if preferred_channel == 'phone':
-                alert_by_phone.append(user)
-            elif preferred_channel == 'email':
-                pass
-            elif preferred_channel == 'sms':
-                pass
-            elif preferred_channel == 'whatsapp':
-                pass
-
-        if alert_by_phone:
-            logger.info(f"Making caretaker batch for missed medication for {len(alert_by_phone)}")
-            await make_caretaker_call_batch(alert_by_phone)
-        return True
-    except Exception as e:
-        logger.error(f"Error processing missed calls: {e}")
-        session.rollback()
-    finally:
-        session.close()
-
-from starlette.middleware.sessions import SessionMiddleware
 
 app.add_middleware(
     SessionMiddleware,

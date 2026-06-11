@@ -94,8 +94,10 @@ class User(Base):
 
     
     #Care taker
-    caretaker_id = Column(Integer, ForeignKey("caretakers.id", ondelete="CASCADE"), nullable=True, index=True) 
+    caretaker_id = Column(Integer, ForeignKey("caretakers.id", ondelete="CASCADE"), nullable=True, index=True)
     caretaker = relationship("Caretaker", back_populates="assigned_users")
+
+    doctor = relationship("Doctor", back_populates="user", uselist=False)
     caretaker_consent = Column(Boolean, nullable=True) 
 
     #First Time agents

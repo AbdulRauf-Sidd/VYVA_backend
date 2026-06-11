@@ -175,7 +175,7 @@ async def receive_message(request: Request, db: AsyncSession = Depends(get_db)):
 
             if user_id and add_to_mem0:
                 try:
-                    await add_conversation(
+                    add_conversation(
                         user_id=user_id,
                         conversation=conversation
                     )

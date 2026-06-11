@@ -18,16 +18,24 @@ async def add_memory(user_id: int, content: str) -> dict:
 
 async def add_conversation(user_id: int, conversation: list[dict]) -> dict:
     client = get_mem0_client()
-    print('convo', conversation)
     client.add(conversation, user_id=str(user_id), enable_graph=False)
     return {"message": "Conversation added successfully"}
 
-async def get_memories(user_id: int):
+async def get_memories(user_id: int, categories: list[str] | None = None) -> list[dict]:
     client = get_mem0_client()
-    result = client.get_all(
-        filters={
+    if categories:
+        filters = {
+            "AND": [
+                {"user_id": str(user_id)},
+                {"categories": {"in": categories}}
+            ]
+        }
+    else:
+        filters = {
             "user_id": str(user_id)
         }
+    result = client.get_all(
+        filters=filters
     )
     results = result.get("results", [])
     memories = []

@@ -31,7 +31,19 @@ class Organization(Base):
         cascade="all, delete-orphan",
         passive_deletes=True
     )
-    
+    emergency_numbers = relationship(
+        "EmergencyNumber",
+        back_populates="organization",
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )
+    doctors = relationship(
+        "Doctor",
+        back_populates="organization",
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )
+
     def __repr__(self):
         return f"<Organization(id={self.id}, name='{self.name}')>"  
 
