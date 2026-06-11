@@ -149,6 +149,120 @@ async def get_redcross_gis_users(session: AsyncSession = Depends(get_session)):
         ]
     }
     
+@router.get("/zamora/users")
+async def get_zamora_gis_users(session: AsyncSession = Depends(get_session)):
+    org_result = await session.execute(
+        select(Organization).where(Organization.name.ilike("Zamora"))
+    )
+    zamora_org = org_result.scalars().first()
+
+    if not zamora_org:
+        return {
+            "totalUsers": 0,
+            "checkinsEnabled": 0,
+            "activeAlertCount": 0,
+            "criticalAlertCount": 0,
+            "totalSensors": 0,
+            "caregiversLinked": 0,
+            "gisUsers": [],
+            "activeAlerts": [],
+            "cityDistribution": []
+        }
+
+    org_id = zamora_org.id
+
+    users_result = await session.execute(
+        select(User)
+        .where(User.organization_id == org_id)
+        .options(
+            selectinload(User.caretaker),
+            selectinload(User.medications),
+        )
+    )
+    users: List[User] = users_result.scalars().all()
+    if not users:
+        return {"totalUsers": 0, "gisUsers": [], "cityDistribution": []}
+
+    user_ids = [u.id for u in users]
+    seven_days_ago = datetime.utcnow() - timedelta(days=7)
+
+    checkins_result = await session.execute(
+        select(UserCheckin).where(UserCheckin.user_id.in_(user_ids))
+    )
+    checkins: List[UserCheckin] = checkins_result.scalars().all()
+
+    checkin_map = {c.user_id: c.is_active for c in checkins}
+    brain_coach_map = {c.user_id: True for c in checkins if c.check_in_type == "brain_coach"}
+
+    med_logs_result = await session.execute(
+        select(MedicationLog)
+        .where(MedicationLog.user_id.in_(user_ids))
+        .where(MedicationLog.status == "missed")
+        .where(MedicationLog.created_at >= seven_days_ago)
+    )
+    med_logs: List[MedicationLog] = med_logs_result.scalars().all()
+    missed_meds_map: Dict[int, int] = {}
+    for log in med_logs:
+        missed_meds_map[log.user_id] = missed_meds_map.get(log.user_id, 0) + 1
+
+    gis_users = []
+    for u in users:
+        missed_meds = missed_meds_map.get(u.id, 0)
+        checkin_enabled = checkin_map.get(u.id, False)
+        brain_coach_enabled = brain_coach_map.get(u.id, False)
+        health_conditions = len(u.health_conditions.split(",") if u.health_conditions else [])
+        meds_count = len([m for m in u.medications if m.is_active])
+
+        gis_users.append({
+            "id": u.id,
+            "first_name": u.first_name,
+            "last_name": u.last_name,
+            "city": u.city,
+            "phone": u.phone_number,
+            "date_of_birth": u.date_of_birth.isoformat() if u.date_of_birth else None,
+            "coords": [float(u.latitude), float(u.longitude)] if u.latitude and u.longitude else None,
+            "activeAlerts": 0,
+            "criticalAlerts": 0,
+            "sensorCount": 0,
+            "offlineSensors": 0,
+            "checkinEnabled": checkin_enabled,
+            "brainCoachEnabled": brain_coach_enabled,
+            "healthConditions": health_conditions,
+            "missedMeds7d": missed_meds,
+            "medsCount": meds_count,
+            "riskScore": compute_risk_score({
+                "critical_alerts": 0,
+                "active_alerts": 0,
+                "missed_meds_7d": missed_meds,
+                "checkin_enabled": checkin_enabled,
+                "offline_sensors": 0,
+                "health_conditions": health_conditions,
+            }),
+            "caretakerNames": [u.caretaker.name] if u.caretaker else [],
+        })
+
+    total_users = len(users)
+    checkins_enabled = sum(1 for u in gis_users if u["checkinEnabled"])
+    active_alerts = sum(u["activeAlerts"] for u in gis_users)
+    total_sensors = sum(u["sensorCount"] for u in gis_users)
+    caregivers_linked = sum(1 for u in gis_users if u["caretakerNames"])
+
+    return {
+        "totalUsers": total_users,
+        "checkinsEnabled": checkins_enabled,
+        "activeAlertCount": active_alerts,
+        "criticalAlertCount": 0,
+        "totalSensors": total_sensors,
+        "caregiversLinked": caregivers_linked,
+        "gisUsers": gis_users,
+        "activeAlerts": [],
+        "cityDistribution": [
+            {"city": city, "count": len([u for u in gis_users if u["city"] == city])}
+            for city in set(u["city"] or "Unknown" for u in gis_users)
+        ]
+    }
+
+
 @router.get("/user-info")
 async def get_user(
     user_id: Optional[int] = Query(None),
