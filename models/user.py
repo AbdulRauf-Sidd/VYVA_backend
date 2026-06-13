@@ -92,6 +92,10 @@ class User(Base):
     #Reminders
     preferred_reports_channel = Column(String(20), default='whatsapp', nullable=True)
 
+    emergency_call_to_caretaker = Column(Boolean, nullable=True, Default=True)
+    emergency_call_to_government_services = Column(Boolean, nullable=True, Default=True)
+    emergency_protocol_status = Column(Boolean, bullable=True, Default=True)  
+
     
     #Care taker
     caretaker_id = Column(Integer, ForeignKey("caretakers.id", ondelete="CASCADE"), nullable=True, index=True)

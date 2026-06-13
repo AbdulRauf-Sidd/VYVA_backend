@@ -215,3 +215,21 @@ class UserRead(UserBase):
 
 class UpdateFirstTimeAgentsRequest(BaseModel):
     first_time_agents: List[Optional[bool]]
+
+
+class UpdateSafetySettingsRequest(BaseModel):
+    emergency_call_to_caretaker: Optional[bool] = None
+    emergency_call_to_government_services: Optional[bool] = None
+    emergency_protocol_status: Optional[bool] = None
+    fall_detection_activation: Optional[bool] = None
+    fall_auto_alert_to_caregiver: Optional[bool] = None
+
+
+class SafetySettingsResponse(BaseModel):
+    emergency_call_to_caretaker: Optional[bool]
+    emergency_call_to_government_services: Optional[bool]
+    emergency_protocol_status: Optional[bool]
+    fall_detection_activation: Optional[bool]
+    fall_auto_alert_to_caregiver: Optional[bool]
+
+    model_config = ConfigDict(from_attributes=True)
