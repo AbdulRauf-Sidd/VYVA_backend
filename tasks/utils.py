@@ -4,6 +4,7 @@ from models.medication import MedicationLog
 import logging
 from core.database import SessionLocal
 from models.user_check_ins import CheckinLog, CheckinLogStatusEnum, ScheduledSession, UserCheckin, CheckInType
+from sqlalchemy import func
 from sqlalchemy.orm import selectinload
 from datetime import datetime, time, timezone 
 from scripts.utils import convert_local_time_to_utc_time
@@ -127,6 +128,18 @@ def schedule_check_in_calls_for_hour(db, today, hour_start, hour_end):
                         should_schedule = True
 
                 if not should_schedule:
+                    continue
+
+                existing_log = (
+                    db.query(CheckinLog)
+                    .filter(
+                        CheckinLog.checkin_id == checkin.id,
+                        func.date(CheckinLog.date) == today,
+                        CheckinLog.status != CheckinLogStatusEnum.unconfirmed.value,
+                    )
+                    .first()
+                )
+                if existing_log:
                     continue
 
                 scheduled_dt = datetime.combine(today, utc_time)

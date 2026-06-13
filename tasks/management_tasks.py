@@ -322,10 +322,14 @@ def send_emergency_alert_whatsapp(user_id):
             logger.error(f"User not found for emergency alert: {user_id}")
             return
         
+        if not user.emergency_call_to_caretaker:
+            logger.info(f"Caretaker alerts disabled for user {user_id}, skipping emergency WhatsApp.")
+            return
+
         if not user.caretaker:
             logger.error(f"Caretaker not found for user {user_id}, cannot send emergency alert")
             return
-        
+
         caretaker_phone = user.caretaker.phone_number
         iso_language = get_iso_language(user.preferred_consultation_language)
         message = construct_user_not_picked_up_message(iso_language)
@@ -347,7 +351,7 @@ def send_emergency_alert_whatsapp(user_id):
 @celery_app.task(name="call_emergency_outbound_agent")
 def call_emergency_outbound_agent(user_id):
     with get_sync_session() as db:
-        user = db.query(User).filter(User.id == user_id).first()
+        user = db.query(User).options(selectinload(User.caretaker)).filter(User.id == user_id).first()
         agent_result = db.query(OrganizationAgents).filter(
             OrganizationAgents.organization_id == user.organization.id,
             OrganizationAgents.agent_type == AgentTypeEnum.emergency_responder.value,
@@ -355,14 +359,6 @@ def call_emergency_outbound_agent(user_id):
         ).first()
         agent_id = agent_result.agent_id if agent_result else None
         message = construct_user_not_picked_up_message(get_iso_language(user.preferred_consultation_language))
-        emergency_number_record = db.query(EmergencyNumber).filter(
-            EmergencyNumber.organization_id == user.organization.id,
-            EmergencyNumber.type == EmergencyNumberTypeEnum.check_in_misses
-        ).first()
-        emergency_phone = emergency_number_record.phone_number if emergency_number_record else None
-        if not emergency_phone:
-            logger.error(f"No emergency phone number found for organization {user.organization.id}, cannot call emergency outbound agent")
-            return
         payload = {
             "full_name": user.full_name,
             "address": user.full_address,
@@ -371,7 +367,23 @@ def call_emergency_outbound_agent(user_id):
             "language": user.preferred_consultation_language or "spanish",
             "phone_number_id": user.organization.phone_number_id
         }
-        call_agent(agent_id=agent_id, phone_number=emergency_phone, payload=payload)
+
+        if user.emergency_call_to_caretaker:
+            if not user.caretaker:
+                logger.warning(f"Caretaker alerts enabled but no caretaker assigned for user {user_id}, skipping caretaker call.")
+            else:
+                call_agent(agent_id=agent_id, phone_number=user.caretaker.phone_number, payload=payload)
+
+        if user.emergency_call_to_government_services:
+            emergency_number_record = db.query(EmergencyNumber).filter(
+                EmergencyNumber.organization_id == user.organization.id,
+                EmergencyNumber.type == EmergencyNumberTypeEnum.check_in_misses
+            ).first()
+            emergency_phone = emergency_number_record.phone_number if emergency_number_record else None
+            if not emergency_phone:
+                logger.error(f"No emergency phone number found for organization {user.organization.id}, cannot call emergency outbound agent")
+                return
+            call_agent(agent_id=agent_id, phone_number=emergency_phone, payload=payload)
        
 
 @celery_app.task(name="check_onboarding_call_status")

@@ -415,7 +415,8 @@ async def emergency_responder(req: EmergencyResponderRequest):
             # Fetch user with organization relationship
             user_result = await db.execute(
                 select(User).options(
-                    selectinload(User.organization)
+                    selectinload(User.organization),
+                    selectinload(User.caretaker),
                 ).where(User.id == req.user_id)
             )
             user = user_result.scalar_one_or_none()
@@ -425,6 +426,13 @@ async def emergency_responder(req: EmergencyResponderRequest):
                 return {
                     "status_code": 404,
                     "detail": f"User not found for user_id: {req.user_id}"
+                }
+
+            if user.emergency_protocol_status is False:
+                logger.info(f"Emergency protocol disabled for user {req.user_id}, skipping.")
+                return {
+                    "status_code": 403,
+                    "detail": "Emergency protocol is disabled for this user."
                 }
 
             if not user.organization:
@@ -461,22 +469,26 @@ async def emergency_responder(req: EmergencyResponderRequest):
                 "phone_number_id": user.organization.phone_number_id
             }
 
-            emergency_number_result = await db.execute(
-                select(EmergencyNumber).where(
-                    EmergencyNumber.organization_id == user.organization.id,
-                    EmergencyNumber.type == EmergencyNumberTypeEnum.emergency_call
-                )
-            )
-            emergency_number_record = emergency_number_result.scalar_one_or_none()
-            emergency_phone = emergency_number_record.phone_number if emergency_number_record else None
-            if not emergency_phone:
-                logger.error(f"No emergency phone number found for organization {user.organization.id}, cannot call emergency responder agent")
-                return {
-                    "status_code": 400,
-                    "detail": "No emergency phone number found for this organization"
-                }
+            if user.emergency_call_to_caretaker:
+                if not user.caretaker:
+                    logger.warning(f"No caretaker assigned for user {req.user_id}, skipping caregiver alert.")
+                else:
+                    call_agent(agent_id=agent.agent_id, phone_number=user.caretaker.phone_number, payload=payload)
 
-            success = call_agent(agent_id=agent.agent_id, phone_number=emergency_phone, payload=payload)
+
+            if user.emergency_call_to_government_services:
+                emergency_number_result = await db.execute(
+                    select(EmergencyNumber).where(
+                        EmergencyNumber.organization_id == user.organization.id,
+                        EmergencyNumber.type == EmergencyNumberTypeEnum.emergency_call
+                    )
+                )
+                emergency_number_record = emergency_number_result.scalar_one_or_none()
+                emergency_phone = emergency_number_record.phone_number if emergency_number_record else None
+                if not emergency_phone:
+                    logger.error(f"No emergency phone number found for organization {user.organization.id}, cannot call emergency responder agent")
+    
+                success = call_agent(agent_id=agent.agent_id, phone_number=emergency_phone, payload=payload)
             if not success:
                 logger.error(f"Failed to call emergency responder agent for user {req.user_id}")
                 return {

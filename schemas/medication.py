@@ -1,3 +1,4 @@
+from enum import Enum as PyEnum
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import time, date, datetime
@@ -98,3 +99,59 @@ class MedicationLogRequest(BaseModel):
     medication_logs: List[MedicationLogItem]
     reminder: bool = False
     reminder_time: Optional[time] = None
+
+
+class MedicationSlotInput(BaseModel):
+    time: str  # HH:MM 24-hour format
+    days: Optional[List[str]] = None
+
+class MedicationCreateRequest(BaseModel):
+    name: str
+    dosage: str
+    purpose: Optional[str] = None
+    medication_slot: List[MedicationSlotInput]
+
+class MedicationUpdateRequest(BaseModel):
+    name: Optional[str] = None
+    dosage: Optional[str] = None
+    purpose: Optional[str] = None
+    medication_slot: Optional[List[MedicationSlotInput]] = None
+
+class MedicationTimeDetail(BaseModel):
+    id: int
+    medication_id: int
+    time: str
+    days: Optional[List[str]] = None
+
+class MedicationDetail(BaseModel):
+    id: int
+    name: str
+    dosage: str
+    purpose: Optional[str] = None
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
+    times: List[MedicationTimeDetail]
+
+
+class CheckinLogStatusEnum(str, PyEnum):
+    unconfirmed = "unconfirmed"
+    reported_okay = "reported_okay"
+    reported_issue = "reported_issue"
+
+class UpdateCheckinLogRequest(BaseModel):
+    status: CheckinLogStatusEnum
+
+class CheckinLogResponse(BaseModel):
+    id: int
+    checkin_id: Optional[int] = None
+    status: str
+    date: datetime
+
+
+class ScheduledItem(BaseModel):
+    type: str        # "medication" | "check_up_call" | "brain_coach" | "general_reminder"
+    time: str        # HH:MM in user's local timezone
+    details: dict    # type-specific fields
+
+class TodayScheduleResponse(BaseModel):
+    items: List[ScheduledItem]

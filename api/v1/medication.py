@@ -1,18 +1,21 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Cookie, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import or_, select, func
 from typing import List, Dict
 import logging
 import time
 from collections import defaultdict
-from datetime import date, datetime, timezone, timedelta
+from datetime import date, datetime, time as time_type, timezone, timedelta
 import time
 from zoneinfo import ZoneInfo
 from models.user import User
 from models.medication import MedicationStatus, Medication, MedicationLog, MedicationTime
+from models.user_check_ins import UserCheckin, CheckInType, ScheduledSession, CheckinLog, CheckinLogStatusEnum
 from sqlalchemy.orm import selectinload
 from core.database import get_db
-from scripts.medication_utils import construct_medication_object_for_reminder, construct_user_payload_for_reminder, medication_days_mapping_string_to_int
+from scripts.medication_utils import construct_medication_object_for_reminder, construct_user_payload_for_reminder, medication_days_mapping_string_to_int, medication_days_mapping_int_to_string, construct_days_array_from_string
+from scripts.authentication_helpers import get_current_user_from_session
+from core.config import settings
 from scripts.utils import convert_utc_time_to_local_time, get_zoneinfo_safe, convert_local_time_to_utc_time
 from repositories.user import UserRepository
 from repositories.medication import MedicationRepository
@@ -24,7 +27,15 @@ from schemas.medication import (
     MedicationInDB,
     BulkMedicationSchema,
     WeeklyScheduleRequest,
-    MedicationLogRequest
+    MedicationLogRequest,
+    MedicationCreateRequest,
+    MedicationUpdateRequest,
+    MedicationDetail,
+    MedicationTimeDetail,
+    ScheduledItem,
+    TodayScheduleResponse,
+    UpdateCheckinLogRequest,
+    CheckinLogResponse,
 )
 from tasks.utils import schedule_reminder_message
 
@@ -620,4 +631,453 @@ async def update_medication_log_api(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to update medication logs"
+        )
+
+
+def _build_time_detail(med_time: MedicationTime, time_str: str, days_str) -> MedicationTimeDetail:
+    return MedicationTimeDetail(
+        id=med_time.id,
+        medication_id=med_time.medication_id,
+        time=time_str,
+        days=days_str,
+    )
+
+
+def _build_medication_detail(med: Medication, times: list) -> MedicationDetail:
+    return MedicationDetail(
+        id=med.id,
+        name=med.name,
+        dosage=med.dosage,
+        purpose=med.purpose,
+        start_date=med.start_date,
+        end_date=med.end_date,
+        times=times,
+    )
+
+
+@router.get(
+    "/medications_details",
+    response_model=List[MedicationDetail],
+    summary="Get active medications for authenticated user"
+)
+async def get_my_medications(
+    session_id: str = Cookie(None, alias=settings.SESSION_COOKIE_NAME),
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        user = await get_current_user_from_session(session_id, db)
+        today = date.today()
+
+        stmt = (
+            select(Medication)
+            .where(
+                Medication.user_id == user.id,
+                Medication.is_active == True,
+                or_(
+                    Medication.end_date.is_(None),
+                    Medication.end_date >= today,
+                ),
+            )
+            .options(selectinload(Medication.times_of_day))
+            .order_by(Medication.id)
+        )
+        result = await db.execute(stmt)
+        medications = result.scalars().all()
+
+        data = []
+        for med in medications:
+            times = []
+            for t in med.times_of_day:
+                days_str = (
+                    [medication_days_mapping_int_to_string.get(d) for d in t.days_of_week]
+                    if t.days_of_week
+                    else None
+                )
+                times.append(
+                    MedicationTimeDetail(
+                        id=t.id,
+                        medication_id=t.medication_id,
+                        time=t.time_of_day.strftime("%H:%M") if t.time_of_day else None,
+                        days=days_str,
+                    )
+                )
+            data.append(_build_medication_detail(med, times))
+
+        return data
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Get My Medications: Failed: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch medications"
+        )
+
+
+@router.post(
+    "/medications_details",
+    response_model=MedicationDetail,
+    summary="Create a new medication for authenticated user"
+)
+async def create_my_medication(
+    payload: MedicationCreateRequest,
+    session_id: str = Cookie(None, alias=settings.SESSION_COOKIE_NAME),
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        user = await get_current_user_from_session(session_id, db)
+
+        tz = get_zoneinfo_safe(user.timezone)
+        now_utc = datetime.now(timezone.utc)
+        start_date = now_utc.astimezone(tz).date()
+
+        new_med = Medication(
+            user_id=user.id,
+            name=payload.name,
+            dosage=payload.dosage,
+            purpose=payload.purpose,
+            start_date=start_date,
+            is_active=True,
+        )
+        db.add(new_med)
+        await db.flush()
+
+        times = []
+        for slot in payload.medication_slot:
+            hours, minutes = map(int, slot.time.split(":"))
+            time_obj = time_type(hour=hours, minute=minutes)
+            days_array = construct_days_array_from_string(slot.days)
+            med_time = MedicationTime(
+                medication=new_med,
+                time_of_day=time_obj,
+                days_of_week=days_array,
+            )
+            db.add(med_time)
+            await db.flush()
+            times.append(
+                MedicationTimeDetail(
+                    id=med_time.id,
+                    medication_id=new_med.id,
+                    time=slot.time,
+                    days=slot.days,
+                )
+            )
+
+        await db.commit()
+        return _build_medication_detail(new_med, times)
+
+    except HTTPException:
+        raise
+    except ValueError as e:
+        logger.warning(f"Create Medication: Validation failed: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+    except Exception as e:
+        logger.error(f"Create Medication: Failed: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to create medication"
+        )
+
+
+@router.put(
+    "/medication_details/{medication_id}",
+    response_model=MedicationDetail,
+    summary="Update a medication for authenticated user (creates new record, preserves history)"
+)
+async def update_my_medication(
+    medication_id: int,
+    payload: MedicationUpdateRequest,
+    session_id: str = Cookie(None, alias=settings.SESSION_COOKIE_NAME),
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        user = await get_current_user_from_session(session_id, db)
+
+        stmt = (
+            select(Medication)
+            .where(Medication.id == medication_id, Medication.user_id == user.id)
+            .options(selectinload(Medication.times_of_day))
+        )
+        result = await db.execute(stmt)
+        old_med = result.scalars().first()
+
+        if not old_med:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Medication not found")
+
+        tz = get_zoneinfo_safe(user.timezone)
+        now_utc = datetime.now(timezone.utc)
+        user_today = now_utc.astimezone(tz).date()
+
+        old_med.end_date = user_today
+        old_med.is_active = False
+        old_med.disabled_at = now_utc
+        await db.flush()
+
+        new_med = Medication(
+            user_id=user.id,
+            name=payload.name if payload.name is not None else old_med.name,
+            dosage=payload.dosage if payload.dosage is not None else old_med.dosage,
+            purpose=payload.purpose if payload.purpose is not None else old_med.purpose,
+            start_date=user_today,
+            end_date=None,
+            notes=old_med.notes,
+            side_effects=old_med.side_effects,
+            is_active=True,
+        )
+        db.add(new_med)
+        await db.flush()
+
+        times = []
+        if payload.medication_slot is not None:
+            for slot in payload.medication_slot:
+                hours, minutes = map(int, slot.time.split(":"))
+                time_obj = time_type(hour=hours, minute=minutes)
+                days_array = construct_days_array_from_string(slot.days)
+                med_time = MedicationTime(
+                    medication=new_med,
+                    time_of_day=time_obj,
+                    days_of_week=days_array,
+                )
+                db.add(med_time)
+                await db.flush()
+                times.append(
+                    MedicationTimeDetail(
+                        id=med_time.id,
+                        medication_id=new_med.id,
+                        time=slot.time,
+                        days=slot.days,
+                    )
+                )
+        else:
+            for t in old_med.times_of_day:
+                med_time = MedicationTime(
+                    medication=new_med,
+                    time_of_day=t.time_of_day,
+                    days_of_week=t.days_of_week,
+                )
+                db.add(med_time)
+                await db.flush()
+                days_str = (
+                    [medication_days_mapping_int_to_string.get(d) for d in t.days_of_week]
+                    if t.days_of_week
+                    else None
+                )
+                times.append(
+                    MedicationTimeDetail(
+                        id=med_time.id,
+                        medication_id=new_med.id,
+                        time=t.time_of_day.strftime("%H:%M") if t.time_of_day else None,
+                        days=days_str,
+                    )
+                )
+
+        await db.commit()
+        return _build_medication_detail(new_med, times)
+
+    except HTTPException:
+        raise
+    except ValueError as e:
+        logger.warning(f"Update Medication: Validation failed: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+    except Exception as e:
+        logger.error(f"Update Medication: Failed for medication {medication_id}: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to update medication"
+        )
+
+
+@router.get(
+    "/today-schedule",
+    response_model=TodayScheduleResponse,
+    summary="Get all upcoming items for the authenticated user today"
+)
+async def get_today_schedule(
+    session_id: str = Cookie(None, alias=settings.SESSION_COOKIE_NAME),
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        user = await get_current_user_from_session(session_id, db)
+
+        tz = get_zoneinfo_safe(user.timezone)
+        now_utc = datetime.now(timezone.utc)
+        user_now = now_utc.astimezone(tz)
+        user_today = user_now.date()
+        current_local_time = user_now.time().replace(tzinfo=None)
+        today_weekday = user_today.weekday()  # Mon=0, Sun=6
+
+        items: list[ScheduledItem] = []
+
+        # ── 1. Upcoming medications ───────────────────────────────────────────
+        med_stmt = (
+            select(Medication)
+            .where(
+                Medication.user_id == user.id,
+                Medication.is_active == True,
+                or_(
+                    Medication.end_date.is_(None),
+                    Medication.end_date >= user_today,
+                ),
+            )
+            .options(selectinload(Medication.times_of_day))
+        )
+        med_result = await db.execute(med_stmt)
+        for med in med_result.scalars().all():
+            for t in med.times_of_day:
+                if not t.time_of_day:
+                    continue
+                if t.days_of_week and today_weekday not in t.days_of_week:
+                    continue
+                if t.time_of_day > current_local_time:
+                    items.append(ScheduledItem(
+                        type="medication",
+                        time=t.time_of_day.strftime("%H:%M"),
+                        details={
+                            "medication_id": med.id,
+                            "medication_time_id": t.id,
+                            "name": med.name,
+                            "dosage": med.dosage,
+                            "purpose": med.purpose,
+                        },
+                    ))
+
+        # ── 2. Upcoming check-in / brain coach calls ──────────────────────────
+        # Mirrors schedule_check_in_calls_for_hour: only schedule if the last
+        # session is old enough (>= check_in_frequency_days) or there is none.
+        checkin_stmt = (
+            select(UserCheckin)
+            .where(
+                UserCheckin.user_id == user.id,
+                UserCheckin.is_active == True,
+            )
+            .options(selectinload(UserCheckin.scheduled_sessions))
+        )
+        checkin_result = await db.execute(checkin_stmt)
+        for checkin in checkin_result.scalars().all():
+            if not checkin.check_in_time:
+                continue
+
+            last_session = max(
+                checkin.scheduled_sessions,
+                key=lambda s: s.scheduled_at,
+                default=None,
+            )
+            days_since = (user_today - last_session.scheduled_at.date()).days if last_session else None
+            should_schedule = last_session is None or days_since >= checkin.check_in_frequency_days
+
+            if not should_schedule:
+                continue
+            if checkin.check_in_time <= current_local_time:
+                continue
+
+            existing_log = await db.execute(
+                select(CheckinLog)
+                .where(
+                    CheckinLog.checkin_id == checkin.id,
+                    func.date(CheckinLog.date) == user_today,
+                    CheckinLog.status != CheckinLogStatusEnum.unconfirmed.value,
+                )
+                .limit(1)
+            )
+            if existing_log.scalars().first():
+                continue
+
+            items.append(ScheduledItem(
+                type=checkin.check_in_type,
+                time=checkin.check_in_time.strftime("%H:%M"),
+                details={"check_in_id": checkin.id},
+            ))
+
+        # ── 3. Upcoming general reminders today ───────────────────────────────
+        tomorrow_start_utc = (
+            datetime.combine(user_today + timedelta(days=1), time_type(0, 0), tzinfo=tz)
+            .astimezone(timezone.utc)
+        )
+        reminder_stmt = (
+            select(ScheduledSession)
+            .where(
+                ScheduledSession.user_id == user.id,
+                ScheduledSession.session_type == CheckInType.general_reminders.value,
+                ScheduledSession.is_cancelled == False,
+                ScheduledSession.is_completed == False,
+                ScheduledSession.scheduled_at > now_utc,
+                ScheduledSession.scheduled_at < tomorrow_start_utc,
+            )
+            .order_by(ScheduledSession.scheduled_at.asc())
+        )
+        reminder_result = await db.execute(reminder_stmt)
+        for r in reminder_result.scalars().all():
+            local_dt = r.scheduled_at.astimezone(tz)
+            items.append(ScheduledItem(
+                type="general_reminder",
+                time=local_dt.strftime("%H:%M"),
+                details={
+                    "id": r.id,
+                    "purpose": (r.metadata_ or {}).get("purpose"),
+                    "scheduled_at": r.scheduled_at.isoformat(),
+                },
+            ))
+
+        items.sort(key=lambda x: x.time)
+
+        return TodayScheduleResponse(items=items)
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Get Today Schedule: Failed: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch today's schedule"
+        )
+
+
+@router.put(
+    "/checkin-log/{log_id}",
+    response_model=CheckinLogResponse,
+    summary="Update check-in log status"
+)
+async def update_checkin_log_status(
+    log_id: int,
+    payload: UpdateCheckinLogRequest,
+    session_id: str = Cookie(None, alias=settings.SESSION_COOKIE_NAME),
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        user = await get_current_user_from_session(session_id, db)
+
+        result = await db.execute(
+            select(CheckinLog)
+            .where(CheckinLog.id == log_id, CheckinLog.user_id == user.id)
+        )
+        log = result.scalars().first()
+
+        if not log:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Check-in log not found")
+
+        log.status = payload.status.value
+        await db.commit()
+        await db.refresh(log)
+
+        return CheckinLogResponse(
+            id=log.id,
+            checkin_id=log.checkin_id,
+            status=log.status,
+            date=log.date,
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Update Checkin Log: Failed for log {log_id}: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to update check-in log"
         )
