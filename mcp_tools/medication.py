@@ -392,8 +392,7 @@ async def update_medication_log(input: MedicationLogInput) -> dict:
             }
         else:
             return {
-                "success": True,
-                "message": "Congratulate User on taking medications."
+                "success": True
             }
     
 
