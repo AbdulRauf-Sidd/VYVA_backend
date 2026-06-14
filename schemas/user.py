@@ -103,6 +103,8 @@ class UserRead(UserBase):
     # Fall Detection
     fall_detection_activation: Optional[bool] = None
     fall_auto_alert_to_caregiver: Optional[bool] = None
+    # Emergency Protocol after 3 Missed Check-ins
+    emergency_protocol_after_3_missed_checkins: Optional[bool] = None
     # Device Notifications
     device_token: Optional[str] = None
     expiration: Optional[str] = None
@@ -133,6 +135,7 @@ class UpdateSafetySettingsRequest(BaseModel):
     emergency_protocol_status: Optional[bool] = None
     fall_detection_activation: Optional[bool] = None
     fall_auto_alert_to_caregiver: Optional[bool] = None
+    emergency_protocol_after_3_missed_checkins: Optional[bool] = None
 
 
 class SafetySettingsResponse(BaseModel):
@@ -141,5 +144,6 @@ class SafetySettingsResponse(BaseModel):
     emergency_protocol_status: Optional[bool]
     fall_detection_activation: Optional[bool]
     fall_auto_alert_to_caregiver: Optional[bool]
+    emergency_protocol_after_3_missed_checkins: Optional[bool]
 
     model_config = ConfigDict(from_attributes=True)

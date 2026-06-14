@@ -294,8 +294,12 @@ def update_scheduled_call_status(self):
                     if session.attempts >= 3:
                         user_id = session.user_checkin.user_id
                         logger.info(f"User {user_id} has missed 3 check-up calls.")
-                        send_emergency_alert_whatsapp.apply_async(args=[user_id])
-                        call_emergency_outbound_agent.apply_async(args=[user_id])
+                        user = db.query(User).filter(User.id == user_id).first()
+                        if user and user.emergency_protocol_after_3_missed_checkins is not False:
+                            send_emergency_alert_whatsapp.apply_async(args=[user_id])
+                            call_emergency_outbound_agent.apply_async(args=[user_id])
+                        else:
+                            logger.info(f"Emergency protocol after 3 missed check-ins is disabled for user {user_id}, skipping.")
                         session.is_completed = True
                         session.completed_at = datetime.now(timezone.utc)
                     else:

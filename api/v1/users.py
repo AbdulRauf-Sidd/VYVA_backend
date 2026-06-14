@@ -228,6 +228,8 @@ async def update_safety_settings(
             user.fall_detection_activation = payload.fall_detection_activation
         if payload.fall_auto_alert_to_caregiver is not None:
             user.fall_auto_alert_to_caregiver = payload.fall_auto_alert_to_caregiver
+        if payload.emergency_protocol_after_3_missed_checkins is not None:
+            user.emergency_protocol_after_3_missed_checkins = payload.emergency_protocol_after_3_missed_checkins
 
         await db.commit()
         await db.refresh(user)
@@ -238,6 +240,7 @@ async def update_safety_settings(
             emergency_protocol_status=user.emergency_protocol_status,
             fall_detection_activation=user.fall_detection_activation,
             fall_auto_alert_to_caregiver=user.fall_auto_alert_to_caregiver,
+            emergency_protocol_after_3_missed_checkins=user.emergency_protocol_after_3_missed_checkins,
         )
 
     except HTTPException:

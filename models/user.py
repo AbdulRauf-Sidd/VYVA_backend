@@ -95,6 +95,7 @@ class User(Base):
     emergency_call_to_caretaker = Column(Boolean, nullable=True, default=True)
     emergency_call_to_government_services = Column(Boolean, nullable=True, default=True)
     emergency_protocol_status = Column(Boolean, nullable=True, default=True)  
+    emergency_protocol_after_3_missed_checkins = Column(Boolean, nullable=True, default=True)
 
     
     #Care taker
