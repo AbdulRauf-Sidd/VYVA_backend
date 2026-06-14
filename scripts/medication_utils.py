@@ -7,7 +7,7 @@ from sqlalchemy import update
 from sqlalchemy.exc import IntegrityError
 from models.user import User
 from models.organization import TwilioWhatsappTemplates, TemplateTypeEnum
-from models.medication import Medication, MedicationStatus, MedicationLog, MedicationTime
+from models.medication import Medication, MedicationStatus, MedicationLog, MedicationTime, MedicationPause
 from core.database import SessionLocal
 from sqlalchemy.orm import selectinload
 from services.whatsapp_service import whatsapp_service
@@ -158,12 +158,17 @@ def schedule_medication_reminders_for_hour(db, today: datetime.date, hour_start:
         active_medications = (
             db.query(Medication)
             .join(MedicationTime)
+            .outerjoin(
+                MedicationPause,
+                (MedicationPause.schedule_id == Medication.id) & (MedicationPause.pause_end == None),
+            )
             .options(
                 selectinload(Medication.times_of_day),
                 selectinload(Medication.user),
             )
             .filter(
                 Medication.is_active.is_(True),
+                MedicationPause.id == None,
                 or_(
                     Medication.start_date == None,
                     Medication.start_date <= today,

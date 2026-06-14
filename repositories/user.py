@@ -53,11 +53,6 @@ class UserRepository:
             query = (
                 select(User)
                 .where(User.id == user_id)
-                .options(
-                    selectinload(User.long_term_conditions),
-                    selectinload(User.topics_of_interest),
-                    selectinload(User.preferred_activities)
-                )
             )
             result = await self.db_session.execute(query)
             user = result.scalar_one_or_none()

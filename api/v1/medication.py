@@ -9,7 +9,7 @@ from datetime import date, datetime, time as time_type, timezone, timedelta
 import time
 from zoneinfo import ZoneInfo
 from models.user import User
-from models.medication import MedicationStatus, Medication, MedicationLog, MedicationTime
+from models.medication import MedicationStatus, Medication, MedicationLog, MedicationTime, MedicationPause
 from models.user_check_ins import UserCheckin, CheckInType, ScheduledSession, CheckinLog, CheckinLogStatusEnum
 from sqlalchemy.orm import selectinload
 from core.database import get_db
@@ -36,6 +36,7 @@ from schemas.medication import (
     TodayScheduleResponse,
     UpdateCheckinLogRequest,
     CheckinLogResponse,
+    MedicationPauseRequest,
 )
 from tasks.utils import schedule_reminder_message
 
@@ -643,7 +644,7 @@ def _build_time_detail(med_time: MedicationTime, time_str: str, days_str) -> Med
     )
 
 
-def _build_medication_detail(med: Medication, times: list) -> MedicationDetail:
+def _build_medication_detail(med: Medication, times: list, is_paused: bool = False) -> MedicationDetail:
     return MedicationDetail(
         id=med.id,
         name=med.name,
@@ -651,6 +652,7 @@ def _build_medication_detail(med: Medication, times: list) -> MedicationDetail:
         purpose=med.purpose,
         start_date=med.start_date,
         end_date=med.end_date,
+        is_paused=is_paused,
         times=times,
     )
 
@@ -678,7 +680,7 @@ async def get_my_medications(
                     Medication.end_date >= today,
                 ),
             )
-            .options(selectinload(Medication.times_of_day))
+            .options(selectinload(Medication.times_of_day), selectinload(Medication.pauses))
             .order_by(Medication.id)
         )
         result = await db.execute(stmt)
@@ -701,7 +703,8 @@ async def get_my_medications(
                         days=days_str,
                     )
                 )
-            data.append(_build_medication_detail(med, times))
+            is_paused = any(p.pause_end is None for p in med.pauses)
+            data.append(_build_medication_detail(med, times, is_paused=is_paused))
 
         return data
 
@@ -891,6 +894,67 @@ async def update_my_medication(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to update medication"
+        )
+
+
+@router.put(
+    "/medication_details/{medication_id}/pause",
+    summary="Pause or unpause a medication"
+)
+async def pause_medication(
+    medication_id: int,
+    payload: MedicationPauseRequest,
+    session_id: str = Cookie(None, alias=settings.SESSION_COOKIE_NAME),
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        user = await get_current_user_from_session(session_id, db)
+
+        result = await db.execute(
+            select(Medication).where(Medication.id == medication_id, Medication.user_id == user.id)
+        )
+        medication = result.scalars().first()
+
+        if not medication:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Medication not found")
+
+        tz = get_zoneinfo_safe(user.timezone)
+        today = datetime.now(timezone.utc).astimezone(tz).date()
+
+        if payload.paused:
+            active_pause = await db.execute(
+                select(MedicationPause).where(
+                    MedicationPause.schedule_id == medication_id,
+                    MedicationPause.pause_end == None,
+                )
+            )
+            if active_pause.scalars().first():
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Medication is already paused")
+
+            db.add(MedicationPause(schedule_id=medication_id, pause_start=today))
+        else:
+            active_pause = await db.execute(
+                select(MedicationPause).where(
+                    MedicationPause.schedule_id == medication_id,
+                    MedicationPause.pause_end == None,
+                )
+            )
+            pause = active_pause.scalars().first()
+            if not pause:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Medication is not paused")
+
+            pause.pause_end = today
+
+        await db.commit()
+        return {"success": True, "paused": payload.paused}
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Pause Medication: Failed for medication {medication_id}: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to update medication pause status"
         )
 
 

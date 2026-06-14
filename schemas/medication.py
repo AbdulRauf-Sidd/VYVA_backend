@@ -130,6 +130,7 @@ class MedicationDetail(BaseModel):
     purpose: Optional[str] = None
     start_date: Optional[date] = None
     end_date: Optional[date] = None
+    is_paused: bool = False
     times: List[MedicationTimeDetail]
 
 
@@ -155,3 +156,6 @@ class ScheduledItem(BaseModel):
 
 class TodayScheduleResponse(BaseModel):
     items: List[ScheduledItem]
+
+class MedicationPauseRequest(BaseModel):
+    paused: bool
