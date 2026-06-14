@@ -1117,16 +1117,25 @@ async def update_checkin_log_status(
     try:
         user = await get_current_user_from_session(session_id, db)
 
+
         result = await db.execute(
-            select(CheckinLog)
-            .where(CheckinLog.id == log_id, CheckinLog.user_id == user.id)
+            select(UserCheckin)
+            .where(UserCheckin.id == log_id, CheckinLog.user_id == user.id)
         )
-        log = result.scalars().first()
+        checkin = result.scalars().first()
 
-        if not log:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Check-in log not found")
+        if not checkin:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Check-in not found")
+        
+        log = CheckinLog(
+            checkin_id=checkin.id,
+            user_id=user.id,
+            status=payload.status.value,
+            date=datetime.now(timezone.utc)
+        )
+        
+        db.add(log)
 
-        log.status = payload.status.value
         await db.commit()
         await db.refresh(log)
 
