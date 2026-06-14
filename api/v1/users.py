@@ -30,8 +30,8 @@ class CaretakerResponse(BaseModel):
     email: Optional[str] = None
     phone_number: Optional[str] = None
     language: Optional[str] = None
-    wants_medication_alerts: bool
-    wants_fall_alerts: bool
+    wants_medication_alerts: Optional[bool] = None
+    wants_fall_alerts: Optional[bool] = None
     preferred_notification_channel: Optional[str] = None
 
 
