@@ -72,6 +72,7 @@ def _session_to_dict(session: ScheduledSession) -> dict:
     name="create_general_reminder",
     description=(
         "Schedule a one-time reminder for a user about anything they want. "
+        "Do not use this tool for medication reminders or check-up calls, as there are separate tools for those. "
         "Provide the reminder date and time in the user's local timezone "
         "using a format like '2025-06-01 14:30'. "
         "The scheduled time must be in the future. "
