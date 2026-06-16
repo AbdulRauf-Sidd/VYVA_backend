@@ -177,11 +177,10 @@ class User(Base):
             self.city,
             self.country
         ]
-    
-        # Filter out None / empty / whitespace-only values
         parts = [p.strip() for p in parts if p and p.strip()]
-    
-        return ", ".join(parts) if parts else "Not Available"
+        if parts:
+            return ", ".join(parts)
+        return self.address.strip() if self.address and self.address.strip() else "Not Available"
 
     
 

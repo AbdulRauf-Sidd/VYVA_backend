@@ -171,6 +171,12 @@ async def personalize_call(
     iso_language = get_iso_language(user.preferred_consultation_language)
     first_message = construct_welcome_message_for_main_agent(user.first_name, iso_language, first_time)
 
+    address = user.full_address
+    email = user.email
+    timezone = user.timezone
+
+    logger.info(f"address: {address}, email: {email}, timezone: {timezone}")
+
 
     return {
         "conversation_config_override": {
@@ -189,7 +195,7 @@ async def personalize_call(
             'preferred_reports_channel': user.preferred_reports_channel,
             'health_conditions': user.health_conditions,
             'mobility_issues': user.mobility,
-            "timezone": user.timezone,
+            "timezone": timezone,
             "conversation_id": payload.conversation_id,
             "is_registered": True,
             "app_user": False
