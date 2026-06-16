@@ -275,8 +275,10 @@ def make_general_reminder_call(payload: dict):
         phone_number_id = payload.get("phone_number_id") or settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
         language = payload.get("language")
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
+        purpose = payload.get("purpose")
 
         dynamic_variables = construct_dynamic_variables_from_payload(payload)
+        dynamic_variables["purpose"] = purpose
 
         response = requests.post(
             "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",

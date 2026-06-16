@@ -1,7 +1,7 @@
 from .mcp_instance import mcp
 from datetime import time
 from pydantic import BaseModel
-from models.medication import Medication, MedicationTime, MedicationLog, MedicationStatus
+from models.medication import Medication, MedicationTime, MedicationLog, MedicationStatus, MedicationPause
 from models.user import User
 from sqlalchemy.orm import selectinload
 from sqlalchemy import select
@@ -28,7 +28,8 @@ async def retrieve_user_medications(user_id: int) -> list[dict]:
             .where(Medication.user_id == user_id, Medication.is_active == True)
             .options(
                 selectinload(Medication.times_of_day),
-                selectinload(Medication.user)
+                selectinload(Medication.user),
+                selectinload(Medication.pauses),
             )
             .order_by(Medication.id)
         )
@@ -53,6 +54,7 @@ async def retrieve_user_medications(user_id: int) -> list[dict]:
                     time_entry["days"] = days
                 times.append(time_entry)
 
+            is_paused = any(p.pause_end is None for p in med.pauses)
             meds.append(
                 {
                     "id": med.id,
@@ -61,9 +63,9 @@ async def retrieve_user_medications(user_id: int) -> list[dict]:
                     "purpose": med.purpose,
                     # "start_date": med.start_date.isoformat() if med.start_date else None,
                     # "end_date": med.end_date.isoformat() if med.end_date else None,
+                    "is_paused": is_paused,
                     "times": times,
                     "days": days if days else None
-
                 }
             )
         return meds
@@ -392,8 +394,7 @@ async def update_medication_log(input: MedicationLogInput) -> dict:
             }
         else:
             return {
-                "success": True,
-                "message": "Congratulate User on taking medications."
+                "success": True
             }
     
 
