@@ -143,7 +143,7 @@ def construct_user_dynamic_variables(user):
     local_time = get_user_local_dt(user.timezone) if user and user.timezone else ""
     dynamic_variables = {
         "user_id": user.id if user else "",
-        "address": user.full_address if user else "",
+        "address": user.full_address if user else user.address if user else "",
         "first_name": user.first_name if user else "",
         "name": user.full_name if user else "",
         "phone_number": user.phone_number if user else "",
