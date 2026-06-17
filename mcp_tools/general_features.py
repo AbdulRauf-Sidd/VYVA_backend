@@ -313,6 +313,7 @@ class GetOutboundCallLogsInput(BaseModel):
     description=(
         "Retrieve outbound call logs for a user. "
         "Use this tool when you need to check if the user recieved any calls from the system. "
+        "Always pass the user_id. "
         "Optionally filter by start_date and end_date (YYYY-MM-DD). "
         "Returns a list of {agent_type, datetime} in the user's local timezone."
     )
