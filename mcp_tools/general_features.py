@@ -5,11 +5,16 @@ from typing import List
 from pydantic import BaseModel
 from sqlalchemy import select
 
+from datetime import date
+from typing import Optional
+
 from celery_app import celery_app
 from core.database import get_async_session
 from models.user import User
 from models.user_check_ins import CheckInType, ScheduledSession
-from scripts.utils import convert_to_utc_datetime
+from models.outbound_call_logs import OutboundCallLog
+from models.organization import OrganizationAgents
+from scripts.utils import convert_to_utc_datetime, get_zoneinfo_safe
 from .mcp_instance import mcp
 
 logger = logging.getLogger(__name__)
@@ -295,3 +300,63 @@ def _session_to_dict(session: ScheduledSession) -> dict:
 #     except Exception as e:
 #         logger.error(f"[delete_general_reminder] Error for session {input.scheduled_session_id}: {e}")
 #         return {"success": False, "message": "An unexpected error occurred."}
+
+
+class GetOutboundCallLogsInput(BaseModel):
+    user_id: int
+    start_date: Optional[str] = None  # "YYYY-MM-DD"
+    end_date: Optional[str] = None    # "YYYY-MM-DD"
+
+
+@mcp.tool(
+    name="get_outbound_call_logs",
+    description=(
+        "Retrieve outbound call logs for a user. "
+        "Use this tool when you need to check if the user recieved any calls from the system. "
+        "Optionally filter by start_date and end_date (YYYY-MM-DD). "
+        "Returns a list of {agent_type, datetime} in the user's local timezone."
+    )
+)
+async def get_outbound_call_logs(user_id: int, start_date: Optional[str] = None, end_date: Optional[str] = None) -> list[dict]:
+    try:
+        async with get_async_session() as db:
+            user_result = await db.execute(select(User).where(User.id == user_id))
+            user = user_result.scalars().first()
+            if not user:
+                return []
+
+            tz = get_zoneinfo_safe(user.timezone)
+
+            stmt = (
+                select(OutboundCallLog, OrganizationAgents.agent_type)
+                .outerjoin(OrganizationAgents, OrganizationAgents.agent_id == OutboundCallLog.agent_id)
+                .where(
+                    OutboundCallLog.phone_number == user.phone_number,
+                    OutboundCallLog.success == True,
+                )
+            )
+
+            if start_date:
+                stmt = stmt.where(OutboundCallLog.created_at >= datetime.strptime(start_date, "%Y-%m-%d").replace(tzinfo=timezone.utc))
+            if end_date:
+                end_dt = datetime.strptime(end_date, "%Y-%m-%d").replace(hour=23, minute=59, second=59, tzinfo=timezone.utc)
+                stmt = stmt.where(OutboundCallLog.created_at <= end_dt)
+
+            stmt = stmt.order_by(OutboundCallLog.created_at.desc())
+
+            result = await db.execute(stmt)
+            rows = result.all()
+
+            logs = []
+            for log, agent_type in rows:
+                local_dt = log.created_at.astimezone(tz) if log.created_at else None
+                logs.append({
+                    "agent_type": agent_type or log.agent_id,
+                    "datetime": local_dt.strftime("%Y-%m-%d %H:%M") if local_dt else None,
+                })
+
+            return logs
+
+    except Exception as e:
+        logger.error(f"[get_outbound_call_logs] Error for user {user_id}: {e}")
+        return []
