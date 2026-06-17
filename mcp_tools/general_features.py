@@ -350,10 +350,13 @@ async def get_outbound_call_logs(user_id: int, start_date: Optional[str] = None,
             logs = []
             for log, agent_type in rows:
                 local_dt = log.created_at.astimezone(tz) if log.created_at else None
-                logs.append({
+                entry = {
                     "agent_type": agent_type or log.agent_id,
                     "datetime": local_dt.strftime("%Y-%m-%d %H:%M") if local_dt else None,
-                })
+                }
+                if agent_type == "medication_reminder":
+                    entry["medications"] = (log.params or {}).get("medications")
+                logs.append(entry)
 
             return logs
 
