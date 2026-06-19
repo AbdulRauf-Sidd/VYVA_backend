@@ -60,13 +60,16 @@ async def get_weekly_medication_schedule(
     taken_medications = 0
     
     try:
+        if not payload.user_id or not payload.date_start or not payload.date_end:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="user_id, date_start, and date_end are required."
+            )
+
         result = await db.execute(
             select(User.timezone).where(User.id == payload.user_id)
         )
         user_timezone = result.scalar_one_or_none()
-        now_utc = datetime.now(timezone.utc)
-        user_now = now_utc.astimezone(ZoneInfo(user_timezone))
-        today = user_now.date()
         result = await db.execute(
             select(Medication)
             .where(
