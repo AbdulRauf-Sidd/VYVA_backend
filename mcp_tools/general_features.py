@@ -15,6 +15,7 @@ from models.user_check_ins import CheckInType, ScheduledSession
 from models.outbound_call_logs import OutboundCallLog
 from models.organization import OrganizationAgents
 from scripts.utils import convert_to_utc_datetime, get_zoneinfo_safe
+from services.searxng import web_search
 from .mcp_instance import mcp
 
 logger = logging.getLogger(__name__)
@@ -364,3 +365,19 @@ async def get_outbound_call_logs(user_id: int, start_date: Optional[str] = None,
     except Exception as e:
         logger.error(f"[get_outbound_call_logs] Error for user {user_id}: {e}")
         return []
+
+
+@mcp.tool(
+    name="web_search",
+    description=(
+        "Search the web for any topic. Use this when the user asks a question that requires "
+        "up-to-date or external information, such as news, events, health topics, local services, etc. "
+        "Returns formatted search results with titles, URLs, and descriptions."
+    )
+)
+def search_web(query: str, num_results: int = 5) -> str:
+    try:
+        return web_search(query, num_results)
+    except Exception as e:
+        logger.error(f"[web_search] Error for query '{query}': {e}")
+        return "Search failed. Please try again."

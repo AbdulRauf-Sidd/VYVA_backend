@@ -36,16 +36,10 @@ class Settings(BaseSettings):
 
     origins: List[str] = [
         "http://localhost:8080",  # frontend URL
-        "http://localhost:5173",
-        "https://vyva.io", # production frontend
-        "https://4f214c49a3b2.ngrok-free.app",
         "https://onboarding.vyva.io",
         "http://localhost:3000",
         "https://zamora.vyva.io",
-        "https://3627ab087f2f.ngrok-free.app",
-        "https://care.zamora.vyva.io",
         "https://care-zamora.vyva.io",
-        "https://62e980b4-c7a2-4d7f-84b6-853448d5b732.lovableproject.com",
         "https://rcadmin.vyva.life",
     ]
     
@@ -206,6 +200,8 @@ class Settings(BaseSettings):
 
     MEDIASTACK_ACCESS_KEY: str = Field(default="", env="MEDIASTACK_ACCESS_KEY")
     
+    SEARXNG_URL = 'http://localhost:8099/search'
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
