@@ -200,7 +200,7 @@ class Settings(BaseSettings):
 
     MEDIASTACK_ACCESS_KEY: str = Field(default="", env="MEDIASTACK_ACCESS_KEY")
     
-    SEARXNG_URL = 'http://localhost:8099/search'
+    SEARXNG_URL: str = Field(default='http://localhost:8099/search', env="SEARXNG_URL")
 
     class Config:
         env_file = ".env"
