@@ -1,29 +1,30 @@
 import requests
 from core.config import settings
+from functools import lru_cache
+import time
+import httpx
 
-def searxng_search(query: str, num_results: int = 5):
-    """
-    Calls SearXNG and returns raw JSON response.
-    """
+_cache: dict[str, tuple[list, float]] = {}
+
+async def searxng_search(query: str, num_results: int = 5):
+    if query in _cache:
+        results, ts = _cache[query]
+        if time.time() - ts < 300:
+            return results
+
     try:
-        response = requests.get(
-            settings.SEARXNG_URL,
-            params={
-                "q": query,
-                "format": "json"
-            },
-            timeout=5
-        )
-
-        response.raise_for_status()
-        data = response.json()
-
-        return data.get("results", [])[:num_results]
-
+        async with httpx.AsyncClient(timeout=5) as client:
+            response = await client.get(
+                settings.SEARXNG_URL,
+                params={"q": query, "format": "json"}
+            )
+            response.raise_for_status()
+            results = response.json().get("results", [])[:num_results]
+            _cache[query] = (results, time.time())
+            return results
     except Exception as e:
         print(f"SearXNG error: {e}")
         return []
-    
 
 def format_search_results(results):
     """
@@ -46,9 +47,9 @@ def format_search_results(results):
 
     return "\n\n".join(formatted)
 
-def web_search(query: str, num_results: int = 5):
+async def web_search(query: str, num_results: int = 5):
     """
     Performs a web search using SearXNG and returns formatted results.
     """
-    raw_results = searxng_search(query, num_results)
+    raw_results = await searxng_search(query, num_results)
     return format_search_results(raw_results)
