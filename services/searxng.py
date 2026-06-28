@@ -15,19 +15,24 @@ async def searxng_search(query: str, num_results: int = 5):
         if time.time() - ts < 120:
             return results
 
-    try:
-        async with httpx.AsyncClient(timeout=5) as client:
-            response = await client.get(
-                settings.SEARXNG_URL,
-                params={"q": query, "format": "json", "region": "es-ES"}
-            )
-            response.raise_for_status()
-            results = response.json().get("results", [])[:num_results]
-            _cache[query] = (results, time.time())
-            return results
-    except Exception as e:
-        logger.error(f"SearXNG error: {e}")
-        return []
+    last_exc: Exception | None = None
+    for attempt in range(3):
+        try:
+            async with httpx.AsyncClient(timeout=10) as client:
+                response = await client.get(
+                    settings.SEARXNG_URL,
+                    params={"q": query, "format": "json", "region": "es-ES"}
+                )
+                response.raise_for_status()
+                results = response.json().get("results", [])[:num_results]
+                _cache[query] = (results, time.time())
+                return results
+        except Exception as e:
+            last_exc = e
+            logger.warning(f"SearXNG attempt {attempt + 1}/3 failed: {type(e).__name__}: {e}")
+
+    logger.error(f"SearXNG all retries exhausted: {last_exc}")
+    return []
 
 def format_search_results(results):
     """
