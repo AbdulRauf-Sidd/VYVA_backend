@@ -462,13 +462,13 @@ async def goto_page(input: GotoPageInput) -> dict:
     name="web_search",
     description=(
         "Search the web for any topic. Use this when the user asks a question that requires "
-        "up-to-date or external information, such as news, events, health topics, local services, etc. "
+        "up-to-date or external information, such as news, events, health topics, local services, sports, etc. "
         "Returns formatted search results with titles, URLs, and descriptions."
     )
 )
-def search_web(query: str, num_results: int = 5) -> str:
+def search_web(query: str, num_results: int = 5) -> dict | None:
     try:
         return web_search(query, num_results)
     except Exception as e:
         logger.error(f"[web_search] Error for query '{query}': {e}")
-        return "Search failed. Please try again."
+        return None
