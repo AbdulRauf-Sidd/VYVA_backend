@@ -3,13 +3,16 @@ from core.config import settings
 from functools import lru_cache
 import time
 import httpx
+import logging
+
+logger = logging.getLogger(__name__)
 
 _cache: dict[str, tuple[list, float]] = {}
 
 async def searxng_search(query: str, num_results: int = 5):
     if query in _cache:
         results, ts = _cache[query]
-        if time.time() - ts < 300:
+        if time.time() - ts < 120:
             return results
 
     try:
@@ -23,7 +26,7 @@ async def searxng_search(query: str, num_results: int = 5):
             _cache[query] = (results, time.time())
             return results
     except Exception as e:
-        print(f"SearXNG error: {e}")
+        logger.error(f"SearXNG error: {e}")
         return []
 
 def format_search_results(results):
