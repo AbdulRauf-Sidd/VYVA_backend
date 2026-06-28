@@ -1,7 +1,10 @@
 import logging
 from datetime import datetime, timezone
 from typing import List
+from urllib.parse import urljoin, urlparse
 
+import httpx
+from bs4 import BeautifulSoup
 from pydantic import BaseModel
 from sqlalchemy import select
 
@@ -365,6 +368,94 @@ async def get_outbound_call_logs(user_id: int, start_date: Optional[str] = None,
     except Exception as e:
         logger.error(f"[get_outbound_call_logs] Error for user {user_id}: {e}")
         return []
+
+
+class GotoPageInput(BaseModel):
+    url: str
+
+
+@mcp.tool(
+    name="goto_page",
+    description=(
+        "Open a web page by URL and return its readable text content plus all links found on the page. "
+        "Use this when the user wants to visit a specific URL, read an article, or follow a link from search results. "
+        "Returns the cleaned page text and a grouped list of links (navigation, content, external)."
+    )
+)
+async def goto_page(input: GotoPageInput) -> dict:
+    url = input.url.strip()
+    try:
+        headers = {
+            "User-Agent": (
+                "Mozilla/5.0 (compatible; VYVABot/1.0; +https://api.vyva.io)"
+            )
+        }
+        async with httpx.AsyncClient(timeout=5, follow_redirects=True) as client:
+            response = await client.get(url, headers=headers)
+            response.raise_for_status()
+            content_type = response.headers.get("content-type", "")
+            if "text/html" not in content_type:
+                return {"success": False, "message": f"URL returned non-HTML content ({content_type})."}
+
+        soup = BeautifulSoup(response.text, "lxml")
+
+        # Remove noise tags
+        for tag in soup(["script", "style", "noscript", "iframe", "head",
+                          "nav", "footer", "aside", "form", "button"]):
+            tag.decompose()
+
+        # Extract and clean main text
+        text = soup.get_text(separator="\n")
+        lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+        # Deduplicate consecutive identical lines
+        cleaned_lines = [lines[0]] if lines else []
+        for line in lines[1:]:
+            if line != cleaned_lines[-1]:
+                cleaned_lines.append(line)
+        page_text = "\n".join(cleaned_lines)
+
+        # Cap at ~4000 chars so the voice agent isn't overwhelmed
+        if len(page_text) > 4000:
+            page_text = page_text[:4000] + "\n… [content truncated]"
+
+        # Extract and group links
+        base = f"{urlparse(url).scheme}://{urlparse(url).netloc}"
+        internal_links = []
+        external_links = []
+        seen_hrefs: set[str] = set()
+
+        for a in soup.find_all("a", href=True):
+            href = a["href"].strip()
+            label = a.get_text(strip=True) or href
+            if not href or href.startswith(("#", "mailto:", "tel:", "javascript:")):
+                continue
+            absolute = urljoin(url, href)
+            if absolute in seen_hrefs:
+                continue
+            seen_hrefs.add(absolute)
+            entry = {"label": label[:100], "url": absolute}
+            if urlparse(absolute).netloc == urlparse(url).netloc:
+                internal_links.append(entry)
+            else:
+                external_links.append(entry)
+
+        return {
+            "success": True,
+            "url": str(response.url),
+            "title": (soup.find("title") or "").get_text(strip=True) if soup.find("title") else "",
+            "text": page_text,
+            "links": {
+                "internal": internal_links[:20],
+                "external": external_links[:10],
+            },
+        }
+
+    except httpx.HTTPStatusError as e:
+        logger.error(f"[goto_page] HTTP error for {url}: {e.response.status_code}")
+        return {"success": False, "message": f"Page returned HTTP {e.response.status_code}."}
+    except Exception as e:
+        logger.error(f"[goto_page] Error for {url}: {e}")
+        return {"success": False, "message": "Failed to load page."}
 
 
 @mcp.tool(

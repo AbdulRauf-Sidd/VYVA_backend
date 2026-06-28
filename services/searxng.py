@@ -25,6 +25,8 @@ async def searxng_search(query: str, num_results: int = 5):
                 )
                 response.raise_for_status()
                 results = response.json().get("results", [])[:num_results]
+                if not results:
+                    continue
                 _cache[query] = (results, time.time())
                 return results
         except Exception as e:
