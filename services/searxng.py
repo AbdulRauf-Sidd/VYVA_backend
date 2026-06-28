@@ -65,3 +65,16 @@ async def web_search(query: str, num_results: int = 5):
     """
     raw_results = await searxng_search(query, num_results)
     return format_search_results(raw_results)
+
+
+async def warm_up():
+    """Fire a throwaway query on startup so SearXNG's connection pool is alive."""
+    try:
+        async with httpx.AsyncClient(timeout=15) as client:
+            await client.get(
+                settings.SEARXNG_URL,
+                params={"q": "health", "format": "json", "region": "es-ES"},
+            )
+        logger.info("SearXNG warm-up complete.")
+    except Exception as e:
+        logger.warning(f"SearXNG warm-up failed (will retry on first real query): {e}")

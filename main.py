@@ -3,6 +3,8 @@ Vyva Backend - FastAPI Application Entry Point
 
 A production-ready FastAPI backend for senior care applications.
 """
+from contextlib import asynccontextmanager
+
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -24,6 +26,7 @@ from celery.app.control import Inspect
 from celery_app import celery_app
 from mcp_tools.mcp_instance import mcp
 from mcp_tools import brain_coach as brain, user, mem0, medication as med, general_features  # dont remove
+from services.searxng import warm_up as searxng_warm_up
 from starlette.middleware.sessions import SessionMiddleware
 
 
@@ -35,6 +38,14 @@ load_dotenv()
 # mcp = FastMCP("Memory Tools")
 mcp_app = mcp.http_app('/mcp')
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await searxng_warm_up()
+    async with mcp_app.lifespan(app):
+        yield
+
+
 # Create FastAPI application
 app = FastAPI(
     title="Vyva Backend API",
@@ -43,7 +54,7 @@ app = FastAPI(
     docs_url="/docs" if settings.DEBUG else None,
     redoc_url="/redoc" if settings.DEBUG else None,
     openapi_url="/openapi.json" if settings.DEBUG else None,
-    lifespan=mcp_app.lifespan
+    lifespan=lifespan
 )
 
 setup_admin(app) 
