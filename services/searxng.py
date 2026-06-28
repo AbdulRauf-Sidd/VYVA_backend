@@ -41,11 +41,13 @@ def format_search_results(results):
         url = r.get("url", "")
         content = r.get("content", "No description available")
 
-        formatted.append(
-            f"{i}. {title}\n{url}\n{content}"
-        )
+        formatted.append({
+            "title": title,
+            "url": url,
+            "content": content
+        })
 
-    return "\n\n".join(formatted)
+    return formatted
 
 async def web_search(query: str, num_results: int = 5):
     """
