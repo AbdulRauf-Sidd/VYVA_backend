@@ -466,7 +466,7 @@ async def goto_page(input: GotoPageInput) -> dict:
         "Returns formatted search results with titles, URLs, and descriptions."
     )
 )
-def search_web(query: str, num_results: int = 5) -> dict | None:
+def search_web(query: str, num_results: int = 5) -> list | None:
     try:
         return web_search(query, num_results)
     except Exception as e:
