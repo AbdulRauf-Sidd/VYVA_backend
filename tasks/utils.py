@@ -3,6 +3,7 @@ from core.redis import conn, ONBOARDING_CALL_STATUS_CHECK_REDIS_KEY, CALL_STATUS
 from models.medication import MedicationLog
 import logging
 from core.database import SessionLocal
+from models.user import User
 from models.user_check_ins import CheckinLog, CheckinLogStatusEnum, ScheduledSession, UserCheckin, CheckInType
 from sqlalchemy import func
 from sqlalchemy.orm import selectinload
@@ -93,9 +94,11 @@ def schedule_check_in_calls_for_hour(db, today, hour_start, hour_end):
     try:
         checkins = (
             db.query(UserCheckin)
+            .join(UserCheckin.user)
             .options(selectinload(UserCheckin.user),
                      selectinload(UserCheckin.scheduled_sessions))
-            .filter(UserCheckin.is_active == True
+            .filter(UserCheckin.is_active == True,
+                    User.is_active.is_(True)
                     # UserCheckin.check_in_time >= hour_start,
                     # UserCheckin.check_in_time < hour_end
                     )

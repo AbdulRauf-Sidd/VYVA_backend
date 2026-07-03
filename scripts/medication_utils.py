@@ -158,6 +158,7 @@ def schedule_medication_reminders_for_hour(db, today: datetime.date, hour_start:
         active_medications = (
             db.query(Medication)
             .join(MedicationTime)
+            .join(Medication.user)
             .outerjoin(
                 MedicationPause,
                 (MedicationPause.schedule_id == Medication.id) & (MedicationPause.pause_end == None),
@@ -168,6 +169,7 @@ def schedule_medication_reminders_for_hour(db, today: datetime.date, hour_start:
             )
             .filter(
                 Medication.is_active.is_(True),
+                User.is_active.is_(True),
                 MedicationPause.id == None,
                 or_(
                     Medication.start_date == None,
