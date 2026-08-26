@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import List, Optional
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, computed_field
 from enum import Enum
+from scripts.utils import is_doctor_available
 from .health_care import LongTermConditionRead
 from .activities import TopicOfInterestRead, ActivityRead
 
@@ -113,6 +114,11 @@ class UserRead(UserBase):
     # Relationships
     
     model_config = ConfigDict(from_attributes=True)
+
+    @computed_field
+    @property
+    def doctor_available(self) -> bool:
+        return is_doctor_available(self.timezone)
 
     @property
     def full_name(self) -> str:

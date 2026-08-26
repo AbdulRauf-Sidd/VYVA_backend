@@ -8,7 +8,7 @@ from sqlalchemy.orm import selectinload
 from core.database import get_db
 from core.config import settings
 from scripts.medication_utils import update_med_logs
-from scripts.utils import generate_medication_whatsapp_response_message, get_iso_language, generate_reminder_later_whatsapp_response_message, get_user_local_dt
+from scripts.utils import generate_medication_whatsapp_response_message, get_iso_language, generate_reminder_later_whatsapp_response_message, get_user_local_dt, is_doctor_available
 from models.organization import TemplateTypeEnum, TwilioWhatsappTemplates
 from models.medication import MedicationLog
 from services.helpers import construct_general_welcome_message, construct_welcome_message_for_main_agent
@@ -162,7 +162,8 @@ async def personalize_call(
                 'mobility_issues': "",
                 "conversation_id": payload.conversation_id,
                 "is_registered": False,
-                "app_user": False
+                "app_user": False,
+                "doctor_available": is_doctor_available(None)
             },
         }
 
@@ -198,7 +199,8 @@ async def personalize_call(
             "timezone": timezone,
             "conversation_id": payload.conversation_id,
             "is_registered": True,
-            "app_user": False
+            "app_user": False,
+            "doctor_available": is_doctor_available(timezone)
         },
     }
 

@@ -249,6 +249,16 @@ def get_user_local_dt(timezone: str | None) -> datetime:
     return datetime.now(get_zoneinfo_safe(timezone))
 
 
+def is_doctor_available(timezone: str | None) -> bool:
+    """
+    Doctors are available 10am-10pm local time, every day except Sunday.
+    """
+    local_dt = get_user_local_dt(timezone)
+    if local_dt.weekday() == 6:  # Sunday
+        return False
+    return 10 <= local_dt.hour < 22
+
+
 def convert_to_utc_datetime(tz_name: str, date: date | None = None, time: time | None = None, dt: datetime | None = None, normalize_seconds: bool = True) -> datetime:
     """
     Convert a local date+time OR datetime into UTC.
