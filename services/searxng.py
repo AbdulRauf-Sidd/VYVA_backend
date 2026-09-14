@@ -21,7 +21,11 @@ async def searxng_search(query: str, num_results: int = 5):
             async with httpx.AsyncClient(timeout=10) as client:
                 response = await client.get(
                     settings.SEARXNG_URL,
-                    params={"q": query, "format": "json", "region": "es-ES"}
+                    params={"q": query, "format": "json", "region": "es-ES"},
+                    headers={
+                        "X-Forwarded-For": "127.0.0.1",
+                        "X-Real-IP": "127.0.0.1",
+                    },
                 )
                 response.raise_for_status()
                 results = response.json().get("results", [])[:num_results]
