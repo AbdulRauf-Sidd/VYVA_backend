@@ -90,7 +90,7 @@ sentry_sdk.init(
     # enable_logs=True,
     traces_sample_rate=1.0,
     # profile_session_sample_rate=1.0,
-    profile_lifecycle="trace",
+    # profile_lifecycle="trace",
 )
 
 @app.exception_handler(RequestValidationError)
