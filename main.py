@@ -28,6 +28,8 @@ from mcp_tools.mcp_instance import mcp
 from mcp_tools import brain_coach as brain, user, mem0, medication as med, general_features  # dont remove
 from services.searxng import warm_up as searxng_warm_up
 from starlette.middleware.sessions import SessionMiddleware
+import sentry_sdk
+
 
 
 # Setup logging
@@ -79,6 +81,16 @@ app.add_middleware(
 app.add_middleware(
     TrustedHostMiddleware,
     allowed_hosts=["*"],
+)
+
+
+sentry_sdk.init(
+    dsn="https://36387d81138311c2d34bd2871580977b@o4512085171306496.ingest.de.sentry.io/4512085345697872",
+    send_default_pii=True,
+    enable_logs=True,
+    traces_sample_rate=1.0,
+    profile_session_sample_rate=1.0,
+    profile_lifecycle="trace",
 )
 
 @app.exception_handler(RequestValidationError)
