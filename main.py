@@ -87,7 +87,7 @@ app.add_middleware(
 sentry_sdk.init(
     dsn="https://36387d81138311c2d34bd2871580977b@o4512085171306496.ingest.de.sentry.io/4512085345697872",
     send_default_pii=True,
-    enable_logs=True,
+    # enable_logs=True,
     traces_sample_rate=1.0,
     profile_session_sample_rate=1.0,
     profile_lifecycle="trace",
