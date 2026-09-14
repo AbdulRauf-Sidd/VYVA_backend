@@ -154,33 +154,33 @@ async def find_places(req: FindPlacesRequest, db: AsyncSession = Depends(get_db)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to search places")
 
 
-@router.post("/get-information", response_model=GetInformationResponse)
-async def get_information(req: GetInformationRequest) -> GetInformationResponse:
-    try:
-        logger.info(f"=====================> get-information called with request: {req}")
-        ai = await ai_assistant_service.generate_response(
-            question=req.question,
-            user_context=(
-                "You are a helpful assistant for seniors. Keep answers short and clear. Cite source names if web was used."
-            ),
-            include_web_search=True,
-            force_web=True,
-        )
+# @router.post("/get-information", response_model=GetInformationResponse)
+# async def get_information(req: GetInformationRequest) -> GetInformationResponse:
+#     try:
+#         logger.info(f"=====================> get-information called with request: {req}")
+#         ai = await ai_assistant_service.generate_response(
+#             question=req.question,
+#             user_context=(
+#                 "You are a helpful assistant for seniors. Keep answers short and clear. Cite source names if web was used."
+#             ),
+#             include_web_search=True,
+#             force_web=True,
+#         )
 
-        sources: List[Source] = []
-        if ai.get("web_search_used"):
-            for r in ai.get("web_results", [])[:5]:
-                name = r.get("title") or r.get("link") or "Source"
-                sources.append(Source(name=name))
+#         sources: List[Source] = []
+#         if ai.get("web_search_used"):
+#             for r in ai.get("web_results", [])[:5]:
+#                 name = r.get("title") or r.get("link") or "Source"
+#                 sources.append(Source(name=name))
 
-        return GetInformationResponse(
-            answer=ai.get("response") or ai.get("original_response") or "",
-            used_web=bool(ai.get("web_search_used")),
-            sources=sources,
-        )
-    except Exception as e:
-        logger.error(f"get_information failed: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to get information")
+#         return GetInformationResponse(
+#             answer=ai.get("response") or ai.get("original_response") or "",
+#             used_web=bool(ai.get("web_search_used")),
+#             sources=sources,
+#         )
+#     except Exception as e:
+#         logger.error(f"get_information failed: {e}")
+#         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to get information")
 
 
 def _haversine_meters(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
