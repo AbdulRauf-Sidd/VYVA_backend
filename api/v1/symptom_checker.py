@@ -1050,10 +1050,8 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
         # Only validate user delivery settings when we are actually sending to the user
         if not send_to_doctor_only:
             if preferred_reports_channel not in ["email", "whatsapp"]:
-                raise HTTPException(
-                    status_code=400,
-                    detail="Invalid preferred reports channel. Must be 'email' or 'whatsapp'."
-                )
+                user.preferred_reports_channel = "whatsapp"
+                await db.commit()                
 
             if preferred_reports_channel == "email" and not recipient_email:
                 raise HTTPException(

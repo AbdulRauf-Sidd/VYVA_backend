@@ -301,6 +301,10 @@ async def send_brain_coach_report(
             })
         
         preferred_report_channel = user.preferred_reports_channel
+        if preferred_report_channel not in ['email', 'whatsapp']:
+            user.preferred_reports_channel = 'whatsapp'
+            await db.commit()
+
         if preferred_report_channel == 'whatsapp':
             phone_number = None
             if user.is_primary_landline:
