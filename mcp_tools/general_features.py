@@ -18,6 +18,7 @@ from models.user_check_ins import CheckInType, ScheduledSession
 from models.outbound_call_logs import OutboundCallLog
 from models.organization import OrganizationAgents
 from scripts.utils import convert_to_utc_datetime, get_zoneinfo_safe
+from scripts.onboarding_utils import send_onboarding_sms
 from services.searxng import web_search
 from .mcp_instance import mcp
 
@@ -466,9 +467,33 @@ async def goto_page(input: GotoPageInput) -> dict:
         "Returns formatted search results with titles, URLs, and descriptions."
     )
 )
-def search_web(query: str, num_results: int = 5) -> list | None:
+async def search_web(query: str, num_results: int = 5) -> list | None:
     try:
         return web_search(query, num_results)
     except Exception as e:
         logger.error(f"[web_search] Error for query '{query}': {e}")
         return None
+
+@mcp.tool(
+    name="send_vyva_link",
+    description=(
+        "Send a VYVA link to the user. Use this when the user asks for the VYVA link." \
+        "The user can sometimes lose the link they received in the onboarding SMS, so this tool allows you to send it again. " \
+        "use send_to_caregiver=True to send the link to the caregiver as well if the user asks." \
+    )
+)
+async def send_vyva_link(user_id: int, send_to_caregiver: bool = False) -> bool:
+    try:
+        async with get_async_session() as db:
+            user_result = await db.execute(select(User).where(User.id == user_id))
+            user = user_result.scalars().first()
+            if not user:
+                return []
+
+            send_onboarding_sms(user=user, send_to_caregiver=send_to_caregiver)
+            return True
+    except Exception as e:
+        logger.error(f"Error for sending vyva link for user {user_id}: {e}")
+        return False
+
+
