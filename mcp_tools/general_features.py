@@ -492,6 +492,7 @@ async def send_vyva_link(user_id: int, send_to_caregiver: bool = False) -> dict:
                 .options(selectinload(User.organization))
                 .where(User.id == user_id)
             )
+            user = user_result.scalar_one_or_none()
             if not user:
                 return []
 
