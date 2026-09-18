@@ -6,6 +6,7 @@ from urllib.parse import urljoin, urlparse
 import httpx
 from bs4 import BeautifulSoup
 from pydantic import BaseModel
+from repositories import user
 from sqlalchemy import select
 
 from datetime import date
@@ -21,6 +22,7 @@ from scripts.utils import convert_to_utc_datetime, get_zoneinfo_safe
 from scripts.onboarding_utils import send_onboarding_sms
 from services.searxng import web_search
 from .mcp_instance import mcp
+from sqlalchemy.orm import selectinload
 
 logger = logging.getLogger(__name__)
 
@@ -485,8 +487,11 @@ async def search_web(query: str, num_results: int = 5) -> list | None:
 async def send_vyva_link(user_id: int, send_to_caregiver: bool = False) -> bool:
     try:
         async with get_async_session() as db:
-            user_result = await db.execute(select(User).where(User.id == user_id))
-            user = user_result.scalars().first()
+            user_result = await db.execute(
+                select(User)
+                .options(selectinload(User.organization))
+                .where(User.id == user_id)
+            )
             if not user:
                 return []
 
