@@ -484,7 +484,7 @@ async def search_web(query: str, num_results: int = 5) -> list | None:
         "use send_to_caregiver=True to send the link to the caregiver as well if the user asks." \
     )
 )
-async def send_vyva_link(user_id: int, send_to_caregiver: bool = False) -> bool:
+async def send_vyva_link(user_id: int, send_to_caregiver: bool = False) -> dict:
     try:
         async with get_async_session() as db:
             user_result = await db.execute(
@@ -495,10 +495,17 @@ async def send_vyva_link(user_id: int, send_to_caregiver: bool = False) -> bool:
             if not user:
                 return []
 
-            send_onboarding_sms(user=user, send_to_caregiver=send_to_caregiver)
-            return True
+            link = send_onboarding_sms(user=user, send_to_caregiver=send_to_caregiver)
+
+            return {
+                "success": True,
+                "link": link
+            }
     except Exception as e:
         logger.error(f"Error for sending vyva link for user {user_id}: {e}")
-        return False
+        return {
+            "success": False,
+            "message": "Tell the user to try again later."
+        }
 
 

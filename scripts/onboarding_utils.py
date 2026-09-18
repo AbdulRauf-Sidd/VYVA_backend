@@ -108,3 +108,5 @@ def send_onboarding_sms(phone_number: str = None, user: User = None, send_to_car
             caregiver_onboarding_link = f"https://care-{user.organization.sub_domain}.vyva.io/senior-verification?token={temp_token_caregiver.token}"
             caregiver_message = construct_onboarding_message_for_caretaker(iso_language, caregiver_onboarding_link)
             sms_service.send_sms_sync(user.caretaker.phone_number, caregiver_message)
+
+        return f"https://{user.organization.sub_domain}.vyva.io"
