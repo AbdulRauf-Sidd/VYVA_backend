@@ -28,13 +28,21 @@ def setup_admin(app):
     )
 
     class UserAdmin(ModelView, model=User):
-        column_list = [User.id, User.email, User.is_active]
+        column_list = [User.id, User.first_name, User.last_name, User.phone_number, User.email, User.is_active]
+        column_searchable_list = [User.first_name, User.last_name, User.phone_number, User.email]
 
     class CaretakerAdmin(ModelView, model=Caretaker):
         column_list = [Caretaker.id, Caretaker.name, Caretaker.phone_number]
+        column_searchable_list = [Caretaker.name, Caretaker.phone_number, Caretaker.email]
 
     class TwilioWhatsappTemplatesAdmin(ModelView, model=TwilioWhatsappTemplates):
         column_list = "__all__"
+        column_searchable_list = [
+            TwilioWhatsappTemplates.name,
+            TwilioWhatsappTemplates.template_type,
+            TwilioWhatsappTemplates.language,
+            TwilioWhatsappTemplates.template_id,
+        ]
 
     class MedicationAdmin(ModelView, model=Medication):
         column_list = [
@@ -48,6 +56,7 @@ def setup_admin(app):
             Medication.is_active,
             Medication.created_at,
         ]
+        column_searchable_list = [Medication.name, Medication.purpose]
 
     class MedicationTimeAdmin(ModelView, model=MedicationTime):
         column_list = [
@@ -57,12 +66,15 @@ def setup_admin(app):
             MedicationTime.days_of_week,
             MedicationTime.created_at,
         ]
+        column_searchable_list = [MedicationTime.notes]
 
     class OrganizationAdmin(ModelView, model=Organization):
         column_list = "__all__"
+        column_searchable_list = [Organization.name, Organization.country, Organization.sub_domain]
 
     class OrganizationAgentsAdmin(ModelView, model=OrganizationAgents):
         column_list = "__all__"
+        column_searchable_list = [OrganizationAgents.name, OrganizationAgents.agent_id, OrganizationAgents.agent_type]
 
     class OnboardingUserAdmin(ModelView, model=OnboardingUser):
         column_list = [
@@ -73,9 +85,16 @@ def setup_admin(app):
             OnboardingUser.onboarding_status,
             OnboardingUser.created_at,
         ]
+        column_searchable_list = [
+            OnboardingUser.first_name,
+            OnboardingUser.last_name,
+            OnboardingUser.phone_number,
+            OnboardingUser.email,
+        ]
 
     class OnboardingLogsAdmin(ModelView, model=OnboardingLogs):
         column_list = "__all__"
+        column_searchable_list = [OnboardingLogs.call_id, OnboardingLogs.status, OnboardingLogs.summary]
 
     class SymptomCheckerResponseAdmin(ModelView, model=SymptomCheckerResponse):
         column_list = [
@@ -85,24 +104,35 @@ def setup_admin(app):
             SymptomCheckerResponse.symptoms,
             SymptomCheckerResponse.created_at,
         ]
+        column_searchable_list = [
+            SymptomCheckerResponse.conversation_id,
+            SymptomCheckerResponse.full_name,
+            SymptomCheckerResponse.symptoms,
+        ]
 
     class BrainCoachQuestionsAdmin(ModelView, model=BrainCoachQuestions):
         column_list = "__all__"
+        column_searchable_list = [BrainCoachQuestions.code, BrainCoachQuestions.category, BrainCoachQuestions.type]
 
     class QuestionTranslationsAdmin(ModelView, model=QuestionTranslations):
         column_list = "__all__"
+        column_searchable_list = [QuestionTranslations.question_text, QuestionTranslations.theme, QuestionTranslations.language]
 
     class BrainCoachResponsesAdmin(ModelView, model=BrainCoachResponses):
         column_list = "__all__"
+        column_searchable_list = [BrainCoachResponses.session_id, BrainCoachResponses.user_answer]
 
     class CareTakerTempTokenAdmin(ModelView, model=CaretakerTempToken):
         column_list = "__all__"
+        column_searchable_list = [CaretakerTempToken.token]
 
     class CaretakerSessionAdmin(ModelView, model=CaretakerSession):
         column_list = "__all__"
-        
+        column_searchable_list = [CaretakerSession.session_id, CaretakerSession.ip_address, CaretakerSession.user_agent]
+
     class MedicationLogAdmin(ModelView, model=MedicationLog):
         column_list = "__all__"
+        column_searchable_list = [MedicationLog.status, MedicationLog.notes]
 
     class UserCheckinAdmin(ModelView, model=UserCheckin):
         column_list = [
@@ -114,12 +144,20 @@ def setup_admin(app):
             UserCheckin.is_active,
             UserCheckin.created_at,
         ]
+        column_searchable_list = [UserCheckin.check_in_type]
 
     class UserCheckinLogAdmin(ModelView, model=CheckinLog):
         column_list = "__all__"
+        column_searchable_list = [CheckinLog.status]
 
     class ScheduledSessionAdmin(ModelView, model=ScheduledSession):
         column_list = "__all__"
+        column_searchable_list = [
+            ScheduledSession.session_type,
+            ScheduledSession.status,
+            ScheduledSession.call_sid,
+            ScheduledSession.task_id,
+        ]
 
     class PromptAdmin(ModelView, model=Prompt):
         column_list = [
@@ -134,6 +172,7 @@ def setup_admin(app):
             Prompt.updated_at,
         ]
         form_columns = "__all__"
+        column_searchable_list = [Prompt.name, Prompt.prompt_type, Prompt.agent_type, Prompt.model]
 
     class ElevenLabsSessionsAdmin(ModelView, model=ElevenLabsSessions):
         column_list = [
@@ -148,6 +187,13 @@ def setup_admin(app):
             ElevenLabsSessions.created,
         ]
         form_columns = "__all__"
+        column_searchable_list = [
+            ElevenLabsSessions.conversation_id,
+            ElevenLabsSessions.agent_type,
+            ElevenLabsSessions.status,
+            ElevenLabsSessions.call_sid,
+            ElevenLabsSessions.phone_number,
+        ]
 
     class EmergencyNumberAdmin(ModelView, model=EmergencyNumber):
         column_list = [
@@ -158,6 +204,7 @@ def setup_admin(app):
             EmergencyNumber.created_at,
         ]
         form_columns = "__all__"
+        column_searchable_list = [EmergencyNumber.phone_number, EmergencyNumber.type]
 
     class DoctorAdmin(ModelView, model=Doctor):
         column_list = [
@@ -171,6 +218,7 @@ def setup_admin(app):
             Doctor.created_at,
         ]
         form_columns = "__all__"
+        column_searchable_list = [Doctor.first_name, Doctor.last_name, Doctor.email, Doctor.phone]
 
     class OutboundCallLogAdmin(ModelView, model=OutboundCallLog):
         column_list = [
@@ -181,6 +229,7 @@ def setup_admin(app):
             OutboundCallLog.created_at,
         ]
         column_details_list = "__all__"
+        column_searchable_list = [OutboundCallLog.agent_id, OutboundCallLog.phone_number]
         can_create = False
         can_edit = False
         can_delete = False

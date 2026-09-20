@@ -42,7 +42,12 @@ def send_weekly_brain_coach_reports():
                 logger.error(f"Error sending weekly brain coach report for user {user.id}: {e}")
 
 
-def _send_weekly_report_for_user(db, user: User, local_dt: datetime):
+def build_weekly_brain_coach_report(db, user: User, local_dt: datetime):
+    """
+    Builds (but does not send) the previous week's brain coach report for a
+    user. Returns (template_type, whatsapp_content, report_content,
+    week_start_local, week_end_local).
+    """
     week_end_local = datetime.combine(local_dt.date(), time.min, tzinfo=local_dt.tzinfo)
     week_start_local = week_end_local - timedelta(days=7)
 
@@ -58,18 +63,13 @@ def _send_weekly_report_for_user(db, user: User, local_dt: datetime):
     responses = db.execute(query).scalars().all()
 
     if not responses:
-        _dispatch_report(
-            db,
-            user,
-            template_type=TemplateTypeEnum.brain_coach_weekly_no_activity.value,
-            whatsapp_content=construct_whatsapp_weekly_no_activity_message(
-                user.first_name, week_start_local, week_end_local
-            ),
-            report_content=[],
-            week_start_local=week_start_local,
-            week_end_local=week_end_local,
+        return (
+            TemplateTypeEnum.brain_coach_weekly_no_activity.value,
+            construct_whatsapp_weekly_no_activity_message(user.first_name, week_start_local, week_end_local),
+            [],
+            week_start_local,
+            week_end_local,
         )
-        return
 
     question_ids = [response.question_id for response in responses]
     iso_language = LANGUAGE_MAP.get(
@@ -128,10 +128,24 @@ def _send_weekly_report_for_user(db, user: User, local_dt: datetime):
         user.first_name, week_start_local, week_end_local, category_breakdown
     )
 
+    return (
+        TemplateTypeEnum.brain_coach_weekly_summary.value,
+        whatsapp_content,
+        report_content,
+        week_start_local,
+        week_end_local,
+    )
+
+
+def _send_weekly_report_for_user(db, user: User, local_dt: datetime):
+    template_type, whatsapp_content, report_content, week_start_local, week_end_local = (
+        build_weekly_brain_coach_report(db, user, local_dt)
+    )
+
     _dispatch_report(
         db,
         user,
-        template_type=TemplateTypeEnum.brain_coach_weekly_summary.value,
+        template_type=template_type,
         whatsapp_content=whatsapp_content,
         report_content=report_content,
         week_start_local=week_start_local,
