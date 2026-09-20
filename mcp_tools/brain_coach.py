@@ -8,9 +8,8 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy import distinct, select, func
 from core.database import get_async_session
 from enum import Enum
-import uuid
 from sqlalchemy import false
-from services.helpers import construct_whatsapp_brain_coach_message
+from services.helpers import construct_whatsapp_brain_coach_message, generate_random_string
 from services.whatsapp_service import whatsapp_service
 from services.email_service import email_service
 from scripts.utils import LANGUAGE_MAP, get_iso_language
@@ -30,11 +29,12 @@ class QuestionType(str, Enum):
 class RetrieveQuestionsInput(BaseModel):
     user_id: int
     questions_type: QuestionType
+    session_id: Optional[str] = None
 
 class RetrieveQuestionsOutput(BaseModel):
     session_id: str
     questions: list[dict]
-    
+
 @mcp.tool(
     name="retrieve_questions",
     description=(
@@ -45,6 +45,11 @@ class RetrieveQuestionsOutput(BaseModel):
         "if the user wants chess questions then the question_type will be chess. "
         "if the user wants memory questions then the question_type will be memory. "
         "if the user wants games questions then the question_type will be games. "
+        "Leave session_id empty to start a new session - a session_id will be returned. "
+        "If the user wants MORE questions within the session that is already in progress (they already have a session_id from a previous call to this tool), "
+        "pass that exact same session_id back in to fetch additional questions under that same session instead of starting a new one."
+        "If a user wants a different question type, they will start a new session and a new session_id will be returned."
+        "The passed session_id is validated against the passed question_type - if it doesn't belong to this user, or belongs to a different question_type, a new session_id is generated instead."
     )
 )
 async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestionsOutput:
@@ -147,7 +152,24 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
             for row in ordered_rows
         ]
 
-        session_id = str(uuid.uuid4())
+        session_id = input.session_id
+        if session_id:
+            stmt = (
+                select(BrainCoachQuestions.category)
+                .join(BrainCoachResponses, BrainCoachResponses.question_id == BrainCoachQuestions.id)
+                .where(
+                    BrainCoachResponses.session_id == session_id,
+                    BrainCoachResponses.user_id == input.user_id,
+                )
+                .limit(1)
+            )
+            result = await db.execute(stmt)
+            existing_category = result.scalar_one_or_none()
+
+            if existing_category != input.questions_type.value:
+                session_id = None
+
+        session_id = session_id or generate_random_string(8)
 
         return {
             "session_id": session_id,
