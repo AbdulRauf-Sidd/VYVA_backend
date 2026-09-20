@@ -55,7 +55,7 @@ class Settings(BaseSettings):
     OTP_TTL_MINUTES: int = 10
     MAX_ATTEMPTS: int = 5
 
-    SESSION_DURATION: int = 60 * 24 * 90  # 90 days
+    SESSION_DURATION: int = 60 * 24 * 365 # 365 days
     SESSION_COOKIE_NAME: str = "session_id"
 
     FRONTEND_URL: str = Field(default="vyva.io", env="FRONTEND_URL")

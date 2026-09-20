@@ -6,7 +6,7 @@ celery_app = Celery(
     settings.APP_NAME,
     broker=settings.CELERY_BROKER_URL,
     backend=settings.CELERY_RESULT_BACKEND,
-    include=["tasks.management_tasks", "tasks.medication_tasks", "tasks.onboarding_tasks", "tasks.general_functions_tasks"],  # import your tasks here
+    include=["tasks.management_tasks", "tasks.medication_tasks", "tasks.onboarding_tasks", "tasks.general_functions_tasks", "tasks.brain_coach_tasks"],  # import your tasks here
 )
 
 celery_app.conf.update(
@@ -23,6 +23,12 @@ celery_app.conf.update(
         "hourly-medication-reminder-scheduler": {
             "task": "schedule_calls_for_hour",
             "schedule": crontab(minute=0),  # runs every hour
+        },
+        "weekly-brain-coach-report-scheduler": {
+            "task": "send_weekly_brain_coach_reports",
+            # Fires once a week. Delivery lands at a different local hour
+            # per user's timezone (some earlier, some later) - that's fine.
+            "schedule": crontab(minute=0, hour=0, day_of_week="monday"),
         }
     }
 )

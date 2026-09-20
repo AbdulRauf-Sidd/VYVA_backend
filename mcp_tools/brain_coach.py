@@ -330,7 +330,7 @@ async def send_brain_coach_report(
                         "success": False
                     }
                     
-                whatsapp_content = construct_whatsapp_brain_coach_message(user.first_name, report_content, input.agent_notes_and_suggestions)
+                whatsapp_content = construct_whatsapp_brain_coach_message(user.first_name, report_content, input.agent_notes_and_suggestions, input.question_type.value)
                 await whatsapp_service.send_message(phone_number, whatsapp_content, template_id=whatsapp_template_id)
                 return {
                     "success": True,

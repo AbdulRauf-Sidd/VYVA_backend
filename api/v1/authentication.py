@@ -142,12 +142,6 @@ async def magic_login(
     if token_row.expires_at < datetime.now(timezone.utc):
         raise HTTPException(status_code=401, detail="Token expired")
 
-    if token_row.used:
-        raise HTTPException(status_code=401, detail="Token already used")
-
-    token_row.used = True
-    await db.commit()
-
     user_id= token_row.user_id
 
     session_id = await create_user_session(
@@ -188,12 +182,6 @@ async def magic_login_caretaker(
 
     if token_row.expires_at < datetime.now(timezone.utc):
         raise HTTPException(status_code=401, detail="Token expired")
-
-    if token_row.used:
-        raise HTTPException(status_code=401, detail="Token already used")
-
-    token_row.used = True
-    await db.commit()
 
     user_id= token_row.caretaker_id
 

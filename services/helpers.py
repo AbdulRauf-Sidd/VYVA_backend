@@ -67,36 +67,85 @@ def construct_sms_body_from_template_for_reminders(content, language='en'):
     if language == 'es':
         return f"Hola {content[1]}, \nes hora de tus medicamentos:\n{content[2]} \n\n- VYVA"
 
+BRAIN_COACH_TYPE_LABELS = {
+    "trivia": "Trivia",
+    "cognitive_assessment": "Cognitive Assessment",
+    "chess": "Chess",
+    "memory": "Memory",
+    "games": "Games",
+}
+
+
 def construct_whatsapp_brain_coach_message(
     first_name,
     report_content,
     suggestions,
+    question_type=None,
 ):
-    user_score = 0
-    total_max_score = 6
-    lines = []
-
     current_date = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
 
-    for rep in report_content:
-        score = rep.get("score", 0)
-        user_score += score
-        
-        question_type = rep.get("question_type", "")
+    user_score = sum(rep.get("score", 0) for rep in report_content)
+    total_max_score = sum(rep.get("max_score", 0) for rep in report_content)
+    percentage = round((user_score / total_max_score) * 100) if total_max_score else 0
 
-        lines.append(
-            f"{question_type} - {score}"
-        )
-
-    scores_content = " | ".join(lines)
+    session_type = f"Brain Coach - {BRAIN_COACH_TYPE_LABELS.get(question_type, "")}"
 
     content = {
         1: first_name,
         2: current_date,
-        3: scores_content,
-        4: str(user_score),
-        5: str(total_max_score),
-        6: suggestions
+        3: session_type,
+        4: f"{percentage}%",
+        5: suggestions
+    }
+
+    return content
+
+
+def construct_whatsapp_weekly_brain_coach_message(
+    first_name,
+    week_start,
+    week_end,
+    category_breakdown,
+):
+    """
+    category_breakdown: list of {"category": <raw QuestionType value>, "score": int, "max_score": int, "sessions": int}
+    """
+    week_range = f"{week_start.strftime('%b %d')} - {week_end.strftime('%b %d, %Y')}"
+
+    total_score = sum(cat["score"] for cat in category_breakdown)
+    total_max_score = sum(cat["max_score"] for cat in category_breakdown)
+    percentage = round((total_score / total_max_score) * 100) if total_max_score else 0
+
+    breakdown_lines = [
+        f"{BRAIN_COACH_TYPE_LABELS.get(cat['category'], cat['category'])}: "
+        f"{cat['score']}/{cat['max_score']} "
+        f"({round((cat['score'] / cat['max_score']) * 100) if cat['max_score'] else 0}%) "
+        f"- {cat['sessions']} session{'s' if cat['sessions'] != 1 else ''}"
+        for cat in category_breakdown
+    ]
+    breakdown_text = "\n".join(breakdown_lines)
+
+    content = {
+        1: first_name,
+        2: week_range,
+        3: breakdown_text,
+        4: f"{total_score}/{total_max_score}",
+        5: f"{percentage}%",
+    }
+
+    return content
+
+
+def construct_whatsapp_weekly_no_activity_message(
+    first_name,
+    week_start,
+    week_end,
+):
+    week_range = f"{week_start.strftime('%b %d')} - {week_end.strftime('%b %d, %Y')}"
+
+    content = {
+        1: first_name,
+        2: week_range,
     }
 
     return content

@@ -89,6 +89,8 @@ class TemplateTypeEnum(str, PyEnum):
     symptom_checker = "symptom_checker"
     fall_detection = "fall_detection"
     brain_coach = "brain_coach"
+    brain_coach_weekly_summary = "brain_coach_weekly_summary"
+    brain_coach_weekly_no_activity = "brain_coach_weekly_no_activity"
     ask_for_reminder = "ask_for_reminder"
     emergency_contact_alert = "emergency_contact_alert"
 
