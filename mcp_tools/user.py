@@ -28,8 +28,8 @@ class RetrieveUserProfileInput(MCPBaseModel):
         "Use this tool at the beginning of the call to retrieve the user's profile "
         "associated with a phone number." \
         "You will pass the user's phone number as input " \
-        "You will get the user's ID, full name, email, phone number, timezone, preferred_reports_channel, "
-        "preferred_reminder_channel (for medications), and address as output. " \
+        "You will get the user's ID, full name, email, phone number, timezone, preferred reports channel, "
+        "Medication Reminder Channel, and address as output. " \
         "Use the information to personalize the conversation."
         'AWLAYS USE AT THE BEGINNING OF THE CALL.'
     )
@@ -49,7 +49,7 @@ async def retrieve_user_profile(input: RetrieveUserProfileInput) -> Optional[dic
                 "timezone": user.timezone,
                 "address": user.full_address,
                 "preferred_reports_channel": user.preferred_reports_channel,
-                "preferred_reminder_channel": user.preferred_reminder_channel
+                "medication_preferred_reminder_channel": user.preferred_reminder_channel
             }
         return None
     
