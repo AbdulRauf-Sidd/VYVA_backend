@@ -92,9 +92,11 @@ class AddMedication(MCPBaseModel):
         "optionally, the user can specify the days they want to take the medication. "
         "days should be a list of strings. example: ['Monday', 'Wednesday', 'Friday']"
         "If no days are specified, assume the medication is taken every day. and don't send days"
+        "If the user only wants to take the medication for a certain period, you can specify the end_date." \
+        "For example, if the user wants the reminder for a couple of days, you will send the end_date as the last day they want to take the medication. "
     )
 )
-async def add_user_medication(user_id: int, name: str, dosage: str, purpose: str, medication_slot: list[MedicationSlot]):
+async def add_user_medication(user_id: int, name: str, dosage: str, purpose: str, end_date: datetime | None, medication_slot: list[MedicationSlot]):
 
     async with get_async_session() as db:
         stmt = (
@@ -114,7 +116,8 @@ async def add_user_medication(user_id: int, name: str, dosage: str, purpose: str
             name=name,
             dosage=dosage,
             purpose=purpose,
-            start_date=start_date
+            start_date=start_date,
+            end_date=end_date
         )
 
         db.add(new_med)
