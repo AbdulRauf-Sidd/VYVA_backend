@@ -1,6 +1,5 @@
 from .mcp_instance import mcp
 from datetime import time
-from pydantic import BaseModel
 from models.medication import Medication, MedicationTime, MedicationLog, MedicationStatus, MedicationPause
 from models.user import User
 from sqlalchemy.orm import selectinload
@@ -11,8 +10,9 @@ from scripts.utils import get_zoneinfo_safe, convert_utc_time_to_local_time, con
 from tasks.medication_tasks import notify_caregiver_on_missed_medication_task
 from typing import Optional, List
 from scripts.medication_utils import construct_days_array_from_string, medication_days_mapping_int_to_string
+from .base import MCPBaseModel
 
-class RetrieveMedicationInput(BaseModel):
+class RetrieveMedicationInput(MCPBaseModel):
     user_id: int
 
 @mcp.tool(
@@ -70,11 +70,11 @@ async def retrieve_user_medications(user_id: int) -> list[dict]:
             )
         return meds
     
-class MedicationSlot(BaseModel):
+class MedicationSlot(MCPBaseModel):
     time: str
     days: Optional[List[str]] = None
         
-class AddMedication(BaseModel):
+class AddMedication(MCPBaseModel):
     user_id: int
     name: str
     dosage: str
@@ -141,7 +141,7 @@ async def add_user_medication(user_id: int, name: str, dosage: str, purpose: str
             "medication_id": new_med.id
         }
         
-class UpdateUserMedication(BaseModel):
+class UpdateUserMedication(MCPBaseModel):
     medication_id: int
     name: str | None = None
     dosage: str | None = None
@@ -247,7 +247,7 @@ async def update_user_medication(
             "medication_id": new_med.id
         }
         
-class DeleteUserMedication(BaseModel):
+class DeleteUserMedication(MCPBaseModel):
     medication_id: int
 
 @mcp.tool(
@@ -284,7 +284,7 @@ async def end_user_medication(medication_id: int) -> DeleteUserMedication:
         return DeleteUserMedication(medication_id=medication_id)
     
 
-class UpdateReminderChannel(BaseModel):
+class UpdateReminderChannel(MCPBaseModel):
     user_id: int
     channel: str
 
@@ -311,12 +311,12 @@ async def update_reminder_channel(channel_input: UpdateReminderChannel) -> bool:
 
         return True
     
-class MedicationLogs(BaseModel):
+class MedicationLogs(MCPBaseModel):
     medication_id: int
     time_id: int
     taken: bool
 
-class MedicationLogInput(BaseModel):
+class MedicationLogInput(MCPBaseModel):
     user_id: int
     medication_logs: list[MedicationLogs]
 

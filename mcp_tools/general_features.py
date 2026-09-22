@@ -5,7 +5,6 @@ from urllib.parse import urljoin, urlparse
 
 import httpx
 from bs4 import BeautifulSoup
-from pydantic import BaseModel
 from repositories import user
 from sqlalchemy import select
 
@@ -23,6 +22,7 @@ from scripts.onboarding_utils import send_onboarding_sms
 from services.searxng import web_search
 from .mcp_instance import mcp
 from sqlalchemy.orm import selectinload
+from .base import MCPBaseModel
 
 logger = logging.getLogger(__name__)
 
@@ -31,24 +31,24 @@ SESSION_TYPE = CheckInType.general_reminders.value
 
 # ── Pydantic models ────────────────────────────────────────────────────────────
 
-class CreateGeneralReminderInput(BaseModel):
+class CreateGeneralReminderInput(MCPBaseModel):
     user_id: int
     purpose: str
     datetime_str: str
 
 
-class GetGeneralRemindersInput(BaseModel):
+class GetGeneralRemindersInput(MCPBaseModel):
     user_id: int
     status: str  # "pending" | "cancelled" | "completed"
 
 
-class UpdateGeneralReminderInput(BaseModel):
+class UpdateGeneralReminderInput(MCPBaseModel):
     user_id: int
     scheduled_session_id: int
     datetime_str: str
 
 
-class DeleteGeneralReminderInput(BaseModel):
+class DeleteGeneralReminderInput(MCPBaseModel):
     user_id: int
     scheduled_session_id: int
 
@@ -309,7 +309,7 @@ def _session_to_dict(session: ScheduledSession) -> dict:
 #         return {"success": False, "message": "An unexpected error occurred."}
 
 
-class GetOutboundCallLogsInput(BaseModel):
+class GetOutboundCallLogsInput(MCPBaseModel):
     user_id: int
     start_date: Optional[str] = None  # "YYYY-MM-DD"
     end_date: Optional[str] = None    # "YYYY-MM-DD"
@@ -373,7 +373,7 @@ async def get_outbound_call_logs(user_id: int, start_date: Optional[str] = None,
         return []
 
 
-class GotoPageInput(BaseModel):
+class GotoPageInput(MCPBaseModel):
     url: str
 
 

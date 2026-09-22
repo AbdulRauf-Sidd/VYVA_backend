@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from typing import Optional
 from core.database import get_async_session
-from pydantic import BaseModel, EmailStr
+from pydantic import EmailStr
 from models.user import User, PreferredReportsChannelEnum
 from models.user_check_ins import CheckinLog, UserCheckin, CheckInType
 import enum
@@ -15,10 +15,11 @@ from models.emergency_numbers import EmergencyNumber, EmergencyNumberTypeEnum
 from services.whatsapp_service import whatsapp_service
 from services.elevenlabs_service import call_agent
 from schemas.tools import EmergencyResponderRequest
+from .base import MCPBaseModel
 
 logger = logging.getLogger(__name__)
 
-class RetrieveUserProfileInput(BaseModel):
+class RetrieveUserProfileInput(MCPBaseModel):
     phone_number: str
 
 @mcp.tool(
@@ -51,7 +52,7 @@ async def retrieve_user_profile(input: RetrieveUserProfileInput) -> Optional[dic
         return None
     
 
-class RetrieveUserHealthProfileInput(BaseModel):
+class RetrieveUserHealthProfileInput(MCPBaseModel):
     user_id: int
 
 @mcp.tool(
@@ -77,7 +78,7 @@ async def retrieve_user_health_profile(input: RetrieveUserHealthProfileInput) ->
         return None
     
     
-class UpdateUserProfileInput(BaseModel):
+class UpdateUserProfileInput(MCPBaseModel):
     user_id: int
     email: Optional[EmailStr] = None
     preferred_reports_channel: Optional[PreferredReportsChannelEnum] = None
@@ -133,7 +134,7 @@ class CheckInOperation(str, enum.Enum):
     retrieve = "retrieve"
 
 
-class ManageUserCheckinInput(BaseModel):
+class ManageUserCheckinInput(MCPBaseModel):
     user_id: int
     check_in_type: CheckInType
     operation: CheckInOperation
@@ -276,7 +277,7 @@ class CheckInTypeEnum(str, enum.Enum):
     check_up_call = "check_up_call"
     
 
-class UpdateCallLogStatusInput(BaseModel):
+class UpdateCallLogStatusInput(MCPBaseModel):
     user_id: int
     status: CheckInLogStatusEnum
     checkin_type: CheckInTypeEnum

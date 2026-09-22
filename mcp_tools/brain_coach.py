@@ -1,7 +1,6 @@
 from models.organization import TemplateTypeEnum, TwilioWhatsappTemplates
 from .mcp_instance import mcp
 from datetime import time
-from pydantic import BaseModel
 from models.brain_coach import BrainCoachQuestions, BrainCoachResponses, QuestionTranslations
 from models.user import User
 from sqlalchemy.orm import selectinload
@@ -15,6 +14,7 @@ from services.email_service import email_service
 from scripts.utils import LANGUAGE_MAP, get_iso_language
 import logging
 from typing import Dict, List, Optional
+from .base import MCPBaseModel
 
 
 logger = logging.getLogger(__name__)
@@ -26,12 +26,12 @@ class QuestionType(str, Enum):
     memory = 'memory'
     games = 'games' 
 
-class RetrieveQuestionsInput(BaseModel):
+class RetrieveQuestionsInput(MCPBaseModel):
     user_id: int
     questions_type: QuestionType
     session_id: Optional[str] = None
 
-class RetrieveQuestionsOutput(BaseModel):
+class RetrieveQuestionsOutput(MCPBaseModel):
     session_id: str
     questions: list[dict]
 
@@ -177,13 +177,13 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
         }
 
 
-class AnswerItem(BaseModel):
+class AnswerItem(MCPBaseModel):
     question_id: int
     score: int
     user_answer: str
 
 
-class StoreSessionAnswersInput(BaseModel):
+class StoreSessionAnswersInput(MCPBaseModel):
     session_id: str
     user_id: int
     answers: List[AnswerItem]
@@ -236,7 +236,7 @@ async def store_session_answers(input: StoreSessionAnswersInput) -> dict:
         }
 
         
-class SendBrainCoachReportInput(BaseModel):
+class SendBrainCoachReportInput(MCPBaseModel):
     user_id: int
     session_id: str 
     question_type: QuestionType
@@ -387,15 +387,15 @@ from typing import List, Literal, Optional
 from collections import defaultdict
 import statistics
 
-class BrainCoachTrendInput(BaseModel):
+class BrainCoachTrendInput(MCPBaseModel):
     user_id: int
 
-class ThemeTrend(BaseModel):
+class ThemeTrend(MCPBaseModel):
     last_3: List[int]
     trend: Literal["improving", "declining", "stable"]
 
 
-class BrainCoachTrendOutput(BaseModel):
+class BrainCoachTrendOutput(MCPBaseModel):
     sessions_total: int
     last_session_percent: Optional[int]
     last_5_session_percents: List[int]
