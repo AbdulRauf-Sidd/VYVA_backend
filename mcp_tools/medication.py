@@ -293,7 +293,8 @@ class UpdateReminderChannel(MCPBaseModel):
     description=(
         "You will use this tool to update the reminder channel for a medication."
         "You will call this when the user wants to change how they receive reminders."
-        "options are 1. app. 2. phone. 3. whatsapp"
+        "options are 1. app. 2. phone. 3. whatsapp."
+        "If the user says text, send whatsapp. If the user says call, send phone. If the user says app, send app."
     )
 )
 async def update_reminder_channel(channel_input: UpdateReminderChannel) -> bool:
