@@ -29,10 +29,10 @@ class QuestionType(str, Enum):
 class RetrieveQuestionsInput(MCPBaseModel):
     user_id: int
     questions_type: QuestionType
-    session_id: Optional[str] = None
+    # session_id: Optional[str] = None
 
 class RetrieveQuestionsOutput(MCPBaseModel):
-    session_id: Optional[str] = None
+    session_id: str = None
     questions: list[dict]
 
 @mcp.tool(
@@ -153,24 +153,24 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
             for row in ordered_rows
         ]
 
-        session_id = input.session_id
-        if session_id:
-            stmt = (
-                select(BrainCoachQuestions.category)
-                .join(BrainCoachResponses, BrainCoachResponses.question_id == BrainCoachQuestions.id)
-                .where(
-                    BrainCoachResponses.session_id == session_id,
-                    BrainCoachResponses.user_id == input.user_id,
-                )
-                .limit(1)
-            )
-            result = await db.execute(stmt)
-            existing_category = result.scalar_one_or_none()
+        # session_id = input.session_id
+        # if session_id:
+        #     stmt = (
+        #         select(BrainCoachQuestions.category)
+        #         .join(BrainCoachResponses, BrainCoachResponses.question_id == BrainCoachQuestions.id)
+        #         .where(
+        #             BrainCoachResponses.session_id == session_id,
+        #             BrainCoachResponses.user_id == input.user_id,
+        #         )
+        #         .limit(1)
+        #     )
+        #     result = await db.execute(stmt)
+        #     existing_category = result.scalar_one_or_none()
 
-            if existing_category != input.questions_type.value:
-                session_id = None
+        #     if existing_category != input.questions_type.value:
+        #         session_id = None
 
-        session_id = session_id or generate_random_string(8)
+        session_id = generate_random_string(8)
 
         return {
             "session_id": session_id,
