@@ -31,6 +31,10 @@ class RetrieveQuestionsInput(MCPBaseModel):
     questions_type: QuestionType
     session_id: Optional[str] = None
 
+class RetrieveQuestionsOutput(MCPBaseModel):
+    session_id: Optional[str] = None
+    questions: list[dict]
+
 @mcp.tool(
     name="retrieve_questions",
     description=(
