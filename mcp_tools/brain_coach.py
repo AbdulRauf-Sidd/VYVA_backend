@@ -45,6 +45,7 @@ class RetrieveQuestionsOutput(MCPBaseModel):
         "if the user wants chess questions then the question_type will be chess. "
         "if the user wants memory questions then the question_type will be memory. "
         "if the user wants games questions then the question_type will be games. "
+        "ALWAYS LEAVE session_id None to start a new session - a session_id will be returned. "
         "Leave session_id empty to start a new session - a session_id will be returned. "
         "If the user wants MORE questions within the session that is already in progress (they already have a session_id from a previous call to this tool), "
         "pass that exact same session_id back in to fetch additional questions under that same session instead of starting a new one."
