@@ -319,8 +319,8 @@ async def retrieve_questions_v2(input: RetrieveQuestionsInputV2) -> RetrieveQues
             result = await db.execute(stmt)
             existing_category = result.scalar_one_or_none()
 
-            if existing_category != input.questions_type.value:
-                session_id = None
+            # if existing_category != input.questions_type.value:
+            #     session_id = None
 
         session_id = session_id or generate_random_string(8)
 
