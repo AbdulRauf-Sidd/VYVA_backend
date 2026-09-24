@@ -97,6 +97,8 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
         
         iso_language = get_iso_language(user.preferred_consultation_language)
 
+        print('category:', input.questions_type.value, 'language:', iso_language, 'session:', target_session, 'answered_question_ids:', answered_question_ids)
+
         stmt = (
             select(
                 BrainCoachQuestions.id,
