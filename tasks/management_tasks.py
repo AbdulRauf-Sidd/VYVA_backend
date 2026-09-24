@@ -130,21 +130,21 @@ def process_pending_onboarding_users():
                     if call_back_time >= hour_start and call_back_time < hour_end:
                         dt_today_utc = call_back_date_time
 
-            if not dt_today_utc:
-                preferred_time = user.preferred_time
-                if not preferred_time:
-                    continue
-                if preferred_time < hour_start or preferred_time >= hour_end:
-                    continue
+            # if not dt_today_utc:
+            #     preferred_time = user.preferred_time
+            #     if not preferred_time:
+            #         continue
+            #     if preferred_time < hour_start or preferred_time >= hour_end:
+            #         continue
 
-                dt_today_utc = datetime.combine(now.date(), preferred_time, tzinfo=timezone.utc)
+            #     dt_today_utc = datetime.combine(now.date(), preferred_time, tzinfo=timezone.utc)
 
             payload = construct_onboarding_user_payload(user, user.organization.onboarding_agent_id)
 
             task = celery_app.send_task(
                 "initiate_onboarding_call",
                 args=[payload,],
-                eta=dt_today_utc
+                # eta=dt_today_utc
             )
 
             user.onboarding_call_scheduled = True
