@@ -322,7 +322,7 @@ async def retrieve_questions_v2(input: RetrieveQuestionsInputV2) -> RetrieveQues
             if existing_category != input.questions_type.value:
                 session_id = None
 
-        session_id = generate_random_string(8)
+        session_id = session_id or generate_random_string(8)
 
         return {
             "session_id": session_id,
