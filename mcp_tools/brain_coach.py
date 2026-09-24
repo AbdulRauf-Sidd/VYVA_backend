@@ -117,8 +117,8 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
             .where(
                 BrainCoachQuestions.category == input.questions_type.value,
                 QuestionTranslations.language == iso_language,
-                BrainCoachQuestions.session == target_session,
-                # BrainCoachQuestions.id.not_in(answered_question_ids)
+                # BrainCoachQuestions.session == target_session,
+                BrainCoachQuestions.id.not_in(answered_question_ids)
             )
             .order_by(BrainCoachQuestions.id)
             .limit(6)
