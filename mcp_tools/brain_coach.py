@@ -69,6 +69,8 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
         else:
             target_session = 1
 
+        print(target_session)
+
         stmt = (
             select(distinct(BrainCoachResponses.question_id))
             .join(BrainCoachQuestions, BrainCoachResponses.question_id == BrainCoachQuestions.id)
