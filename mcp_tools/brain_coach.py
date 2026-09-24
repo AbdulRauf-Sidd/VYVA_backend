@@ -177,6 +177,157 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
             "questions": questions
         }
 
+class RetrieveQuestionsInputV2(MCPBaseModel):
+    user_id: int
+    questions_type: QuestionType
+    session_id: Optional[str] = None
+
+class RetrieveQuestionsOutputV2(MCPBaseModel):
+    session_id: str = None
+    questions: list[dict]
+    
+@mcp.tool(
+    name="retrieve_questions_v2",
+    description=(
+        "You will use this tool to retrieve the questions for a brain coach session."
+        "You will call this tool when You're about to start the brain coach session."
+        "the question type will always be enum. if the user wants cognitive excercises then question_type will be cognitive_assessment. "
+        "if the user wants trivia then question_type will be trivia. "
+        "if the user wants chess questions then the question_type will be chess. "
+        "if the user wants memory questions then the question_type will be memory. "
+        "if the user wants games questions then the question_type will be games. "
+        "ALWAYS LEAVE session_id None to start a new session - a session_id will be returned. "
+        "Leave session_id empty to start a new session - a session_id will be returned. "
+        "If the user wants MORE questions within the session that is already in progress (they already have a session_id from a previous call to this tool), "
+        "pass that exact same session_id back in to fetch additional questions under that same session instead of starting a new one."
+        "If a user wants a different question type, they will start a new session and a new session_id will be returned."
+        "The passed session_id is validated against the passed question_type - if it doesn't belong to this user, or belongs to a different question_type, a new session_id is generated instead."
+    )
+)    
+
+async def retrieve_questions_v2(input: RetrieveQuestionsInputV2) -> RetrieveQuestionsOutputV2:
+    async with get_async_session() as db:
+
+        stmt = (
+            select(func.count(func.distinct(BrainCoachResponses.session_id)))
+            .where(BrainCoachResponses.user_id == input.user_id)
+        )
+
+        result = await db.execute(stmt)
+        session_count = result.scalar_one()
+
+        if input.questions_type.value == QuestionType.cognitive_assessment.value:
+            target_session = session_count + 1
+        else:
+            target_session = 1
+
+        stmt = (
+            select(distinct(BrainCoachResponses.question_id))
+            .join(BrainCoachQuestions, BrainCoachResponses.question_id == BrainCoachQuestions.id)
+            .where(
+                BrainCoachResponses.user_id == input.user_id,
+                BrainCoachQuestions.category == input.questions_type.value
+            )
+            .order_by(BrainCoachResponses.question_id)
+        )
+        
+        result = await db.execute(stmt)
+        answered_question_ids = result.scalars().all()
+
+        user_result = await db.execute(
+            select(User).where(User.id == input.user_id)
+        )
+        user = user_result.scalar_one_or_none()
+
+        if not user:
+            return {
+                "success": False,
+                "message": "user not found"
+            }
+        
+        iso_language = get_iso_language(user.preferred_consultation_language)
+
+        stmt = (
+            select(
+                BrainCoachQuestions.id,
+                BrainCoachQuestions.max_score,
+                QuestionTranslations.question_text,
+                QuestionTranslations.expected_answer,
+                QuestionTranslations.scoring_logic,
+                QuestionTranslations.question_type,
+                QuestionTranslations.theme,
+                QuestionTranslations.language,
+            )
+            .join(
+                QuestionTranslations,
+                QuestionTranslations.question_id == BrainCoachQuestions.id
+            )
+            .where(
+                BrainCoachQuestions.category == input.questions_type.value,
+                QuestionTranslations.language == iso_language,
+                BrainCoachQuestions.session == target_session,
+                # BrainCoachQuestions.id.not_in(answered_question_ids)
+            )
+            .order_by(BrainCoachQuestions.id)
+            .limit(6)
+        )
+        
+        if answered_question_ids:
+            stmt = stmt.where(
+                BrainCoachQuestions.id.not_in(answered_question_ids)
+            )
+
+        result = await db.execute(stmt)
+        rows = result.all()
+
+        memory_row = None
+        other_rows = []
+        
+        for row in rows:
+            if row.question_type in ("Memory", "Memoria", "Gedächtnis"):
+                memory_row = row
+            else:
+                other_rows.append(row)
+        
+        # rebuild ordered list
+        ordered_rows = ([memory_row] if memory_row else []) + other_rows
+        
+        questions = [
+            {
+                "id": row.id,
+                "max_score": row.max_score,
+                "question_text": row.question_text,
+                "expected_answer": row.expected_answer,
+                "scoring_logic": row.scoring_logic,
+                "question_type": row.question_type,
+                "theme": row.theme,
+            }
+            for row in ordered_rows
+        ]
+
+        session_id = input.session_id
+        if session_id:
+            stmt = (
+                select(BrainCoachQuestions.category)
+                .join(BrainCoachResponses, BrainCoachResponses.question_id == BrainCoachQuestions.id)
+                .where(
+                    BrainCoachResponses.session_id == session_id,
+                    BrainCoachResponses.user_id == input.user_id,
+                )
+                .limit(1)
+            )
+            result = await db.execute(stmt)
+            existing_category = result.scalar_one_or_none()
+
+            if existing_category != input.questions_type.value:
+                session_id = None
+
+        session_id = generate_random_string(8)
+
+        return {
+            "session_id": session_id,
+            "questions": questions
+        }
 
 class AnswerItem(MCPBaseModel):
     question_id: int
