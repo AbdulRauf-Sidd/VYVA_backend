@@ -43,6 +43,8 @@ class RetrieveQuestionsOutput(MCPBaseModel):
         "It returns a new session_id. Remember this session_id for the rest of the call. "
         "If retrieve_questions has already been called in this conversation, do NOT call it again. "
         "Use retrieve_questions_v2 instead, even if the user wants a different question type. "
+        "user_id: ALWAYS take it from the user_id dynamic variable in the system prompt. "
+        "Copy it exactly. Never guess it, and never use the phone number, a question id, or any other value. "
         "question_type mapping: cognitive exercises -> cognitive_assessment, trivia -> trivia, "
         "chess -> chess, memory -> memory, games -> games."
     )
@@ -190,8 +192,10 @@ class RetrieveQuestionsOutputV2(MCPBaseModel):
         "Retrieve questions for every activity AFTER the first one in the same call. "
         "Use this tool whenever retrieve_questions has already been called in this conversation, "
         "including when the user chooses a DIFFERENT question type. "
-        "ALWAYS pass the exact session_id returned by the first retrieve_questions call. "
-        "Never leave session_id empty, and never create, change or replace it. "
+        "session_id: ALWAYS pass the exact session_id returned by the first retrieve_questions call. "
+        "Never leave it empty, and never create, change or replace it. "
+        "user_id: ALWAYS take it from the user_id dynamic variable in the system prompt. "
+        "Copy it exactly. Never guess it, and never use the phone number, a question id, or any other value. "
         "question_type mapping: cognitive exercises -> cognitive_assessment, trivia -> trivia, "
         "chess -> chess, memory -> memory, games -> games."
     )
