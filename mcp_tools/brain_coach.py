@@ -38,13 +38,19 @@ class RetrieveQuestionsOutput(MCPBaseModel):
 @mcp.tool(
     name="retrieve_questions",
     description=(
-        "Retrieve questions to START a brain coach session. "
-        "Call this tool ONLY ONCE per call: the first time the user chooses an activity. "
-        "It returns a new session_id. Remember this session_id for the rest of the call. "
-        "If retrieve_questions has already been called in this conversation, do NOT call it again. "
-        "Use retrieve_questions_v2 instead, even if the user wants a different question type. "
-        "question_type mapping: cognitive exercises -> cognitive_assessment, trivia -> trivia, "
-        "chess -> chess, memory -> memory, games -> games."
+        "You will use this tool to retrieve the questions for a brain coach session."
+        "You will call this tool when You're about to start the brain coach session."
+        "the question type will always be enum. if the user wants cognitive excercises then question_type will be cognitive_assessment. "
+        "if the user wants trivia then question_type will be trivia. "
+        "if the user wants chess questions then the question_type will be chess. "
+        "if the user wants memory questions then the question_type will be memory. "
+        "if the user wants games questions then the question_type will be games. "
+        "ALWAYS LEAVE session_id None to start a new session - a session_id will be returned. "
+        "Leave session_id empty to start a new session - a session_id will be returned. "
+        "If the user wants MORE questions within the session that is already in progress (they already have a session_id from a previous call to this tool), "
+        "pass that exact same session_id back in to fetch additional questions under that same session instead of starting a new one."
+        "If a user wants a different question type, they will start a new session and a new session_id will be returned."
+        "The passed session_id is validated against the passed question_type - if it doesn't belong to this user, or belongs to a different question_type, a new session_id is generated instead."
     )
 )
 async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestionsOutput:
@@ -187,13 +193,23 @@ class RetrieveQuestionsOutputV2(MCPBaseModel):
 @mcp.tool(
     name="retrieve_questions_v2",
     description=(
-        "Retrieve questions for every activity AFTER the first one in the same call. "
-        "Use this tool whenever retrieve_questions has already been called in this conversation, "
-        "including when the user chooses a DIFFERENT question type. "
-        "ALWAYS pass the exact session_id returned by the first retrieve_questions call. "
-        "Never leave session_id empty, and never create, change or replace it. "
-        "question_type mapping: cognitive exercises -> cognitive_assessment, trivia -> trivia, "
-        "chess -> chess, memory -> memory, games -> games."
+        "You will use this tool to retrieve additional questions for an existing brain coach session."
+        "This is the V2 variant of the question retrieval tool."
+        "You will call this tool when a brain coach session is already in progress and additional questions are needed."
+        "The question type will always be an enum."
+        "If the user wants cognitive exercises then question_type will be cognitive_assessment."
+        "If the user wants trivia then question_type will be trivia."
+        "If the user wants chess questions then question_type will be chess."
+        "If the user wants memory questions then question_type will be memory."
+        "If the user wants games questions then question_type will be games."
+        "ALWAYS provide the exact session_id from the previous question retrieval call."
+        "Do NOT leave session_id empty or None."
+        "Do NOT generate, modify, or substitute a session_id."
+        "This tool is only for retrieving additional questions within an existing session."
+        "If the user wants MORE questions of the same type, pass the exact same session_id back to retrieve additional questions under that same session."
+        "If the user wants a different question type, do NOT use this tool to start a new session. The original question retrieval tool must be used to start the new session with session_id empty."
+        "The passed session_id must belong to the current user and match the requested question_type."
+        "Never use a session_id from a different user or a different question type."
     )
 )    
 
