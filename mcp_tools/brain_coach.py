@@ -184,7 +184,7 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
 class RetrieveQuestionsInputV2(MCPBaseModel):
     user_id: int
     questions_type: QuestionType
-    session_id: Optional[str] = None
+    session_id: str
 
 class RetrieveQuestionsOutputV2(MCPBaseModel):
     session_id: str = None
@@ -313,27 +313,8 @@ async def retrieve_questions_v2(input: RetrieveQuestionsInputV2) -> RetrieveQues
             for row in ordered_rows
         ]
 
-        session_id = input.session_id
-        if session_id:
-            stmt = (
-                select(BrainCoachQuestions.category)
-                .join(BrainCoachResponses, BrainCoachResponses.question_id == BrainCoachQuestions.id)
-                .where(
-                    BrainCoachResponses.session_id == session_id,
-                    BrainCoachResponses.user_id == input.user_id,
-                )
-                .limit(1)
-            )
-            result = await db.execute(stmt)
-            existing_category = result.scalar_one_or_none()
-
-            # if existing_category != input.questions_type.value:
-            #     session_id = None
-
-        session_id = session_id or generate_random_string(8)
-
         return {
-            "session_id": session_id,
+            "session_id": input.session_id,
             "questions": questions
         }
 
