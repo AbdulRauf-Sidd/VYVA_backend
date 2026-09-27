@@ -52,6 +52,9 @@ def export_category(db, category: str) -> list:
                     "language": translation.language,
                     "question": translation.question_text,
                     "answer": translation.expected_answer,
+                    "scoring_logic": translation.scoring_logic,
+                    "question_type": translation.question_type,
+                    "theme": translation.theme,
                 }
                 for translation in translations
             ],
