@@ -70,21 +70,6 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
     async with get_async_session() as db:
 
         stmt = (
-            select(func.count(func.distinct(BrainCoachResponses.session_id)))
-            .where(BrainCoachResponses.user_id == input.user_id)
-        )
-
-        result = await db.execute(stmt)
-        session_count = result.scalar_one()
-
-        if input.questions_type.value == QuestionType.cognitive_assessment.value:
-            target_session = session_count + 1
-        else:
-            target_session = 1
-
-        print(target_session)
-
-        stmt = (
             select(distinct(BrainCoachResponses.question_id))
             .join(BrainCoachQuestions, BrainCoachResponses.question_id == BrainCoachQuestions.id)
             .where(
@@ -110,8 +95,6 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
         
         iso_language = get_iso_language(user.preferred_consultation_language)
 
-        print('category:', input.questions_type.value, 'language:', iso_language, 'session:', target_session, 'answered_question_ids:', answered_question_ids)
-
         stmt = (
             select(
                 BrainCoachQuestions.id,
@@ -130,7 +113,6 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
             .where(
                 BrainCoachQuestions.category == input.questions_type.value,
                 QuestionTranslations.language == iso_language,
-                # BrainCoachQuestions.session == target_session,
                 BrainCoachQuestions.id.not_in(answered_question_ids)
             )
             .order_by(BrainCoachQuestions.id)
@@ -223,19 +205,6 @@ async def retrieve_questions_v2(input: RetrieveQuestionsInputV2) -> RetrieveQues
     async with get_async_session() as db:
 
         stmt = (
-            select(func.count(func.distinct(BrainCoachResponses.session_id)))
-            .where(BrainCoachResponses.user_id == input.user_id)
-        )
-
-        result = await db.execute(stmt)
-        session_count = result.scalar_one()
-
-        if input.questions_type.value == QuestionType.cognitive_assessment.value:
-            target_session = session_count + 1
-        else:
-            target_session = 1
-
-        stmt = (
             select(distinct(BrainCoachResponses.question_id))
             .join(BrainCoachQuestions, BrainCoachResponses.question_id == BrainCoachQuestions.id)
             .where(
@@ -279,7 +248,6 @@ async def retrieve_questions_v2(input: RetrieveQuestionsInputV2) -> RetrieveQues
             .where(
                 BrainCoachQuestions.category == input.questions_type.value,
                 QuestionTranslations.language == iso_language,
-                # BrainCoachQuestions.session == target_session,
                 # BrainCoachQuestions.id.not_in(answered_question_ids)
             )
             .order_by(BrainCoachQuestions.id)
