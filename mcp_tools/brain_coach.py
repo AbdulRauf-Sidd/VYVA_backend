@@ -6,6 +6,7 @@ from models.user import User
 from sqlalchemy.orm import selectinload
 from sqlalchemy import distinct, select, func
 from core.database import get_async_session
+from core.redis import conn as redis_conn
 from enum import Enum
 from sqlalchemy import false
 from services.helpers import construct_whatsapp_brain_coach_message, generate_random_string
@@ -18,6 +19,22 @@ from .base import MCPBaseModel
 
 
 logger = logging.getLogger(__name__)
+
+# question ids already served per session_id (answers are only stored at the end of the session)
+SERVED_QUESTIONS_TTL_SECONDS = 6 * 60 * 60
+
+def _served_key(session_id: str) -> str:
+    return f"brain_coach:served_questions:{session_id}"
+
+def get_served_question_ids(session_id: str) -> set[int]:
+    return {int(i) for i in redis_conn.smembers(_served_key(session_id))}
+
+def add_served_question_ids(session_id: str, question_ids: list[int]) -> None:
+    if not question_ids:
+        return
+    key = _served_key(session_id)
+    redis_conn.sadd(key, *question_ids)
+    redis_conn.expire(key, SERVED_QUESTIONS_TTL_SECONDS)
 
 class QuestionType(str, Enum):
     trivia = "trivia"
@@ -171,6 +188,7 @@ async def retrieve_questions(input: RetrieveQuestionsInput) -> RetrieveQuestions
         #         session_id = None
 
         session_id = generate_random_string(8)
+        add_served_question_ids(session_id, [q["id"] for q in questions])
 
         return {
             "session_id": session_id,
@@ -261,16 +279,18 @@ async def retrieve_questions_v2(input: RetrieveQuestionsInputV2) -> RetrieveQues
             .where(
                 BrainCoachQuestions.category == input.questions_type.value,
                 QuestionTranslations.language == iso_language,
-                BrainCoachQuestions.session == target_session,
+                # BrainCoachQuestions.session == target_session,
                 # BrainCoachQuestions.id.not_in(answered_question_ids)
             )
             .order_by(BrainCoachQuestions.id)
             .limit(6)
         )
         
-        if answered_question_ids:
+        served_ids = get_served_question_ids(input.session_id)
+        excluded_ids = set(answered_question_ids) | served_ids
+        if excluded_ids:
             stmt = stmt.where(
-                BrainCoachQuestions.id.not_in(answered_question_ids)
+                BrainCoachQuestions.id.not_in(excluded_ids)
             )
 
         result = await db.execute(stmt)
@@ -300,6 +320,8 @@ async def retrieve_questions_v2(input: RetrieveQuestionsInputV2) -> RetrieveQues
             }
             for row in ordered_rows
         ]
+
+        add_served_question_ids(input.session_id, [q["id"] for q in questions])
 
         return {
             "session_id": input.session_id,
