@@ -36,10 +36,11 @@ from models.brain_coach import BrainCoachQuestions, QuestionTranslations  # noqa
 
 JSON_DIR = Path(__file__).parent / "brain_coach"
 JSON_FILES = [
-    "cognitive_assessment.json",
-    "games.json",
-    "memory.json",
-    "trivia.json",
+    # "cognitive_assessment.json",
+    # "games.json",
+    # "memory.json",
+    # "trivia.json",
+    "chess.json",
 ]
 
 
