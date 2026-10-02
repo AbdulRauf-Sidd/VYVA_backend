@@ -1,34 +1,38 @@
 """
-Update vyva_db (connection from core.database / .env DATABASE_URL) from the JSON question files in this folder.
+Update the brain coach questions in the DB from the JSON files in scripts/brain_coach/.
 
-Matching: JSON "id" == brain_coach_questions.code
+Connection: core.database (.env DATABASE_URL).
+Matching:   JSON "id" == BrainCoachQuestions.code
 
 For every JSON entry:
-  - brain_coach_questions: set type and difficulty (only if the JSON value is non-empty)
-  - question_translations: upsert per (question_id, language). Missing translations
-    (e.g. missing "en") are inserted, existing ones are updated. Empty/blank JSON
-    values never overwrite data that is already in the database.
+  - BrainCoachQuestions: UPDATE only (never created). Sets type and difficulty when the
+    JSON value is non-empty.
+  - QuestionTranslations: created or updated per (question, language). Blank JSON values
+    never overwrite data that is already in the database.
 
-JSON entries whose code does not exist in brain_coach_questions are skipped and
-reported (session/tier are NOT NULL, so new questions can't be created from JSON alone).
+JSON entries whose code does not exist in the DB are skipped and reported
+(session/tier are NOT NULL, so questions can't be created from JSON alone).
 
-Questions are UPDATE-only (never created). Translations are created or updated.
-Everything runs in one transaction. To preview without saving, use dry_run_update.py.
+Everything runs in one transaction.
 
 Usage:
-    .venv/bin/python scripts/update_db_from_json.py
+    .venv/bin/python scripts/update_db_from_json.py            # apply changes
+    .venv/bin/python scripts/update_db_from_json.py --dry-run  # preview, nothing saved
 """
 
+import argparse
 import json
 import sys
 from pathlib import Path
 
-from sqlalchemy import text
+from sqlalchemy import select
 
-# make `core` importable when running as `python scripts/update_db_from_json.py`
+# make `core` / `models` importable when running as `python scripts/update_db_from_json.py`
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+import models  # noqa: E402,F401  (registers every mapper so relationships resolve)
 from core.database import get_sync_session  # noqa: E402
+from models.brain_coach import BrainCoachQuestions, QuestionTranslations  # noqa: E402
 
 JSON_DIR = Path(__file__).parent / "brain_coach"
 JSON_FILES = [
@@ -47,17 +51,17 @@ def clean(value):
     return value or None
 
 
-def main(dry_run=False):
-    with get_sync_session() as session:
-        _run(session, dry_run)
-
-
-def _run(session, dry_run):
-    code_to_id = dict(
-        session.execute(
-            text("SELECT code, id FROM brain_coach_questions WHERE code IS NOT NULL")
-        ).all()
-    )
+def run(session, dry_run):
+    questions = {
+        q.code: q
+        for q in session.scalars(
+            select(BrainCoachQuestions).where(BrainCoachQuestions.code.is_not(None))
+        )
+    }
+    translations = {
+        (t.question_id, t.language): t
+        for t in session.scalars(select(QuestionTranslations))
+    }
 
     stats = {
         "questions_seen": 0,
@@ -71,34 +75,20 @@ def _run(session, dry_run):
 
     try:
         for filename in JSON_FILES:
-            path = JSON_DIR / filename
-            entries = json.loads(path.read_text(encoding="utf-8"))
+            entries = json.loads((JSON_DIR / filename).read_text(encoding="utf-8"))
             print(f"{filename}: {len(entries)} entries")
 
             for entry in entries:
                 stats["questions_seen"] += 1
                 code = entry["id"]
-                question_id = code_to_id.get(code)
-                if question_id is None:
+                question = questions.get(code)
+                if question is None:
                     missing_codes.append(code)
                     continue
 
-                result = session.execute(
-                    text(
-                        """
-                        UPDATE brain_coach_questions
-                           SET difficulty = COALESCE(:difficulty, difficulty),
-                               type       = COALESCE(:type, type)
-                         WHERE id = :id
-                        """
-                    ),
-                    {
-                        "difficulty": clean(entry.get("difficulty")),
-                        "type": clean(entry.get("type")),
-                        "id": question_id,
-                    },
-                )
-                stats["questions_updated"] += result.rowcount
+                question.difficulty = clean(entry.get("difficulty")) or question.difficulty
+                question.type = clean(entry.get("type")) or question.type
+                stats["questions_updated"] += 1
 
                 for t in entry.get("translations", []):
                     language = clean(t.get("language"))
@@ -109,37 +99,31 @@ def _run(session, dry_run):
                         print(f"  skipped incomplete translation: {code} [{language}]")
                         continue
 
-                    # xmax = 0 only for freshly inserted rows
-                    was_inserted = session.execute(
-                        text(
-                            """
-                            INSERT INTO question_translations
-                                (question_id, language, question_text, expected_answer,
-                                 scoring_logic, question_type, theme)
-                            VALUES (:question_id, :language, :question_text, :expected_answer,
-                                    :scoring_logic, :question_type, :theme)
-                            ON CONFLICT ON CONSTRAINT uq_question_language DO UPDATE SET
-                                question_text   = EXCLUDED.question_text,
-                                expected_answer = EXCLUDED.expected_answer,
-                                question_type   = EXCLUDED.question_type,
-                                scoring_logic   = COALESCE(EXCLUDED.scoring_logic,
-                                                           NULLIF(question_translations.scoring_logic, '')),
-                                theme           = COALESCE(EXCLUDED.theme,
-                                                           NULLIF(question_translations.theme, ''))
-                            RETURNING (xmax = 0) AS inserted
-                            """
-                        ),
-                        {
-                            "question_id": question_id,
-                            "language": language,
-                            "question_text": question_text,
-                            "expected_answer": expected_answer,
-                            "scoring_logic": clean(t.get("scoring_logic")),
-                            "question_type": question_type,
-                            "theme": clean(t.get("theme")),
-                        },
-                    ).scalar_one()
-                    action = "inserted" if was_inserted else "updated"
+                    scoring_logic = clean(t.get("scoring_logic"))
+                    theme = clean(t.get("theme"))
+
+                    translation = translations.get((question.id, language))
+                    if translation is None:
+                        translation = QuestionTranslations(
+                            question_id=question.id,
+                            language=language,
+                            question_text=question_text,
+                            expected_answer=expected_answer,
+                            question_type=question_type,
+                            scoring_logic=scoring_logic,
+                            theme=theme,
+                        )
+                        session.add(translation)
+                        translations[(question.id, language)] = translation
+                        action = "inserted"
+                    else:
+                        translation.question_text = question_text
+                        translation.expected_answer = expected_answer
+                        translation.question_type = question_type
+                        translation.scoring_logic = scoring_logic or translation.scoring_logic or None
+                        translation.theme = theme or translation.theme or None
+                        action = "updated"
+
                     stats[f"translations_{action}"] += 1
                     counts = by_language.setdefault(language, {"inserted": 0, "updated": 0})
                     counts[action] += 1
@@ -165,6 +149,16 @@ def _run(session, dry_run):
     if missing_codes:
         print(f"\n  codes not found in DB ({len(missing_codes)}): {missing_codes[:20]}"
               + (" ..." if len(missing_codes) > 20 else ""))
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__.split("\n")[1])
+    parser.add_argument("--dry-run", action="store_true",
+                        help="do everything, print the summary, then roll back")
+    args = parser.parse_args()
+
+    with get_sync_session() as session:
+        run(session, args.dry_run)
 
 
 if __name__ == "__main__":
