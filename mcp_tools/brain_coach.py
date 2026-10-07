@@ -437,8 +437,8 @@ async def send_brain_coach_report(
                 "theme": translation.theme,
                 'score': score,
                 "max_score": question.max_score,
-                'tier': question.tier,
-                'session': question.session,
+                'tier': "",
+                'session': "",
             })
         
         preferred_report_channel = user.preferred_reports_channel
