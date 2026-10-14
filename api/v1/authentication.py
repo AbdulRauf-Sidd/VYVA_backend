@@ -83,6 +83,33 @@ async def verify_otp(request: Request, response: Response, body: VerifyOtpReques
     }
 
 
+# TEMPORARY: logs in with just a phone number (no OTP). Remove before production.
+@router.post("/phone-login/", response_model=StandardSuccessResponse)
+async def phone_login(request: Request, response: Response, body: PhoneRequest, db: AsyncSession = Depends(get_db)):
+    if not is_valid_phone_number(body.phone):
+        raise HTTPException(status_code=400, detail="Invalid phone number")
+
+    result = await db.execute(select(User).where(User.phone_number == body.phone))
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=400, detail="No user found with this phone number")
+
+    session_id = await create_user_session(
+        db,
+        user.id,
+        user_type='user',
+        user_agent=request.headers.get("User-Agent"),
+        ip_address=request.client.host
+    )
+
+    set_cookie(response, session_id)
+
+    return {
+        "success": True,
+        "message": "Login successful"
+    }
+
+
 @router.post("/caretaker-verify-otp/", response_model=StandardSuccessResponse)
 async def caretaker_verify_otp(request: Request, response: Response, body: VerifyOtpRequest, db: AsyncSession = Depends(get_db)):
     id, msg = await verify_otp_helper(db, body.session_id, body.otp, 'caretaker')
