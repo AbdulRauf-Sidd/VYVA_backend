@@ -2,7 +2,7 @@ import hashlib
 import random
 from datetime import datetime, timedelta
 from models.organization import Organization
-from services.sms_service import sms_service
+from services.zamarda_sms_service import zamarda_sms_service
 from pytz import utc
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -22,7 +22,7 @@ def is_expired(expires_at) -> bool:
     return datetime.now(tz=utc) > expires_at
 
 async def send_otp_via_sms(phone_number: str, otp: str):
-    await sms_service.send_otp(phone_number, otp)
+    await zamarda_sms_service.send_otp(phone_number, otp)
     
 def is_valid_phone_number(phone_number: str) -> bool:
     if not phone_number.startswith('+'):

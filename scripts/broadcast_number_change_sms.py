@@ -16,7 +16,13 @@ import time
 
 from core.database import get_sync_session
 from models.user import User
-from scripts.test_zamarda_sms import MESSAGE, send_sms
+from services.zamarda_sms_service import zamarda_sms_service
+
+MESSAGE = (
+    "¡Hola! :wave: Nuestro número de VYVA ha cambiado. "
+    "Nuestro nuevo número es ahora: *+34 856 634 672* "
+    "Por favor, guarda este nuevo contacto. ¡Gracias!"
+)
 
 # Zamarda allows 100 requests/minute; stay safely under it.
 SEND_INTERVAL_SECONDS = 0.7
@@ -68,7 +74,7 @@ def main() -> int:
             print(f"WOULD SEND  user={user_id} -> {phone_number}")
             continue
 
-        ok = send_sms(phone_number, MESSAGE)
+        ok = zamarda_sms_service.send_sms_sync(phone_number, MESSAGE)
         print(f"{'SENT  ' if ok else 'FAILED'} user={user_id} -> {phone_number}")
         sent += ok
         failed += not ok
