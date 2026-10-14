@@ -71,13 +71,13 @@ def fire_general_reminder(scheduled_session_id: int):
             response = make_general_reminder_call(payload)
 
             if response:
-                call_sid = response.get("callSid")
+                call_sid = response.get("conversation_id")
                 if call_sid:
                     session.call_sid = call_sid
                     db.commit()
                     schedule_celery_task_for_scheduled_session_status_check()
                 else:
-                    logger.error(f"[fire_general_reminder] Call initiated but no callSid returned for session {scheduled_session_id}.")
+                    logger.error(f"[fire_general_reminder] Call initiated but no conversation_id returned for session {scheduled_session_id}.")
                     db.commit()
             else:
                 logger.error(f"[fire_general_reminder] Call failed for session {scheduled_session_id}.")
