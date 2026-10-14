@@ -44,7 +44,7 @@ class CheckinLog(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     status = Column(String(50), nullable=True)  
-    checkin_id = Column(Integer, ForeignKey('user_checkins.id'), nullable=True)
+    checkin_id = Column(Integer, ForeignKey('user_checkins.id', ondelete="CASCADE"), nullable=True)
     date = Column(DateTime(timezone=True), server_default=func.now())
     user = relationship(
         "User",

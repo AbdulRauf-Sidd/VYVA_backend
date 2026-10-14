@@ -103,6 +103,10 @@ class Settings(BaseSettings):
     TWILIO_AUTH_TOKEN: str = Field(default=None, env="TWILIO_AUTH_TOKEN")
     TWILIO_PHONE_NUMBER: str = Field(default=None, env="TWILIO_PHONE_NUMBER")
     
+    # SMS Configuration (Zamarda)
+    ZAMARDA_API_KEY: Optional[str] = Field(default=None, env="ZAMARDA_API_KEY")
+    ZAMARDA_API_SECRET: Optional[str] = Field(default=None, env="ZAMARDA_API_SECRET")
+
     # WhatsApp Configuration (Twilio)
     TWILIO_WHATSAPP_FROM_NUMBER: str = Field(default=None, env="TWILIO_WHATSAPP_FROM_NUMBER")
     TWILIO_WHATSAPP_TEMPLATE_SID: str = Field(default=None, env="TWILIO_WHATSAPP_TEMPLATE_SID")
