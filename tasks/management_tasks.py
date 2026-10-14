@@ -3,7 +3,7 @@ import asyncio
 from core.database import SessionLocal, get_sync_session
 from celery_app import celery_app
 from models import user
-from services.elevenlabs_service import make_onboarding_call, make_medication_reminder_call, make_brain_coach_call, make_check_up_call, call_agent
+from services.elevenlabs_service import make_onboarding_call, make_medication_reminder_call, make_brain_coach_call, make_check_up_call, call_agent, get_call_status_from_elevenlabs
 from models.user import User
 from models.onboarding import OnboardingUser, OnboardingLogs
 from models.organization import Organization, OrganizationAgents, AgentTypeEnum, TwilioWhatsappTemplates, TemplateTypeEnum
@@ -26,7 +26,6 @@ from scripts.onboarding_utils import construct_onboarding_user_payload
 from scripts.utils import date_now_in_timezone, get_iso_language
 from services.helpers import construct_user_dynamic_variables, construct_user_not_picked_up_message
 
-from twilio.rest import Client
 from core.config import settings
 from services.whatsapp_service import whatsapp_service
 from scripts.medication_utils import create_medication_logs
@@ -34,37 +33,6 @@ from services.openai_service import CallPlanContext, openai_service
 from scripts.utils import generate_medication_reminder_conversation_plan, generate_check_up_conversation_plan, generate_brain_coach_conversation_plan 
 
 logger = logging.getLogger(__name__)
-
-twilio_client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-
-def get_call_status_from_twilio(callSid: str) -> dict:
-    try:
-        call = twilio_client.calls(callSid).fetch()
-        raw = call.status
-
-        mapping = {
-            "completed": "answered",
-            "busy": "declined",
-            "no-answer": "no_answer",
-            "canceled": "declined",
-            "failed": "failed",
-            "queued": "in_progress",
-            "ringing": "in_progress",
-            "in-progress": "in_progress",
-        }
-
-        normalized = mapping.get(raw, "unknown")
-
-        FINAL = {"answered", "declined", "no_answer", "failed"}
-
-        return {
-            "raw_status": raw,
-            "status": normalized,
-            "is_final": normalized in FINAL,
-        }
-    except Exception as e:
-        logger.error(f"Error fetching call status from Twilio for Call SID {callSid}: {e}")
-        return {}
 
 @celery_app.task(name="initiate_onboarding_call", max_retries=0)
 def initiate_onboarding_call(payload: dict):
@@ -80,7 +48,7 @@ def initiate_onboarding_call(payload: dict):
 
         onboarding_log = OnboardingLogs(
             call_at=datetime.now(timezone.utc),
-            call_id=response.get('callSid'),
+            call_id=response.get('conversation_id'),
             onboarding_user_id=onboarding_record.id,
             status="in_progress",
         )
@@ -216,7 +184,7 @@ def initiate_medication_reminder_call(payload):
     response = make_medication_reminder_call(payload)
     with SessionLocal() as db:
         if response:
-            call_sid = response.get('callSid')
+            call_sid = response.get('conversation_id')
             session_record = ElevenLabsSessions(
                 user_id=payload.get('user_id'),
                 agent_id=payload.get("agent_id"),
@@ -249,8 +217,10 @@ def update_call_status(self):
         sessions = result.scalars().all()
 
         for session in sessions:
-            status = get_call_status_from_twilio(session.call_sid)
+            status = get_call_status_from_elevenlabs(session.call_sid)
             status = status.get('status', None)
+            if not status:
+                continue  # could not fetch; keep the previous status and retry next run
             # if status in excluded_statuses: #call completed
             #     if status in ["declined", "no_answer", "failed"]:
             #         # Mark medication as unconfirmed
@@ -284,8 +254,13 @@ def update_scheduled_call_status(self):
         sessions = result.scalars().all()
 
         for session in sessions:
-            status = get_call_status_from_twilio(session.call_sid)
-            status = status.get('status', None)
+            status_data = get_call_status_from_elevenlabs(session.call_sid)
+            status = status_data.get('status', None)
+            if not status_data.get('is_final'):
+                # Still in progress, or the status could not be fetched: check again next run.
+                if status:
+                    session.status = status
+                continue
             logger.info(f"Updating status for ScheduledSession {session.id} with Call SID {session.call_sid}: {status}")
             session.status = status
             session_type = session.session_type
@@ -408,7 +383,7 @@ def check_onboarding_call_status():
         for log in pending_logs:
             call_sid = log.call_id
             
-            status_data = get_call_status_from_twilio(call_sid)
+            status_data = get_call_status_from_elevenlabs(call_sid)
             status = status_data.get("status", None)
 
             if status:
@@ -490,7 +465,7 @@ def initiate_brain_coach_session(check_in_id: int):
             return
         
         if response:
-            call_sid = response.get('callSid')
+            call_sid = response.get('conversation_id')
             if call_sid:
                 last_pending_session.call_sid = call_sid
                 call_log = CheckinLog(
@@ -503,7 +478,7 @@ def initiate_brain_coach_session(check_in_id: int):
                 db.commit()
                 schedule_celery_task_for_scheduled_session_status_check()
             else:
-                logger.error(f"Brain coach call initiated but no callSid returned for check_in_id {check_in_id}")
+                logger.error(f"Brain coach call initiated but no conversation_id returned for check_in_id {check_in_id}")
                 db.commit()
     except Exception as e:
         logger.error(f"Error initiating brain coach session for check ID {check_in_id}: {e}")
@@ -581,7 +556,7 @@ def initiate_check_up_call(check_in_id: int):
 
         if response:
             last_pending_session.attempts += 1
-            call_sid = response.get('callSid')
+            call_sid = response.get('conversation_id')
             last_pending_session.call_sid = call_sid
             db.commit()
             schedule_celery_task_for_scheduled_session_status_check()

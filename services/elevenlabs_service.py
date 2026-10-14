@@ -24,7 +24,7 @@ async def make_fall_detection_call(user):
     phone_number = user.get('phone_number')
     try:
         response = requests.post(
-          "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
+          settings.ELEVENLABS_OUTBOUND_CALL_URL,
           headers={
             "xi-api-key": settings.ELEVENLABS_API_KEY
           },
@@ -74,7 +74,7 @@ def make_onboarding_call(payload: dict):
         caregiver_phone = payload.get("caregiver_phone")
         initial_message = constuct_initial_agent_message_for_onboarding(first_name, iso_language)
         response = requests.post(
-          "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
+          settings.ELEVENLABS_OUTBOUND_CALL_URL,
           headers={
             "xi-api-key": settings.ELEVENLABS_API_KEY
           },
@@ -146,7 +146,7 @@ def make_medication_reminder_call(payload: dict):
             dynamic_variables["conversation_plan"] = json.dumps(conversation_plan) if isinstance(conversation_plan, (dict, list)) else conversation_plan
 
         response = requests.post(
-          "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
+          settings.ELEVENLABS_OUTBOUND_CALL_URL,
           headers={
             "xi-api-key": settings.ELEVENLABS_API_KEY
           },
@@ -192,7 +192,7 @@ def make_brain_coach_call(payload: dict):
             dynamic_variables["conversation_plan"] = conversation_plan
 
         response = requests.post(
-          "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
+          settings.ELEVENLABS_OUTBOUND_CALL_URL,
           headers={
             "xi-api-key": settings.ELEVENLABS_API_KEY
           },
@@ -237,7 +237,7 @@ def make_check_up_call(payload: dict):
             dynamic_variables["conversation_plan"] = conversation_plan
 
         response = requests.post(
-          "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
+          settings.ELEVENLABS_OUTBOUND_CALL_URL,
           headers={
             "xi-api-key": settings.ELEVENLABS_API_KEY
           },
@@ -281,7 +281,7 @@ def make_general_reminder_call(payload: dict):
         dynamic_variables["purpose"] = purpose
 
         response = requests.post(
-            "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
+            settings.ELEVENLABS_OUTBOUND_CALL_URL,
             headers={"xi-api-key": settings.ELEVENLABS_API_KEY},
             json={
                 "agent_id": agent_id,
@@ -305,6 +305,59 @@ def make_general_reminder_call(payload: dict):
         return None
     finally:
         save_outbound_call_log(agent_id, phone_number, payload, data, success)
+
+
+# ElevenLabs phone_call.call_result -> our call status
+CALL_RESULT_STATUS_MAP = {
+    "answered": "answered",
+    "voicemail": "no_answer",  # a voicemail pickup counts as a missed call
+    "busy": "declined",
+    "no_answer": "no_answer",
+    "failed": "failed",
+}
+FINAL_CALL_STATUSES = {"answered", "declined", "no_answer", "failed"}
+
+
+def normalize_call_status(conversation: dict) -> dict:
+    """Map an ElevenLabs conversation payload to our call status shape."""
+    metadata = conversation.get("metadata") or {}
+    phone_call = metadata.get("phone_call") or {}
+    call_result = phone_call.get("call_result")
+    conversation_status = conversation.get("status")
+
+    if conversation_status == "failed":
+        # The conversation itself failed (e.g. agent/config error), even if the line was picked up.
+        status = "failed"
+    elif call_result in CALL_RESULT_STATUS_MAP:
+        status = CALL_RESULT_STATUS_MAP[call_result]
+    elif conversation_status in ("initiated", "in-progress", "processing"):
+        status = "in_progress"
+    elif conversation_status == "done":
+        # Finished with no telephony result: treat as answered only if it actually ran.
+        status = "answered" if (metadata.get("call_duration_secs") or 0) > 0 else "unknown"
+    else:
+        status = "unknown"
+
+    return {
+        "raw_status": call_result or conversation_status,
+        "status": status,
+        "is_final": status in FINAL_CALL_STATUSES or (status == "unknown" and conversation_status == "done"),
+    }
+
+
+def get_call_status_from_elevenlabs(conversation_id: str) -> dict:
+    """Fetch a call's outcome from ElevenLabs. Returns {} if it could not be fetched."""
+    try:
+        response = requests.get(
+            f"https://api.elevenlabs.io/v1/convai/conversations/{conversation_id}",
+            headers={"xi-api-key": settings.ELEVENLABS_API_KEY},
+            timeout=30,
+        )
+        response.raise_for_status()
+        return normalize_call_status(response.json())
+    except Exception as e:
+        logger.error(f"Error fetching call status from ElevenLabs for conversation {conversation_id}: {e}")
+        return {}
 
 
 def save_outbound_call_log(agent_id: str, phone_number: str, params: dict, response: dict, success: bool):
@@ -340,7 +393,7 @@ def call_agent(agent_id: str, phone_number: str, payload: Optional[Dict[str, Any
 
         # Make the ElevenLabs API call
         response = requests.post(
-            "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
+            settings.ELEVENLABS_OUTBOUND_CALL_URL,
             headers={
                 "xi-api-key": settings.ELEVENLABS_API_KEY
             },
