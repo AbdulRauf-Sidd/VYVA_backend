@@ -171,6 +171,7 @@ class ManageUserCheckinInput(MCPBaseModel):
 async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
 
     async with get_async_session() as db:
+        logger.info(f"Managing check-in for user_id: {input.user_id}, type: {input.check_in_type}, operation: {input.operation}")
         try:
             user = await db.get(User, input.user_id)
             if not user:
@@ -211,6 +212,7 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
             # ADD / UPDATE
             # -------------------------
             if input.operation == CheckInOperation.add.value:
+                logger.info(f"Managing check-in for user_id: {input.user_id}, type: {input.check_in_type}, operation: {input.operation}")
 
                 if input.check_in_frequency_days is None:
                     return {
@@ -225,6 +227,7 @@ async def manage_user_checkin(input: ManageUserCheckinInput) -> dict:
                     existing.check_in_time = input.check_in_time
 
                     await db.commit()
+                    logger.info(f"Managing check-in for user_i11111111111111")
 
                     return {
                         "success": True,
