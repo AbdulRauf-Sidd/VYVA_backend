@@ -144,3 +144,65 @@ def test_send_session_brain_coach_report(user_id: int):
         )
 
         _send_whatsapp_report(db, user, TemplateTypeEnum.brain_coach.value, whatsapp_content)
+
+
+def test_brain_coach_outbound_call(user_id: int):
+    """
+    Fires a brain coach outbound call for a user, bypassing check-in scheduling.
+    Prints each step so you can see where it fails.
+
+    python -c "from scripts.tests import test_brain_coach_outbound_call; test_brain_coach_outbound_call(1)"
+    """
+    from sqlalchemy.orm import selectinload
+    from core.database import SessionLocal
+    from models.organization import Organization, AgentTypeEnum
+    from scripts.utils import generate_brain_coach_conversation_plan
+    from services.elevenlabs_service import make_brain_coach_call
+    from services.helpers import construct_user_dynamic_variables
+
+    db = SessionLocal()
+    try:
+        user = (
+            db.query(User)
+            .options(selectinload(User.organization).selectinload(Organization.agents))
+            .filter(User.id == user_id)
+            .first()
+        )
+        if not user:
+            print(f"User {user_id} not found")
+            return
+
+        agent_id = next(
+            (a.agent_id for a in user.organization.agents if a.agent_type == AgentTypeEnum.brain_coach.value),
+            None,
+        )
+        print(f"user={user.id} phone={user.phone_number} lang={user.preferred_consultation_language} "
+              f"org={user.organization.id} phone_number_id={user.organization.phone_number_id} agent_id={agent_id}")
+        if not agent_id:
+            print("No brain coach agent found for this user's organization")
+            return
+
+        payload = {
+            "user_id": user.id,
+            "agent_id": agent_id,
+            "first_name": user.first_name,
+            "phone_number": user.phone_number,
+            "language": user.preferred_consultation_language,
+            "phone_number_id": user.organization.phone_number_id,
+        }
+        payload = {**construct_user_dynamic_variables(user), **payload}
+
+        try:
+            plan = generate_brain_coach_conversation_plan(user)
+            if plan:
+                payload["conversation_plan"] = plan
+            print(f"conversation plan generated: {bool(plan)}")
+        except Exception as e:
+            print(f"conversation plan failed (continuing without): {e}")
+
+        response = make_brain_coach_call(payload)
+        print(f"ElevenLabs response: {response}")
+        if response is None:
+            print("Call failed - see logs / OutboundCallLog for the error")
+    finally:
+        db.close()
