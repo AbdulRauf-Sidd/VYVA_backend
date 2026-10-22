@@ -32,6 +32,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db, get_async_session
+from core.config import settings
 from models.organization import TwilioWhatsappTemplates, OrganizationAgents, AgentTypeEnum
 from models.user import User
 
@@ -291,7 +292,7 @@ async def _send_places_whatsapp(
         success = await whatsapp_service.send_reminder_message(
             to_phone=phone_number,
             template_data=template_data,
-            template_id="HX4bcd81298ec36ad7f2f0fe4f80077921"
+            template_id=settings.WHATSAPP_PLACES_TEMPLATE_NAME
         )
         if success:
             logger.info(f"Places WhatsApp sent to {phone_number}")

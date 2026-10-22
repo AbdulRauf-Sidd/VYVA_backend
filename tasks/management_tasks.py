@@ -318,11 +318,12 @@ def send_emergency_alert_whatsapp(user_id):
             "2": message,
         }
 
-        template_id = db.query(TwilioWhatsappTemplates.template_id).filter(TwilioWhatsappTemplates.language == user.preferred_consultation_language, TwilioWhatsappTemplates.template_type == TemplateTypeEnum.emergency_contact_alert.value).first()
+        template_id = db.query(TwilioWhatsappTemplates.template_id).filter(TwilioWhatsappTemplates.language == user.preferred_consultation_language, TwilioWhatsappTemplates.template_type == TemplateTypeEnum.emergency_contact_alert.value).scalar()
         response = whatsapp_service.send_message_sync(
             to_phone=caretaker_phone,
             template_id=template_id,
             template_data=content_variables,
+            language=user.preferred_consultation_language,
         )
 
         logger.info(f"Emergency alert WhatsApp response: {response}")

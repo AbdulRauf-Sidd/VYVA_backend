@@ -44,10 +44,17 @@ def send_whatsapp_medication_reminder(payload):
         template_dic = {
             1: first_name,
             2: med_string,
-            3: ", ".join(str(i) for i in med_log_ids),
-            4: TemplateTypeEnum.medication_reminder.value
         }
-        asyncio.run(whatsapp_service.send_message(phone_number, template_dic, template_id))
+        # Each quick-reply button returns "<Yes|No>:<log ids>:<type>" to the webhook.
+        log_ids = ",".join(str(i) for i in med_log_ids)
+        template_type = TemplateTypeEnum.medication_reminder.value
+        asyncio.run(whatsapp_service.send_message(
+            phone_number,
+            template_dic,
+            template_id,
+            language=language,
+            quick_reply_payloads=[f"Yes:{log_ids}:{template_type}", f"No:{log_ids}:{template_type}"],
+        ))
     
     except Exception as e:
         logger.error(f"error in send_whatsapp_medication_reminder task: {e}")
