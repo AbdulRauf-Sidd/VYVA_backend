@@ -390,6 +390,7 @@ async def send_whatsapp(input: SendWhatsappMessage):
             to_phone=user.caretaker.phone_number,
             template_id=template_id,
             template_data=content_variables,
+            language=user.preferred_consultation_language,
         )
 
         if not success:

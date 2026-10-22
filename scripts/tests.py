@@ -43,6 +43,7 @@ def _send_whatsapp_report(db, user: User, template_type: str, whatsapp_content: 
         to_phone=TEST_WHATSAPP_NUMBER,
         template_data=whatsapp_content,
         template_id=template.template_id,
+        language=user.preferred_consultation_language,
     )
 
     logger.info(f"Sent {template_type} report for user {user.id} to {TEST_WHATSAPP_NUMBER}")

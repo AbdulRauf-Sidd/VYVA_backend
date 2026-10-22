@@ -107,14 +107,21 @@ class Settings(BaseSettings):
     ZAMARDA_API_KEY: Optional[str] = Field(default=None, env="ZAMARDA_API_KEY")
     ZAMARDA_API_SECRET: Optional[str] = Field(default=None, env="ZAMARDA_API_SECRET")
 
-    # WhatsApp Configuration (Twilio)
-    TWILIO_WHATSAPP_FROM_NUMBER: str = Field(default=None, env="TWILIO_WHATSAPP_FROM_NUMBER")
-    TWILIO_WHATSAPP_TEMPLATE_SID: str = Field(default=None, env="TWILIO_WHATSAPP_TEMPLATE_SID")
-    TWILIO_WHATSAPP_REMINDER_TEMPLATE_SID: str = Field(default=None, env="TWILIO_WHATSAPP_REMINDER_TEMPLATE_SID")
-    TWILIO_WHATSAPP_BRAIN_COACH_TEMPLATE_SID: str = Field(default=None, env="TWILIO_WHATSAPP_BRAIN_COACH_TEMPLATE_SID")
-    TWILIO_WHATSAPP_ONBOARDING_TEMPLATE_SID: str = Field(default=None, env="TWILIO_WHATSAPP_ONBOARDING_TEMPLATE_SID")
-    TWILIO_WHATSAPP_CARETAKER_ONBOARDING_TEMPLATE_SID: str = Field(default=None, env="TWILIO_WHATSAPP_CARETAKER_ONBOARDING_TEMPLATE_SID")
-    TWILIO_WHATSAPP_OTP_TEMPLATE_SID: str = Field(default=None, env="TWILIO_WHATSAPP_OTP_TEMPLATE_SID")
+    # WhatsApp Configuration (Meta WhatsApp Business Cloud API)
+    WHATSAPP_ACCESS_TOKEN: Optional[str] = Field(default=None, env="WHATSAPP_ACCESS_TOKEN")
+    WHATSAPP_PHONE_NUMBER_ID: Optional[str] = Field(default=None, env="WHATSAPP_PHONE_NUMBER_ID")
+    WHATSAPP_API_VERSION: str = Field(default="v21.0", env="WHATSAPP_API_VERSION")
+    WHATSAPP_VERIFY_TOKEN: Optional[str] = Field(default=None, env="WHATSAPP_VERIFY_TOKEN")  # webhook verification handshake
+    WHATSAPP_APP_SECRET: Optional[str] = Field(default=None, env="WHATSAPP_APP_SECRET")  # validates X-Hub-Signature-256 on webhooks
+    WHATSAPP_DEFAULT_LANGUAGE: str = Field(default="es", env="WHATSAPP_DEFAULT_LANGUAGE")  # template language code when none is given
+    # Fallback template names, used when a template name is not read from the twilio_whatsapp_templates table
+    WHATSAPP_TEMPLATE_NAME: Optional[str] = Field(default=None, env="WHATSAPP_TEMPLATE_NAME")
+    WHATSAPP_REMINDER_TEMPLATE_NAME: Optional[str] = Field(default=None, env="WHATSAPP_REMINDER_TEMPLATE_NAME")
+    WHATSAPP_ONBOARDING_TEMPLATE_NAME: Optional[str] = Field(default=None, env="WHATSAPP_ONBOARDING_TEMPLATE_NAME")
+    WHATSAPP_OTP_TEMPLATE_NAME: Optional[str] = Field(default=None, env="WHATSAPP_OTP_TEMPLATE_NAME")
+    WHATSAPP_PLACES_TEMPLATE_NAME: Optional[str] = Field(default=None, env="WHATSAPP_PLACES_TEMPLATE_NAME")
+    # Meta "authentication" templates (the usual OTP type) also need the code sent to the copy-code button.
+    WHATSAPP_OTP_USES_BUTTON: bool = Field(default=True, env="WHATSAPP_OTP_USES_BUTTON")
 
     
     # ElevenLabs TTS

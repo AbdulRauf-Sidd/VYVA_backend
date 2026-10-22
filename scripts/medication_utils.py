@@ -102,7 +102,7 @@ def notify_caretaker_on_missed_meds(user_id: int):
                 .first()
             )
             if not template:
-                logger.error("Notify Caretaker error: twilio whatsapp template now found")
+                logger.error("Notify Caretaker error: whatsapp template not found")
                 return
             
             message_template ={
@@ -110,7 +110,9 @@ def notify_caretaker_on_missed_meds(user_id: int):
                 2: user.full_name
             }
 
-            success = whatsapp_service.send_message(caretaker_phone, message_template, template.id)
+            success = whatsapp_service.send_message_sync(
+                caretaker_phone, message_template, template.template_id, language=caretaker.language
+            )
             if not success:
                 logger.error("Notify Caretaker error: message not sent")
                 return
