@@ -4,6 +4,8 @@ from models import User
 from models.authentication import UserTempToken, CaretakerTempToken
 from datetime import datetime, timedelta, timezone
 from services.zamarda_sms_service import zamarda_sms_service
+from services.meta_whatsapp_service import send_meta_whatsapp_template
+from models.organization import TwilioWhatsappTemplates, TemplateTypeEnum
 from scripts.utils import get_iso_language
 
 USER_MESSAGE_MAP = {
@@ -101,8 +103,27 @@ def send_onboarding_sms(phone_number: str = None, user: User = None, send_to_car
         # Send user onboarding SMS
         onboarding_link = f"https://{user.organization.sub_domain}.vyva.io/verify?token={temp_token.token}"
         iso_language = get_iso_language(user.preferred_consultation_language)
-        user_message = construct_onboarding_message_for_user(iso_language, onboarding_link)
-        zamarda_sms_service.send_sms_sync(user.phone_number, user_message)
+        # user_message = construct_onboarding_message_for_user(iso_language, onboarding_link)
+        # zamarda_sms_service.send_sms_sync(user.phone_number, user_message)
+        language = (user.preferred_consultation_language or "english").lower()
+        template = (
+            db.query(TwilioWhatsappTemplates)
+            .filter(
+                TwilioWhatsappTemplates.template_type == TemplateTypeEnum.magic_link.value,
+                TwilioWhatsappTemplates.language == user.preferred_consultation_language,
+                TwilioWhatsappTemplates.is_active.is_(True),
+                TwilioWhatsappTemplates.organization_id == user.organization_id,
+            )
+            .first()
+        )
+        if not template:
+            raise ValueError(f"No active magic_link template for user {user.id} ({language})")
+        send_meta_whatsapp_template(
+            to_phone=user.phone_number,
+            template_name=template.template_id,
+            language=language,
+            payload={1: onboarding_link},
+        )
 
         # Send caregiver onboarding SMS if applicable
         if temp_token_caregiver:

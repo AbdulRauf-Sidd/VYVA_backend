@@ -107,6 +107,11 @@ class Settings(BaseSettings):
     ZAMARDA_API_KEY: Optional[str] = Field(default=None, env="ZAMARDA_API_KEY")
     ZAMARDA_API_SECRET: Optional[str] = Field(default=None, env="ZAMARDA_API_SECRET")
 
+    # WhatsApp Configuration (Meta Cloud API)
+    META_WHATSAPP_ACCESS_TOKEN: Optional[str] = Field(default=None, env="META_WHATSAPP_ACCESS_TOKEN")
+    META_WHATSAPP_PHONE_NUMBER_ID: Optional[str] = Field(default=None, env="META_WHATSAPP_PHONE_NUMBER_ID")
+    META_WHATSAPP_API_VERSION: str = Field(default="v21.0", env="META_WHATSAPP_API_VERSION")
+
     # WhatsApp Configuration (Twilio)
     TWILIO_WHATSAPP_FROM_NUMBER: str = Field(default=None, env="TWILIO_WHATSAPP_FROM_NUMBER")
     TWILIO_WHATSAPP_TEMPLATE_SID: str = Field(default=None, env="TWILIO_WHATSAPP_TEMPLATE_SID")
