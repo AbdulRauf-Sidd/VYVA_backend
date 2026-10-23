@@ -1,4 +1,5 @@
 from core.database import get_sync_session
+from sqlalchemy import or_
 from core.config import settings
 from models import User
 from models.authentication import UserTempToken, CaretakerTempToken
@@ -112,8 +113,13 @@ def send_onboarding_sms(phone_number: str = None, user: User = None, send_to_car
                 TwilioWhatsappTemplates.template_type == TemplateTypeEnum.magic_link.value,
                 TwilioWhatsappTemplates.language == user.preferred_consultation_language,
                 TwilioWhatsappTemplates.is_active.is_(True),
-                TwilioWhatsappTemplates.organization_id == user.organization_id,
+                or_(
+                    TwilioWhatsappTemplates.organization_id == user.organization_id,
+                    TwilioWhatsappTemplates.organization_id.is_(None),
+                ),
             )
+            # org-specific template wins over a global (NULL org) one
+            .order_by(TwilioWhatsappTemplates.organization_id.is_(None))
             .first()
         )
         if not template:
