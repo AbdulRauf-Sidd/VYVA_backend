@@ -208,7 +208,7 @@ def test_brain_coach_outbound_call(user_id: int):
         db.close()
 
 
-def test_send_onboarding_whatsapp(user_id: int):
+def test_send_onboarding_whatsapp(user_id: int, send_to_caregiver: bool = False):
     """
     Sends the onboarding magic link WhatsApp (via Meta) to a user. Creates a real
     temp token and sends to the user's real number. Caregiver SMS is not sent.
@@ -226,7 +226,7 @@ def test_send_onboarding_whatsapp(user_id: int):
         print(f"user={user.id} phone={phone} lang={user.preferred_consultation_language} org={user.organization_id}")
 
     try:
-        link = send_onboarding_sms(phone_number=phone, send_to_caregiver=False)
+        link = send_onboarding_sms(phone_number=phone, send_to_caregiver=send_to_caregiver)
         print(f"Sent. Base link: {link}")
     except Exception as e:
         print(f"Failed: {e}")
