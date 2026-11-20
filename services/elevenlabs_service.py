@@ -93,9 +93,9 @@ def make_onboarding_call(payload: dict):
                 "first_name": first_name,
                 "last_name": last_name,
                 "address": address or "",
-                "caregiver_name": caregiver_name or "",
-                "caregiver_phone": caregiver_phone or "",
-                "user_type": user_type,
+                "caregiver_name": "",
+                "caregiver_phone": "",
+                "user_type": "",
                 "email": email or "",
                 "timezone": timezone
               }
