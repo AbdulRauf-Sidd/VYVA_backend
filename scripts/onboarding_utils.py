@@ -5,7 +5,7 @@ from models import User
 from models.authentication import UserTempToken, CaretakerTempToken
 from datetime import datetime, timedelta, timezone
 from services.zamarda_sms_service import zamarda_sms_service
-from services.meta_whatsapp_service import send_meta_whatsapp_template
+from services.meta_whatsapp_service import send_meta_template_by_type
 from models.organization import TwilioWhatsappTemplates, TemplateTypeEnum
 from scripts.utils import get_iso_language
 
@@ -74,27 +74,12 @@ def construct_onboarding_user_payload(user, agent_id) -> dict:
 
 
 def _send_magic_link_whatsapp(db, user: User, to_phone: str, template_type: str, language: str, link: str):
-    template = (
-        db.query(TwilioWhatsappTemplates)
-        .filter(
-            TwilioWhatsappTemplates.template_type == template_type,
-            TwilioWhatsappTemplates.language == user.preferred_consultation_language,
-            TwilioWhatsappTemplates.is_active.is_(True),
-            or_(
-                TwilioWhatsappTemplates.organization_id == user.organization_id,
-                TwilioWhatsappTemplates.organization_id.is_(None),
-            ),
-        )
-        # org-specific template wins over a global (NULL org) one
-        .order_by(TwilioWhatsappTemplates.organization_id.is_(None))
-        .first()
-    )
-    if not template:
-        raise ValueError(f"No active {template_type} template for user {user.id} ({language})")
-    send_meta_whatsapp_template(
+    send_meta_template_by_type(
+        db,
+        template_type=template_type,
         to_phone=to_phone,
-        template_name=template.template_id,
-        language=language,
+        language=user.preferred_consultation_language,
+        organization_id=user.organization_id,
         payload={1: link},
     )
 

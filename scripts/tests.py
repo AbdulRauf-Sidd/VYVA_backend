@@ -255,3 +255,27 @@ def test_elevenlabs_dial(agent_id: str, to_number: str, phone_number_id: str, la
         },
     )
     print(response.status_code, response.text)
+
+
+def test_inspect_call(call_sid: str, raw: bool = False):
+    """
+    Shows how ElevenLabs reports a call and how our normalizer classifies it.
+    Pass raw=True to print the full JSON.
+
+    python -c "from scripts.tests import test_inspect_call; test_inspect_call('conv_...')"
+    """
+    import json
+    from scripts.inspect_calls import fetch, signature
+    from services.elevenlabs_service import normalize_call_status
+
+    conv = fetch(call_sid)
+    if "_fetch_error" in conv:
+        print(f"Fetch error: {conv['_fetch_error']}")
+        return
+
+    for key, value in signature(conv).items():
+        print(f"{key}: {value}")
+    print(f"phone_call: {json.dumps((conv.get('metadata') or {}).get('phone_call'), indent=2, default=str)}")
+    print(f"normalized: {normalize_call_status(conv)}")
+    if raw:
+        print(json.dumps(conv, indent=2, default=str))

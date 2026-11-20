@@ -63,3 +63,44 @@ def send_meta_whatsapp_template(
     response.raise_for_status()
     logger.info(f"Meta WhatsApp template '{template_name}' sent to {to_phone}: {response.json()}")
     return response.json()
+
+
+def send_meta_template_by_type(
+    db,
+    template_type: str,
+    to_phone: str,
+    language: Optional[str],
+    organization_id: Optional[int],
+    payload: Optional[Dict[Any, Any]] = None,
+) -> dict:
+    """
+    Look up the active template of `template_type` for the language (repo name, e.g. 'spanish')
+    and organization (an org-specific row wins over a global one), then send it via Meta.
+    Raises ValueError if no template matches.
+    """
+    from sqlalchemy import or_
+    from models.organization import TwilioWhatsappTemplates
+
+    language = language or "english"
+    template = (
+        db.query(TwilioWhatsappTemplates)
+        .filter(
+            TwilioWhatsappTemplates.template_type == template_type,
+            TwilioWhatsappTemplates.language == language,
+            TwilioWhatsappTemplates.is_active.is_(True),
+            or_(
+                TwilioWhatsappTemplates.organization_id == organization_id,
+                TwilioWhatsappTemplates.organization_id.is_(None),
+            ),
+        )
+        .order_by(TwilioWhatsappTemplates.organization_id.is_(None))
+        .first()
+    )
+    if not template:
+        raise ValueError(f"No active {template_type} template for language '{language}'")
+    return send_meta_whatsapp_template(
+        to_phone=to_phone,
+        template_name=template.template_id,
+        language=language,
+        payload=payload,
+    )
