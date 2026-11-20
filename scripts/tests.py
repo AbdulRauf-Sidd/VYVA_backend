@@ -230,3 +230,28 @@ def test_send_onboarding_whatsapp(user_id: int, send_to_caregiver: bool = False)
         print(f"Sent. Base link: {link}")
     except Exception as e:
         print(f"Failed: {e}")
+
+
+def test_elevenlabs_dial(agent_id: str, to_number: str, phone_number_id: str, language: str = "en"):
+    """
+    Minimal raw outbound call to isolate SIP/dial problems: no dynamic variables,
+    no app logic. Swap agent_id to see if the agent is what changes the result.
+
+    python -c "from scripts.tests import test_elevenlabs_dial; test_elevenlabs_dial('agent_...', '+34...', 'phnum_...')"
+    """
+    import requests
+    from core.config import settings
+
+    response = requests.post(
+        settings.ELEVENLABS_OUTBOUND_CALL_URL,
+        headers={"xi-api-key": settings.ELEVENLABS_API_KEY},
+        json={
+            "agent_id": agent_id,
+            "agent_phone_number_id": phone_number_id,
+            "to_number": to_number,
+            "conversation_initiation_client_data": {
+                "conversation_config_override": {"agent": {"language": language}},
+            },
+        },
+    )
+    print(response.status_code, response.text)
