@@ -92,11 +92,11 @@ def make_onboarding_call(payload: dict):
                 "user_id": id,
                 "first_name": first_name,
                 "last_name": last_name,
-                "address": address,
-                "caregiver_name": caregiver_name,
-                "caregiver_phone": caregiver_phone,
+                "address": address or "",
+                "caregiver_name": caregiver_name or "",
+                "caregiver_phone": caregiver_phone or "",
                 "user_type": user_type,
-                "email": email,
+                "email": email or "",
                 "timezone": timezone
               }
             }

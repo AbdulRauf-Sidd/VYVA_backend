@@ -45,6 +45,9 @@ def initiate_onboarding_call(payload: dict):
         onboarding_record.called_at = datetime.now(timezone.utc)
         if not response:
             logger.error(f"Failed to initiate onboarding call for payload: {payload}")
+            db.add(onboarding_record)
+            db.commit()
+            return
 
         onboarding_log = OnboardingLogs(
             call_at=datetime.now(timezone.utc),
