@@ -185,6 +185,7 @@ def _dispatch_report(db, user: User, template_type, whatsapp_content, report_con
                 to_phone=phone_number,
                 template_data=whatsapp_content,
                 template_id=whatsapp_template_id,
+                language=user.preferred_consultation_language,
             )
             return
 

@@ -17,7 +17,7 @@ from core.logging import setup_logging
 from api.v1.dashboard import dashboard
 from api.v1.dashboard import users as dashboard_users, caretakers as dashboard_caretakers, checkins as dashboard_checkins
 from api.v1.dashboard import cities
-from api.v1 import onboarding, users, social, brain_coach, medication, fall_detection, tts, symptom_checker, post_call, ai_assistant, news, tools, organization, authentication, twilio
+from api.v1 import onboarding, users, social, brain_coach, medication, fall_detection, tts, symptom_checker, post_call, ai_assistant, news, tools, organization, authentication, twilio, whatsapp
 from api.v1 import webhooks
 from api.v1.managemant import admin, ingest_onboarding_users
 from api.v1.managemant import ingest_onboarding_users
@@ -182,6 +182,7 @@ app.include_router(ai_assistant.router, prefix="/api/v1/ai-assistant", tags=["AI
 app.include_router(news.router, prefix="/api/v1/news", tags=["News"])
 app.include_router(tools.router, prefix="/api/v1/tools", tags=["Tools"])
 app.include_router(twilio.router, prefix="/api/v1/twilio", tags=["Twilio"])
+app.include_router(whatsapp.router, prefix="/api/v1/whatsapp", tags=["WhatsApp"])
 app.include_router(webhooks.router, prefix="/api/v1/webhook", tags=["Webhooks"])
 app.include_router(dashboard.router, prefix="/api/v1/dashboard", tags=["Dashboard"])
 app.include_router(dashboard_users.router, prefix="/api/v1/user-dashboard", tags=["Dashboard Users"])

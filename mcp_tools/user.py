@@ -387,10 +387,18 @@ async def send_whatsapp(input: SendWhatsappMessage):
         )
         template_id = template_result.scalar_one_or_none()
 
+        if not template_id:
+            logger.error(f"No WhatsApp template found for {input.message_type.value} / {user.preferred_consultation_language}")
+            return {
+                "success": False,
+                "message": "No WhatsApp template found."
+            }
+
         success = await whatsapp_service.send_message(
             to_phone=user.caretaker.phone_number,
             template_id=template_id,
             template_data=content_variables,
+            language=user.preferred_consultation_language,
         )
 
         if not success:

@@ -26,13 +26,13 @@ from services.google_places_service import google_places
 from math import radians, cos, sin, asin, sqrt
 from services.ai_assistant_service import ai_assistant_service
 from services.email_service import EmailService
-from services.whatsapp_service import WhatsAppService, whatsapp_service
+from services.whatsapp_service import whatsapp_service
 from services.elevenlabs_service import call_agent
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.database import get_db, get_async_session
-from models.organization import TwilioWhatsappTemplates, OrganizationAgents, AgentTypeEnum
+from models.organization import TwilioWhatsappTemplates, OrganizationAgents, AgentTypeEnum, TemplateTypeEnum
 from models.user import User
 
 
@@ -139,6 +139,8 @@ async def find_places(req: FindPlacesRequest, db: AsyncSession = Depends(get_db)
                     detail="User phone_number is required to send places via WhatsApp."
                 )
             send_status = await _send_places_whatsapp(
+                db=db,
+                user=user,
                 phone_number=phone_number,
                 query=req.query,
                 results=results
@@ -281,23 +283,24 @@ async def _send_places_email(
 
 
 async def _send_places_whatsapp(
+    db: AsyncSession,
+    user: User,
     phone_number: str,
     query: str,
     results: List[PlaceSummary]
 ) -> str:
     try:
-        whatsapp_service = WhatsAppService()
         template_data = _build_places_template_data(query=query, results=results)
-        success = await whatsapp_service.send_reminder_message(
+        await whatsapp_service.send_template_by_type(
+            db,
+            template_type=TemplateTypeEnum.places_results.value,
             to_phone=phone_number,
+            language=user.preferred_consultation_language,
+            organization_id=user.organization_id,
             template_data=template_data,
-            template_id="HX4bcd81298ec36ad7f2f0fe4f80077921"
         )
-        if success:
-            logger.info(f"Places WhatsApp sent to {phone_number}")
-            return "whatsapp_sent"
-        logger.error(f"Failed to send places WhatsApp to {phone_number}")
-        return "whatsapp_failed"
+        logger.info(f"Places WhatsApp sent to {phone_number}")
+        return "whatsapp_sent"
     except Exception as e:
         logger.error(f"Failed to send places WhatsApp: {str(e)}")
         return "whatsapp_failed"

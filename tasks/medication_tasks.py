@@ -1,6 +1,7 @@
 from core.database import SessionLocal
 from celery_app import celery_app
 from services.whatsapp_service import whatsapp_service
+from services.meta_whatsapp_service import quick_reply_payloads
 import logging
 from models.organization import AgentTypeEnum, TwilioWhatsappTemplates, TemplateTypeEnum
 from scripts.medication_utils import notify_caretaker_on_missed_meds, construct_medication_string_for_whatsapp, create_medication_logs
@@ -44,10 +45,16 @@ def send_whatsapp_medication_reminder(payload):
         template_dic = {
             1: first_name,
             2: med_string,
-            3: ", ".join(str(i) for i in med_log_ids),
-            4: TemplateTypeEnum.medication_reminder.value
         }
-        asyncio.run(whatsapp_service.send_message(phone_number, template_dic, template_id))
+        whatsapp_service.send_message_sync(
+            phone_number,
+            template_dic,
+            template_id,
+            language=language,
+            button_payloads=quick_reply_payloads(
+                ", ".join(str(i) for i in med_log_ids), TemplateTypeEnum.medication_reminder.value
+            ),
+        )
     
     except Exception as e:
         logger.error(f"error in send_whatsapp_medication_reminder task: {e}")
