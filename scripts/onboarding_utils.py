@@ -67,7 +67,8 @@ def construct_onboarding_user_payload(user, agent_id) -> dict:
         "caregiver_name": user.caregiver_name,
         "caregiver_contact_number": user.caregiver_contact_number,
         "timezone": user.timezone,
-        "email": user.email
+        "email": user.email,
+        "phone_number_id": user.organization.phone_number_id if user.organization else None
     }
     return payload
 

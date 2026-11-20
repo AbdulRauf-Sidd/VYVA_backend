@@ -81,7 +81,7 @@ def make_onboarding_call(payload: dict):
           },
           json={
             "agent_id": agent_id,
-            "agent_phone_number_id": settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
+            "agent_phone_number_id": payload.get("phone_number_id") or settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID,
             "to_number": phone_number,
             "conversation_initiation_client_data": {
               "conversation_config_override": {
@@ -237,7 +237,6 @@ def make_check_up_call(payload: dict):
     phone_number = payload.get("phone_number")
     try:
         phone_number_id = payload.get("phone_number_id") or settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
-        print(f"Using phone_number_id: {phone_number_id} for check-up call.", "{settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID}")
         conversation_plan = payload.get("conversation_plan")
         language = payload.get("language")
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
