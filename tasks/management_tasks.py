@@ -3,7 +3,7 @@ import asyncio
 from core.database import SessionLocal, get_sync_session
 from celery_app import celery_app
 from models import user
-from services.elevenlabs_service import make_onboarding_call, make_medication_reminder_call, make_brain_coach_call, make_check_up_call, call_agent, get_call_status_from_elevenlabs
+from services.elevenlabs_service import make_onboarding_call, make_medication_reminder_call, make_brain_coach_call, make_check_up_call, call_agent, get_call_status_from_elevenlabs, track_agent_call
 from models.user import User
 from models.onboarding import OnboardingUser, OnboardingLogs
 from models.organization import Organization, OrganizationAgents, AgentTypeEnum, TwilioWhatsappTemplates, TemplateTypeEnum
@@ -28,6 +28,7 @@ from services.helpers import construct_user_dynamic_variables, construct_user_no
 
 from core.config import settings
 from services.whatsapp_service import whatsapp_service
+from services.meta_whatsapp_service import send_meta_template_by_type
 from scripts.medication_utils import create_medication_logs
 from services.openai_service import CallPlanContext, openai_service
 from scripts.utils import generate_medication_reminder_conversation_plan, generate_check_up_conversation_plan, generate_brain_coach_conversation_plan 
@@ -237,6 +238,22 @@ def update_call_status(self):
         db.close()
 
 
+def _escalate_missed_checkins(db, user_id: int):
+    """Alert the caretaker / emergency services after 3 missed check-up calls, if the user allows it."""
+    logger.info(f"User {user_id} has missed 3 check-up calls.")
+    user = db.query(User).filter(User.id == user_id).first()
+    # NULL flags count as enabled, matching the column defaults
+    if (
+        user
+        and user.emergency_protocol_status is not False
+        and user.emergency_protocol_after_3_missed_checkins is not False
+    ):
+        send_emergency_alert_whatsapp.apply_async(args=[user_id])
+        call_emergency_outbound_agent.apply_async(args=[user_id])
+    else:
+        logger.info(f"Emergency protocol is disabled for user {user_id}, skipping escalation.")
+
+
 @celery_app.task(name="update_scheduled_call_status", bind=True)
 def update_scheduled_call_status(self):
     db: Session = SessionLocal()
@@ -267,17 +284,11 @@ def update_scheduled_call_status(self):
             logger.info(f"Updating status for ScheduledSession {session.id} with Call SID {session.call_sid}: {status}")
             session.status = status
             session_type = session.session_type
-            if status in ["declined", "no_answer", "failed"]: #call completed
+            # A declined call means the user actively rejected it: don't retry or escalate.
+            if status in ["no_answer", "failed"]: #call completed without the user answering
                 if session_type == CheckInType.check_up_call.value:
                     if session.attempts >= 3:
-                        user_id = session.user_checkin.user_id
-                        logger.info(f"User {user_id} has missed 3 check-up calls.")
-                        user = db.query(User).filter(User.id == user_id).first()
-                        if user and user.emergency_protocol_after_3_missed_checkins is not False:
-                            send_emergency_alert_whatsapp.apply_async(args=[user_id])
-                            call_emergency_outbound_agent.apply_async(args=[user_id])
-                        else:
-                            logger.info(f"Emergency protocol after 3 missed check-ins is disabled for user {user_id}, skipping.")
+                        _escalate_missed_checkins(db, session.user_checkin.user_id)
                         session.is_completed = True
                         session.completed_at = datetime.now(timezone.utc)
                     else:
@@ -303,8 +314,8 @@ def send_emergency_alert_whatsapp(user_id):
         if not user:
             logger.error(f"User not found for emergency alert: {user_id}")
             return
-        
-        if not user.emergency_call_to_caretaker:
+
+        if user.emergency_call_to_caretaker is False:
             logger.info(f"Caretaker alerts disabled for user {user_id}, skipping emergency WhatsApp.")
             return
 
@@ -312,34 +323,49 @@ def send_emergency_alert_whatsapp(user_id):
             logger.error(f"Caretaker not found for user {user_id}, cannot send emergency alert")
             return
 
-        caretaker_phone = user.caretaker.phone_number
         iso_language = get_iso_language(user.preferred_consultation_language)
         message = construct_user_not_picked_up_message(iso_language)
-        
-        content_variables = {
-            "1": user.first_name,
-            "2": message,
-        }
 
-        template_id = db.query(TwilioWhatsappTemplates.template_id).filter(TwilioWhatsappTemplates.language == user.preferred_consultation_language, TwilioWhatsappTemplates.template_type == TemplateTypeEnum.emergency_contact_alert.value).first()
-        response = whatsapp_service.send_message_sync(
-            to_phone=caretaker_phone,
-            template_id=template_id,
-            template_data=content_variables,
-        )
+        try:
+            response = send_meta_template_by_type(
+                db,
+                template_type=TemplateTypeEnum.emergency_contact_alert.value,
+                to_phone=user.caretaker.phone_number,
+                language=user.preferred_consultation_language,
+                organization_id=user.organization_id,
+                payload={1: user.first_name, 2: message},
+            )
+            logger.info(f"Emergency alert WhatsApp response: {response}")
+        except Exception as e:
+            logger.error(f"Failed to send emergency alert WhatsApp for user {user_id}: {e}")
 
-        logger.info(f"Emergency alert WhatsApp response: {response}")
 
 @celery_app.task(name="call_emergency_outbound_agent")
 def call_emergency_outbound_agent(user_id):
     with get_sync_session() as db:
-        user = db.query(User).options(selectinload(User.caretaker)).filter(User.id == user_id).first()
+        user = (
+            db.query(User)
+            .options(selectinload(User.caretaker), selectinload(User.organization))
+            .filter(User.id == user_id)
+            .first()
+        )
+        if not user:
+            logger.error(f"User not found for emergency call: {user_id}")
+            return
+        if not user.organization:
+            logger.error(f"User {user_id} has no organization, cannot call emergency outbound agent")
+            return
+
         agent_result = db.query(OrganizationAgents).filter(
             OrganizationAgents.organization_id == user.organization.id,
             OrganizationAgents.agent_type == AgentTypeEnum.emergency_responder.value,
             OrganizationAgents.is_active == True
         ).first()
-        agent_id = agent_result.agent_id if agent_result else None
+        if not agent_result:
+            logger.error(f"No active emergency responder agent for organization {user.organization.id}")
+            return
+        agent_id = agent_result.agent_id
+
         message = construct_user_not_picked_up_message(get_iso_language(user.preferred_consultation_language))
         payload = {
             "full_name": user.full_name,
@@ -350,23 +376,33 @@ def call_emergency_outbound_agent(user_id):
             "phone_number_id": user.organization.phone_number_id
         }
 
-        if user.emergency_call_to_caretaker:
-            if not user.caretaker:
-                logger.warning(f"Caretaker alerts enabled but no caretaker assigned for user {user_id}, skipping caretaker call.")
+        targets = []
+        # NULL flags count as enabled, matching the column defaults
+        if user.emergency_call_to_caretaker is not False:
+            if user.caretaker:
+                targets.append(("caretaker", user.caretaker.phone_number))
             else:
-                call_agent(agent_id=agent_id, phone_number=user.caretaker.phone_number, payload=payload)
+                logger.warning(f"Caretaker alerts enabled but no caretaker assigned for user {user_id}, skipping caretaker call.")
 
-        if user.emergency_call_to_government_services:
+        if user.emergency_call_to_government_services is not False:
             emergency_number_record = db.query(EmergencyNumber).filter(
                 EmergencyNumber.organization_id == user.organization.id,
                 EmergencyNumber.type == EmergencyNumberTypeEnum.check_in_misses
             ).first()
-            emergency_phone = emergency_number_record.phone_number if emergency_number_record else None
-            if not emergency_phone:
-                logger.error(f"No emergency phone number found for organization {user.organization.id}, cannot call emergency outbound agent")
-                return
-            call_agent(agent_id=agent_id, phone_number=emergency_phone, payload=payload)
-       
+            if emergency_number_record and emergency_number_record.phone_number:
+                targets.append(("emergency services", emergency_number_record.phone_number))
+            else:
+                logger.error(f"No emergency phone number found for organization {user.organization.id}")
+
+        # Each call is isolated so one failure doesn't stop the others
+        for label, phone in targets:
+            try:
+                response = call_agent(agent_id=agent_id, phone_number=phone, payload=payload)
+                track_agent_call(user.id, agent_id, AgentTypeEnum.emergency_responder.value, payload, response)
+                schedule_celery_task_for_call_status_check()
+            except Exception as e:
+                logger.error(f"Emergency call to {label} failed for user {user_id}: {e}")
+
 
 @celery_app.task(name="check_onboarding_call_status")
 def check_onboarding_call_status():
@@ -563,6 +599,18 @@ def initiate_check_up_call(check_in_id: int):
             last_pending_session.call_sid = call_sid
             db.commit()
             schedule_celery_task_for_scheduled_session_status_check()
+        else:
+            # The call could not be started. Count it as an attempt so the retry cap
+            # and the 3-miss escalation still apply instead of silently stalling.
+            last_pending_session.attempts += 1
+            if last_pending_session.attempts >= 3:
+                _escalate_missed_checkins(db, user.id)
+                last_pending_session.is_completed = True
+                last_pending_session.completed_at = datetime.now(timezone.utc)
+                db.commit()
+            else:
+                db.commit()
+                initiate_check_up_call.apply_async(args=[check_in_id], countdown=60)
 
     except Exception as e:
         logger.error(f"Error initiating check-up call for check ID {check_in_id}: {e}")

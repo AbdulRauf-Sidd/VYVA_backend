@@ -7,13 +7,14 @@ from core.database import get_async_session
 from pydantic import EmailStr
 from models.user import User, PreferredReportsChannelEnum
 from models.user_check_ins import CheckinLog, UserCheckin, CheckInType
+import asyncio
 import enum
 import logging
 from datetime import time
 from models.organization import OrganizationAgents, TwilioWhatsappTemplates, TemplateTypeEnum, AgentTypeEnum
 from models.emergency_numbers import EmergencyNumber, EmergencyNumberTypeEnum
 from services.whatsapp_service import whatsapp_service
-from services.elevenlabs_service import call_agent
+from services.elevenlabs_service import call_agent, track_agent_call
 from schemas.tools import EmergencyResponderRequest
 from .base import MCPBaseModel
 
@@ -473,33 +474,58 @@ async def emergency_responder(req: EmergencyResponderRequest):
                 "phone_number_id": user.organization.phone_number_id
             }
 
-            if user.emergency_call_to_caretaker:
-                if not user.caretaker:
-                    logger.warning(f"No caretaker assigned for user {req.user_id}, skipping caregiver alert.")
+            # (label, phone) for each call we should place. NULL flags count as enabled,
+            # matching the column defaults.
+            targets = []
+            if user.emergency_call_to_caretaker is not False:
+                if user.caretaker:
+                    targets.append(("caretaker", user.caretaker.phone_number))
                 else:
-                    call_agent(agent_id=agent.agent_id, phone_number=user.caretaker.phone_number, payload=payload)
+                    logger.warning(f"No caretaker assigned for user {req.user_id}, skipping caregiver alert.")
 
-
-            if user.emergency_call_to_government_services:
+            if user.emergency_call_to_government_services is not False:
                 emergency_number_result = await db.execute(
                     select(EmergencyNumber).where(
                         EmergencyNumber.organization_id == user.organization.id,
                         EmergencyNumber.type == EmergencyNumberTypeEnum.emergency_call
                     )
                 )
-                emergency_number_record = emergency_number_result.scalar_one_or_none()
-                emergency_phone = emergency_number_record.phone_number if emergency_number_record else None
-                if not emergency_phone:
-                    logger.error(f"No emergency phone number found for organization {user.organization.id}, cannot call emergency responder agent")
-    
-                success = call_agent(agent_id=agent.agent_id, phone_number=emergency_phone, payload=payload)
-            if not success:
+                emergency_number_record = emergency_number_result.scalars().first()
+                if emergency_number_record and emergency_number_record.phone_number:
+                    targets.append(("emergency services", emergency_number_record.phone_number))
+                else:
+                    logger.error(f"No emergency phone number found for organization {user.organization.id}")
+
+            if not targets:
+                return {
+                    "status_code": 400,
+                    "detail": "No one to call: no caretaker or emergency number is configured and enabled."
+                }
+
+            placed = []
+            for label, phone in targets:
+                try:
+                    # call_agent is blocking (requests), so keep it off the event loop
+                    response = await asyncio.to_thread(call_agent, agent_id=agent.agent_id, phone_number=phone, payload=payload)
+                    await asyncio.to_thread(
+                        track_agent_call, user.id, agent.agent_id, AgentTypeEnum.emergency_responder.value, payload, response
+                    )
+                    placed.append(label)
+                except Exception as e:
+                    logger.error(f"Emergency call to {label} failed for user {req.user_id}: {e}")
+
+            if not placed:
                 logger.error(f"Failed to call emergency responder agent for user {req.user_id}")
                 return {
                     "status_code": 500,
                     "detail": "Failed to call emergency responder."
                 }
-        
+
+            return {
+                "status_code": 200,
+                "detail": f"Emergency call placed to: {', '.join(placed)}"
+            }
+
     except Exception as e:
         logger.error(f"Error in emergency_responder endpoint: {str(e)}", exc_info=True)
         return {

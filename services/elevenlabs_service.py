@@ -3,6 +3,7 @@ from core.config import settings
 import requests
 from models.organization import AgentTypeEnum, OrganizationAgents
 from models.outbound_call_logs import OutboundCallLog
+from models.eleven_labs_sessions import ElevenLabsSessions
 from services.helpers import construct_dynamic_variables_from_payload, construct_initial_agent_message_for_reminders, constuct_initial_agent_message_for_onboarding, construct_general_welcome_message
 from scripts.utils import LANGUAGE_MAP, get_user_organization
 from typing import Optional, Dict, Any
@@ -333,11 +334,14 @@ def normalize_call_status(conversation: dict) -> dict:
     call_result = phone_call.get("call_result")
     conversation_status = conversation.get("status")
 
-    if conversation_status == "failed":
+    if call_result in CALL_RESULT_STATUS_MAP and not (call_result == "answered" and conversation_status == "failed"):
+        # The telephony result wins. A SIP trunk reports unanswered calls as conversation
+        # status "failed" with call_result "no_answer"/"busy", so checking the conversation
+        # status first would hide the real outcome.
+        status = CALL_RESULT_STATUS_MAP[call_result]
+    elif conversation_status == "failed":
         # The conversation itself failed (e.g. agent/config error), even if the line was picked up.
         status = "failed"
-    elif call_result in CALL_RESULT_STATUS_MAP:
-        status = CALL_RESULT_STATUS_MAP[call_result]
     elif conversation_status in ("initiated", "in-progress", "processing"):
         status = "in_progress"
     elif conversation_status == "done":
@@ -397,7 +401,7 @@ def call_agent(agent_id: str, phone_number: str, payload: Optional[Dict[str, Any
             phone_number_id = settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
 
         # Build dynamic variables from entire payload
-        dynamic_variables = {k: v for k, v in payload.items() if k != "agent_id" or k != "phone_number_id"}
+        dynamic_variables = {k: v for k, v in payload.items() if k not in ("agent_id", "phone_number_id")}
 
         # Make the ElevenLabs API call
         response = requests.post(
@@ -422,6 +426,9 @@ def call_agent(agent_id: str, phone_number: str, payload: Optional[Dict[str, Any
 
         response.raise_for_status()
         data = response.json()
+        # ElevenLabs can answer 200 with {"success": false, ...} when the dial itself fails
+        if data.get("success") is False:
+            raise RuntimeError(f"Call to {phone_number} was not placed: {data.get('message')}")
         success = True
         return data
     except Exception as e:
@@ -429,3 +436,22 @@ def call_agent(agent_id: str, phone_number: str, payload: Optional[Dict[str, Any
         raise
     finally:
         save_outbound_call_log(agent_id, phone_number, payload, data, success)
+
+
+def track_agent_call(user_id: int, agent_id: str, agent_type: str, payload: dict, response: Optional[dict]):
+    """Record a placed call in ElevenLabsSessions so update_call_status picks up its outcome."""
+    if not response or not response.get("conversation_id"):
+        return
+    try:
+        with get_sync_session() as db:
+            db.add(ElevenLabsSessions(
+                user_id=user_id,
+                agent_id=agent_id,
+                agent_type=agent_type,
+                payload=payload,
+                call_sid=response.get("conversation_id"),
+                status="ringing",
+            ))
+            db.commit()
+    except Exception as e:
+        logger.error(f"Failed to track call for user {user_id}: {e}")
