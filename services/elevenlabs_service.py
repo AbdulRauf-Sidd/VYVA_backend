@@ -237,6 +237,7 @@ def make_check_up_call(payload: dict):
     phone_number = payload.get("phone_number")
     try:
         phone_number_id = payload.get("phone_number_id") or settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID
+        print(f"Using phone_number_id: {phone_number_id} for check-up call.", "{settings.ELEVENLABS_AGENT_PHONE_NUMBER_ID}")
         conversation_plan = payload.get("conversation_plan")
         language = payload.get("language")
         iso_language = LANGUAGE_MAP.get(language.lower(), "en")
