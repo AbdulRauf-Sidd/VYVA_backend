@@ -1,425 +1,104 @@
-import httpx
-import json
-from typing import Dict, Any, Optional
+from typing import Any, Dict, List, Optional
 from core.config import settings
 from core.logging import get_logger
+from services.meta_whatsapp_service import (
+    send_meta_whatsapp_template,
+    async_send_meta_whatsapp_template,
+    async_send_meta_whatsapp_text,
+    async_send_meta_template_by_type,
+)
 
 logger = get_logger(__name__)
 
 
 class WhatsAppService:
-    """WhatsApp service for sending messages via Twilio."""
+    """WhatsApp service for sending messages via the Meta Cloud API."""
 
-    def __init__(self):
-        self.account_sid = settings.TWILIO_ACCOUNT_SID
-        self.auth_token = settings.TWILIO_AUTH_TOKEN
-        self.from_number = settings.TWILIO_WHATSAPP_FROM_NUMBER
-        self.template_sid = settings.TWILIO_WHATSAPP_TEMPLATE_SID
-
-        if not self.account_sid:
-            logger.warning("TWILIO_ACCOUNT_SID is not configured - WhatsApp service will be disabled")
-            self.enabled = False
-            return
-        if not self.auth_token:
-            logger.warning("TWILIO_AUTH_TOKEN is not configured - WhatsApp service will be disabled")
-            self.enabled = False
-            return
-        if not self.from_number:
-            logger.warning("TWILIO_WHATSAPP_FROM_NUMBER is not configured - WhatsApp service will be disabled")
-            self.enabled = False
-            return
-        
-        self.enabled = True
-
-        self.base_url = f"https://api.twilio.com/2010-04-01/Accounts/{self.account_sid}/Messages.json"
-
-    async def send_template_message(
-        self,
-        to_phone: str,
-        template_data: Dict[str, Any]
-    ) -> bool:
-        """
-        Send a WhatsApp message using a Twilio template.
-
-        Args:
-            to_phone: Recipient phone number (format: +1234567890)
-            template_data: Data to populate template variables
-        """
-        if not self.enabled:
-            logger.warning("WhatsApp service is disabled - cannot send template message")
-            return False
-        try:
-            # Check if template_sid is configured
-            if not self.template_sid:
-                logger.error("TWILIO_WHATSAPP_TEMPLATE_SID is not configured")
-                return False
-            # Ensure phone number has whatsapp: prefix
-            if not to_phone.startswith("whatsapp:"):
-                to_phone = f"whatsapp:{to_phone}"
-
-            from_number = self.from_number
-            if not from_number.startswith("whatsapp:"):
-                from_number = f"whatsapp:{from_number}"
-
-            # Prepare the message data for form URL encoding
-            # ContentVariables must be a JSON string, not a list
-            content_variables_json = json.dumps(template_data)
-            logger.info(f"Template data: {template_data}")
-            # Log the data being sent for debugging
-            logger.info(f"Sending template message with ContentSid: {self.template_sid}")
-            logger.info(f"ContentVariables: {content_variables_json}")
-            
-            message_data = {
-                "From": from_number,
-                "To": to_phone,
-                "ContentSid": self.template_sid,
-                "ContentVariables": content_variables_json
-            }
-
-            # Send the message
-            async with httpx.AsyncClient() as client:
-                response = await client.post(
-                    self.base_url,
-                    auth=(self.account_sid, self.auth_token),
-                    data=message_data,
-                    headers={"Content-Type": "application/x-www-form-urlencoded"},
-                    timeout=30.0
-                )
-
-                response.raise_for_status()
-                result = response.json()
-
-                logger.info(
-                    f"WhatsApp message sent successfully to {to_phone}. Message SID: {result.get('sid', 'unknown')}")
-                return True
-
-        except httpx.HTTPStatusError as e:
-            logger.error(
-                f"Twilio API error: {e.response.status_code} - {e.response.text}")
-            return False
-        except Exception as e:
-            logger.error(f"Error sending WhatsApp message: {str(e)}")
-            return False
-
-    async def send_sms(
-        self,
-        to_phone: str,
-        body: str
-    ) -> bool:
-        """
-        Send a WhatsApp message using a Twilio template.
-
-        Args:
-            to_phone: Recipient phone number (format: +1234567890)
-            template_data: Data to populate template variables
-
-        Returns:
-            bool: True if message sent successfully, False otherwise
-        """
-        try:
-            # Check if template_sid is configured
-            
-            # Ensure phone number has whatsapp: prefix
-            
-            logger.info(f"SMS Body: {body}")
-            # Log the data being sent for debugging
-
-            
-            message_data = {
-                "From": "+18782842340",
-                "To": to_phone,
-                "Body": body
-            }
-
-            # Send the message
-            async with httpx.AsyncClient() as client:
-                response = await client.post(
-                    self.base_url,
-                    auth=(self.account_sid, self.auth_token),
-                    data=message_data,
-                    headers={"Content-Type": "application/x-www-form-urlencoded"},
-                    timeout=30.0
-                )
-
-                response.raise_for_status()
-                result = response.json()
-
-                logger.info(
-                    f"WhatsApp message sent successfully to {to_phone}. Message SID: {result.get('sid', 'unknown')}")
-                return True
-
-        except httpx.HTTPStatusError as e:
-            logger.error(
-                f"Twilio API error: {e.response.status_code} - {e.response.text}")
-            return False
-        except Exception as e:
-            logger.error(f"Error sending WhatsApp message: {str(e)}")
-            return False
-
-    async def send_medical_report(
-        self,
-        recipient_phone: str,
-        report_content: Dict[str, Any]
-    ) -> bool:
-        try:
-
-            logger.info(f"Sending Report content: {report_content}")
-            # Send the template message
-            success = await self.send_template_message(
-                to_phone=recipient_phone,
-                template_data=report_content
-            )
-
-            if success:
-                logger.info(
-                    f"Medical report sent successfully via WhatsApp to {recipient_phone}")
-                return True
-            else:
-                logger.error(
-                    f"Failed to send medical report via WhatsApp to {recipient_phone}")
-                return False
-
-        except Exception as e:
-            logger.error(
-                f"Failed to send WhatsApp medical report to {recipient_phone}: {str(e)}")
-            return False
-
-    async def send_simple_message(
-        self,
-        to_phone: str,
-        message: str
-    ) -> bool:
-        try:
-            # Ensure phone number has whatsapp: prefix
-            if not to_phone.startswith("whatsapp:"):
-                to_phone = f"whatsapp:{to_phone}"
-
-            # Prepare the message data
-            message_data = {
-                "From": self.from_number,
-                "To": to_phone,
-                "Body": message
-            }
-
-            # Send the message
-            async with httpx.AsyncClient() as client:
-                response = await client.post(
-                    self.base_url,
-                    auth=(self.account_sid, self.auth_token),
-                    data=message_data,
-                    timeout=30.0
-                )
-
-                response.raise_for_status()
-                result = response.json()
-
-                logger.info(
-                    f"WhatsApp message sent successfully to {to_phone}. Message SID: {result.get('sid', 'unknown')}")
-                return True
-
-        except httpx.HTTPStatusError as e:
-            logger.error(
-                f"Twilio API error: {e.response.status_code} - {e.response.text}")
-            return False
-        except Exception as e:
-            logger.error(f"Error sending WhatsApp message: {str(e)}")
-            return False
-
-    async def send_reminder_message(
-        self,
-        to_phone: str,
-        template_data: Dict[str, Any],
-        template_id: str = settings.TWILIO_WHATSAPP_REMINDER_TEMPLATE_SID
-    ) -> bool:
-        try:
-            # Check if template_sid is configured
-            if not template_id:
-                logger.error("Template id is required")
-                return False
-            # Ensure phone number has whatsapp: prefix
-            if not to_phone.startswith("whatsapp:"):
-                to_phone = f"whatsapp:{to_phone}"
-
-            from_number = self.from_number
-            if not from_number.startswith("whatsapp:"):
-                from_number = f"whatsapp:{from_number}"
-
-            # Prepare the message data for form URL encoding
-            # ContentVariables must be a JSON string, not a list
-            content_variables_json = json.dumps(template_data)
-            
-            # Log the data being sent for debugging
-            logger.info(f"Sending template message with ContentSid: {template_id}")
-            logger.info(f"ContentVariables: {content_variables_json}")
-            
-            message_data = {
-                "From": from_number,
-                "To": to_phone,
-                "ContentSid": template_id,
-                "ContentVariables": content_variables_json
-            }
-
-            # Send the message
-            async with httpx.AsyncClient() as client:
-                response = await client.post(
-                    self.base_url,
-                    auth=(self.account_sid, self.auth_token),
-                    data=message_data,
-                    headers={"Content-Type": "application/x-www-form-urlencoded"},
-                    timeout=30.0
-                )
-
-                response.raise_for_status()
-                result = response.json()
-
-                logger.info(
-                    f"WhatsApp message sent successfully to {to_phone}. Message SID: {result.get('sid', 'unknown')}")
-                return True
-
-        except httpx.HTTPStatusError as e:
-            logger.error(
-                f"Twilio API error: {e.response.status_code} - {e.response.text}")
-            return False
-        except Exception as e:
-            logger.error(f"Error sending WhatsApp message: {str(e)}")
-            return False
-
-    async def send_onboarding_message(
-        self,
-        to_phone: str,
-        template_data: Dict[str, Any],
-        template_id: str = settings.TWILIO_WHATSAPP_ONBOARDING_TEMPLATE_SID
-    ) -> bool:
-        content_variables_json = json.dumps(template_data)
-
-        # Ensure phone number has whatsapp: prefix
-        if not to_phone.startswith("whatsapp:"):
-            to_phone = f"whatsapp:{to_phone}"
-            
-        from_number = self.from_number
-        if not from_number.startswith("whatsapp:"):
-            from_number = f"whatsapp:{from_number}"
-
-        message_data = {
-                "From": from_number,
-                "To": to_phone,
-                "ContentSid": template_id,
-                "ContentVariables": content_variables_json
-            }
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                self.base_url,
-                auth=(self.account_sid, self.auth_token),
-                data=message_data,
-                headers={"Content-Type": "application/x-www-form-urlencoded"},
-                timeout=30.0
-            )
-            response.raise_for_status()
-            return True
-        
-    async def send_otp(
-        self,
-        to_phone: str,
-        otp: str,
-        template_id: str = settings.TWILIO_WHATSAPP_OTP_TEMPLATE_SID
-    ) -> bool:
-        template_data = {
-            1: otp
-        }
-        content_variables_json = json.dumps(template_data)
-
-        # Ensure phone number has whatsapp: prefix
-        if not to_phone.startswith("whatsapp:"):
-            to_phone = f"whatsapp:{to_phone}"
-            
-        from_number = self.from_number
-        if not from_number.startswith("whatsapp:"):
-            from_number = f"whatsapp:{from_number}"
-
-        message_data = {
-                "From": from_number,
-                "To": to_phone,
-                "ContentSid": template_id,
-                "ContentVariables": content_variables_json
-            }
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                self.base_url,
-                auth=(self.account_sid, self.auth_token),
-                data=message_data,
-                headers={"Content-Type": "application/x-www-form-urlencoded"},
-                timeout=30.0
-            )
-            response.raise_for_status()
-            return True
-        
     async def send_message(
         self,
         to_phone: str,
-        template_data: dict,
-        template_id: str
-    ) -> bool:
-        
-        content_variables_json = json.dumps(template_data)
+        template_data: Dict[Any, Any],
+        template_id: str,
+        language: Optional[str] = None,
+        button_payloads: Optional[List[str]] = None,
+    ) -> dict:
+        """
+        Send a template message.
 
-        # Ensure phone number has whatsapp: prefix
-        if not to_phone.startswith("whatsapp:"):
-            to_phone = f"whatsapp:{to_phone}"
-            
-        from_number = self.from_number
-        if not from_number.startswith("whatsapp:"):
-            from_number = f"whatsapp:{from_number}"
+        Args:
+            to_phone: Recipient phone number (format: +1234567890)
+            template_data: Body variables keyed by position, e.g. {1: "Ana", 2: "Aspirin"}
+            template_id: The Meta template name (stored in the templates table)
+            language: Repo language name ('english', 'spanish', ...)
+            button_payloads: Optional payloads for quick-reply buttons, in button order
+        """
+        return await async_send_meta_whatsapp_template(
+            to_phone=to_phone,
+            template_name=template_id,
+            language=language,
+            payload=template_data,
+            button_payloads=button_payloads,
+        )
 
-        message_data = {
-                "From": from_number,
-                "To": to_phone,
-                "ContentSid": template_id,
-                "ContentVariables": content_variables_json
-            }
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                self.base_url,
-                auth=(self.account_sid, self.auth_token),
-                data=message_data,
-                headers={"Content-Type": "application/x-www-form-urlencoded"},
-                timeout=30.0
-            )
-            logger.info(f"WhatsApp message Response: {response}")
-            response.raise_for_status()
-            return response
-        
     def send_message_sync(
         self,
         to_phone: str,
-        template_data: dict,
-        template_id: str
-    ) -> bool:
-        
-        content_variables_json = json.dumps(template_data)
+        template_data: Dict[Any, Any],
+        template_id: str,
+        language: Optional[str] = None,
+        button_payloads: Optional[List[str]] = None,
+    ) -> dict:
+        """Blocking version of send_message, for Celery tasks and scripts."""
+        return send_meta_whatsapp_template(
+            to_phone=to_phone,
+            template_name=template_id,
+            language=language,
+            payload=template_data,
+            button_payloads=button_payloads,
+        )
 
-        # Ensure phone number has whatsapp: prefix
-        if not to_phone.startswith("whatsapp:"):
-            to_phone = f"whatsapp:{to_phone}"
-            
-        from_number = self.from_number
-        if not from_number.startswith("whatsapp:"):
-            from_number = f"whatsapp:{from_number}"
+    async def send_template_by_type(
+        self,
+        db,
+        template_type: str,
+        to_phone: str,
+        language: Optional[str],
+        organization_id: Optional[int],
+        template_data: Optional[Dict[Any, Any]] = None,
+        button_payloads: Optional[List[str]] = None,
+    ) -> dict:
+        """Look up the active template of this type (AsyncSession) and send it."""
+        return await async_send_meta_template_by_type(
+            db,
+            template_type=template_type,
+            to_phone=to_phone,
+            language=language,
+            organization_id=organization_id,
+            payload=template_data,
+            button_payloads=button_payloads,
+        )
 
-        message_data = {
-                "From": from_number,
-                "To": to_phone,
-                "ContentSid": template_id,
-                "ContentVariables": content_variables_json
-            }
-        with httpx.Client() as client:
-            response = client.post(
-                self.base_url,
-                auth=(self.account_sid, self.auth_token),
-                data=message_data,
-                headers={"Content-Type": "application/x-www-form-urlencoded"},
-                timeout=30.0
-            )
-            response.raise_for_status()
-            return response
-        
+    async def send_otp(
+        self,
+        db,
+        to_phone: str,
+        otp: str,
+        language: Optional[str],
+        organization_id: Optional[int] = None,
+    ) -> dict:
+        return await async_send_meta_template_by_type(
+            db,
+            template_type="otp",
+            to_phone=to_phone,
+            language=language,
+            organization_id=organization_id,
+            payload={1: otp},
+            otp_button=otp if settings.META_WHATSAPP_OTP_HAS_COPY_BUTTON else None,
+        )
+
+    async def send_text(self, to_phone: str, text: str) -> dict:
+        """Free-form text. Only valid within 24 hours of the user's last message."""
+        return await async_send_meta_whatsapp_text(to_phone, text)
+
+
 whatsapp_service = WhatsAppService()

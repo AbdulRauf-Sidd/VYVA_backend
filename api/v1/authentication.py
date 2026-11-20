@@ -29,10 +29,11 @@ async def request_otp(request: PhoneRequest, db: AsyncSession = Depends(get_db))
     if not user_id:
         raise HTTPException(status_code=400, detail="No user found with this phone number")
     
-    user_id = user_id.id
+    user = user_id
+    user_id = user.id
     otp, session_id = await create_otp_session(db, phone, user_id, user_type="user")
     
-    await whatsapp_service.send_otp(phone, otp)
+    await whatsapp_service.send_otp(db, phone, otp, user.preferred_consultation_language, user.organization_id)
     
     return {
         'success': True,
@@ -52,7 +53,7 @@ async def caretaker_request_otp(request: PhoneRequest, db: AsyncSession = Depend
         raise HTTPException(status_code=400, detail="No Caretaker found with this phone number")
     otp, session_id = await create_otp_session(db, phone, caretaker_id.id, user_type="caretaker")
     
-    await whatsapp_service.send_otp(phone, otp)
+    await whatsapp_service.send_otp(db, phone, otp, caretaker_id.language)
     
     return {
         'success': True,

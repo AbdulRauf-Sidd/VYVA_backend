@@ -110,10 +110,9 @@ def notify_caretaker_on_missed_meds(user_id: int):
                 2: user.full_name
             }
 
-            success = whatsapp_service.send_message(caretaker_phone, message_template, template.id)
-            if not success:
-                logger.error("Notify Caretaker error: message not sent")
-                return
+            whatsapp_service.send_message_sync(
+                caretaker_phone, message_template, template.template_id, language=caretaker.language
+            )
         elif channel == 'phone':
             pass
             #TODO

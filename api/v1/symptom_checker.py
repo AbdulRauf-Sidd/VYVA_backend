@@ -18,9 +18,10 @@ from core.database import get_db
 from models.symptom_checker import SymptomCheckerResponse
 from models.user import User
 from models.doctor import Doctor
+from models.organization import TemplateTypeEnum
 from services import whatsapp_service
 from services.email_service import EmailService
-from services.whatsapp_service import WhatsAppService
+from services.whatsapp_service import whatsapp_service
 from repositories.symptom_checker import SymptomCheckerRepository
 from schemas.symptom_checker import (
     SymptomCheckerInteractionRead,
@@ -1081,6 +1082,8 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
                 )
             elif preferred_reports_channel == "whatsapp":
                 send_result = await _send_whatsapp_report(
+                    db=db,
+                    user=user,
                     phone_number=phone_number,
                     report_content=report_content,
                     patient_name=response_record.full_name or " "
@@ -1102,6 +1105,8 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
     
                 if caretaker_phone:
                     caregiver_results["whatsapp"] = await _send_whatsapp_report(
+                        db=db,
+                        user=user,
                         phone_number=caretaker_phone,
                         report_content=report_content,
                         patient_name=response_record.full_name or " "
@@ -1132,6 +1137,8 @@ async def send_report(payload: SendReportRequest, db: AsyncSession = Depends(get
             # Send to fixed doctor WhatsApp
             if DOCTOR_WHATSAPP_PHONE:
                 doctor_whatsapp_status = await _send_whatsapp_report(
+                    db=db,
+                    user=user,
                     phone_number=DOCTOR_WHATSAPP_PHONE,
                     report_content=report_content,
                     patient_name=response_record.full_name or " "
@@ -1242,16 +1249,17 @@ async def _send_email_report(recipient_email: str, report_content: Dict[str, Any
         return "email_failed"
 
 
-async def _send_whatsapp_report(phone_number: str, report_content: Dict[str, Any], patient_name: str) -> str:
+async def _send_whatsapp_report(
+    db: AsyncSession,
+    user: User,
+    phone_number: str,
+    report_content: Dict[str, Any],
+    patient_name: str,
+) -> str:
     """
-    Send medical report via WhatsApp.
+    Send medical report via WhatsApp, in the patient's language.
     """
     try:
-        # TODO: Implement actual WhatsApp sending logic
-        # This is a placeholder - you'll need to integrate with your WhatsApp service
-
-        whatsapp_service = WhatsAppService()
-        
         # Get the breakdown data and ensure it's properly formatted
         raw_breakdown = report_content.get("breakdown", {})
         breakdown_data = (
@@ -1271,7 +1279,14 @@ async def _send_whatsapp_report(phone_number: str, report_content: Dict[str, Any
         #     template_data = {"breakdown": str(breakdown_data)}
         
         # success = await whatsapp_service.send_medical_report(phone_number, breakdown_data)
-        success = await whatsapp_service.send_template_message(phone_number, breakdown_data);
+        success = await whatsapp_service.send_template_by_type(
+            db,
+            template_type=TemplateTypeEnum.symptom_checker.value,
+            to_phone=phone_number,
+            language=user.preferred_consultation_language,
+            organization_id=user.organization_id,
+            template_data=breakdown_data,
+        )
 
         logger.info(
             f"Whatsapp service returned: {success} (type: {type(success)})")

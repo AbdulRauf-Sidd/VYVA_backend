@@ -111,6 +111,11 @@ class Settings(BaseSettings):
     META_WHATSAPP_ACCESS_TOKEN: Optional[str] = Field(default=None, env="META_WHATSAPP_ACCESS_TOKEN")
     META_WHATSAPP_PHONE_NUMBER_ID: Optional[str] = Field(default=None, env="META_WHATSAPP_PHONE_NUMBER_ID")
     META_WHATSAPP_API_VERSION: str = Field(default="v21.0", env="META_WHATSAPP_API_VERSION")
+    # Webhook: the token you enter in the Meta dashboard, and the app secret used to verify X-Hub-Signature-256
+    META_WEBHOOK_VERIFY_TOKEN: Optional[str] = Field(default=None, env="META_WEBHOOK_VERIFY_TOKEN")
+    META_APP_SECRET: Optional[str] = Field(default=None, env="META_APP_SECRET")
+    # True if the OTP template is a Meta "authentication" template (it has a copy-code button that needs the code too)
+    META_WHATSAPP_OTP_HAS_COPY_BUTTON: bool = Field(default=False, env="META_WHATSAPP_OTP_HAS_COPY_BUTTON")
 
     # WhatsApp Configuration (Twilio)
     TWILIO_WHATSAPP_FROM_NUMBER: str = Field(default=None, env="TWILIO_WHATSAPP_FROM_NUMBER")

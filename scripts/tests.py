@@ -43,6 +43,7 @@ def _send_whatsapp_report(db, user: User, template_type: str, whatsapp_content: 
         to_phone=TEST_WHATSAPP_NUMBER,
         template_data=whatsapp_content,
         template_id=template.template_id,
+        language=user.preferred_consultation_language,
     )
 
     logger.info(f"Sent {template_type} report for user {user.id} to {TEST_WHATSAPP_NUMBER}")
@@ -279,3 +280,58 @@ def test_inspect_call(call_sid: str, raw: bool = False):
     print(f"normalized: {normalize_call_status(conv)}")
     if raw:
         print(json.dumps(conv, indent=2, default=str))
+
+
+def test_send_medication_reminder(user_id: int, to_number: str = TEST_WHATSAPP_NUMBER):
+    """
+    Sends the WhatsApp medication reminder (template + Yes/No buttons) for the user's
+    active medications, by running the real send_whatsapp_medication_reminder task.
+
+    Sends to `to_number` (default TEST_WHATSAPP_NUMBER), not to the user. This creates real
+    unconfirmed medication logs, which is what the Yes/No buttons update. Tapping a button
+    is only handled if the replying number belongs to a user, so to test the buttons end to
+    end pass the user's own number as to_number.
+
+    python -c "from scripts.tests import test_send_medication_reminder; test_send_medication_reminder(1)"
+    """
+    from sqlalchemy.orm import selectinload
+    from models.medication import Medication
+    from scripts.medication_utils import build_medication_payload
+    from tasks.medication_tasks import send_whatsapp_medication_reminder
+
+    logging.basicConfig(level=logging.INFO)
+
+    with get_sync_session() as db:
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            print(f"User {user_id} not found")
+            return
+
+        medications = (
+            db.query(Medication)
+            .options(selectinload(Medication.times_of_day))
+            .filter(Medication.user_id == user_id, Medication.is_active.is_(True))
+            .all()
+        )
+        meds = [
+            build_medication_payload(med, med.times_of_day[0])
+            for med in medications
+            if med.times_of_day
+        ]
+        if not meds:
+            print(f"User {user_id} has no active medications with a time set")
+            return
+
+        payload = {
+            "user_id": user.id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "phone_number": to_number,
+            "language": user.preferred_consultation_language,
+            "medications": meds,
+        }
+        print(f"Sending reminder for {[m['medication_name'] for m in meds]} to {to_number} "
+              f"(language={user.preferred_consultation_language})")
+
+    # The task logs any error instead of raising, so watch the output for 'error in send_whatsapp_medication_reminder'
+    send_whatsapp_medication_reminder.run(payload)
