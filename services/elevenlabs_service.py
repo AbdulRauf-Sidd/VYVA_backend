@@ -60,6 +60,7 @@ def make_onboarding_call(payload: dict):
     success = False
     agent_id = payload.get("agent_id")
     phone_number = payload.get("phone_number")
+    response = None
     try:
         id = payload.get("user_id")
         user_type = payload.get("user_type")
@@ -109,6 +110,13 @@ def make_onboarding_call(payload: dict):
         return data
     except Exception as e:
         logger.error(f"Elevenlabs onboarding call failed: {e}")
+        if response is not None:
+            try:
+                error_data = response.json()
+                logger.error(f"Elevenlabs onboarding call error response: {error_data}")
+                logger.error(f"Elevenlabs onboarding call error response: {response.text}")
+            except Exception as json_error:
+                logger.error(f"Failed to parse Elevenlabs onboarding call error response: {json_error}")
     finally:
         save_outbound_call_log(agent_id, phone_number, payload, data, success)
 
