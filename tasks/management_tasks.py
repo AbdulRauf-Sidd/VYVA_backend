@@ -398,6 +398,9 @@ def call_emergency_outbound_agent(user_id):
 
         # Each call is isolated so one failure doesn't stop the others
         for label, phone in targets:
+            if not phone or phone.strip() in ("0", "+0"):
+                logger.warning(f"Skipping emergency call to {label} for user {user_id}: invalid number '{phone}'")
+                continue
             try:
                 response = call_agent(agent_id=agent_id, phone_number=phone, payload=payload)
                 track_agent_call(user.id, agent_id, AgentTypeEnum.emergency_responder.value, payload, response)

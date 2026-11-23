@@ -512,6 +512,9 @@ async def emergency_responder(req: EmergencyResponderRequest):
 
             placed = []
             for label, phone in targets:
+                if not phone or phone.strip() in ("0", "+0"):
+                    logger.warning(f"Skipping emergency call to {label} for user {req.user_id}: invalid number '{phone}'")
+                    continue
                 try:
                     # call_agent is blocking (requests), so keep it off the event loop
                     response = await asyncio.to_thread(call_agent, agent_id=agent.agent_id, phone_number=phone, payload=payload)
