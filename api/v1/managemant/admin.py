@@ -11,6 +11,7 @@ from celery.result import AsyncResult
 from celery_app import celery_app
 from schemas.admin import ScheduleCallbackRequest
 import logging
+from zoneinfo import ZoneInfo
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +45,7 @@ async def get_call_queues_status(
             "first_name": user.first_name,
             "last_name": user.last_name,
             "phone_number": user.phone_number,
-            "preferred_time": convert_utc_time_to_local_time(user.preferred_time, user.timezone),
+            "preferred_time": user.preferred_time,
             "onboarding_status": user.onboarding_status,
             "organization_name": org.name,
             "agent_id": org.onboarding_agent_id,
@@ -158,7 +159,7 @@ async def schedule_onboarding_callback(
         dt_utc = date_time_to_utc(call_back_date_time, record.timezone)
         
         # Update record with new callback datetime
-        record.preferred_time = dt_utc.time()
+        record.preferred_time = dt_utc.astimezone(ZoneInfo(record.timezone)).time()  # local time
         
         # Construct payload and schedule celery task
         try:

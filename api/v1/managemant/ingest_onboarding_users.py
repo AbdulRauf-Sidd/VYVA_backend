@@ -207,6 +207,7 @@ async def process_valid_data(file_content, organization, db):
             address = row_norm.get("address", None)
 
             utc_dt = None
+            local_preferred_time = None  # stored as the user's local time
 
             # -----------------------------------------
             # Preferred time conversion
@@ -216,6 +217,7 @@ async def process_valid_data(file_content, organization, db):
                 if re.match(r"^(?:[01]\d|2[0-3]):[0-5]\d$", preferred_time):
                     converted_time = preferred_time
                     preferred_time_obj = datetime.strptime(converted_time, "%H:%M").time()
+                    local_preferred_time = preferred_time_obj
 
                     #Build full local datetime
                     local_dt = datetime.combine(date.today(), preferred_time_obj, tzinfo=ZoneInfo(timezone))
@@ -240,7 +242,7 @@ async def process_valid_data(file_content, organization, db):
                 last_name=last_name,
                 phone_number=full_phone,
                 language=language,
-                preferred_time=final_utc_dt.time() if utc_dt else None,
+                preferred_time=local_preferred_time,
                 timezone=timezone,
                 caregiver_name=care_giver_name,
                 caregiver_contact_number=full_caregiver_phone,
@@ -368,10 +370,12 @@ async def ingest_user(payload: IngestUserRequest, organization: str, db=Depends(
     
     utc_dt = None
     final_utc_dt = None
+    local_preferred_time = datetime.strptime("09:00", "%H:%M").time()  # stored as the user's local time
     if payload.preferred_call_time:
         if re.match(r"^(?:[01]\d|2[0-3]):[0-5]\d$", payload.preferred_call_time):
             converted_time = payload.preferred_call_time
             preferred_time_obj = datetime.strptime(converted_time, "%H:%M").time()
+            local_preferred_time = preferred_time_obj
 
             local_dt = datetime.combine(date.today(), preferred_time_obj, tzinfo=ZoneInfo(payload.time_zone))
             utc_dt = local_dt.astimezone(ZoneInfo("UTC"))
@@ -408,7 +412,7 @@ async def ingest_user(payload: IngestUserRequest, organization: str, db=Depends(
                 caregiver_contact_number=caregiver_final_phone,
                 city_state_province=payload.city_state_province,
                 postal_zip_code=payload.postal_zip_code,
-                preferred_time=final_utc_dt,
+                preferred_time=local_preferred_time,
             )
     db.add(user)
     await db.flush()

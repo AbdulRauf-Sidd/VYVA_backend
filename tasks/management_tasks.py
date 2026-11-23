@@ -23,7 +23,7 @@ from models.user_check_ins import UserCheckin, CheckInType
 from tasks.utils import schedule_celery_task_for_call_status_check, schedule_check_in_calls_for_hour, schedule_celery_task_for_scheduled_session_status_check
 
 from scripts.onboarding_utils import construct_onboarding_user_payload
-from scripts.utils import date_now_in_timezone, get_iso_language
+from scripts.utils import date_now_in_timezone, get_iso_language, convert_local_time_to_utc_time
 from services.helpers import construct_user_dynamic_variables, construct_user_not_picked_up_message
 
 from core.config import settings
@@ -99,24 +99,26 @@ def process_pending_onboarding_users():
 
                 if callback_local_date == user_today:
                     call_back_time = call_back_date_time.time()
-                    if call_back_time >= hour_start and call_back_time < hour_end:
+                    if call_back_time.hour == hour_start.hour:
                         dt_today_utc = call_back_date_time
 
-            # if not dt_today_utc:
-            #     preferred_time = user.preferred_time
-            #     if not preferred_time:
-            #         continue
-            #     if preferred_time < hour_start or preferred_time >= hour_end:
-            #         continue
+            # Retries only happen in the hour of the user's preferred time (stored in local time)
+            if not dt_today_utc:
+                if not user.preferred_time or not user.timezone:
+                    continue
+                preferred_time_utc = convert_local_time_to_utc_time(user.preferred_time, user.timezone)
+                # compare hours, since hour_end wraps to 00:00 for the 23:00 scan
+                if preferred_time_utc.hour != hour_start.hour:
+                    continue
 
-            #     dt_today_utc = datetime.combine(now.date(), preferred_time, tzinfo=timezone.utc)
+                dt_today_utc = datetime.combine(now.date(), preferred_time_utc, tzinfo=timezone.utc)
 
             payload = construct_onboarding_user_payload(user, user.organization.onboarding_agent_id)
 
             task = celery_app.send_task(
                 "initiate_onboarding_call",
                 args=[payload,],
-                # eta=dt_today_utc
+                eta=dt_today_utc
             )
 
             user.onboarding_call_scheduled = True
