@@ -17,6 +17,8 @@ from models.eleven_labs_sessions import ElevenLabsSessions
 from models.emergency_numbers import EmergencyNumber
 from models.outbound_call_logs import OutboundCallLog
 from models.doctor import Doctor
+from admin.manual_calls import ManualCallComposeView, ManualCallStatusView
+import os
 
 def setup_admin(app):
     admin = Admin(
@@ -25,6 +27,7 @@ def setup_admin(app):
         authentication_backend=AdminAuth(
             secret_key=settings.SECRET_KEY
         ),
+        templates_dir=os.path.join(os.path.dirname(__file__), "templates"),
     )
 
     class UserAdmin(ModelView, model=User):
@@ -259,3 +262,5 @@ def setup_admin(app):
     admin.add_view(EmergencyNumberAdmin)
     admin.add_view(OutboundCallLogAdmin)
     admin.add_view(DoctorAdmin)
+    admin.add_base_view(ManualCallComposeView)
+    admin.add_base_view(ManualCallStatusView)

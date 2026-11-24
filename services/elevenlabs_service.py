@@ -387,7 +387,13 @@ def save_outbound_call_log(agent_id: str, phone_number: str, params: dict, respo
         logger.error(f"Failed to write outbound call log: {log_err}")
 
 
-def call_agent(agent_id: str, phone_number: str, payload: Optional[Dict[str, Any]] = None) -> dict:
+def call_agent(
+    agent_id: str,
+    phone_number: str,
+    payload: Optional[Dict[str, Any]] = None,
+    first_message: Optional[str] = None,
+    system_prompt: Optional[str] = None,
+) -> dict:
     data = None
     success = False
     try:
@@ -403,6 +409,13 @@ def call_agent(agent_id: str, phone_number: str, payload: Optional[Dict[str, Any
         # Build dynamic variables from entire payload
         dynamic_variables = {k: v for k, v in payload.items() if k not in ("agent_id", "phone_number_id")}
 
+        # Optional per-call overrides (the agent must allow them in its ElevenLabs security settings)
+        agent_override = {"language": iso_language}
+        if first_message:
+            agent_override["first_message"] = first_message
+        if system_prompt:
+            agent_override["prompt"] = {"prompt": system_prompt}
+
         # Make the ElevenLabs API call
         response = requests.post(
             settings.ELEVENLABS_OUTBOUND_CALL_URL,
@@ -415,15 +428,15 @@ def call_agent(agent_id: str, phone_number: str, payload: Optional[Dict[str, Any
                 "to_number": phone_number,
                 "conversation_initiation_client_data": {
                     "conversation_config_override": {
-                        "agent": {
-                            "language": iso_language,
-                        }
+                        "agent": agent_override
                     },
                     "dynamic_variables": dynamic_variables
                 }
             },
         )
 
+        if response.status_code >= 400:
+            logger.error(f"ElevenLabs call_agent {response.status_code}: {response.text}")
         response.raise_for_status()
         data = response.json()
         # ElevenLabs can answer 200 with {"success": false, ...} when the dial itself fails

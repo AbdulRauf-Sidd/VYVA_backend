@@ -1,0 +1,81 @@
+{% extends "sqladmin/layout.html" %}
+{% block content %}
+<div class="col-12">
+  <div class="card">
+    <div class="card-header"><h3 class="card-title">Trigger outbound calls (main agent)</h3></div>
+    <div class="card-body">
+      {% for e in errors %}<div class="alert alert-danger">{{ e }}</div>{% endfor %}
+
+      <form method="get" class="mb-3">
+        <label class="form-label">Organization</label>
+        <select name="organization_id" class="form-select" onchange="this.form.submit()">
+          <option value="">Select...</option>
+          {% for o in orgs %}<option value="{{ o.id }}" {% if o.id == org_id %}selected{% endif %}>{{ o.name }}</option>{% endfor %}
+        </select>
+      </form>
+
+      {% if org_id %}
+      <form method="post">
+        <input type="hidden" name="organization_id" value="{{ org_id }}">
+
+        <label class="form-label">Users ({{ users|length }})</label>
+        <input type="text" id="user-filter" class="form-control mb-2" placeholder="Filter by name or phone">
+        <div class="mb-2"><a href="#" id="select-all">Select all visible</a> · <a href="#" id="select-none">Clear</a></div>
+        <div style="max-height:280px;overflow:auto;border:1px solid #ccc;padding:8px" class="mb-3">
+          {% for u in users %}
+          <label class="form-check user-row" data-text="{{ (u.first_name ~ ' ' ~ (u.last_name or '') ~ ' ' ~ u.phone_number)|lower }}">
+            <input type="checkbox" class="form-check-input" name="user_ids" value="{{ u.id }}" {% if u.id in form.get('user_ids', []) %}checked{% endif %}>
+            <span class="form-check-label">{{ u.first_name }} {{ u.last_name or '' }} ({{ u.phone_number }})</span>
+          </label>
+          {% endfor %}
+        </div>
+
+        <div class="form-check form-switch mb-2">
+          <input class="form-check-input" type="checkbox" id="use_first_message" name="use_first_message" {% if form.get('use_first_message') %}checked{% endif %}>
+          <label class="form-check-label" for="use_first_message">Override first message</label>
+        </div>
+        <textarea name="first_message" id="first_message" class="form-control mb-3" rows="2" placeholder="First message the agent says">{{ form.get('first_message', '') }}</textarea>
+
+        <div class="form-check form-switch mb-2">
+          <input class="form-check-input" type="checkbox" id="use_prompt" name="use_prompt" {% if form.get('use_prompt') %}checked{% endif %}>
+          <label class="form-check-label" for="use_prompt">Override system prompt</label>
+        </div>
+        <textarea name="system_prompt" id="system_prompt" class="form-control mb-1" rows="6" placeholder="Replaces the agent's system prompt for this call">{{ form.get('system_prompt', '') }}</textarea>
+        <small class="text-muted d-block mb-3">Overrides only work if enabled in the agent's Security settings on ElevenLabs. Dynamic variables are passed either way.</small>
+
+        <label class="form-label">When</label>
+        <div class="mb-2">
+          <label class="form-check form-check-inline"><input class="form-check-input" type="radio" name="schedule_mode" value="now" {% if form.get('schedule_mode', 'now') == 'now' %}checked{% endif %}> Now (within a minute)</label>
+          <label class="form-check form-check-inline"><input class="form-check-input" type="radio" name="schedule_mode" value="later" {% if form.get('schedule_mode') == 'later' %}checked{% endif %}> Schedule</label>
+        </div>
+        <input type="datetime-local" name="scheduled_at" id="scheduled_at" class="form-control mb-3" style="max-width:260px" value="{{ form.get('scheduled_at', '') }}">
+        <small class="text-muted d-block mb-3" id="tz-hint">Time is in UTC.</small>
+
+        <button type="submit" class="btn btn-primary">Create calls</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<script>
+  const q = s => document.querySelector(s);
+  function sync() {
+    q('#first_message') && (q('#first_message').style.display = q('#use_first_message').checked ? '' : 'none');
+    q('#system_prompt') && (q('#system_prompt').style.display = q('#use_prompt').checked ? '' : 'none');
+    const later = document.querySelector('input[name=schedule_mode][value=later]');
+    q('#scheduled_at') && (q('#scheduled_at').style.display = later.checked ? '' : 'none');
+    q('#tz-hint') && (q('#tz-hint').style.display = later.checked ? '' : 'none');
+  }
+  document.querySelectorAll('#use_first_message,#use_prompt,input[name=schedule_mode]').forEach(e => e && e.addEventListener('change', sync));
+  if (q('#use_first_message')) sync();
+  const filter = q('#user-filter');
+  if (filter) {
+    filter.addEventListener('input', () => {
+      const t = filter.value.toLowerCase();
+      document.querySelectorAll('.user-row').forEach(r => r.style.display = r.dataset.text.includes(t) ? '' : 'none');
+    });
+    q('#select-all').addEventListener('click', e => { e.preventDefault(); document.querySelectorAll('.user-row').forEach(r => { if (r.style.display !== 'none') r.querySelector('input').checked = true; }); });
+    q('#select-none').addEventListener('click', e => { e.preventDefault(); document.querySelectorAll('.user-row input').forEach(i => i.checked = false); });
+  }
+</script>
+{% endblock %}

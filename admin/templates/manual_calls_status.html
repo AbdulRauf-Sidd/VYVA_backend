@@ -1,0 +1,55 @@
+{% extends "sqladmin/layout.html" %}
+{% block content %}
+<div class="col-12">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Manual call status</h3>
+      <div class="ms-auto">
+        <a href="{{ url_for('admin:manual-calls-new') }}" class="btn btn-primary btn-sm">New</a>
+        <a href="" class="btn btn-sm">Refresh</a>
+        {% if batch_id %}<a href="{{ url_for('admin:manual-calls-status') }}" class="btn btn-sm">All batches</a>{% endif %}
+      </div>
+    </div>
+    <div class="card-body">
+      <form method="get" class="mb-3 d-flex gap-2">
+        {% if batch_id %}<input type="hidden" name="batch_id" value="{{ batch_id }}">{% endif %}
+        <select name="status" class="form-select" style="max-width:200px" onchange="this.form.submit()">
+          <option value="">All statuses</option>
+          {% for s in ['scheduled','queued','ringing','answered','no_answer','declined','failed','cancelled'] %}
+          <option value="{{ s }}" {% if s == status_filter %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </form>
+      <div class="table-responsive">
+        <table class="table table-vcenter">
+          <thead><tr><th>ID</th><th>User</th><th>Phone</th><th>Scheduled (UTC)</th><th>Status</th><th>Overrides</th><th>Conversation</th><th>Error</th><th></th></tr></thead>
+          <tbody>
+          {% for r in calls %}
+            <tr>
+              <td>{{ r.call.id }}</td>
+              <td>{{ r.user.first_name }} {{ r.user.last_name or '' }}</td>
+              <td>{{ r.call.phone_number }}</td>
+              <td>{{ r.call.scheduled_at.strftime('%Y-%m-%d %H:%M') }}</td>
+              <td><span class="badge {% if r.status in ['answered'] %}bg-green-lt{% elif r.status in ['failed','no_answer','declined'] %}bg-red-lt{% elif r.status == 'cancelled' %}bg-secondary-lt{% else %}bg-blue-lt{% endif %}">{{ r.status }}</span></td>
+              <td>{% if r.call.override_first_message %}<span title="{{ r.call.override_first_message }}">first msg</span> {% endif %}{% if r.call.override_prompt %}<span title="{{ r.call.override_prompt }}">prompt</span>{% endif %}</td>
+              <td>{{ r.call.conversation_id or '' }}</td>
+              <td style="max-width:240px">{{ r.call.error or '' }}</td>
+              <td>
+                {% if r.call.status == 'scheduled' %}
+                <form method="post" action="{{ url_for('admin:manual-calls-cancel') }}" onsubmit="return confirm('Cancel this call?')">
+                  <input type="hidden" name="call_id" value="{{ r.call.id }}">
+                  <button class="btn btn-sm btn-outline-danger">Cancel</button>
+                </form>
+                {% endif %}
+              </td>
+            </tr>
+          {% else %}
+            <tr><td colspan="9" class="text-center text-muted">No calls</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
