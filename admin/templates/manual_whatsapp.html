@@ -33,7 +33,12 @@
 
         <div class="row mb-3">
           <div class="col-md-8">
-            <label class="form-label">Template</label>
+            <div class="form-check form-switch mb-2">
+              <input class="form-check-input" type="checkbox" id="manual_template" name="manual_template" {% if form.get('manual_template') %}checked{% endif %}>
+              <label class="form-check-label" for="manual_template">Enter template name manually</label>
+            </div>
+            <input type="text" name="template_name" id="template_name" class="form-control" placeholder="Meta template name, e.g. onboarding_meta_es" value="{{ form.get('template_name', '') }}">
+            <label class="form-label" id="template_label">Template</label>
             <select name="template_row" id="template_row" class="form-select">
               <option value="">Select...</option>
               {% for t in templates %}
@@ -94,7 +99,9 @@
     q('#var-rows').addEventListener('click', e => { if (e.target.classList.contains('rm')) e.target.parentElement.remove(); });
     const later = () => { const l = document.querySelector('input[name=schedule_mode][value=later]').checked; q('#scheduled_at').style.display = l ? '' : 'none'; q('#tz-hint').style.display = l ? '' : 'none'; };
     document.querySelectorAll('input[name=schedule_mode]').forEach(e => e.addEventListener('change', later));
-    sync(); later();
+    const manual = () => { const m = q('#manual_template').checked; q('#template_name').style.display = m ? '' : 'none'; q('#template_row').style.display = m ? 'none' : ''; q('#template_label').style.display = m ? 'none' : ''; };
+    q('#manual_template').addEventListener('change', manual);
+    sync(); later(); manual();
     const tpl = q('#template_row'), lang = q('#language');
     const setLang = () => { const o = tpl.selectedOptions[0]; if (o && o.dataset.lang && !{{ 'true' if form.get('language') else 'false' }}) lang.value = o.dataset.lang; };
     tpl.addEventListener('change', () => { const o = tpl.selectedOptions[0]; if (o && o.dataset.lang) lang.value = o.dataset.lang; });

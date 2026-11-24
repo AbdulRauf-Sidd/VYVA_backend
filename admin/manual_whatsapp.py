@@ -58,7 +58,8 @@ class ManualWhatsappView(BaseView):
                 if k.strip():
                     variables[k.strip()] = v
         raw = {
-            "user_ids": user_ids, "template_row": form.get("template_row"), "language": form.get("language") or "",
+            "user_ids": user_ids, "template_row": form.get("template_row"), "manual_template": bool(form.get("manual_template")),
+            "template_name": (form.get("template_name") or "").strip(), "language": form.get("language") or "",
             "use_variables": use_vars, "variables": list(zip(keys, values)) if use_vars else [],
             "schedule_mode": form.get("schedule_mode") or "now", "scheduled_at": form.get("scheduled_at") or "",
         }
@@ -68,7 +69,12 @@ class ManualWhatsappView(BaseView):
             errors.append("Select an organization.")
         if not user_ids:
             errors.append("Select at least one user.")
-        if not form.get("template_row"):
+        if raw["manual_template"]:
+            if not raw["template_name"]:
+                errors.append("Enter the template name.")
+            elif " " in raw["template_name"]:
+                errors.append("Template name must be the Meta template name (no spaces).")
+        elif not form.get("template_row"):
             errors.append("Select a template.")
         for k in variables:
             if not k.isdigit() or int(k) < 1:
@@ -84,7 +90,7 @@ class ManualWhatsappView(BaseView):
             return await self._render(request, org_id, raw, errors)
 
         async with AsyncSessionLocal() as db:
-            template = await db.get(Template, int(form["template_row"]))
+            template = None if raw["manual_template"] else await db.get(Template, int(form["template_row"]))
             users = (await db.execute(
                 select(User).where(User.id.in_(user_ids), User.organization_id == org_id)
             )).scalars().all()
@@ -94,8 +100,8 @@ class ManualWhatsappView(BaseView):
                     batch_id=batch_id,
                     user_id=user.id,
                     organization_id=org_id,
-                    template_name=template.template_id,
-                    language=form.get("language") or template.language,
+                    template_name=raw["template_name"] if raw["manual_template"] else template.template_id,
+                    language=form.get("language") or (template.language if template else "english"),
                     variables=variables or None,
                     scheduled_at=scheduled_at,
                     status="scheduled",
