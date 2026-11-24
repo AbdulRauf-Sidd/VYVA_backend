@@ -8,6 +8,7 @@ from .emergency_numbers import *
 from .outbound_call_logs import *
 from .whatsapp_messages import *
 from .manual_calls import *
+from .manual_whatsapp import *
 from .doctor import *
 from .fall_detection import *
 from .medication import *

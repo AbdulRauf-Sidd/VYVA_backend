@@ -1,0 +1,108 @@
+{% extends "sqladmin/layout.html" %}
+{% block content %}
+<div class="col-12">
+  <div class="card">
+    <div class="card-header"><h3 class="card-title">Send WhatsApp template</h3></div>
+    <div class="card-body">
+      {% for e in errors %}<div class="alert alert-danger">{{ e }}</div>{% endfor %}
+
+
+      <form method="get" class="mb-3">
+        <label class="form-label">Organization</label>
+        <select name="organization_id" class="form-select" onchange="this.form.submit()">
+          <option value="">Select...</option>
+          {% for o in orgs %}<option value="{{ o.id }}" {% if o.id == org_id %}selected{% endif %}>{{ o.name }}</option>{% endfor %}
+        </select>
+      </form>
+
+      {% if org_id %}
+      <form method="post" onsubmit="return confirm('Create messages for ' + document.querySelectorAll('input[name=user_ids]:checked').length + ' user(s)?')">
+        <input type="hidden" name="organization_id" value="{{ org_id }}">
+
+        <label class="form-label">Users ({{ users|length }})</label>
+        <input type="text" id="user-filter" class="form-control mb-2" placeholder="Filter by name or phone">
+        <div class="mb-2"><a href="#" id="select-all">Select all visible</a> · <a href="#" id="select-none">Clear</a></div>
+        <div style="max-height:260px;overflow:auto;border:1px solid #ccc;padding:8px" class="mb-3">
+          {% for u in users %}
+          <label class="form-check user-row" data-text="{{ (u.first_name ~ ' ' ~ (u.last_name or '') ~ ' ' ~ u.phone_number)|lower }}">
+            <input type="checkbox" class="form-check-input" name="user_ids" value="{{ u.id }}" {% if u.id in form.get('user_ids', []) %}checked{% endif %}>
+            <span class="form-check-label">{{ u.first_name }} {{ u.last_name or '' }} ({{ u.phone_number }})</span>
+          </label>
+          {% endfor %}
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-8">
+            <label class="form-label">Template</label>
+            <select name="template_row" id="template_row" class="form-select">
+              <option value="">Select...</option>
+              {% for t in templates %}
+              <option value="{{ t.id }}" data-lang="{{ t.language }}" {% if form.get('template_row') == t.id|string %}selected{% endif %}>{{ t.template_id }} · {{ t.template_type }} · {{ t.language }}{% if not t.organization_id %} · global{% endif %}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Language</label>
+            <select name="language" id="language" class="form-select">
+              {% for l in languages %}<option value="{{ l }}" {% if form.get('language') == l %}selected{% endif %}>{{ l }}</option>{% endfor %}
+            </select>
+          </div>
+        </div>
+        <small class="text-muted d-block mb-3">Language must match a language the template is approved in on Meta. It defaults to the template row's language.</small>
+
+        <div class="form-check form-switch mb-2">
+          <input class="form-check-input" type="checkbox" id="use_variables" name="use_variables" {% if form.get('use_variables') %}checked{% endif %}>
+          <label class="form-check-label" for="use_variables">Template variables</label>
+        </div>
+        <div id="vars" class="mb-3">
+          <div id="var-rows">
+            {% for k, v in form.get('variables', []) %}
+            <div class="d-flex gap-2 mb-2 var-row"><input class="form-control" style="max-width:100px" name="var_key" placeholder="1" value="{{ k }}"><input class="form-control" name="var_value" placeholder="Value" value="{{ v }}"><button type="button" class="btn btn-outline-danger rm">×</button></div>
+            {% endfor %}
+          </div>
+          <button type="button" id="add-var" class="btn btn-sm btn-outline-primary">Add variable</button>
+          <small class="text-muted d-block mt-1">Key is the position: 1 for {{ '{{1}}' }}, 2 for {{ '{{2}}' }}. Values may use {first_name}, {last_name}, {name}, filled in per user.</small>
+        </div>
+
+        <label class="form-label">When</label>
+        <div class="mb-2">
+          <label class="form-check form-check-inline"><input class="form-check-input" type="radio" name="schedule_mode" value="now" {% if form.get('schedule_mode', 'now') == 'now' %}checked{% endif %}> Now (within a minute)</label>
+          <label class="form-check form-check-inline"><input class="form-check-input" type="radio" name="schedule_mode" value="later" {% if form.get('schedule_mode') == 'later' %}checked{% endif %}> Schedule</label>
+        </div>
+        <input type="datetime-local" name="scheduled_at" id="scheduled_at" class="form-control mb-1" style="max-width:260px" value="{{ form.get('scheduled_at', '') }}">
+        <small class="text-muted d-block mb-3" id="tz-hint">Time is in UTC.</small>
+
+        <button type="submit" class="btn btn-primary">Create messages</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<script>
+  const q = s => document.querySelector(s);
+  function addRow(k = '', v = '') {
+    const d = document.createElement('div');
+    d.className = 'd-flex gap-2 mb-2 var-row';
+    d.innerHTML = '<input class="form-control" style="max-width:100px" name="var_key" placeholder="1"><input class="form-control" name="var_value" placeholder="Value"><button type="button" class="btn btn-outline-danger rm">×</button>';
+    d.children[0].value = k; d.children[1].value = v;
+    q('#var-rows').appendChild(d);
+  }
+  if (q('#use_variables')) {
+    const sync = () => { q('#vars').style.display = q('#use_variables').checked ? '' : 'none'; };
+    q('#use_variables').addEventListener('change', () => { if (q('#use_variables').checked && !document.querySelector('.var-row')) addRow(String(1)); sync(); });
+    q('#add-var').addEventListener('click', () => addRow(String(document.querySelectorAll('.var-row').length + 1)));
+    q('#var-rows').addEventListener('click', e => { if (e.target.classList.contains('rm')) e.target.parentElement.remove(); });
+    const later = () => { const l = document.querySelector('input[name=schedule_mode][value=later]').checked; q('#scheduled_at').style.display = l ? '' : 'none'; q('#tz-hint').style.display = l ? '' : 'none'; };
+    document.querySelectorAll('input[name=schedule_mode]').forEach(e => e.addEventListener('change', later));
+    sync(); later();
+    const tpl = q('#template_row'), lang = q('#language');
+    const setLang = () => { const o = tpl.selectedOptions[0]; if (o && o.dataset.lang && !{{ 'true' if form.get('language') else 'false' }}) lang.value = o.dataset.lang; };
+    tpl.addEventListener('change', () => { const o = tpl.selectedOptions[0]; if (o && o.dataset.lang) lang.value = o.dataset.lang; });
+    setLang();
+    const filter = q('#user-filter');
+    filter.addEventListener('input', () => { const t = filter.value.toLowerCase(); document.querySelectorAll('.user-row').forEach(r => r.style.display = r.dataset.text.includes(t) ? '' : 'none'); });
+    q('#select-all').addEventListener('click', e => { e.preventDefault(); document.querySelectorAll('.user-row').forEach(r => { if (r.style.display !== 'none') r.querySelector('input').checked = true; }); });
+    q('#select-none').addEventListener('click', e => { e.preventDefault(); document.querySelectorAll('.user-row input').forEach(i => i.checked = false); });
+  }
+</script>
+{% endblock %}

@@ -19,6 +19,7 @@ from models.outbound_call_logs import OutboundCallLog
 from models.doctor import Doctor
 from models.whatsapp_messages import WhatsappMessage
 from admin.manual_calls import ManualCallComposeView, ManualCallStatusView
+from admin.manual_whatsapp import ManualWhatsappView, ManualWhatsappStatusView
 import os
 
 def setup_admin(app):
@@ -280,3 +281,5 @@ def setup_admin(app):
     admin.add_view(DoctorAdmin)
     admin.add_base_view(ManualCallComposeView)
     admin.add_base_view(ManualCallStatusView)
+    admin.add_base_view(ManualWhatsappView)
+    admin.add_base_view(ManualWhatsappStatusView)

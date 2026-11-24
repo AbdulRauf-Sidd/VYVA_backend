@@ -1,0 +1,54 @@
+{% extends "sqladmin/layout.html" %}
+{% block content %}
+<div class="col-12">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">WhatsApp send status</h3>
+      <div class="ms-auto">
+        <a href="{{ url_for('admin:manual-whatsapp') }}" class="btn btn-primary btn-sm">New</a>
+        <a href="" class="btn btn-sm">Refresh</a>
+        {% if batch_id %}<a href="{{ url_for('admin:manual-whatsapp-status') }}" class="btn btn-sm">All batches</a>{% endif %}
+      </div>
+    </div>
+    <div class="card-body">
+      <form method="get" class="mb-3">
+        {% if batch_id %}<input type="hidden" name="batch_id" value="{{ batch_id }}">{% endif %}
+        <select name="status" class="form-select" style="max-width:200px" onchange="this.form.submit()">
+          <option value="">All statuses</option>
+          {% for s in ['scheduled','queued','sent','delivered','read','failed','cancelled'] %}
+          <option value="{{ s }}" {% if s == status_filter %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </form>
+      <div class="table-responsive">
+        <table class="table table-vcenter">
+          <thead><tr><th>ID</th><th>User</th><th>Template</th><th>Language</th><th>Scheduled (UTC)</th><th>Status</th><th>Error</th><th></th></tr></thead>
+          <tbody>
+          {% for r in items %}
+            <tr>
+              <td>{{ r.item.id }}</td>
+              <td>{{ r.user.first_name }} {{ r.user.last_name or '' }}<br><small class="text-muted">{{ r.user.phone_number }}</small></td>
+              <td>{{ r.item.template_name }}</td>
+              <td>{{ r.item.language }}</td>
+              <td>{{ r.item.scheduled_at.strftime('%Y-%m-%d %H:%M') }}</td>
+              <td><span class="badge {% if r.status in ['delivered','read'] %}bg-green-lt{% elif r.status == 'failed' %}bg-red-lt{% elif r.status == 'cancelled' %}bg-secondary-lt{% else %}bg-blue-lt{% endif %}">{{ r.status }}</span></td>
+              <td style="max-width:260px">{{ r.item.error or '' }}</td>
+              <td>
+                {% if r.item.status == 'scheduled' %}
+                <form method="post" action="{{ url_for('admin:manual-whatsapp-cancel') }}" onsubmit="return confirm('Cancel this message?')">
+                  <input type="hidden" name="item_id" value="{{ r.item.id }}">
+                  <button class="btn btn-sm btn-outline-danger">Cancel</button>
+                </form>
+                {% endif %}
+              </td>
+            </tr>
+          {% else %}
+            <tr><td colspan="8" class="text-center text-muted">No messages</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
