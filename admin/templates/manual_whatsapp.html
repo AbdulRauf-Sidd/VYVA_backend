@@ -48,12 +48,14 @@
           </div>
           <div class="col-md-4">
             <label class="form-label">Language</label>
-            <select name="language" id="language" class="form-select">
-              {% for l in languages %}<option value="{{ l }}" {% if form.get('language') == l %}selected{% endif %}>{{ l }}</option>{% endfor %}
-            </select>
+            <input name="language" id="language" class="form-control" list="lang-list" value="{{ form.get('language', '') }}" placeholder="spanish, es_ES, ...">
+            <datalist id="lang-list">
+              {% for l in languages %}<option value="{{ l }}">{% endfor %}
+              {% for c in ['en','en_US','en_GB','es','es_ES','es_MX','es_AR','de','fr','pt_BR','pt_PT','it'] %}<option value="{{ c }}">{% endfor %}
+            </datalist>
           </div>
         </div>
-        <small class="text-muted d-block mb-3">Language must match a language the template is approved in on Meta. It defaults to the template row's language.</small>
+        <small class="text-muted d-block mb-3">Use the exact code the template shows in Meta (e.g. es, es_ES, es_MX). Repo names (spanish, english...) are converted: spanish becomes es.</small>
 
         <div class="form-check form-switch mb-2">
           <input class="form-check-input" type="checkbox" id="use_variables" name="use_variables" {% if form.get('use_variables') %}checked{% endif %}>
