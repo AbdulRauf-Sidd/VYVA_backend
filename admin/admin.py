@@ -17,6 +17,7 @@ from models.eleven_labs_sessions import ElevenLabsSessions
 from models.emergency_numbers import EmergencyNumber
 from models.outbound_call_logs import OutboundCallLog
 from models.doctor import Doctor
+from models.whatsapp_messages import WhatsappMessage
 from admin.manual_calls import ManualCallComposeView, ManualCallStatusView
 import os
 
@@ -238,6 +239,20 @@ def setup_admin(app):
         can_delete = False
 
 
+    class WhatsappMessageAdmin(ModelView, model=WhatsappMessage):
+        column_list = [
+            WhatsappMessage.id, WhatsappMessage.created_at, WhatsappMessage.direction, WhatsappMessage.phone_number,
+            WhatsappMessage.user_id, WhatsappMessage.message_type, WhatsappMessage.template_name,
+            WhatsappMessage.body, WhatsappMessage.status,
+        ]
+        column_details_list = "__all__"
+        column_searchable_list = [WhatsappMessage.phone_number, WhatsappMessage.body, WhatsappMessage.template_name]
+        column_sortable_list = [WhatsappMessage.id, WhatsappMessage.created_at]
+        column_default_sort = [("created_at", True)]
+        can_create = False
+        can_edit = False
+        can_delete = False
+
     admin.add_view(UserAdmin)
     admin.add_view(CaretakerAdmin)
     admin.add_view(TwilioWhatsappTemplatesAdmin)
@@ -261,6 +276,7 @@ def setup_admin(app):
     admin.add_view(ElevenLabsSessionsAdmin)
     admin.add_view(EmergencyNumberAdmin)
     admin.add_view(OutboundCallLogAdmin)
+    admin.add_view(WhatsappMessageAdmin)
     admin.add_view(DoctorAdmin)
     admin.add_base_view(ManualCallComposeView)
     admin.add_base_view(ManualCallStatusView)

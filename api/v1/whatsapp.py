@@ -1,6 +1,7 @@
 import hashlib
 import hmac
 import json
+import asyncio
 import logging
 
 from fastapi import APIRouter, Depends, Query, Request, Response
@@ -9,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import settings
 from core.database import get_db
+from services.whatsapp_message_log import log_incoming, update_status
 from services.whatsapp_reply_handler import handle_button_payload
 from services.whatsapp_service import whatsapp_service
 
@@ -65,10 +67,12 @@ async def receive_webhook(request: Request, db: AsyncSession = Depends(get_db)):
                 value = change.get("value") or {}
 
                 for status in value.get("statuses", []):
+                    await asyncio.to_thread(update_status, status)
                     if status.get("status") == "failed":
                         logger.error(f"WhatsApp message to {status.get('recipient_id')} failed: {status.get('errors')}")
 
                 for message in value.get("messages", []):
+                    await asyncio.to_thread(log_incoming, message)
                     button_payload = _button_payload(message)
                     if not button_payload:
                         continue

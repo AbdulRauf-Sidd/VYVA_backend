@@ -1,8 +1,10 @@
+import asyncio
 import re
 import httpx
 from typing import Dict, List, Optional, Any
 from core.config import settings
 from core.logging import get_logger
+from services.whatsapp_message_log import log_outgoing
 
 logger = get_logger(__name__)
 
@@ -106,6 +108,22 @@ def _request_parts():
     return url, headers
 
 
+def _template_log_meta(template_name, language, payload, button_payloads) -> dict:
+    return {
+        "template_name": template_name,
+        "payload": {
+            "language": language,
+            "params": {str(k): v for k, v in (payload or {}).items()},
+            "buttons": button_payloads or [],
+        },
+    }
+
+
+def _error_text(e: Exception) -> str:
+    response = getattr(e, "response", None)
+    return (response.text if response is not None else str(e))[:1000]
+
+
 def _handle_response(response: httpx.Response, description: str) -> dict:
     if response.status_code >= 400:
         logger.error(f"Meta WhatsApp error {response.status_code} sending {description}: {response.text}")
@@ -135,8 +153,15 @@ def send_meta_whatsapp_template(
     """
     body = build_template_message(to_phone, template_name, language, payload, button_payloads, otp_button)
     url, headers = _request_parts()
-    response = httpx.post(url, headers=headers, json=body, timeout=30.0)
-    return _handle_response(response, f"template '{template_name}' to {to_phone}")
+    meta = _template_log_meta(template_name, language, payload, button_payloads)
+    try:
+        response = httpx.post(url, headers=headers, json=body, timeout=30.0)
+        result = _handle_response(response, f"template '{template_name}' to {to_phone}")
+    except Exception as e:
+        log_outgoing(to_phone, "template", error=_error_text(e), **meta)
+        raise
+    log_outgoing(to_phone, "template", result=result, **meta)
+    return result
 
 
 async def async_send_meta_whatsapp_template(
@@ -150,9 +175,16 @@ async def async_send_meta_whatsapp_template(
     """Async version of send_meta_whatsapp_template."""
     body = build_template_message(to_phone, template_name, language, payload, button_payloads, otp_button)
     url, headers = _request_parts()
-    async with httpx.AsyncClient() as client:
-        response = await client.post(url, headers=headers, json=body, timeout=30.0)
-    return _handle_response(response, f"template '{template_name}' to {to_phone}")
+    meta = _template_log_meta(template_name, language, payload, button_payloads)
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(url, headers=headers, json=body, timeout=30.0)
+        result = _handle_response(response, f"template '{template_name}' to {to_phone}")
+    except Exception as e:
+        await asyncio.to_thread(log_outgoing, to_phone, "template", error=_error_text(e), **meta)
+        raise
+    await asyncio.to_thread(log_outgoing, to_phone, "template", result=result, **meta)
+    return result
 
 
 async def async_send_meta_whatsapp_text(to_phone: str, text: str) -> dict:
@@ -167,9 +199,15 @@ async def async_send_meta_whatsapp_text(to_phone: str, text: str) -> dict:
         "text": {"body": text},
     }
     url, headers = _request_parts()
-    async with httpx.AsyncClient() as client:
-        response = await client.post(url, headers=headers, json=body, timeout=30.0)
-    return _handle_response(response, f"text to {to_phone}")
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(url, headers=headers, json=body, timeout=30.0)
+        result = _handle_response(response, f"text to {to_phone}")
+    except Exception as e:
+        await asyncio.to_thread(log_outgoing, to_phone, "text", body=text, error=_error_text(e))
+        raise
+    await asyncio.to_thread(log_outgoing, to_phone, "text", result=result, body=text)
+    return result
 
 
 def _template_query(template_type: str, language: Optional[str], organization_id: Optional[int]):
